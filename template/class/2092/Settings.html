@@ -1,0 +1,8 @@
+<?php
+global $bitcat;
+
+if ($inside_admin) {
+    $ignore_sub = $ignore_cc = $ignore_catalogue = 1;
+    $query_where = "a.Catalogue_ID = $catalogue";
+}
+?>

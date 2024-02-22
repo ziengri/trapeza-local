@@ -1,0 +1,76 @@
+<?php /* Служебная часть */
+for ($f_RowNum = 0; $f_RowNum < $rowCount; $f_RowNum++) {
+    if($fetch_row[$f_RowNum] instanceof Iterator) {
+        extract($fetch_row[$f_RowNum]->to_array(), EXTR_PREFIX_ALL, "f");
+    } else {
+        extract($fetch_row[$f_RowNum], EXTR_PREFIX_ALL, "f");
+    }
+    foreach($iteration_RecordTemplate[$f_RowNum] as $value) {
+        extract($value);
+    }
+    eval($cc_env["convert2txt"]);
+    ob_start();
+/* Конец служебной части */?>
+
+<?= $f_AdminButtons; ?>
+<?php
+if ($cc_settings['showAs'] == 'all' || $cc_settings['showAs'] == 'icon') {
+    if ($f_Icon != '') {
+        $_icon = "<i class='fas fa-link contact-icon' style=\"background-image: url('{$f_Icon}')\">&nbsp;</i>";
+    } else {
+        if ($f_ContactType === 'Email') {
+            $_icon = "<i class=\"far fa-envelope-open\"></i>";
+        } elseif ($f_ContactType === 'Телефон') {
+            $_icon = "<i class=\"fas fa-phone\"></i>";
+        } elseif ($f_ContactType === 'Адрес') {
+            $_icon = "<i class=\"fas fa-map-marker-alt\"></i>";
+        } elseif ($f_ContactType === 'Ссылка') {
+            $_icon = "<i class=\"fas fa-link\"></i>";
+        } else {
+            $_icon = "<i class=\"fas \"></i>";
+        }
+    }
+    $_icon = "<span class='icon'>".$_icon."</span>";
+}
+if ($cc_settings['showAs'] == 'all' || $cc_settings['showAs'] == 'text') {
+    if ($f_ContactType === 'Ссылка') {
+        $_text = str_replace(array("http://", "https://"), "", $f_Value);
+    } else {
+        $_text = "{$f_Value}";
+    }
+}
+
+if ($f_ContactType === 'Email') {
+    if ($cc_settings['showAs'] == 'icon') {
+       $_return = "<a href=\"mailto:{$f_Value}\">{$_icon}</a>";
+    } else {
+       $_return = "{$_icon}&nbsp;<a href=\"mailto:{$f_Value}\">{$_text}</a>";
+    }
+} elseif ($f_ContactType === 'Телефон') {
+    if ($cc_settings['showAs'] == 'icon') {
+       $_return = "<a href=\"tel:" . nc_normalize_phone_number($f_Value) . "\">{$_icon}</a>";
+    } else {
+       $_return = "{$_icon}&nbsp;<a href=\"tel:" . nc_normalize_phone_number($f_Value) . "\">{$_text}</a>";
+    }
+} elseif ($f_ContactType === 'Адрес') {
+    if ($cc_settings['showAs'] == 'icon') {
+       $_return = "<a href=\"{$f_Value}\">{$_icon}</a>";
+    } else {
+       $_return = "{$_icon}&nbsp;<span>{$_text}</span>";
+    }
+} elseif ($f_ContactType === 'Ссылка') {
+    if ($cc_settings['showAs'] == 'icon') {
+       $_return = "<a href=\"{$f_Value}\">{$_icon}</a>";
+    } else {
+       $_return = "{$_icon}&nbsp;<a href=\"{$f_Value}\">{$_text}</a>";
+    }
+} else {
+    $_return = "{$_icon}&nbsp;<span>{$_text}</span>";
+}
+?>
+<div class="object-item tpl-text-default <?= $cc_settings['iconPos'] ? "vertical" : ""; ?>"><?= $_return; ?></div>
+
+<?php /* Служебная часть */
+    echo nc_finishing_RecordTemplate(ob_get_clean(), $inside_admin, $classID, $f_RowID, $parent_message, $cc, $cc_env["Class_Name"], $no_cache_marks);
+}
+/* Конец служебной части */?>

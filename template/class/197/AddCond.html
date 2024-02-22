@@ -1,0 +1,188 @@
+<?php
+$connectTemplate = $DOCUMENT_ROOT.$pathInc2."/template/class/{$classID}/AddCond.html";
+if($current_catalogue['customCode'] && file_exists($connectTemplate)){
+  include($connectTemplate);
+}else{
+// формирование переменной - f_Name
+foreach (array('name', 'Name', 'lastname', 'imya', 'Imya', 'fio', 'surname', 'familya', 'familia', 'familiya') as $key) {
+    if($customf[$key][value]){
+        $f_Name .= ($f_Name ? "" : " ").$customf[$key][value];
+        unset($customf[$key]);
+    }
+}
+// формирование переменной - f_Email
+foreach (array('email', 'e-mail', 'Email', 'E-mail', 'mail', 'pochta') as $key) {
+    if($customf[$key][value]){
+        $f_Email = $customf[$key][value];
+        unset($customf[$key]);
+        break;
+    }
+}
+// формирование переменной - f_Subject (телефон)
+foreach (array('phone', 'telephone', 'telefon', 'telefone', 'tel') as $key) {
+    if($customf[$key][value]){
+        $f_Subject .= ($f_Subject ? "" : " ").$customf[$key][value];
+        unset($customf[$key]);
+    }
+}
+
+
+// формирование тела письма из сгенерированых полей формы
+if ($customf) {
+    foreach($customf as $key => $data) {
+        $dataField = "";
+        if(is_array($data[value])){ # чекбоксы
+            foreach ($data[value] as $value) {
+                $dataField .= ($dataField ? ", ": "").$value;
+            }
+        }else{ # остальные поля
+            $dataField = $data[value];
+        }
+        $dataField = $dataField ? ($data[name] ? $data[name].": " : NULL).$dataField : "";
+        $mailtext .= ($mailtext && $dataField ? ",\n" : NULL).$dataField;
+    }
+    if ($mailtext) $f_mailtext = $mailtext; else $f_mailtext = "—";
+    if (!$f_Email) $f_Email = "nomail@".str_replace("www.","",$_SERVER[HTTP_HOST]);
+    if (!$f_Subject) $f_Subject = "Письмо с сайта";
+}
+
+// Если форма сген., но нет параметров
+if($nameform && !$f_mailtext) $f_mailtext = "-";
+
+
+if(!$f_Name && $formmes) $f_Name = "-";
+
+if(!$f_Name && !$formmes) $f_Name = "Получить консультацию";
+
+// проверка обязательных полей
+if (!$f_Email && !$f_phone && !$formmes) {
+    $posting = 0;
+    echo json_encode(ARRAY(
+        "title" => getLangWord('error',"Ошибка"),
+        "error" => getLangWord('er_txt_fillReq',"Заполните все обязательные поля."),
+        "fdsf" => $f_mailtext
+    ));
+    exit;
+}
+
+if($f_Email && !checkEmail($f_Email)){
+    $posting = 0;
+    echo json_encode(ARRAY(
+        "title" => getLangWord('error',"Ошибка"),
+        "error" => getLangWord('er_txt_badMail',"Введенная эл. почта неверна"),
+    ));
+    exit;
+}
+
+
+// проверка на спам
+$stopName = array("korzil", "корзил", "разработчик", "converup", "http", "конверси", "зайти на сайт", "у нас на сайте", "мы предлагаем", "Пoздравляeм Baс", "more detailed", "information", "your company", "Наши ЦЕНЫ", "Cиcтема доходa", "Пoдробности здecь", "Пoлyчитe oт");
+if ((in_array($f_Name, $stopName) || in_array($f_Name, $stopName) || in_array($f_mailtext, $stopName)) && $current_user[PermissionGroup_ID]!=1) {
+    $posting = 0;
+    echo json_encode(ARRAY(
+        "title" => getLangWord('error',"Ошибка"),
+        "error" => getLangWord('er_txt_badVal',"Поля содержат неверные данные")
+    ));
+    exit;
+}
+
+if (!$settings['language'] && !$nameform && !preg_match("/[А-Яа-яё]/iu", $f_mailtext) && !preg_match("/[А-Яа-яё]/iu", $f_Name)) {
+	$posting = 0;
+    echo json_encode(ARRAY(
+        "title" => getLangWord('error',"Ошибка"),
+        "error" => "Error 14"
+    ));
+    exit;
+}
+
+if (!$setting['language'] && (injectionTestString($f_mailtext) || injectionTestString($f_Name))) {
+    $posting = 0;
+    echo json_encode(ARRAY(
+        "title" => getLangWord('error',"Ошибка"),
+        "error" => "Error 14"
+    ));
+    exit;
+}
+
+
+// антиспам от робота
+if (!$hdiaca || $hdiaca/63312!=date("j")) {
+    $posting = 0;
+    echo json_encode(ARRAY(
+        "title" => getLangWord('error',"Ошибка"),
+        "error" => "Ошибка. Спам",
+        "hdiaca" => $hdiaca
+    ));
+    exit;
+}
+
+
+// проверка на кол-во отправленных писем с одного ip в час
+$ipcount = $db->get_var("SELECT count(Message_ID) as cnt from Message{$classID} where IP = '".getIP()."' AND Created >= now() - interval 30 minute");
+if ($ipcount>2 && $_SERVER['REMOTE_ADDR']!='31.13.133.138') {
+    $posting = 0;
+    echo json_encode(ARRAY(
+        "title" => getLangWord('error',"Ошибка"),
+        "error" => getLangWord('er_txt_alradyWrite',"Вы нам уже писали, мы видели ваш запрос.")
+    ));
+    exit;
+}
+
+// проверка доп.полей на обязательность
+if ($is_reqlist) {
+    foreach($is_reqlist as $reql) {
+        if (!$$reql) {
+            $posting = 0;
+            echo json_encode(ARRAY(
+                "title" => getLangWord('error',"Ошибка"),
+                "error" => getLangWord('er_txt_fillReq',"Заполните все обязательные поля."),
+            ));
+            exit;
+        }
+    }
+}
+
+// проверка доп.полей на обязательность из сгенерированой формы
+if ($req_customf) {
+    foreach($req_customf as $reqcus) {
+        $val = trim(is_array($customf[$reqcus][value]) ? implode("",$customf[$reqcus][value]) : $customf[$reqcus][value]);
+        if ($customf[$reqcus][name] && !$val) {
+            $posting = 0;
+            echo json_encode(ARRAY(
+              "title" => getLangWord('error',"Ошибка"),
+              "error" => getLangWord('er_txt_fillField',"Заполните поле")." \"".$customf[$reqcus][name]."\""
+            ));
+            exit;
+        }
+    }
+}
+
+if($_FILES) {
+    foreach($_FILES as $file) {
+        if (!fileForm($file)) {
+            $posting = 0;
+            echo json_encode(ARRAY(
+                "title" => getLangWord('error',"Ошибка"),
+                "error" =>  getLangWord('er_txt_invFile',"Недопустимый формат файл")
+            ));
+            exit;
+        }
+        if ($file['size']>=2100000) {
+            $posting = 0;
+            echo json_encode(ARRAY(
+                "title" => getLangWord('error',"Ошибка"),
+                "error" => getLangWord('er_txt_fileOverSize',"Файл превышает размер в 2 Мб")
+            ));
+            exit;
+        }
+    }
+}
+
+if ($catalogue == 857) {
+    file_put_contents('/var/www/krza/data/www/krza.ru/a/ipchelny/log_197_message.txt', print_r(['post' => $_POST, 'get' => $_GET, 'server' => $_SERVER, 'sesion' => $_SESSION ],1), FILE_APPEND);
+}
+
+
+$f_Catalogue_ID = $catalogue;
+}
+?>

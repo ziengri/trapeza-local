@@ -1,0 +1,23 @@
+<?php if ($totRows) {?>
+        </tbody></table></div>
+        
+    <?=getPagination(array(
+        'isTitle' => $isTitle,
+        'cc_env' => $cc_env,
+        'prevLink' => $prevLink,
+        'nextLink' => $nextLink,
+        'totRows' => $totRows,
+        'recNum' => $recNum,
+        'vars_str2' => $vars_str2,
+        'sub' => $sub,
+        'cc' => $cc,
+        'inside_admin' => 1
+    ))?>
+        
+        
+        <?php if (!$refcode) { /* ?>
+            <div class='itogo_orders'><b>Итого заказано на:</b> <span class='totsum'><?=number_format($alltotalsum, 2, ',', ' ')?></span> <span class=rubl>Р</span></div>
+        <?php  */ }?>
+
+<?php }?>
+    

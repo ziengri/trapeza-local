@@ -1,0 +1,19 @@
+<?=($inside_admin ? $f_AdminCommon : addObjBut($addLink,$isTitle,null,'контакт'))?>
+
+<?php 
+    # json раздела
+    if(isJson($settingsSub)) $settingsSub = orderArray($current_sub['settingsSub']);
+    # Шаблон вывода
+    if($template_block) $template = $template_block;
+    else if($settingsSub["template"]) $template = $settingsSub["template"];
+    else if($setting["size".$classID."_template"]) $template = $setting["size".$classID."_template"];
+
+    $data = subdivisionData(array(
+        'type' => 'contacts',
+        'template' => $template
+    ));
+?>
+
+<?php  if ($totRows) { ?>
+	<ul class='<?=$data['class']?>'>
+<?php  } ?>

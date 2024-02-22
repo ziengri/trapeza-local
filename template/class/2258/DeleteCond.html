@@ -1,0 +1,22 @@
+<?php
+
+require_once $_SERVER['DOCUMENT_ROOT'] . "/vars.inc.php";
+require_once $_SERVER['DOCUMENT_ROOT'] . "/bc/connect_io.php";
+require_once $_SERVER['DOCUMENT_ROOT'] . "/bc/modules/default/function.inc.php";
+
+global $db, $catalogue;
+
+try {
+    $cron_id = $db->get_var("SELECT cron_id FROM Message2258 WHERE Catalogue_ID = {$catalogue} AND Message_ID = {$message}");
+    if (empty($cron_id)) throw new \Exception("Ошибка при удалении", 1);
+    $importYML = new App\modules\Korzilla\YML\Controller();
+    $importYML->deleteCron($f_cron_id);
+
+} catch (\Exception $e) {
+    $respons = [
+        "title" => "Ошибка",
+        "error" => $e->getMessage()
+    ];
+    echo json_encode($respons);
+    exit;
+}

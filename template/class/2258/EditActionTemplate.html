@@ -1,0 +1,33 @@
+<?php
+
+try {
+    $importYML = new App\modules\Korzilla\YML\Controller();
+    $params = [
+        'infinitely' => $f_cron_on,
+        'update' => $update
+    ];
+    if (isset($_POST['interval_minutes'])) {
+        $params['interval_minutes'] = $_POST['interval_minutes'];
+    }
+    $importYML->updateCron($f_cron_id, $message, $params);
+    $respons = [
+        "title" => "ОК",
+        "succes" => "Прайс обновлен ".$r,
+        "modal" => "close",
+        "reloadtab" => 1,
+        "sdf" => $message
+    ];
+} catch (\Exception $e) {
+    $respons = [
+        "title" => "Ошибка",
+        "error" => $e->getMessage()
+    ];
+}
+
+if($inside_admin) {
+    ob_end_clean();
+    header('Location: '.$goBackLink.'&inside_admin=1');
+    exit;
+} else { 
+    echo json_encode($respons);
+}

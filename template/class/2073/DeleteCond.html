@@ -1,0 +1,9 @@
+<?php
+    global $pathInc2, $DOCUMENT_ROOT;
+    $includeFile = $DOCUMENT_ROOT.$pathInc2."/template/{$classID}/template/DeleteCond.html";
+    if ($current_catalogue['customCode'] && file_exists($includeFile)) {
+        include $includeFile;
+    } else { # ############ START ##########
+
+    }
+?>

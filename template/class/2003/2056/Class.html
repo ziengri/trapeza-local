@@ -1,0 +1,24 @@
+<!-- FormPrefix --><?php  require $nc_parent_field_path; ?>
+<div class="block_news news_miniimg"><!-- /FormPrefix -->
+
+<!-- RecordTemplate --><?php  echo $f_AdminButtons;
+$flink = ($f_openlink || $f_textfull || $croped!=strip_tags($f_text) ? ($f_openlink ? $f_url : $fullLink) : NULL);
+if ($substr) $croped = crop_str(strip_tags($f_text), $substr);
+
+// ссылка таргет, если домен другой
+$urllink = parse_url($f_url);
+$url_target = ($f_openlink && $urllink['host'] && !($_SERVER['SERVER_NAME'] == $urllink['host'] || "www.".$_SERVER['SERVER_NAME'] == $urllink['host']) ? true : false);
+?>
+
+
+<div class="news_item cb obj <?=objHidden($f_Checked,$f_citytarget,$cityid)?> obj<?=$f_RowID?>">
+<div class="news_img"><span class="image_w"><a <?=($noindex ? " rel='nofollow'" : "").($flink  ? " href='".$flink."'" : "").($url_target ? " target='_blank'" :"")?>><img src='<?=$IMG_HOST.($f_photo->get_record(1) ? $f_photo->get_record(1) : "/images/nophoto.png")?>' alt=""></a></span></div>
+
+		<div class="news_link"><a <?=($noindex ? " rel='nofollow'" : "").($flink  ? " href='".$flink."'" : "").($url_target ? " target='_blank'" :"")?>><?=$f_name?></a></div>
+		<div class="news_text"><?=$f_text?></div>
+        <div class="news_date"><?=$f_date_day?>.<?=$f_date_month?>.<?=$f_date_year?></div>
+
+    <?=($bitcat ? editObjBut($editLink) : NULL)?>
+</div><!-- /RecordTemplate -->
+
+<!-- FormSuffix --><?php  require $nc_parent_field_path; ?><!-- /FormSuffix -->

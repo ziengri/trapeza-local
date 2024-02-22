@@ -1,0 +1,122 @@
+<?php
+
+if (function_exists('function_Template_Targeting')) { // своя функция
+    function_Template_Targeting();
+} else {
+    # targeting из KRZL
+    if ($setting['targeting']) {
+        global $cityid, $cityname, $citylink, $citylinkPath, $cityphone, $cityvars, $fieldprice, $AUTH_USER_ID;
+
+        $explodeDomen = array_reverse(explode('.', $_SERVER['HTTP_HOST']));
+        $mainDomain = $explodeDomen[1] . '.' . $explodeDomen[0];
+
+        $cityvars = $cityvars ?: orderArray(
+            $db->get_var(
+                "SELECT 
+                    data 
+                FROM 
+                    Message2034 
+                WHERE 
+                    Catalogue_ID = '{$catalogue}' AND 
+                    keyw = 'targetcity'"
+            )
+        );
+      
+        if (!$setting['targdomen']) {  /* таргетинг без поддоменов */
+       
+            if ($AUTH_USER_ID == 6) {
+                file_put_contents('/var/www/krza/data/www/krza.ru/b/ilsur/target.log', print_r([$_COOKIE['city'], $cityid, $cityname, $citylink], 1));
+            }
+            if (isset($_COOKIE['city']) && is_numeric($_COOKIE['city']) && $cityvars) {
+                $cityid = (isset($_COOKIE['city']) && $_COOKIE['city'] < 1 ? '0' : $_COOKIE['city']);
+                $citylink = $cityvars[(int)$cityid]['keyword'];
+                $cityname = $cityvars[(int)$cityid]['name'];
+
+                if ($cityvars[(int)$cityid]['fieldprice']) {
+                    $fieldprice = "f_" . $cityvars[(int)$cityid]['fieldprice'];
+                }
+                if ($AUTH_USER_ID == 6) {
+                    file_put_contents('/var/www/krza/data/www/krza.ru/b/ilsur/target.log', print_r([$_COOKIE['city'], $cityid, $cityname, $citylink], 1), FILE_APPEND);
+                }
+                setcookie("city", $cityid, time() + 3600 * 24 * 365, "/", $_SERVER['HTTP_HOST']);
+                setcookie("city", $cityid, time() + 3600 * 24 * 365, "/", $mainDomain);
+                setcookie("cityname", $cityname, time() + 3600 * 24 * 365, "/", $_SERVER['HTTP_HOST']);
+                setcookie("cityname", $cityname, time() + 3600 * 24 * 365, "/", $mainDomain);
+            }
+         
+            # город для поисковика, берется из url, может быть не выбран
+            if (stristr($_SERVER['REQUEST_URI'], "/city/") && $cityvars) {
+                $path = explode("/", $_SERVER['REQUEST_URI']);
+                if ($path[1] == 'city') {
+                    $citylink = $path[2];
+                }
+                if ($citylink) {
+                    foreach ($cityvars as $trgID => $trg) {
+                        if ($citylink == $trg['keyword']) {
+                            $cityid = $trgID;
+                            setcookie("city", $cityid, time() + 3600 * 24 * 365, "/", $_SERVER['HTTP_HOST']);
+                            setcookie("city", $cityid, time() + 3600 * 24 * 365, "/", $mainDomain);
+                            $cityname = $trg['name'];
+                            setcookie("cityname", $cityname, time() + 3600 * 24 * 365, "/", $_SERVER['HTTP_HOST']);
+                            setcookie("cityname", $cityname, time() + 3600 * 24 * 365, "/", $mainDomain);
+                            break;
+                        }
+                    }
+                }
+            }
+        } else { /* таргетинг с поддоменами */
+
+            foreach ($cityvars as $trgID => $trg) { // ищем название города по имени поддомена
+                if ($sub_targeting == encode_host($trg['keyword'])) {
+                    $cityid = $trgID;
+                    $cityname = $trg['name'];
+                    $citylink = $trg['keyword'];
+                    if ($trg['fieldprice']) {
+                        $fieldprice = "f_" . $trg['fieldprice'];
+                    }
+                    break;
+                }
+            }
+
+            if (!$cityid && ($_COOKIE['city'] || $_COOKIE['cityname'])) {
+                $cityid = (!isset($_COOKIE['city']) || $_COOKIE['city'] < 1 ? '0' : $_COOKIE['city']);
+                if (!$cityid && $cityname != '') { // очистка куки
+                    setcookie("cityname", "", time() - 1000, "/", $_SERVER['HTTP_HOST']);
+                    setcookie("city", "", time() - 1000, "/", $_SERVER['HTTP_HOST']);
+                    setcookie("cityname", "", time() - 1000, "/", $mainDomain);
+                    setcookie("city", "", time() - 1000, "/", $mainDomain);
+                } else {
+                    $citylink = $cityvars[(int)$cityid]['keyword'];
+                    $cityname = $cityvars[(int)$cityid]['name'];
+                    if ($cityvars[(int)$cityid]['fieldprice']) {
+                        $fieldprice = "f_" . $cityvars[(int)$cityid]['fieldprice'];
+                    }
+                }
+            }
+            if (!$sub_targeting && !$cityid) { // взять первый город, если нет совпадений по имени поддомена
+                if ($citymainid && $citymain) {
+                    $cityid = $citymainid;
+                    $cityname = $citymain;
+                    $citylink = $citymainkey;
+                } else {
+                    $keys = array_keys($cityvars);
+                    $cityid = $keys[0];
+                    $cityname = $cityvars[$keys[0]]['name'];
+                    $citylink = $cityvars[$keys[0]]['keyword'];
+                }
+            }
+
+            setcookie("city", $cityid, time() + 3600 * 24 * 365, "/", $_SERVER['HTTP_HOST']);
+            setcookie("cityname", $cityname, time() + 3600 * 24 * 365, "/", $_SERVER['HTTP_HOST']);
+            setcookie("city", $cityid, time() + 3600 * 24 * 365, "/", $mainDomain);
+            setcookie("cityname", $cityname, time() + 3600 * 24 * 365, "/", $mainDomain);
+        }
+
+        $citylinkPath = $citylink ? "/city/{$citylink}" : $citylinkPath;
+
+        // телефон, № склада для выбранного города
+        $cityphone = $db->get_row("select a.targetcode, a.targetcode2, a.targetphone, a.targetphone2, a.sklad1c, a.adres, a.Subdivision_ID, a.Sub_Class_ID, a.Message_ID from Message2012 as a, Subdivision as b where a.Catalogue_ID = '$catalogue' AND a.Subdivision_ID=b.Subdivision_ID AND a.citytarget like '%,{$cityid},%'", ARRAY_A);
+    } elseif (stristr($_SERVER['REQUEST_URI'], "/city/")) { // если нет таргетинга то и ссылки не должны работать
+        header("Location: /404/");
+    }
+}

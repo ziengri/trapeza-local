@@ -1,0 +1,20 @@
+<?php
+global $IMG_HOST, $bitcat, $setting, $noimage, $action, $AUTH_USER_ID;
+
+
+# видимость скрытых для админа
+if (!$isTitle && ($bitcat || $bitLoadMore)) {
+    $ignore_check = 1;
+}
+
+if ($isTitle) $query_where = "logo IS NOT NULL";
+
+# object fit
+if($sizehave && $sizeitem_fit) $imagefit = $sizeitem_fit;
+else if($settingsSub["sizehave"] && $settingsSub["sizeitem_fit"]) $imagefit = $settingsSub["sizeitem_fit"];
+else $imagefit = $setting["size".$classID."_fit"];
+$image_default = image_fit($imagefit);
+#language
+$query_where = getLangQuery($query_where);
+
+?>

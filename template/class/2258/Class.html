@@ -1,0 +1,32 @@
+<!-- FormPrefix --><div class="view-body-inline export-excel">
+  <div class="v-title">
+    <a href="<?=$addLink?>?isNaked=1" class="add-btn" title="Добавление прайса" data-rel="lightcase" data-lc-options='{"maxWidth":700,"groupClass":"modal-edit modal-export-excel"}'>Добавить прайс</a>
+  </div>
+  <div class="v-body">
+    <?php  if (!$totRows) { ?> <div class='v-line center nobefore'><div class='v-inline'>Нет ни одной выгрузки каталога из Excel</div></div> <?php  } ?><!-- /FormPrefix -->
+
+<!-- RecordTemplate --><?php /* Служебная часть */for ($f_RowNum = 0; $f_RowNum < $rowCount; $f_RowNum++) {    if($fetch_row[$f_RowNum] instanceof Iterator) {        extract($fetch_row[$f_RowNum]->to_array(), EXTR_PREFIX_ALL, "f");    } else {        extract($fetch_row[$f_RowNum], EXTR_PREFIX_ALL, "f");    }    foreach($iteration_RecordTemplate[$f_RowNum] as $value) {        extract($value);    }    eval($cc_env["convert2txt"]);    ob_start();/* Конец служебной части */?>
+<?php /* Служебная часть */
+for ($f_RowNum = 0; $f_RowNum < $rowCount; $f_RowNum++) {
+    if($fetch_row[$f_RowNum] instanceof Iterator) {
+        extract($fetch_row[$f_RowNum]->to_array(), EXTR_PREFIX_ALL, "f");
+    } else {
+        extract($fetch_row[$f_RowNum], EXTR_PREFIX_ALL, "f");
+    }
+    foreach($iteration_RecordTemplate[$f_RowNum] as $value) {
+        extract($value);
+    }
+    eval($cc_env["convert2txt"]);
+    ob_start();
+/* Конец служебной части */?>
+
+<?= $f_AdminButtons; ?>
+
+<?php /* Служебная часть */
+    echo nc_finishing_RecordTemplate(ob_get_clean(), $inside_admin, $classID, $f_RowID, $parent_message, $cc, $cc_env["Class_Name"], $no_cache_marks);
+}
+/* Конец служебной части */?>
+<?php /* Служебная часть */    echo nc_finishing_RecordTemplate(ob_get_clean(), $inside_admin, $classID, $f_RowID, $parent_message, $cc, $cc_env["Class_Name"], $no_cache_marks);}/* Конец служебной части */?><!-- /RecordTemplate -->
+
+<!-- FormSuffix -->    </div>
+</div><!-- /FormSuffix -->

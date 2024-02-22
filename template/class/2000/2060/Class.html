@@ -1,0 +1,18 @@
+<!-- FormPrefix --><?php  echo $f_AdminCommon; ?>
+<table class=nc-table><tr>
+<th>№</th>
+<th>Наименование зоны</th>
+<th>Позиция зоны</th>
+<th>Приоритет зоны</th>
+<th>Изменить</th>
+</tr><!-- /FormPrefix -->
+
+<!-- RecordTemplate --><tr style='background: #<?=($f_zone_position==0 ? 'FFD7D7' :($f_Checked ? "92FFA4" : "fff"))?>'>
+  <td><?=$f_sub?></td>
+  <td><?=$f_name?></td>
+  <td><?=$f_zone_position?></td>
+  <td><?=$f_zone_priority?></td>
+  <td><?=$f_AdminButtons?></td>
+</tr><!-- /RecordTemplate -->
+
+<!-- FormSuffix --></table><!-- /FormSuffix -->

@@ -1,0 +1,393 @@
+<?php 
+global $setting, $catalogue, $srokPlus;
+
+$pc_value = (!empty($_GET['pc_value'])?pc_filter($_GET['pc_value']):'');
+$pc_vendor = (!empty($_GET['pc_vendor'])?pc_filter($_GET['pc_vendor']):'');
+$pc_sklad = (!empty($_GET['pc_sklad'])?pc_filter($_GET['pc_sklad']):'');
+
+$srokPlus[210] = 1;
+// 
+class Partcom
+{
+	private $login, 
+			$pass;
+    public function __construct($login,$pass){
+    	$this->login = $login;
+    	$this->pass = $pass;
+    }
+	public function getGoods($code,$vendor)
+	{
+		$data = $this->getCurl("http://www.part-kom.ru/engine/api/v3/search/parts?number={$code}&maker_id={$vendor}&find_substitutes=1");
+		if (!$data)
+	    	return 'Нет результата';
+        $type = ['Original' => 'original', 'ReplacementOriginal' => 'replace', 'ReplacementNonOriginal' => 'analog'];
+	    foreach ($data as $val) { //собираем массив товаров
+		    if ($val['description'] && $val['price'] && $val['detailGroup'] && $val['maker']) {
+		        $partItems[$type[$val['detailGroup']]][$val['maker']][] = [
+        		                                                            'name'                => $val['description'],
+        		                                                            'art'                 => $val['number'],
+        		                                                            'quantity'            => $val['quantity'],
+        		                                                            'price'               => ceil($val['price']),
+        		                                                            'guaranteedDays'      => $val['guaranteedDays'],
+        		                                                            'providerDescription' => $val['providerDescription'],
+        		                                                            'makerId'             => $val['makerId'],
+        		                                                            'providerId'          => $val['providerId']
+    		                                                              ];
+		    }
+		}
+        return $partItems;
+	}
+	public function getCatalog($code)
+	{
+		$data = $this->getCurl("http://www.part-kom.ru/engine/api/v3/search/parts?number={$code}");
+		if (isset($data['detail']) and $data['detail']=='Access is denied')
+			return '<!--нет доступа к partcom-->';
+		if (isset($data['status']) and $data['status']=='403')
+			return '<!--нет доступа к partcom: '.$data['detail'].'-->';
+		if (empty($data))
+			return 'Нет результата';
+
+		foreach ($data as $val) { //собираем массив категорий 
+	        if ($val['description'] && $val['maker'] && $val['makerId']) {
+	            if ($val['price'] || $partCat[$val['makerId']]['price'] > $val['price'] ) {
+	                $partCat[$val['makerId']] = [
+                                                'vendor' => $val['maker'], 
+                                                'name'   => $val['description'], 
+                                                'price'  => ($val['price'] ? ceil($val['price']) : '')
+                                                ];
+	            }
+	        }
+	    }
+	    return $partCat;
+	}
+
+	private function getCurl($url)
+	{
+		$headers = [
+					"Authorization: Basic ".base64_encode($this->login.':'.$this->pass),
+				    "Content-Type: application/json",
+				    "Accept: application/json"
+					];
+		$ch = curl_init($url);
+		curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+		curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
+		$data = curl_exec($ch);
+		curl_close($ch);
+		return json_decode($data, true);
+	}
+}
+
+if (!empty($pc_value) and !empty($pc_vendor) and !empty($pc_sklad)){
+	$data = pc_get("http://www.part-kom.ru/engine/api/v3/search/parts?number=".$pc_value.($pc_vendor?"&maker_id=".$pc_vendor:'')."&find_substitutes=1");
+
+	if (empty($data)) die('Товара не существует.');
+
+	foreach ($data as $val) {
+	    if ($val['providerId'] == $pc_sklad and $val['makerId'] == $pc_vendor and $val['number']==$pc_value) {
+	        $item = [
+	                'name' => $val['maker'].' '.$val['description'].' '.$val['providerId'],
+	                'art' => $val['number'],
+	                'stock' => $val['quantity'],
+	                'price' => ceil(pc_markup($val['price'])),
+	                'providerId' => $val['providerId'] ,
+	                'vendor' => $val['providerDescription']
+	                ];
+	        break;
+	    }
+	}
+	if (empty($item))
+	    die('Товара не существует');
+	    
+	$id = $db->get_var("SELECT Message_ID FROM Message2001 WHERE Catalogue_ID={$catalogue} AND name='{$item['name']}' AND art='{$item['art']}");
+
+	if ($id) {
+	    $db->query("UPDATE Message2001 SET price={$item['price']}, stock={$item['stock']} WHERE Message_ID={$id}");
+	    $tovar = $db->get_row("SELECT * FROM Message2001 WHERE Message_ID={$id}", ARRAY_A);
+	    if (!$_SESSION['cart']['items'][$id]['name']) {
+	        $crt = [
+	                'id' => $id,
+	                'name' => $tovar['name'],
+	                'price' => $item['price'],
+	                'sub' => ($tovar['Subdivision_ID']?$tovar['Subdivision_ID']:0),
+	                'count' => 1,
+	                'art' => $item['art'],
+	                'sum' => $item['price']
+	                ];
+	        addInSess($crt,$item);
+	        die('Товар добавлен в корзину');
+	    } else {
+	        die('Товар уже есть в корзине');
+	    }
+	} else {
+	   $cat['Subdivision_ID'] = $db->get_var("SELECT Subdivision_ID FROM Subdivision WHERE Catalogue_ID={$catalogue} AND EnglishName='partcomsys'"); 
+	   if ($cat['Subdivision_ID']) {
+	        $cat['Sub_Class_ID'] = $db->get_var("SELECT Sub_Class_ID FROM Sub_Class WHERE Catalogue_ID={$catalogue} AND Subdivision_ID={$cat['Subdivision_ID']} and EnglishName=partcomsys");
+	    } else {
+	        $db->query("INSERT INTO Subdivision (Catalogue_ID, Parent_Sub_ID, Subdivision_Name, EnglishName, Hidden_URL, Checked) VALUES (
+	                                                                                                                                    {$catalogue},
+	                                                                                                                                    0,
+	                                                                                                                                    'ПартКомСис',
+	                                                                                                                                    'partcomsys',
+	                                                                                                                                    '/partcomsys/',
+	                                                                                                                                    0
+	                                                                                                                                    )");
+	        $__ = $db->insert_id;
+	        if ($__) {
+	            $db->query("INSERT INTO Sub_Class (Catalogue_ID, Subdivision_ID, Sub_Class_Name, EnglishName, Checked, Class_ID) VALUES ({$catalogue}, {$__}, 'ПартКомСис', '/partcomsys/', 1, 2001)");
+	            $___ = $db->insert_id;
+	            if ($___) {
+	                $cat['Subdivision_ID'] = $__;
+	                $cat['Sub_Class_ID'] = $___;
+	            } else {
+	                die('Невозможно добавить товар в корзину (код ошибки 2)');   
+	            }
+	        } else {
+	            die('Невозможно добавить товар в корзину (код ошибки 1)');
+	        }
+	    }
+	    if (!empty($cat['Subdivision_ID']) && !empty($cat['Sub_Class_ID'])) {
+	        $db->query("INSERT INTO Message2001 (Subdivision_ID, Sub_Class_ID, name, art, stock, price, vendor, Catalogue_ID) VALUES (
+	                                                                                                                                {$cat['Subdivision_ID']},
+	                                                                                                                                {$cat['Sub_Class_ID']},
+	                                                                                                                                '{$item['name']}',
+	                                                                                                                                '{$item['art']}',
+	                                                                                                                                {$item['stock']},
+	                                                                                                                                ".str_replace(',','.',$item['price']).",
+	                                                                                                                                '{$item['vendor']}',
+	                                                                                                                                {$catalogue}
+	                                                                                                                                )");
+	        $id = $db->insert_id;
+	        if ($id) {
+	            $crt = [
+	                'id' => $id,
+	                'name' => $item['name'],
+	                'price' => $item['price'],
+	                'sub' => ($cat['Subdivision_ID']?$cat['Subdivision_ID']:0),
+	                'count' => 1,
+	                'art' => $item['art'],
+	                'sum' => $item['price']
+	                ];
+	            addInSess($crt,$item);
+	            die('Товар добавлен в корзину');
+	        } else {
+	            die('Невозможно добавить товар в корзину (код ошибки 3)');
+	        }
+	    } else {
+	        die('Невозможно добавить товар в корзину (код ошибки 4)');
+	    }
+	}
+} elseif (!empty($pc_value) and !empty($pc_vendor)) {
+
+	$partCom = new Partcom($setting['partkomLogin'],$setting['partkomPass']);
+	$partItems = $partCom->getGoods($pc_value,$pc_vendor);
+	if (!$partItems['original']) 
+	    die('Нет результата');
+
+	
+	//оригиналы
+	$html = "<div class='originals'>";
+	foreach ($partItems['original'] as $key => $val) {
+	    $html .= "<div class='pc_show'>{$key}</div>";
+	    $html .= createPartTable($key, startSort($val));
+	}
+	$html .= "</div>";
+	//замены
+	if ($partItems['replace']) {
+	    $html .= "<h3>Оригинальные замены</h3><div class='other-items'>";
+	    foreach ($partItems['replace'] as $key => $val) {
+    		$val = startSort($val);
+	       	$html .= "<div class='pc_show'>
+	        			<span class='vendor'>{$key}</span>
+	        			<span class='art'></span>
+	        			<span class='price'>от {$val[0]['price']} руб.</span>
+	        			<span class='nal'>".($nal ? "<span>В наличии</span>" : '')."</span>
+	        		</div>";
+	        $html .= createPartTable($key, $val, true);
+	    }
+	    $html .= "</div>";
+	}
+	//аналоги
+	if ($partItems['analog']) {
+	    $html .= "<h3>Аналоги</h3><div class='other-items'>";
+	    foreach ($partItems['analog'] as $key => $val) {
+	    	$val = startSort($val);
+	        $html .= "<div class='pc_show'>
+	        			<span class='vendor'>{$key}</span>
+	        			<span class='art'>{$val[0]['art']}</span>
+	        			<span class='price'>от {$val[0]['price']} руб.</span>
+	        			<span class='nal'>".($nal ? "<span>В наличии</span>" : '')."</span>
+	        		</div>";
+	        $html .= createPartTable($key, $val, true);
+	    }
+	    $html .= "</div>";
+	}
+	die($html);
+
+} elseif (!empty($pc_value)) {
+	$partCom = new Partcom($setting['partkomLogin'],$setting['partkomPass']);
+	$partCat = $partCom->getCatalog($pc_value);
+    if ($partCat) {
+    	
+        $html = "<div class='table-wraper'>
+                    <table id='_pc_table' class='table_main'>
+                        <thead>
+                            <tr>
+                                <th>Производитель</th>
+                                <th>Название</th>
+                                <th>Цена</th>
+                            </tr>
+                        </thead>
+                        <tbody>";
+        foreach ($partCat as $key => $val) {
+            $html .= "<tr class='table_item' onclick=\"pc_get_vendors('{$key}')\">
+                        <td class='td_name'><span class='pc_span'>{$val['vendor']}</span></td>
+                        <td>{$val['name']}</td>
+                        <td>".($val['price']?'от '.ceil(pc_markup($val['price'])).' р.':'')."</td>
+                    </tr>";
+        }
+        $html .= "</tbody></table></div>";
+    } else {
+        die('не найдено.');
+    }
+    die($html);
+}
+
+function createPartTable($maker, $arr, $hide='') //собираем таблицу товаров
+{
+	global $srokPlus, $catalogue;
+
+    $html = "<div class='table-wraper'>"
+                .($hide ? "<div class='hide-table'>":'').
+                    "<table class='pc_tabler table_main'>
+                        <thead>
+                            <tr>
+                                <th class='th_name'>Наименование</th>
+                                <th>Артикул</th>
+                                <th><i class='sort'></i>Наличие</th>
+                                <th><i class='sort'></i>Цена</th>
+                                <th><i class='sort'></i>Срок доставки</th>
+                                <th>Заказать</th>
+                            </tr>
+                        </thead>
+                        <tbody>";
+    foreach ($arr as $val) {
+        if (checkItemInCart($maker, $val)) {
+            $btn = "<span class='incard'><a href='/cart/'>В корзине</a><span>";
+        } else {
+        	$params = json_encode([
+        						'art'=>$val['art'],
+        						'venodr'=>$val['makerId'],
+        						'sklad'=>$val['providerId'],
+        						'name'=>$val['name']
+        						]);
+            $btn = "<button data-params='{$params}' class='part-incart incart-js' data-metr='addincart'>В корзину</button>";
+        }
+        $html .= "<tr>
+                    <td class='td_name'>{$val['name']}</td>
+                    <td>{$val['art']}</td>
+                    <td>{$val['quantity']}</td>
+                    <td>{$val['price']} руб.</td>
+                    <td>".($val['guaranteedDays'] ? $val['guaranteedDays']+$srokPlus[$catalogue].' д.':'в наличии')."</td>
+                    <td>{$btn}</td>
+                 </tr>";
+    }
+    $html .= "</tbody></table></div>".($hide ? "</div>":'');
+    return $html;
+}
+function checkItemInCart($maker,$item) //проверка добавлен ли товар в карзину
+{
+    foreach ($_SESSION['cart']['items'] as $_item) {
+        if ($_item['name'] == $maker.' '.$item['name'].' '.$item['providerId']) return true;
+    }
+    return false;
+}
+function addInSess($crt, $item)//добавить товар в сессию
+{
+    $_SESSION['cart']['items'][$crt['id']] = $crt;
+    $_SESSION['cart']['totalsum'] = $_SESSION['cart']['totalsum'] + $item['price'];
+    $_SESSION['cart']['totalSumDiscont'] = $_SESSION['cart']['totalsum'] - $_SESSION['cart']['discont'];
+    $_SESSION['cart']['totaldelsum'] = $_SESSION['cart']['totalSumDiscont'] + $_SESSION['cart']['delivery']['sum'];
+}
+function startSort($arr)//сортировка при загрузке наличие->цена
+{
+    $orderBy = ['quantity' => 'desc','price' => 'asc'];
+    uasort($arr, function ($a, $b) use ($orderBy) {
+        foreach ($orderBy as $key => $value) {
+            if ($a[$key] == $b[$key]) continue;
+
+            $result = ($a[$key] < $b[$key]) ? -1 : 1;     
+            if ($value == 'desc') $result = -$result;
+            break;
+        }    
+        return $result ? $result : 0;
+    });
+    return $arr;
+}
+function pc_filter($s)
+{
+	return str_replace(array('%','\'','"','&','\\','+',' '),'',strip_tags($s));
+}
+function pc_get($url)
+{
+	global $setting;
+	$login = $setting['partkomLogin'];
+	$pass = $setting['partkomPass'];
+	$headers = array(
+		"Authorization: Basic ".base64_encode($login.':'.$pass),
+	    "Content-Type: application/json",
+	    "Accept: application/json",
+	);
+	$ch = curl_init($url);
+	curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+	curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
+	$data = curl_exec($ch);
+	curl_close($ch);
+	return json_decode($data, 1);
+}
+function pc_sort($a, $b)
+{
+    if ($a['guaranteedDays']>$b['guaranteedDays']) { return 1; }
+    if ($a['guaranteedDays']<$b['guaranteedDays']) { return -1; }
+    if ($a['guaranteedDays']==$b['guaranteedDays']) {
+        if ($a['price']==$b['price']) return 0; 
+        return ($a['price']>$b['price']) ? 1 : -1; 
+    }
+}
+function pc_markup($price)
+{
+	global $setting;
+	if (empty($setting['partkomPrice']))
+		return $price;
+	$n = $setting['partkomPrice'];
+	$n = explode("\n", $n);
+    $find = false;
+    foreach($n as $item){
+        if (substr($item, 0, 1)=='#')
+            continue;
+        $item = trim($item);
+        if (empty($item))
+        	continue;
+        
+        $temp = explode('-', $item);
+        $min = ($temp[0]?$temp[0]:0);
+        $temp = explode('=', $temp[1]);
+        $max = ($temp[0]?$temp[0]:999999999);
+        $res = $temp[1];
+        
+        if ($price>=$min and $price<=$max){
+            if (mb_strpos($res, '%')!==false){
+                $res = floatval($res);
+                $t = $price/100;
+                $price += $t*$res;
+            }
+            else {
+                $res = floatval($res);
+                $price += $res;
+            }
+            break;
+        }
+    }
+    return $price;
+}
+
+?>

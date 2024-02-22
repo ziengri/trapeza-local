@@ -1,0 +1,11 @@
+<?php
+$f_Catalogue_ID = $catalogue;
+if (!empty($nofile)) {
+    foreach ($nofile as $nameInput => $noFileChecked) {
+        if (!$noFileChecked) continue;
+        $v = "f_{$nameInput}_old";
+        $$v = '';
+        unlink($_SERVER['DOCUMENT_ROOT'] . nc_file_path(2024, $message, $nameInput));
+    }
+}
+?>

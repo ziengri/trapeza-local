@@ -1,0 +1,52 @@
+<?php  if ($warnText) {
+    echo json_encode(ARRAY(
+        "title" => "Error",
+        "error" => $warnText
+    ));
+} else {
+?>
+    <?php 
+        # товар
+        if($f_itemID){
+            $item = Class2001::getItemById($f_itemID);
+            $itemLink = $item ? "Вопрос по продукту: <a href='//{$_SERVER['HTTP_HOST']}/{$item->fullLink}' target='_blank'>{$item->name}</a><br>" : "";
+        }
+    ?>
+	<form name='adminForm' id='adminForm' class='ajax2' enctype='multipart/form-data' method='post' action='<?= $SUB_FOLDER ?><?= $HTTP_ROOT_PATH ?>message.php'>
+		<div id='nc_moderate_form'>
+			<input name='admin_mode' type='hidden' value='<?= $admin_mode ?>' />
+			<?= $nc_core->token->get_input() ?>
+			<input name='catalogue' type='hidden' value='<?= $catalogue ?>' />
+			<input name='cc' type='hidden' value='<?= $cc ?>' />
+			<input name='sub' type='hidden' value='<?= $sub ?>' /><input name='message' type='hidden' value='<?= $message ?>' />
+			<input name='posting' type='hidden' value='1' />
+			<input name='curPos' type='hidden' value='<?= $curPos ?>' />
+			<input name='f_Parent_Message_ID' type='hidden' value='<?= $f_Parent_Message_ID ?>' />
+			<?= nc_form_moderate('change', $admin_mode, 0, $systemTableID, $current_cc, (isset($f_Checked) ? $f_Checked  : null), $f_Priority , $f_Keyword, $f_ncTitle, $f_ncKeywords, $f_ncDescription ) ?>
+			<input name='f_Catalogue_ID' type='hidden' value='<?=$f_Catalogue_ID?>' />
+		</div>
+        <div class="modal-body">
+            <div class='colline colline-1'><?=bc_input("f_Name", $f_Name, "Имя", "maxlength='255' size='50'", 1)?></div>
+            <?php  if (stristr($current_user[Login],"admin")) { ?>
+                <div class='colline colline-2'><?=bc_input("f_Email", $f_Email, "Email", "maxlength='255' size='50'")?></div>
+                <div class='colline colline-2'><?=bc_input("f_Subject", $f_Subject, "Телефон", "maxlength='255' size='50'")?></div>
+            <?php  } else { ?>
+                <div class='colline colline-2'><?=bc_text("Контакты скрыты")?></div>
+            <?php  } ?>
+            <?php  if ($f_subname) { ?>
+                <div class='colline colline-2'><?=bc_text("Запрос с раздела: <b>{$f_subname}</b>")?></div>
+            <?php  } ?>
+    
+            <?php  if($itemLink){ ?>
+                <div class='colline colline-1'><?=bc_text($itemLink)?></div>
+            <?php  } ?>
+    
+            <div class='colline colline-height'><?=bc_textarea("f_mailtext", $f_mailtext, "Тест письма", "", 1)?></div>
+        </div>
+		<div class="bc_submitblock">
+			<div class='result respadding'><?= NETCAT_MODERATION_INFO_REQFIELDS ?></div>
+			<span class="btn-strt"><?= nc_submit_button(NETCAT_MODERATION_BUTTON_CHANGE) ?></span>
+			<?=dropObjBut($message,$classID)?>
+		</div>
+	</form>
+<?php  } ?>

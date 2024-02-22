@@ -1,0 +1,104 @@
+<?php
+// Получаем раздел с зонами
+$subs = $db->get_var('SELECT Subdivision_ID FROM Sub_Class where Catalogue_ID = '.$catalogue.' AND Class_ID = 2000 LIMIT 1');
+// Вытаскиваем все зоны
+$zones = $db->get_results("select Message_ID,Subdivision_ID,zone_id,Sub_Class_ID,Priority,Keyword,Checked,Catalogue_ID,name,zone_position,zone_priority,settings,static from Message2000 where Catalogue_ID = '$catalogue' ORDER BY zone_position, zone_priority", ARRAY_A);
+
+// Расскидываем зоны по позициям на сайте
+foreach ($zones as $k => $z) {
+	$col = $pos = NULL;
+	$pos = ($z[zone_position] ? $z[zone_position] : 1);
+	$col = ($z[zone_id] ? $z[zone_id] : 1);
+	$id = $z[Message_ID];
+	$keyw = $z[Keyword];
+	$grid = ($col==2 ? '3' : (in_array($col, array(3,4,5)) ? ($setting[htmlShema]==1 || $setting[htmlShema]==2 ? '9' : '6') : '12'));
+	// Массив позиций динамичных зон
+	if($z['zone_position']!=0) $htmlzone[$pos] .= getzonenum($col, $cols[$col], array('name' => $z[name], 'id' => $col, 'mid' => $id, 'priority' => $z[zone_priority], 'grid' => $grid, 'keyw' => $keyw, 'zoneoff' => !$z['Checked']));
+}
+?>
+<div class="v-title">
+	<div class="zone-block">
+		<a href="/zone/add_zone.html?isNaked=1" class="add-btn" title="Добавление зоны" data-rel="lightcase" data-lc-options='{"maxWidth":850,"groupClass":"modal-nopaddding modal-edit-filter"}'>Добавить зону</a>
+
+		<a href="#" class="admin-zone-btn admin-activate-zone">
+            <span class="adm-drop-text">Изменить порядок зон</span>
+            <span class="adm-z-drop-edt none">
+            	<span class="adm-drop-save">сохранить</span>
+            	<span class="adm-drop-nosave">отменить</span>
+            </span>
+    	</a>
+		<a href="#" class="admin-zone-btn admin-activate-sub">
+            <span class="adm-drop-text">Настройки блоков</span>
+            <span class="adm-z-drop-edt none">
+            	<span class="adm-drop-save">сохранить</span>
+            	<span class="adm-drop-nosave">отменить</span>
+            </span>
+    	</a>
+	</div>
+</div>
+<div class="v-body">
+	<div class="admin-block-zone">
+
+		<?=($cols[0] ? getzonenum(0, $cols[0], array('name' => 'Неопределенные блоки', 'nobtn' => 1, 'zoneoff' => 1, 'grid' => 12)) : null)?>
+
+		<div class='none admin-zonedrop-text'><span>Зоны над контентом</span></div>
+		<div class="admin-design cb zoneadmin1 admin-zonedrop" data-zoneposition="1">
+			<?=$htmlzone[1]?>
+		</div>
+
+		<div class="zone-content-zgl admin-zone cb ">Контент</div>
+		<div class="admin-design admin-green cb ">
+
+			<?php  #LEFT ?>
+			<?php  $leftzones = "<div class='admin-zone admin-block-3 admin-nobg zoneadmin2'>{$htmlzone[2]}</div>";?>
+			<?=($setting[htmlShema]!=2 ? $leftzones : null)?>
+
+			<?php  #CONTENT ?>
+			<div class="admin-zone admin-block-<?=($setting[htmlShema]!=1 && $setting[htmlShema]!=2 ? '6' : '9')?> admin-nobg zoneadmin3"><?=$htmlzone[3]?></div>
+			<?=($setting[htmlShema]==2 ? $leftzones : null)?>
+
+			<?php  #RIGHT ?>
+			<?=($setting[htmlShema]!=1 && $setting[htmlShema]!=2 ? getzonenum(11, $cols[11], array('size' => 3, 'name' => 'Зона справа', 'grid' => 3)) : null )?>
+
+		</div>
+
+		<div class='none admin-zonedrop-text'><span>Зоны под контентом</span></div>
+		<div class="admin-design cb zoneadmin4 admin-zonedrop" data-zoneposition="4">
+			<?=$htmlzone[4]?>
+		</div>
+
+		<div class='none admin-zonedrop-text'><span>Подвал</span></div>
+		<div class="admin-design cb zoneadmin5 admin-zonedrop" data-zoneposition="5">
+			<?=$htmlzone[5]?>
+		</div>
+		<div class="admin-design admin-green cb mobile-menu">
+			<?=$htmlzone[6]?>
+		</div>
+	</div>
+</div>
+
+<?php
+
+
+// Вывести зону [1] - номер зоны, [2] - содержимое, [3] - параметры
+function getzonenum($i, $par, $p = array()){
+	$result .=  '<div class="admin-zone '.($p[size] ? "admin-block-{$p[size]} " : "admin-block-12 ").($p[zoneoff] ? "zoneoff " : null ).' admin-zonedrop" data-prority="'.$p[priority].'" data-zoneid="'.$p[id].'" data-grid="'.$p[grid].'">';
+
+	$result .=  '<div class="admin-zone-dr-text icons i_threedots none">'.($p[name] ? $p[name]: ' Зона').'</div>';
+
+	$result .=  (!$p[nohead] ? '<div class="admin-zone-head">
+								<span>'.($p[name] ? $p[name]: $i.' Зона').'</span>
+								<div class="zone-head-button">'.(!$p[nobtn] ? getlinkaddblock($i, $p) : null).'</div>
+							</div>' : null).
+				'<div class="admin-zone-body cb">
+					'.$par[1].$par[0].'
+				</div>';
+
+	$result .=  '</div>';
+	return $result;
+}
+function getlinkaddblock($i, $zon){
+	return "<a title='Добавить блок' class='add-block add-btn' title='Добавление блока' data-rel='lightcase' data-lc-options='{\"maxWidth\":950,\"groupClass\":\"modal-edit\"}' href='/blockofsite/add_blockofsite.html&f_col=".$i."&isNaked=1'>Добавить блок</a>
+			<a title='Настройки зоны' class='edit-zone st-add' title='Настройки зоны' data-rel='lightcase' data-lc-options='{\"maxWidth\":950,\"groupClass\":\"modal-edit\"}' href='/zone/edit_".($zon[keyw] ? $zon[keyw] : "zone_".$zon[mid]).".html?isNaked=1'>Настройки зоны</a>";
+}
+?>

@@ -1,0 +1,32 @@
+<?php 
+$bitcat = new bc();
+$bitcat->init_bc('savecss');
+
+$db->query("DELETE FROM Showing_Blocks WHERE Block_ID = '$message'");
+
+foreach ($map as $subID => $value) {
+    if (!$value['sub']) continue;
+    $extends = (!$value['expendet'] ? 0 : 1);
+    $db->query("INSERT INTO Showing_Blocks (Block_ID, Subdivision_ID, extends) VALUES ('{$message}', '{$subID}', '{$extends}') ");
+}
+
+if (empty($map) && !$f_fixblock) {
+    $TitleSubID = $db->get_var("SELECT Title_Sub_ID FROM Catalogue WHERE Catalogue_ID = {$f_Catalogue_ID};");
+    if ($TitleSubID) $db->query("INSERT INTO Showing_Blocks (Block_ID, Subdivision_ID, extends) VALUES ('{$message}', '{$TitleSubID}', '0') ");
+}
+
+if($inside_admin) {
+    ob_end_clean();
+    header('Location: '.$goBackLink.'&inside_admin=1');
+    exit;
+} else { 
+    echo json_encode(ARRAY(
+        "title" => "ОК",
+        "succes" =>  NETCAT_MODERATION_MSG_OBJADD,
+        "reloadtab" => 1,
+        "modal" => "close",
+        "reload" => $settblk ? 1 : 0  
+    ));
+}
+
+?>

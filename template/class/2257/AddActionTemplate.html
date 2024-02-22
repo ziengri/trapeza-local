@@ -1,0 +1,41 @@
+<?php
+
+$ROOTDIR = $_SERVER['DOCUMENT_ROOT'];
+
+require $ROOTDIR . "/bc/modules/default/export_excel.class.php";
+
+global $db, $catalogue;
+
+try {
+    if (!$f_excel) {
+        $respons = [
+            "title" => "Настройки сохранены",
+            "succes" => "Настройки сохранены",
+            "modal" => "close",
+            "reloadTab" => "1",
+        ];
+    } else {
+        App\modules\Korzilla\Excel\Export\Controller::run($catalogue, $message);
+        $respons = [
+            "title" => "ОК",
+            "succes" => "Прайс обновлен ".$r,
+            "modal" => "close",
+            "reloadTab" => "1",
+            "sdf" => $message
+        ];
+    }
+
+} catch (\Exception $e) {
+    $respons = [
+        "title" => "Ошибка",
+        "error" => $e->getMessage()
+    ];
+}
+
+if($inside_admin) {
+    ob_end_clean();
+    header('Location: '.$goBackLink.'&inside_admin=1');
+    exit;
+} else { 
+    echo json_encode($respons);
+}

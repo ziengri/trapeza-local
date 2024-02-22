@@ -1,0 +1,216 @@
+AddDefaultCharset utf-8
+
+ErrorDocument 404 /bc/require/e404.php
+
+Options -Indexes
+Options +FollowSymLinks
+LimitRequestBody 10240000000
+
+SetEnvIf Authorization "(.*)" HTTP_AUTHORIZATION=$1
+<IfModule mod_deflate.c>
+SetOutputFilter DEFLATE
+<IfModule mod_setenvif.c>
+  SetEnvIfNoCase Request_URI \.(?:rar|zip)$ no-gzip dont-vary
+  SetEnvIfNoCase Request_URI \.(?:gif|jpg|png)$ no-gzip dont-vary
+  SetEnvIfNoCase Request_URI \.(?:avi|mov|mp4)$ no-gzip dont-vary
+  SetEnvIfNoCase Request_URI \.mp3$ no-gzip dont-vary
+</IfModule>
+</IfModule>
+
+
+<IfModule mod_expires.c>
+Header append Cache-Control "public"
+FileETag MTime Size
+ExpiresActive On
+ExpiresDefault "access plus 0 minutes"
+ExpiresByType image/ico "access plus 30 days"
+ExpiresByType text/css "access plus 10 days"
+ExpiresByType text/javascript "access plus 10 days"
+ExpiresByType image/gif "access plus 30 days"
+ExpiresByType image/jpg "access plus 30 days"
+ExpiresByType image/jpeg "access plus 30 days"
+ExpiresByType image/bmp "access plus 30 days"
+ExpiresByType image/png "access plus 30 days"
+</IfModule>
+
+# Cache-Control
+<ifModule mod_headers.c>
+Header set X-XSS-Protection "1; mode=block"
+
+# 30 ����
+<filesMatch "\.(ico|pdf|flv|jpg|jpeg|png|gif|swf)$">
+Header set Cache-Control "max-age=2592000, public"
+</filesMatch>
+# 30 ����
+<filesMatch "\.(css|js)$">
+Header set Cache-Control "max-age=2592000, public"
+</filesMatch>
+# 2 ���
+<filesMatch "\.(xml|txt)$">
+Header set Cache-Control "max-age=172800, public, must-revalidate"
+</filesMatch>
+# 1 ����
+<filesMatch "\.(html|htm|php)$">
+Header set Cache-Control "max-age=172800, private, must-revalidate"
+</filesMatch>
+</ifModule>
+
+
+<IfModule mod_php5.c>
+php_flag magic_quotes_gpc on
+php_flag display_errors on
+php_value error_reporting 1
+php_value arg_separator.output "&amp;"
+php_value mbstring.internal_encoding UTF-8
+php_value short_open_tag on
+
+</IfModule>
+
+<ifModule mod_rewrite.c>
+RewriteEngine On
+
+#sitemap
+RewriteRule ^sitemap.xml$ /sitemap.php [L]
+RewriteRule ^sitemap(\d+).xml$ /sitemap.php?path=$1 [L]
+
+# settings
+RewriteRule ^a/([a-z0-9A-Z-]+)/settings.ini$ / [R=301,L]
+RewriteRule ^a/([a-z0-9A-Z-]+)/settings_back/([0-9.]+).ini$ / [R=301,L]
+
+# � www �� ��� www
+RewriteCond %{HTTP_HOST} ^www\.(.+)$ [NC]
+RewriteRule ^(.*)$ http://%1/$1 [R=301,L]
+
+RewriteCond %{HTTP_HOST} ^agdash.ru$
+RewriteCond %{REQUEST_URI} ^/img/AgdashOsnovnoeMenu.pdf
+RewriteRule ^(.*)$  https://agdash.ru/uslugi/menyu/menyu_726.html [L,R=301]
+
+# ���� �� ������ ������ �� �� ���������
+RewriteRule ^(.+)/p.php$ / [R=404,L]
+
+RewriteCond %{HTTP_HOST} ^.+\.toptd\.ru$
+RewriteRule ^$ http://toptd.ru [L,R=301]
+
+
+#RewriteCond %{HTTP_HOST} ^xn----jtbhu0at.com$
+#RewriteCond %{REMOTE_ADDR} ^213\.180
+#RewriteRule .* - [L,R=500]
+
+#RewriteCond %{HTTP_HOST} ^xn----jtbhu0at.com$
+#RewriteCond %{REMOTE_ADDR} ^95\.108
+#RewriteRule .* - [L,R=500]
+
+#RewriteCond %{HTTP_HOST} ^xn----jtbhu0at.com$
+#RewriteCond %{REMOTE_ADDR} ^87\.250
+#RewriteRule .* - [L,R=500]
+
+#RewriteCond %{HTTP_HOST} ^xn----jtbhu0at.com$
+#RewriteCond %{REMOTE_ADDR} ^5\.45
+#RewriteRule .* - [L,R=500]
+
+#RewriteCond %{HTTP_HOST} ^xn----jtbhu0at.com$
+#RewriteCond %{REMOTE_ADDR} ^5\.255
+#RewriteRule .* - [L,R=500]
+
+
+RewriteCond %{HTTP_HOST} ^taxi24online.ru$
+RewriteRule ^home/$ / [R=301,L]
+
+# ��������� ��������
+RewriteRule ^city/(.+)/contacts/$ /contacts/ [L]
+RewriteRule ^city/(.+)/catalog/(.*)$ /catalog/$2 [L]
+RewriteRule ^city/(.+)/v-nalichii/(.*)$ /v-nalichii/$2 [L]
+
+# ������ �������� index
+RewriteCond %{THE_REQUEST} ^(.+)\/index/\ HTTP/
+RewriteRule ^(.*)$ / [R=301,L]
+
+RewriteCond %{THE_REQUEST} ^(.+)\/index.html\ HTTP/
+RewriteRule ^(.*)$ / [R=301,L]
+
+# yandex.market
+RewriteRule ^bc/modules/default/yandex.market/turbo/(.+?)/(.+?)$ /bc/modules/default/yandex.market/turbo/index.php?$1=$2 [L]
+
+# yml 
+RewriteRule ^yml/(.+?)/(.+?)$ 	/ymlcity.php?n=$1&c=$2 [L]
+
+# ? end string
+RewriteCond %{THE_REQUEST} ^[^\s]+\s+[^?]*?\?
+RewriteCond %{QUERY_STRING} ^$
+RewriteRule .? %{REQUEST_URI}? [R=301,L]
+
+# Robots.txt
+RewriteCond %{THE_REQUEST} /robots.txt
+RewriteRule ^([a-z0-9A-Z-]+).txt$ /bc/robots.php [L]
+
+# Slash duplicate
+#RewriteCond %{THE_REQUEST} //
+#RewriteRule .* /$0 [R=301,L]
+
+
+
+# txt
+RewriteCond %{THE_REQUEST} !/robots.txt
+RewriteRule ^([a-z0-9A-Z-]+).txt$ /bc/modules/bitcat/textfile.php?fname=$1&ftype=1 [L]
+#RewriteRule ^([a-z0-9A-Z-]+).html$ /bc/modules/bitcat/textfile.php?fname=$1&ftype=2 [L]
+RewriteRule ^([a-z0-9A-Z-]+).xml$ /bc/modules/bitcat/textfile.php?fname=$1&ftype=3 [L]
+RewriteRule ^([a-z0-9A-Z-]+).ico$ /bc/modules/bitcat/textfile.php?fname=$1&ftype=4 [L]
+
+RewriteRule ^catalog/product/([а-яА-ЯёЁa-z0-9A-Z-]+)/$ /search/?s=1&find=$1 [L]
+RewriteRule ^index/podbor/a(\d+)/m(\d+)/y(\d+)/v(\d+)/$ /index/podbor/?auto=$1&models=$2&year=$3&modification=$4 [L]
+
+
+RewriteCond %{THE_REQUEST} /bitrix/admin/1c_exchange.php
+RewriteRule ^bitrix/admin/1c_exchange.php$ /1c_exchange_suptotal.php [L]
+RewriteCond %{THE_REQUEST} /exchange
+RewriteRule ^exchange$ /1c_exchange_suptotal.php [L]
+
+RewriteCond %{THE_REQUEST} /1c_exchange.php
+RewriteRule .* - [E=HTTP_AUTHORIZATION:%{HTTP:Authorization},L]
+
+
+
+# ������ ���������� �����
+RewriteCond %{HTTP_USER_AGENT} .*Download\ Master.* [OR]
+RewriteCond %{HTTP_USER_AGENT} .*Mass\ Downloader.* [OR]
+RewriteCond %{HTTP_USER_AGENT} .*FlashGet.* [OR]
+RewriteCond %{HTTP_USER_AGENT} .*GetRight.* [OR]
+RewriteCond %{HTTP_USER_AGENT} .*Teleport.* [OR]
+RewriteCond %{HTTP_USER_AGENT} .*ReGet.*
+RewriteRule ^.* - [F,L]
+
+
+# защита от ботов
+RewriteCond %{HTTP_USER_AGENT} SemrushBot
+RewriteRule (.*) - [F,L]
+RewriteCond %{HTTP_USER_AGENT} AhrefsBot
+RewriteRule (.*) - [F,L]
+RewriteCond %{HTTP_USER_AGENT} MJ12bot
+RewriteRule (.*) - [F,L]
+RewriteCond %{HTTP_USER_AGENT} Riddler
+RewriteRule (.*) - [F,L]
+RewriteCond %{HTTP_USER_AGENT} aiHitBot
+RewriteRule (.*) - [F,L]
+RewriteCond %{HTTP_USER_AGENT} trovitBot
+RewriteRule (.*) - [F,L]
+RewriteCond %{HTTP_USER_AGENT} Detectify
+RewriteRule (.*) - [F,L]
+RewriteCond %{HTTP_USER_AGENT} BLEXBot
+RewriteRule (.*) - [F,L]
+RewriteCond %{HTTP_USER_AGENT} LinkpadBot
+RewriteRule (.*) - [F,L]
+RewriteCond %{HTTP_USER_AGENT} dotbot
+RewriteRule (.*) - [F,L]
+RewriteCond %{HTTP_USER_AGENT} FlipboardProxy
+RewriteRule (.*) - [F,L]
+
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteCond %{REQUEST_FILENAME} !-l
+
+RewriteRule ^(.+)$ /bc/require/e404.php?REQUEST_URI=$1 [L,QSA]
+RewriteRule .* - [E=HTTP_IF_MODIFIED_SINCE:%{HTTP:If-Modified-Since}]
+RewriteRule .* - [E=HTTP_IF_NONE_MATCH:%{HTTP:If-None-Match}]
+</ifModule>
+
+

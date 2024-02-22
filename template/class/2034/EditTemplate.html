@@ -1,0 +1,83 @@
+<?=( $warnText ? "<div class='warnText'>$warnText</div>" : NULL )?>
+<form name='adminForm' id='adminForm' class='ajax2' enctype='multipart/form-data' method='post' action='<?= $SUB_FOLDER ?><?= $HTTP_ROOT_PATH ?>message.php'>
+<div id='nc_moderate_form'>
+<div class='nc_clear'></div>
+<input name='admin_mode' type='hidden' value='<?= $admin_mode ?>' />
+<?= $nc_core->token->get_input() ?>
+<input name='catalogue' type='hidden' value='<?= $catalogue ?>' />
+<input name='cc' type='hidden' value='<?= $cc ?>' />
+<input name='sub' type='hidden' value='<?= $sub ?>' /><input name='message' type='hidden' value='<?= $message ?>' />
+<input name='posting' type='hidden' value='1' />
+<input name='curPos' type='hidden' value='<?= $curPos ?>' />
+<input name='f_Parent_Message_ID' type='hidden' value='<?= $f_Parent_Message_ID ?>' />
+<?= nc_form_moderate('change', $admin_mode, 0, $systemTableID, $current_cc, (isset($f_Checked) ? $f_Checked  : null), $f_Priority , $f_Keyword, $f_ncTitle, $f_ncKeywords, $f_ncDescription ) ?>
+</div>
+
+<?php  if ($inside_admin) { ?>
+<?= nc_string_field('name', "maxlength='255' size='50'", ($class_id ? $class_id : $classID), 1) ?><br /><br />
+<?= nc_string_field('keyw', "maxlength='255' size='50'", ($class_id ? $class_id : $classID), 1) ?><br /><br />
+<?php  } ?>
+
+
+<div id='datas'>
+<?php 
+if ($f_data) {
+    foreach(orderArray($f_data) as $dataid => $data) {
+        if ($data[name]) $frm .= "<div class='data bc_setrow' data-num='{$dataid}'>
+<input placeholder='Название' size=40 type=text value='{$data[name]}' name='datan[{$dataid}][name]'> 
+".($f_keyw=='delivery' ? "<input placeholder='цена' type=text value='{$data[price]}' name='datan[{$dataid}][price]'> " : "")."
+".($f_keyw=='itemlabel' ? "фон: <input type=text class=color2 value='{$data[color1]}' name='datan[{$dataid}][color1]'> текст: <input type=text class=color2 value='{$data[color2]}' name='datan[{$dataid}][color2]'> " : "")."
+".($f_keyw=='targetcity' ? "<input size=40 placeholder='название на латинице без пробелов' type=text value='{$data[keyword]}' name='datan[{$dataid}][keyword]'> " : "")."
+".($f_keyw=='texts' ? "<input readonly type=text value='{$data[keyword]}' name='datan[{$dataid}][keyword]'> " : "")."
+<label><input type=checkbox value='1' ".($data[checked] ? "checked" : "")." name='datan[{$dataid}][checked]'> включить</label></div>";
+    }
+}
+
+if ($frm) { echo $frm; } else {
+    echo "<div class='data bc_setrow' data-num='0'>
+<input placeholder='Название' size=40 type=text name='datan[0][name]'> 
+".($f_keyw=='delivery' ? "<input placeholder='цена' type=text name='datan[0][price]'> " : "")."
+".($f_keyw=='itemlabel' ? "фон: <input type=text class=color2 name='datan[{$dataid}][color1]'> текст: <input type=text class=color2 name='datan[{$dataid}][color2]'> " : "")."
+".($f_keyw=='targetcity' ? "<input size=40 placeholder='название на латинице без пробелов' type=text name='datan[0][keyword]'> " : "")."
+".($f_keyw=='texts' ? "<input type=hidden name='datan[0][keyword]'> " : "")."
+<label><input type=checkbox value='1' ".($data[price] ? "checked" : "")." name='datan[{$dataid}][checked]'> включить</label></div>";
+}
+?>
+<div><a href='' onclick="add_line('<?=$f_keyw?>'); return false;">добавить еще</a></div>
+
+<?=($f_data && $inside_admin ? "<div><textarea name='data'>$f_data</textarea></div>" : NULL)?>
+
+
+
+<div><?= NETCAT_MODERATION_INFO_REQFIELDS ?></div><br/>
+<span class="btn-strt"><?= nc_submit_button(NETCAT_MODERATION_BUTTON_CHANGE) ?></span>
+</form>
+
+<script type='text/javascript' src='/bc/modules/bitcat/color2/spectrum.js'></script>
+<link rel='stylesheet' href='/bc/modules/bitcat/color2/spectrum.css'>
+<script>
+var bc = 1;
+function add_line(keyw) {
+  i = parseInt($nc('#datas .data:last').data('num'))+1;
+  if (i) {
+    price = (keyw=='delivery' ? "<input placeholder='Цена' type=text name='datan["+i+"][price]'> " : "");
+    labels = (keyw=='itemlabel' ? "фон: <input type=text class=color2 name='datan["+i+"][color1]'> текст: <input type=text class=color2 name='datan["+i+"][color2]'> " : "");
+    keyword = (keyw=='targetcity' ? "<input size=40 placeholder='название на латинице без пробелов' type=text name='datan["+i+"][keyword]'> " : "");
+    keyword = (keyw=='texts' ? "<input type=text name='datan["+i+"][keyword]'> " : "");
+	$nc('#datas .data:last').after("<div class='data bc_setrow' data-num='"+i+"'><input placeholder='Название' size=40 type=text name='datan["+i+"][name]'> "+price+labels+keyword+"<label><input type=checkbox value='1' checked name='datan["+i+"][checked]'> включить</label></div>");
+    colorpick();
+  }
+  return false;
+}
+
+function colorpick() {
+    $nc('input.color2:visible').spectrum({
+				preferredFormat: 'hex',
+                allowEmpty:true,
+				showInitial: true,
+				showInput: true
+    });
+    return false;
+}
+setTimeout(function(){	colorpick(); },1000);
+</script>

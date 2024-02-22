@@ -1,0 +1,29 @@
+<?php 
+unset($dopclass);
+unset($dopclass2); unset($classNum);
+if ($f_sub) {
+  $params = subParams($f_sub); 
+  if ($f_cc) $classNum = $db->get_var("select Class_ID from Sub_Class where Sub_Class_ID = '$f_cc'");
+  $name = (!$f_name ? $params[name] : $f_name);
+  $pos = (!$f_pos_id || $f_pos_id=='0' ? "cb" : ($f_pos_id==1 ? "fl" : "fr"));
+  $dopclass .= (!$_SESSION['cart'] && $classNum==2005 ? " none" : NULL);
+  $dopclass2 .= ($classNum==2005 ? " smallcart".($setting[minicart]>0 ? " smallcart_type{$setting[minicart]}" : NULL) : NULL);
+  $dopclass .= ($f_col==2 && ($f_width<3 || ($setting[htmlShema]==4 && $f_width<4)) && $f_pos_id==1 ? " smallblock" : NULL);
+  $dopclass .= (($f_sub && !$f_cc && $f_template) || $f_ctpl==2026 ? " nomob submenublock" : NULL);
+
+  if ($f_noindex) echo "<!-- noindex -->";
+  if (!$f_noblock) {
+    echo "<section class='{$dopclass2} titleBlock block{$f_RowID} ".($classNum ? " class{$classNum} " : NULL).($fsub==$f_sub ? " nomob " : NULL).($f_notitle ? " notitle " : "").($f_nolin ? " nolin ".($f_bg ? "bord" : NULL) : ($f_name_nogb ? "top-bord-dot" : NULL))." wblock{$f_width} typeblock {$pos} {$dopclass} bgimgpos{$f_bgimgpos_id} ".($f_bgimg || $f_bg ? 'imgbg' : NULL)."' data-prior='$f_Priority' data-blockid='$f_RowID' data-width='$f_width' data-sub='$f_Subdivision_ID' data-cc='$f_Sub_Class_ID' ".($bitcat ? "data-editlink='{$editLink}'" : "")." style='".
+    ($f_radius ? "-moz-border-radius: {$f_radius}px; -webkit-border-radius: {$f_radius}px; -khtml-border-radius: {$f_radius}px; border-radius: {$f_radius}px;" : NULL).
+    ($f_bg ? "background-color:#{$f_bg};" : NULL)."'>
+    <header class='".($f_name_nogb ? "nobg" : "")."'><span>".(!$f_notitle ? "".(!$f_nolink ? "<a href='".($params[exturl] ? $params[exturl] : $params[url])."'>" : NULL).$name.(!$f_nolink ? "</a>" : NULL)."" : NULL)."</span></header>
+    <article>";
+   }
+   if (is_numeric($f_sub) && is_numeric($f_cc) && $f_sub>0 && $f_cc>0) echo nc_objects_list($f_sub,$f_cc,"tsub=$f_sub&tcc=$f_cc&mesid=$f_RowID&isTitle=1&recNum=$f_recnum&rand=$f_rand&nc_ctpl=$f_ctpl&link={$params[url]}&name={$params[name]}&substr={$f_substr}".($f_noindex ? "&noindex=1" : ""),1);
+   if ($f_sub && !$f_cc && $f_template) echo "<div>".s_browse_sub($f_sub, $nav_templ[$f_template][0])."</div>";
+   if (!$f_noblock) echo "<div class=clear></div></article><div class=clear></div></section>";
+   if ($f_noindex) echo "<!-- /noindex -->";
+}
+
+
+?>

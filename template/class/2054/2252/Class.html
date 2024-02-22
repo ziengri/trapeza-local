@@ -1,0 +1,59 @@
+<!-- FormPrefix --><!-- /FormPrefix -->
+
+<!-- RecordTemplate --><?
+unset($day); unset($otvetAut); unset($userAut);
+if (date("dmY") == $f_Created_day.$f_Created_month.$f_Created_year) $day = getLangWord('today',"Сегодня"); else $day = $f_Created_day." ".month($f_Created_month);
+if (date("dmY") == $f_LastUpdated_day.$f_LastUpdated_month.$f_LastUpdated_year) $dayO = getLangWord('today',"Сегодня"); else $dayO = $f_Created_day." ".month($f_Created_month);
+
+if ($f_Checked) { $totRate = $totRate+$f_rate; $totCount++; }
+
+if ($f_otvet) {
+	$otvetAut = getUser($f_LastUser_ID);
+}
+if ($f_UserID>0) $userAut = getUser($f_UserID);
+$userAut = ($f_UserID>0 && $userAut[name] && $userAut[fam] ? $userAut[name]." ".$userAut[fam] : $f_name);
+# зачем брать имя админка, если мы указываем имя у отзыва????????
+$userAut = $f_name;
+
+$otzyvy .= "
+<div class='kz_otz_item obj ".(!$f_Checked ? "uncheck" : NULL)." obj".$f_RowID."'>
+	<div class='kz_otz_top'>
+        <div class='mini_stars'>
+            <div class='mini_stars_select star_".$f_rate."_now'></div>
+        </div>
+		<div class='kz_otz_name'>$userAut</div>
+		<div class='kz_otz_time'>$day</div>
+	</div>
+	<div class='kz_otz_text'>$f_otzyvtext</div>
+	".($f_otvet ? "
+		<div class='kz_otz_otvet'>
+			<div class='kz_otz_top'>
+				<div class='kz_otz_name'>{$otvetAut['name']} {$otvetAut['fam']}</div>
+				<div class='kz_otz_otime'>$dayO</div>
+			</div>
+			<div class='kz_otz_text'>$f_otvet</div>
+		</div>
+	" : NULL)."
+	".($bitcat ? editObjBut($editLink) : NULL)."
+</div>";
+?><!-- /RecordTemplate -->
+
+<!-- FormSuffix --><?
+$stars = $totRate/$totCount;
+$starsClass = str_replace(".","_",$stars);
+?>
+<div class="kz_otzyvy">
+	<div class="kz_raiting <?=(!$totRows ? "norate" : NULL)?>">
+		<div class="kz_raiting_info">			
+			<div class="big_stars">
+				<div class="big_stars_select star_<?=$starsClass?>_now"></div>
+			</div>
+			<?=($stars>0 ? "<div class='kz_ball'>$stars</div>" : NULL)?>
+			<div class="kz_ball_text"><?=($totRows ? "на основе <span>$totCount ".pluralForm($totRows,"оценки","оценок","оценок")."</span>" : "нет оценок")?></div>
+		</div>
+        <?=(!$totRows ? "<!-- noindex --><div class='kz_nootz'>".getLangWord('comment_first','Здесь еще никто не оставлял отзывы. Вы можете быть первым')."</div><!-- /noindex -->" : NULL)?>
+		<!-- noindex --><div class="kz_napisat"><a href="#" rel='nofollow' data-scrollto='.kz_form'><?=getLangWord('comment_write','Написать отзыв')?></a></div><!-- /noindex -->
+	</div>
+	<?=$otzyvy?>
+</div>
+<div class='kz_form' data-load='/index/otzyvtovar/add_otzyvtovar.html&f_tovar=<?=$tovar?>'></div><!-- /FormSuffix -->

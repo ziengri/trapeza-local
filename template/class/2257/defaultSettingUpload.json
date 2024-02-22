@@ -1,0 +1,609 @@
+{
+    "update_sub": {
+        "checked": 1,
+        "name": "Обновлять разделы",
+        "childs": {
+            "Checked": {
+                "checked": 1,
+                "name": "Включения",
+                "childs": {}
+            },
+            "Parent_Sub_ID": {
+                "checked": 1,
+                "name": "Расположения",
+                "childs": {}
+            },
+            "AlterTitle": {
+                "checked": 1,
+                "name": "Альтернативное название раздела (h1)",
+                "childs": {}
+            },
+            "subdir": {
+                "checked": 1,
+                "name": "Показ подразделов этого раздела",
+                "childs": {}
+            },
+            "TitleObj": {
+                "checked": 1,
+                "name": "Заголовок карточки объекта (Title)",
+                "childs": {}
+            },
+            "TitleImg": {
+                "checked": 1,
+                "name": "Альтернативный текст для изображений (Alt)",
+                "childs": {}
+            },
+            "Title2": {
+                "checked": 1,
+                "name": "Заголовок раздела (Title)",
+                "childs": {}
+            },
+            "KeywordsObj": {
+                "checked": 1,
+                "name": "Ключевые слова карточки объекта",
+                "childs": {}
+            },
+            "Keywords2": {
+                "checked": 1,
+                "name": "Шаблон ключевых слов страницы (Keywords)",
+                "childs": {}
+            },
+            "DescriptionObj": {
+                "checked": 1,
+                "name": "Описание карточки объекта",
+                "childs": {}
+            },
+            "Description2": {
+                "checked": 1,
+                "name": "Шаблон описания страницы (Description)",
+                "childs": {}
+            },
+            "text": {
+                "checked": 1,
+                "name": "Описание в разделе",
+                "childs": {}
+            },
+            "text2": {
+                "checked": 1,
+                "name": "Описание в разделе (снизу)",
+                "childs": {}
+            },
+            "noleftcol": {
+                "checked": 1,
+                "name": "Скрывать левую колонку (зона 1)",
+                "childs": {}
+            },
+            "citytarget": {
+                "checked": 1,
+                "name": "Города",
+                "childs": {}
+            },
+            "descr": {
+                "checked": 1,
+                "name": "Краткое описание",
+                "childs": {}
+            },
+            "find": {
+                "checked": 1,
+                "name": "Вывод товаров по фразе",
+                "childs": {}
+            },
+            "strictFind": {
+                "checked": 1,
+                "name": "Строгий вывод товаров по фразе",
+                "childs": {}
+            },
+            "var1": {
+                "checked": 1,
+                "name": "Параметр 1",
+                "childs": {}
+            },
+            "var2": {
+                "checked": 1,
+                "name": "Параметр 2",
+                "childs": {}
+            },
+            "var3": {
+                "checked": 1,
+                "name": "Параметр 3",
+                "childs": {}
+            },
+            "var4": {
+                "checked": 1,
+                "name": "Параметр 4",
+                "childs": {}
+            },
+            "var5": {
+                "checked": 1,
+                "name": "Параметр 5",
+                "childs": {}
+            },
+            "var6": {
+                "checked": 1,
+                "name": "Параметр 6",
+                "childs": {}
+            },
+            "var7": {
+                "checked": 1,
+                "name": "Параметр 7",
+                "childs": {}
+            },
+            "var8": {
+                "checked": 1,
+                "name": "Параметр 8",
+                "childs": {}
+            },
+            "var9": {
+                "checked": 1,
+                "name": "Параметр 9",
+                "childs": {}
+            },
+            "var10": {
+                "checked": 1,
+                "name": "Параметр 10",
+                "childs": {}
+            },
+            "var11": {
+                "checked": 1,
+                "name": "Параметр 11",
+                "childs": {}
+            },
+            "var12": {
+                "checked": 1,
+                "name": "Параметр 12",
+                "childs": {}
+            },
+            "var13": {
+                "checked": 1,
+                "name": "Параметр 12",
+                "childs": {}
+            },
+            "var14": {
+                "checked": 1,
+                "name": "Параметр 14",
+                "childs": {}
+            },
+            "var15": {
+                "checked": 1,
+                "name": "Параметр 15",
+                "childs": {}
+            },
+            "AlterTitle2": {
+                "checked": 1,
+                "name": "Шаблон заголовка h1",
+                "childs": {}
+            },
+            "AlterTitleObj": {
+                "checked": 1,
+                "name": "Заголовок H1 карточки объекта",
+                "childs": {}
+            },
+            "tags_links": {
+                "checked": 1,
+                "name": "тэги",
+                "childs": {}
+            },
+            "tags_links_bottom": {
+                "checked": 1,
+                "name": "Тэги снизу",
+                "childs": {}
+            },
+            "no_index_seo": {
+                "checked": 1,
+                "name": "Не индексировать раздел",
+                "childs": {}
+            },
+            "view_obj_by_param": {
+                "checked": 1,
+                "name": "Показывать объекты по выбранным параметрам",
+                "childs": {}
+            }
+        }
+    },
+    "update_item": {
+        "checked": 1,
+        "name": "Обновлять товары",
+        "childs": {
+            "Subdivision_ID": {
+                "checked": 1,
+                "name": "Расположения",
+                "childs": {}
+            },
+            "name": {
+                "checked": 1,
+                "name": "Название",
+                "childs": {}
+            },
+            "text": {
+                "checked": 1,
+                "name": "Полное описание",
+                "childs": {}
+            },
+            "photo": {
+                "checked": 1,
+                "name": "Фотографии",
+                "childs": {}
+            },
+            "vendor": {
+                "checked": 1,
+                "name": "Производитель",
+                "childs": {}
+            },
+            "price": {
+                "checked": 1,
+                "name": "Цена",
+                "childs": {}
+            },
+            "price2": {
+                "checked": 1,
+                "name": "Цена 2",
+                "childs": {}
+            },
+            "price3": {
+                "checked": 1,
+                "name": "Цена 3",
+                "childs": {}
+            },
+            "price4": {
+                "checked": 1,
+                "name": "Цена 4",
+                "childs": {}
+            },
+            "firstprice": {
+                "checked": 1,
+                "name": "Это нижняя граница цены товара (от)",
+                "childs": {}
+            },
+            "dogovor": {
+                "checked": 1,
+                "name": "Цена договорная (число не показывается)",
+                "childs": {}
+            },
+            "currency": {
+                "checked": 1,
+                "name": "Валюта",
+                "childs": {}
+            },
+            "torg": {
+                "checked": 1,
+                "name": "Возможен торг",
+                "childs": {}
+            },
+            "nocart": {
+                "checked": 1,
+                "name": "Запретить добавлять товар в корзину",
+                "childs": {}
+            },
+            "noorder": {
+                "checked": 1,
+                "name": "Запретить заказывать товар",
+                "childs": {}
+            },
+            "variable": {
+                "checked": 1,
+                "name": "Варианты товара",
+                "childs": {}
+            },
+            "buyvariable": {
+                "checked": 1,
+                "name": "Обязательный выбор варианта товара",
+                "childs": {}
+            },
+            "stock": {
+                "checked": 1,
+                "name": "Наличие на складе (шт.)",
+                "childs": {}
+            },
+            "stock2": {
+                "checked": 1,
+                "name": "Наличие на складе №2 (шт.)",
+                "childs": {}
+            },
+            "stock3": {
+                "checked": 1,
+                "name": "Наличие на складе №3 (шт.)",
+                "childs": {}
+            },
+            "stock4": {
+                "checked": 1,
+                "name": "Наличие на складе №4 (шт.)",
+                "childs": {}
+            },
+            "notmarkup": {
+                "checked": 1,
+                "name": "Не учитывать общую наценку",
+                "childs": {}
+            },
+            "discont": {
+                "checked": 1,
+                "name": "Скидка на товар (в %)",
+                "childs": {}
+            },
+            "pricediscont": {
+                "checked": 1,
+                "name": "или итоговая цена после скидки",
+                "childs": {}
+            },
+            "disconttime": {
+                "checked": 1,
+                "name": "Скидка действует до",
+                "childs": {}
+            },
+            "art": {
+                "checked": 1,
+                "name": "Артикул",
+                "childs": {}
+            },
+            "art2": {
+                "checked": 1,
+                "name": "Артикул или код",
+                "childs": {}
+            },
+            "artnull": {
+                "checked": 1,
+                "name": "Эталонные артикулы",
+                "childs": {}
+            },
+            "code": {
+                "checked": 1,
+                "name": "Код",
+                "childs": {}
+            },
+            "ves": {
+                "checked": 1,
+                "name": "Вес",
+                "childs": {}
+            },
+            "edizm": {
+                "checked": 1,
+                "name": "Единица измерения",
+                "childs": {}
+            },
+            "analog": {
+                "checked": 1,
+                "name": "Список артикулов аналогичных товаров (по одному в строке)",
+                "childs": {}
+            },
+            "spec": {
+                "checked": 1,
+                "name": "Спецпредложение",
+                "childs": {}
+            },
+            "extlink": {
+                "checked": 1,
+                "name": "Внешняя ссылка",
+                "childs": {}
+            },
+            "buywith": {
+                "checked": 1,
+                "name": "C этим товаром покупают (артикулы по одному в строке)",
+                "childs": {}
+            },
+            "variablename": {
+                "checked": 1,
+                "name": "Название вариантов",
+                "childs": {}
+            },
+            "variablenameSide": {
+                "checked": 1,
+                "name": "Вариант основного товара",
+                "childs": {}
+            },
+            "colors": {
+                "checked": 1,
+                "name": "Цвета",
+                "childs": {}
+            },
+            "buycolors": {
+                "checked": 1,
+                "name": "Обязательный выбор цвета товара",
+                "childs": {}
+            },
+            "new": {
+                "checked": 1,
+                "name": "Новинки",
+                "childs": {}
+            },
+            "action": {
+                "checked": 1,
+                "name": "Хит продаж",
+                "childs": {}
+            },
+            "capacity": {
+                "checked": 1,
+                "name": "Объем",
+                "childs": {}
+            },
+            "sizes_item": {
+                "checked": 1,
+                "name": "Размер",
+                "childs": {}
+            },
+            "height": {
+                "checked": 1,
+                "name": "Высота",
+                "childs": {}
+            },
+            "width": {
+                "checked": 1,
+                "name": "Ширина",
+                "childs": {}
+            },
+            "length": {
+                "checked": 1,
+                "name": "Длина",
+                "childs": {}
+            },
+            "depth": {
+                "checked": 1,
+                "name": "Глубина",
+                "childs": {}
+            },
+            "descr": {
+                "checked": 1,
+                "name": "Краткое описание в списке товаров",
+                "childs": {}
+            },
+            "photourl": {
+                "checked": 1,
+                "name": "Ссылка на сторонний сайт",
+                "childs": {}
+            },
+            "tags": {
+                "checked": 1,
+                "name": "Тэги",
+                "childs": {}
+            },
+            "var1": {
+                "checked": 1,
+                "name": "Параметр 1",
+                "childs": {}
+            },
+            "var2": {
+                "checked": 1,
+                "name": "Параметр 2",
+                "childs": {}
+            },
+            "var3": {
+                "checked": 1,
+                "name": "Параметр 3",
+                "childs": {}
+            },
+            "var4": {
+                "checked": 1,
+                "name": "Параметр 4",
+                "childs": {}
+            },
+            "var5": {
+                "checked": 1,
+                "name": "Параметр 5",
+                "childs": {}
+            },
+            "var6": {
+                "checked": 1,
+                "name": "Параметр 6",
+                "childs": {}
+            },
+            "var7": {
+                "checked": 1,
+                "name": "Параметр 7",
+                "childs": {}
+            },
+            "var8": {
+                "checked": 1,
+                "name": "Параметр 8",
+                "childs": {}
+            },
+            "var9": {
+                "checked": 1,
+                "name": "Параметр 9",
+                "childs": {}
+            },
+            "var10": {
+                "checked": 1,
+                "name": "Параметр 10",
+                "childs": {}
+            },
+            "var11": {
+                "checked": 1,
+                "name": "Параметр 11",
+                "childs": {}
+            },
+            "var12": {
+                "checked": 1,
+                "name": "Параметр 12",
+                "childs": {}
+            },
+            "var13": {
+                "checked": 1,
+                "name": "Параметр 13",
+                "childs": {}
+            },
+            "var14": {
+                "checked": 1,
+                "name": "Параметр 14",
+                "childs": {}
+            },
+            "var15": {
+                "checked": 1,
+                "name": "Параметр 15",
+                "childs": {}
+            },
+            "timer": {
+                "checked": 1,
+                "name": "Таймер обратного отсчета",
+                "childs": {}
+            },
+            "params": {
+                "checked": 1,
+                "name": "Параметры",
+                "childs": {}
+            },
+            "Subdivision_IDS": {
+                "checked": 1,
+                "name": "Доп. разделы в которых показывать товар (номера через запятую)",
+                "childs": {}
+            },
+            "h1": {
+                "checked": 1,
+                "name": "Альтернативное название H1",
+                "childs": {}
+            },
+            "text2": {
+                "checked": 1,
+                "name": "Характеристики",
+                "childs": {}
+            },
+            "timestamp_export": {
+                "checked": 1,
+                "name": "Время выгрузки",
+                "childs": {}
+            },
+            "keyword_find": {
+                "checked": 1,
+                "name": "Ключевые слова поиска",
+                "childs": {}
+            },
+            "ncTitle": {
+                "checked": 1,
+                "name": "Заголовок страницы (Title) SEO",
+                "childs": {}
+            },
+            "ncDescription": {
+                "checked": 1,
+                "name": "Описание страницы (Description) SEO",
+                "childs": {}
+            },
+            "ncKeywords": {
+                "checked": 1,
+                "name": "Ключевые слова страницы (Keywords) SEO",
+                "childs": {}
+            },
+            "Priority": {
+                "checked": 0,
+                "name": "Приоритет товаров",
+                "childs": {}
+            },
+            "order_count_price" : {
+                "checked": 1,
+                "name": "Цена для количества в корзине",
+                "childs": {}
+            }
+        }
+    },
+    "delete_item" : {
+        "checked": 0,
+        "name": "Удалить все товары на сайте (удаляются фотографии)",
+        "childs": {}
+    },
+    "unchecked" : {
+        "checked": 0,
+        "name": "Не выключая уже существующие",
+        "childs": {}
+    },
+    "find_art" : {
+        "checked": 0,
+        "name": "Cравнивать товары только по артикулу",
+        "childs": {}
+    }
+}

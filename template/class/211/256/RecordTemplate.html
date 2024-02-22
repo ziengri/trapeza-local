@@ -1,0 +1,31 @@
+<?php /* Служебная часть */for ($f_RowNum = 0; $f_RowNum < $rowCount; $f_RowNum++) {    if($fetch_row[$f_RowNum] instanceof Iterator) {        extract($fetch_row[$f_RowNum]->to_array(), EXTR_PREFIX_ALL, "f");    } else {        extract($fetch_row[$f_RowNum], EXTR_PREFIX_ALL, "f");    }    foreach($iteration_RecordTemplate[$f_RowNum] as $value) {        extract($value);    }    eval($cc_env["convert2txt"]);    ob_start();/* Конец служебной части */?>
+<div class='nc_row'>
+    <?=$f_AdminButtons ?>
+    <h3>
+        <?php 
+        if (!$cc_settings['ShowAll'] && ($f_Obligation || $f_Demands || $f_Conditions)) { ?>
+            <a href='<?php  echo $fullLink; ?>'><?php  echo $f_Post; ?></a> <?php 
+        }
+        else {
+            echo $f_Post;
+        }?>
+    </h3>
+    <?php 
+    if ($f_City) { ?><div class='nc_item'>(<?php  echo $f_City ?>)</div><?php  }
+    if ($f_Pay) { ?>
+        <div class='nc_price'><span class='nc_title'>Зарплата: </span><span class='nc_value'><?php  echo $f_Pay." ".$pay; ?>
+        </span></div><?php 
+    }
+    if ($cc_settings['ShowAll']) {
+        if ($f_Obligation) {
+            ?> <div class='nc_item'><span class='nc_title'>Обязанности: </span><span class='nc_value'><?php  echo $f_Obligation; ?></span></div><?php 
+        }
+        if ($f_Demands) {
+            ?> <div class='nc_item'><span class='nc_title'>Требования: </span><span class='nc_value'><?php  echo $f_Demands; ?></span></div><?php 
+        }
+        if ($f_Conditions) {
+            ?> <div class='nc_item'><span class='nc_title'>Условия: </span><span class='nc_value'><?php  echo $f_Conditions; ?></span></div><?php 
+        }
+    }
+    ?></div>
+<?php /* Служебная часть */    echo nc_finishing_RecordTemplate(ob_get_clean(), $inside_admin, $classID, $f_RowID, $parent_message, $cc, $cc_env["Class_Name"], $no_cache_marks);}/* Конец служебной части */?>

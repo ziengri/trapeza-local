@@ -1,0 +1,30 @@
+{
+    "discount_system_order": {
+        "name": "Накопительная скидка",
+        "row": [{
+                "name": "checked_ds_order",
+                "label": "Включить",
+                "type": "checkbox",
+                "colline": 2
+            },
+            {
+                "name": "discount_management",
+                "label": "Управления скидками",
+                "type": "select",
+                "colline": 2,
+                "data": {
+                    "0": "Берется скидка у товара",
+                    "1": "Берется большая скидка",
+                    "2": "Скидки суммируются"
+                }
+            },
+            {
+                "name": "setting_DSO",
+                "label": "Настройка накопительной скидки",
+                "type": "multi_line",
+                "type_old": "11",
+                "colline": "height"
+            }
+        ]
+    }
+}

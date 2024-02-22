@@ -1,0 +1,91 @@
+</tbody></table>
+    <link rel="stylesheet" href="https://code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+    <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+    <script type="text/javascript">
+        $(function(){
+            <?php  if ($bitcat || $bitLoadMore) { ?>
+            $(".filter_date input#datepicker").datepicker({
+                dateFormat: "yyyy-mm-dd",
+                onSelect: function(selectedDate) {
+                    filter_table();
+                }
+            });
+
+            <?php  }else { ?> 
+                
+
+            $.datepicker.regional['ru'] = {
+                closeText: 'Закрыть',
+                prevText: '&#x3c;Пред',
+                nextText: 'След&#x3e;',
+                currentText: 'Сегодня',
+                monthNames: ['Январь', 'Февраль', 'Март', 'Апрель', 'Май', 'Июнь',
+                    'Июль', 'Август', 'Сентябрь', 'Октябрь', 'Ноябрь', 'Декабрь'],
+                monthNamesShort: ['Январь', 'Февраль', 'Март', 'Апрель', 'Май', 'Июнь',
+                    'Июль', 'Август', 'Сентябрь', 'Октябрь', 'Ноябрь', 'Декабрь'],
+                dayNames: ['воскресенье', 'понедельник', 'вторник', 'среда', 'четверг', 'пятница', 'суббота'],
+                dayNamesShort: ['вск', 'пнд', 'втр', 'срд', 'чтв', 'птн', 'сбт'],
+                dayNamesMin: ['Вс', 'Пн', 'Вт', 'Ср', 'Чт', 'Пт', 'Сб'],
+                weekHeader: 'Нед',
+                dateFormat: 'yy-mm-dd',
+                firstDay: 1,
+                isRTL: false,
+                showMonthAfterYear: false,
+                yearSuffix: ''
+            };
+            $.datepicker.setDefaults($.datepicker.regional['ru']);
+
+            $('.filter_date input#datepicker').datepicker($.extend({
+                    inline: true,
+                    changeYear: true,
+                    changeMonth: true,
+                    onSelect: function(selectedDate) {
+                        filter_table();
+                    }
+                },
+                $.datepicker.regional['ru']
+            ));
+
+            <?php  } ?>
+
+            if ($('body').hasClass('this-tablica-lagerej')) {
+                orighref = "<?= $current_sub['Hidden_URL'] ?>";
+                $('.filter_cname input, .filter_date input').keyup(function(e){
+                    if(e.keyCode == 13){
+                        filter_table();
+                    }
+                })
+                $('.filter_mo select, .filter_shift select').change(function(){
+                    filter_table();
+                })
+                $('.filter_execute button').click(function(){
+                    filter_table();
+                })
+                $('.filter_clear button').click(function(){
+                    location.href = orighref;
+                })
+            }
+            function filter_table(){
+                var name = $('.filter_cname input').val();
+                var mo = $('.filter_mo select').val();
+                var shift = $('.filter_shift select').val();
+                var date = $('.filter_date input').val();
+                var findurl = orighref+"?name="+name+"&mo="+mo+"&shift="+shift+"&date="+date;
+                location.href = findurl;
+            }
+        })
+    </script>
+
+<?=($totRows ? "</div>" : NULL)?>
+<?=getPagination(array(
+    'isTitle' => $isTitle,
+    'cc_env' => $cc_env,
+    'prevLink' => $prevLink,
+    'nextLink' => $nextLink,
+    'totRows' => $totRows,
+    'recNum' => $recNum,
+    'vars_str2' => $vars_str2,
+    'sub' => $sub,
+    'cc' => $cc,
+    'inside_admin' => $inside_admin
+))?>

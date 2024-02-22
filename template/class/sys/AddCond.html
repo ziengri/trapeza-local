@@ -1,0 +1,46 @@
+<?php
+$connectTemplate = $DOCUMENT_ROOT.$pathInc2."/template/class/sys/AddCond.html";
+if($current_catalogue['customCode'] && file_exists($connectTemplate)){
+  include($connectTemplate);
+}else{
+  if ($db->get_var("SELECT User_ID FROM User WHERE Login = '$f_Login'")) {
+    $warnText = "Логин <b>$f_Login</b> занят другим пользователем<br><br>";
+    $posting = 0;
+  }
+  if ($Password1 != $Password2) {
+    $warnText = "Пароли не совпадают<br><br>";
+    $posting = 0;
+  }
+
+  if (!nc_captcha_verify_code($nc_captcha_code, $nc_captcha_hash, false)) {
+      $warnText = "Не верно введенны символы с картинки";
+      $posting = 0;
+  }
+
+  if ($f_Email) {
+    if (!checkEmail($f_Email)) {
+      $warnText = "Неверный Email!<br><br>";
+      $posting = 0;
+    }
+    if ($db->get_var("SELECT User_ID FROM User WHERE Email = '$f_Email'")) {
+      $warnText = "Пользователь с таким email адресом уже зарегистрирован!<br><br>";
+      $posting = 0;
+    }
+  }
+
+  if ((!$f_Email || !$f_phone || $warnText) && $json) {
+      $posting = 0;
+      $warnText = $warnText ? $warnText : "Заполните все обязательные поля.";
+  }
+
+  if ($_POST['customf']) {
+    $f_customf = json_encode($_POST['customf']);
+  }
+
+  if ($f_company=='google') {
+    $warnText = "Ошибка 15<br><br>";
+    $posting = 0;
+  }
+
+}
+?>

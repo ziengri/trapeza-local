@@ -1,0 +1,13 @@
+<?php 	// html корзины
+$fields = array(
+    "sub" => $sub,
+    "cc" => $cc
+);
+header("Cache-Control: no-cache, no-store, must-revalidate, max-age=1");
+header("Pragma: no-cache");
+header('Expires: Mon, 26 Jul 1997 05:00:00 GMT');
+
+$class2005 = new Class2005($fields);
+echo $class2005->getCart() . "<div class='none'></div>";
+?>
+<meta http-equiv="expires" content="Sun, 01 Jan 2014 00:00:00 GMT"/>

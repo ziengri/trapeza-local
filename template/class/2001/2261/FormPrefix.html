@@ -1,0 +1,43 @@
+<?php
+
+if (!$vendor)
+    echo ($inside_admin ? $f_AdminCommon : addObjBut($addLink, $isTitle, null, 'товар'));
+
+$caheDir = $DOCUMENT_ROOT.$pathInc.'/var';
+
+if (!file_exists($caheDir)) mkdir($caheDir, 777);
+
+$cacheFile = $caheDir.'/unique_items_cache.json';
+
+$data = [];
+if (file_exists($cacheFile) && !(filectime($cacheFile) + 86400 < date('U'))) {
+    $data = json_decode(file_get_contents($cacheFile), true) ?: [];
+}
+
+if (!$data) {
+    $sql = "SELECT `Message_ID` AS id, `price`, `name`
+            FROM `Message2001`
+            WHERE `Catalogue_ID` = {$catalogue}
+                AND `Checked` = 1";
+    $data = $db->get_results($sql, ARRAY_A);
+    file_put_contents($cacheFile, json_encode($data, JSON_UNESCAPED_UNICODE));
+}
+
+if (empty($similar_percent)) $similar_percent = 55;
+
+$uniqueItems = new ItemsUnique($data, (int) $id, (int) $city_id);
+$list = $uniqueItems->getUniqueList(4, (int) $similar_percent);
+
+if ($list) : 
+?>
+    <ul class="catalog-unique-list">
+        <?php foreach ($list as $item) : ?>
+            <li>
+                <?php $href = nc_message_link($item['id'], 2001); ?>
+                <?php if ($href) : ?><a href="<?= $href ?>"><?php endif; ?>
+                    <?= $item['name'] ?>
+                <?php if ($href) : ?></a><?php endif; ?>
+            </li>
+        <?php endforeach; ?>
+    </ul>
+<?php endif; ?>

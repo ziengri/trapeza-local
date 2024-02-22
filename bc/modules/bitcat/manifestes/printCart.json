@@ -1,0 +1,39 @@
+{
+    "printCart": {
+        "name": "Корзина",
+        "row": [
+            {
+                "name": "printCartLogo",
+                "label": "Логотип",
+                "type": "file",
+                "colline": 2
+            },
+            {
+                "name": "printCartNDS",
+                "label": "НДС (%)",
+                "type": "text",
+                "colline": 2
+            },
+            {
+                "name": "printCartUnderText",
+                "label": "Текст под логотипом",
+                "type": "text",
+                "colline": 1
+            },
+            {
+                "name": "printCartRec",
+                "label": "Реквизиты",
+                "type": "textarea",
+                "colline": "height",
+                "type_old": 3
+            },
+            {
+                "name": "printCartBottomText",
+                "label": "Текст внизу",
+                "type": "textarea",
+                "colline": "height",
+                "type_old": 3
+            }
+        ]
+    }
+}

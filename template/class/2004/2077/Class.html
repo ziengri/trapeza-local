@@ -1,0 +1,12 @@
+<!-- FormPrefix --><div class="bc-slider">
+<!-- /FormPrefix -->
+
+<!-- RecordTemplate --><div class='sld-item obj <?=objHidden($f_Checked,$f_citytarget,$cityid)?> obj<?=$f_RowID?>'>
+  <?=$f_AdminButtons?>
+  <?php  $imsize = getimagesize($DOCUMENT_ROOT.$f_photo_url); ?>
+  <div class="image-default"><img src='<?=$f_photo?>'></div>
+  <div class="ba-text1"><?=($f_name ? "$f_name | " : NULL)?> <?=$imsize[0]?> × <?=$imsize[1]?></div>
+  <?=($f_text ? "<div class='ba-text2'>".strip_tags($f_text)."</div>" : NULL)?>
+</div><!-- /RecordTemplate -->
+
+<!-- FormSuffix --></div><!-- /FormSuffix -->

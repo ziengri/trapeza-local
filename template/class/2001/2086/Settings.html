@@ -1,0 +1,12 @@
+<?php
+require $nc_parent_field_path;
+
+$query_order = "a.Subdivision_ID,".($sort ? $sort : ($current_cc[SortBy] ? "{$current_cc[SortBy]}" : "a.Priority"));
+
+$table_photo = $setting['lists_texts']['tbl_cat_photo']['checked'] ? $setting['lists_texts']['tbl_cat_photo']['name'] : "Фото";
+$table_name = $setting['lists_texts']['tbl_cat_name']['checked'] ? $setting['lists_texts']['tbl_cat_name']['name'] : "Название";
+$table_vendor = $setting['lists_texts']['tbl_cat_vendor']['checked'] ? $setting['lists_texts']['tbl_cat_vendor']['name'] : "Произ-ль";
+$table_art = $setting['lists_texts']['tbl_cat_art']['checked'] ? $setting['lists_texts']['tbl_cat_art']['name'] :"Артикул";
+$table_price = $setting['lists_texts']['tbl_cat_price']['checked'] ? $setting['lists_texts']['tbl_cat_price']['name'] : "Цена";
+$table_buy = $setting['lists_texts']['tbl_cat_buy']['checked'] ? $setting['lists_texts']['tbl_cat_buy']['name'] : "Купить";
+?>

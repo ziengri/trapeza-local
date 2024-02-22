@@ -1,0 +1,37 @@
+<?php
+
+require_once $_SERVER['DOCUMENT_ROOT'] . "/vars.inc.php";
+require_once $_SERVER['DOCUMENT_ROOT'] . "/bc/connect_io.php";
+require_once $_SERVER['DOCUMENT_ROOT'] . "/bc/modules/default/function.inc.php";
+
+global $db, $catalogue;
+
+try {
+    $importYML = new App\modules\Korzilla\YML\Controller();
+    $count = ($f_cron_on == 1 ? 0 : 1);
+
+    $cron_id = $importYML->setImportCron($message, $catalogue, ($_POST['interval_minut'] ?: 60), $count);
+
+    $db->query("UPDATE Message2258 SET cron_id = {$cron_id} WHERE Message_ID = {$message}");
+
+    $respons = [
+        "title" => "ОК",
+        "succes" => "Прайс обновлен ".$r,
+        "modal" => "close",
+        "reloadtab" => 1,
+        "sdf" => $message
+    ];
+} catch (\Exception $e) {
+    $respons = [
+        "title" => "Ошибка",
+        "error" => $e->getMessage()
+    ];
+}
+
+if($inside_admin) {
+    ob_end_clean();
+    header('Location: '.$goBackLink.'&inside_admin=1');
+    exit;
+} else { 
+    echo json_encode($respons);
+}

@@ -1,0 +1,11 @@
+<?php
+/** подключение отделенного вывода объекта */
+$includeFilePath = $DOCUMENT_ROOT . $pathInc2 . "/template/class/{$classID}/RecordTemplateFull.html";
+$isInclude = $current_catalogue['customCode'] && file_exists($includeFilePath);
+?>
+
+<?php if ($isInclude) : ?>
+    <?php include $includeFilePath; ?>
+<?php else : ?>
+
+<?php endif; ?>

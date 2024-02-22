@@ -1,0 +1,7 @@
+<!-- FormPrefix --><?= $f_AdminCommon; ?><!-- /FormPrefix -->
+
+<!-- RecordTemplate --><h3><?= nc_edit_inline('Title',$f_RowNum, $cc_env['Sub_Class_ID']); ?></h3>
+<p><?= nc_edit_inline('SubTitle',$f_RowNum, $cc_env['Sub_Class_ID']); ?></p>
+<?= $f_Image->resize(150, 150, nc_ImageTransform::RESIZE_TO_BEST_FIT)->as_img(); ?><!-- /RecordTemplate -->
+
+<!-- FormSuffix --><!-- /FormSuffix -->

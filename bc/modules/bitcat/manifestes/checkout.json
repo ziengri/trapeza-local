@@ -1,0 +1,20 @@
+{
+    "checkout": {
+        "name": "Корзина",
+        "row": [
+            {
+                "name": "fastbuy_deliv",
+                "label": "Вывести \"Способ доставки\"<br>и \"Способ оплаты\"",
+                "type": "checkbox",
+                "colline": 2
+            },
+            {
+                "name": "oneClickForm",
+                "label": "Поля оформить заказ (покупка в один клик)",
+                "type": "textarea",
+                "colline": "height",
+                "type_old": "15"
+            }
+        ]
+    }
+}

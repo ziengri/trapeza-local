@@ -1,0 +1,31 @@
+<form action='/bc/modules/default/amocrm/get_access_token.php' method='post' class='ajax2'>
+    <input type='hidden' name='action' value='get_accest_token'>
+    <div class='userline usr-input-text subdomain'>
+    <div class='input-field-standart '>
+            <label class='field-title '>Поддомен:<div class='red'>*</div></label>
+            <input type='text' name='subdomain'>
+        </div>
+    </div>
+    <div class='userline usr-input-text client_secret'>
+        <div class='input-field-standart '>
+            <label class='field-title '>Секретный ключ:<div class='red'>*</div></label>
+            <input type='text' name='client_secret'>
+        </div>
+    </div>
+    <div class='userline usr-input-text client_id'>
+        <div class='input-field-standart '>
+            <label class='field-title '>ID интеграции:<div class='red'>*</div></label>
+            <input type='text' name='client_id'>
+        </div>
+    </div>
+    <div class='userline usr-input-text code'>
+        <div class='input-field-standart '>
+            <label class='field-title '>Код авторизации:<div class='red'>*</div></label>
+            <input type='text' name='code'>
+        </div>
+    </div>
+    <div class='result'></div>
+    <div class='modal_button_main'>
+        <span class='btn-strt'><input value='Получить' type='submit'></span>
+    </div>
+</form>

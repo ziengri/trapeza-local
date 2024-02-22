@@ -1,0 +1,27 @@
+<?php
+global $IMG_HOST,$action, $mainpage, $bitcat, $cityid, $cityname, $citylink, $setting;
+
+if ($rand) $query_order = "RAND()";
+
+# видимость скрытых для админа
+if (!$isTitle && ($bitcat || $bitLoadMore)) {
+    $ignore_check = 1;
+}
+
+$news_first = array('record' => "<img alt='' src='%Preview%' class='news-img-first'>");
+
+
+# size items in sub
+if(isJson($settingsSub)) $settingsSub = orderArray($current_sub['settingsSub']);
+# object fit
+if($sizehave && $sizeitem_fit) $imagefit = $sizeitem_fit;
+else if($settingsSub["sizehave"] && $settingsSub["sizeitem_fit"]) $imagefit = $settingsSub["sizeitem_fit"];
+else $imagefit = $setting["size".$classID."_fit"];
+$image_default = image_fit($imagefit);
+
+# targeting content
+$query_where .= targeting($query_where);
+#language
+$query_where = getLangQuery($query_where);
+
+?>

@@ -1,0 +1,14 @@
+{
+    "lists_params": {
+        "name": "Параметры товара",
+        "row": [
+            {
+                "name": "lists_params",
+                "type": "multi_line",
+                "type_old": "11",
+                "colline": "height",
+                "params": {"delete_all": 1}
+            }
+        ]
+    }
+}

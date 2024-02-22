@@ -1,0 +1,328 @@
+{
+    "input|100000": {
+        "required": {
+            "value": 1
+        },
+        "typeInput": {
+            "value": "текст"
+        },
+        "label": {
+            "value": "Логин"
+        },
+        "name": {
+            "value": "f_Login"
+        },
+        "value": {
+            "value": ""
+        },
+        "placeholder": {
+            "value": ""
+        },
+        "coleline": {
+            "value": "1"
+        }
+    },
+    "input|200000": {
+        "required": {
+            "value": 1
+        },
+        "typeInput": {
+            "value": "текст"
+        },
+        "label": {
+            "value": "Имя"
+        },
+        "name": {
+            "value": "f_ForumName"
+        },
+        "value": {
+            "value": ""
+        },
+        "placeholder": {
+            "value": ""
+        },
+        "coleline": {
+            "value": "3"
+        }
+    },
+    "input|300000": {
+        "required": {
+            "value": 0
+        },
+        "typeInput": {
+            "value": "текст"
+        },
+        "label": {
+            "value": "Фамилия"
+        },
+        "name": {
+            "value": "f_fam"
+        },
+        "value": {
+            "value": ""
+        },
+        "placeholder": {
+            "value": ""
+        },
+        "coleline": {
+            "value": "3"
+        }
+    },
+    "input|400000": {
+        "required": {
+            "value": 0
+        },
+        "typeInput": {
+            "value": "текст"
+        },
+        "label": {
+            "value": "Отчество"
+        },
+        "name": {
+            "value": "f_otch"
+        },
+        "value": {
+            "value": ""
+        },
+        "placeholder": {
+            "value": ""
+        },
+        "coleline": {
+            "value": "3"
+        }
+    },
+    "input|500000": {
+        "required": {
+            "value": 1
+        },
+        "typeInput": {
+            "value": "текст"
+        },
+        "label": {
+            "value": "Email"
+        },
+        "name": {
+            "value": "f_Email"
+        },
+        "value": {
+            "value": ""
+        },
+        "placeholder": {
+            "value": ""
+        },
+        "coleline": {
+            "value": "3"
+        }
+    },
+    "input|600000": {
+        "required": {
+            "value": 0
+        },
+        "typeInput": {
+            "value": "текст"
+        },
+        "label": {
+            "value": "Телефон"
+        },
+        "name": {
+            "value": "f_phone"
+        },
+        "value": {
+            "value": ""
+        },
+        "placeholder": {
+            "value": ""
+        },
+        "coleline": {
+            "value": "3"
+        }
+    },
+    "file|700000": {
+        "label": {
+            "value": "Фото"
+        },
+        "name": {
+            "value": "f_ForumAvatar"
+        },
+        "coleline": {
+            "value": "3"
+        }
+    },
+    "input|800000": {
+        "required": {
+            "value": 0
+        },
+        "typeInput": {
+            "value": "текст"
+        },
+        "label": {
+            "value": "Город / Населенный пункт"
+        },
+        "name": {
+            "value": "f_city"
+        },
+        "value": {
+            "value": ""
+        },
+        "placeholder": {
+            "value": ""
+        },
+        "coleline": {
+            "value": "1"
+        }
+    },
+    "textarea|900000": {
+        "required": {
+            "value": 0
+        },
+        "label": {
+            "value": "Адрес доставки"
+        },
+        "name": {
+            "value": "f_adres"
+        },
+        "placeholder": {
+            "value": "Индекс, область, населенный пункт, улица, дом, квартира"
+        },
+        "textarea": {
+            "value": ""
+        },
+        "coleline": {
+            "value": "1"
+        }
+    },
+    "input|110000": {
+        "required": {
+            "value": 0
+        },
+        "typeInput": {
+            "value": "текст"
+        },
+        "label": {
+            "value": "ИНН"
+        },
+        "name": {
+            "value": "f_inn"
+        },
+        "value": {
+            "value": ""
+        },
+        "placeholder": {
+            "value": ""
+        },
+        "coleline": {
+            "value": "3"
+        },
+        "userType": {
+            "value": "юр лицо"
+        }
+    },
+    "input|120000": {
+        "required": {
+            "value": 0
+        },
+        "typeInput": {
+            "value": "текст"
+        },
+        "label": {
+            "value": "КПП"
+        },
+        "name": {
+            "value": "f_kpp"
+        },
+        "userType": {
+            "value": "юр лицо"
+        },
+        "placeholder": {
+            "value": ""
+        },
+        "coleline": {
+            "value": "3"
+        }
+    },
+    "select|130000": {
+        "required": {
+            "value": 0
+        },
+        "label": {
+            "value": "Организационная форма"
+        },
+        "name": {
+            "value": "f_org"
+        },
+        "selectGroup": {
+            "values": {
+                "0": {
+                    "value": "ООО"
+                },
+                "1": {
+                    "value": "ИП"
+                },
+                "2": {
+                    "value": "ОАО"
+                },
+                "3": {
+                    "value": "ЗАО"
+                },
+                "4": {
+                    "value": "НП"
+                }
+            }
+        },
+        "coleline": {
+            "value": "3"
+        },
+        "userType": {
+            "value": "юр лицо"
+        }
+    },
+    "input|140000": {
+        "required": {
+            "value": 0
+        },
+        "typeInput": {
+            "value": "текст"
+        },
+        "label": {
+            "value": "Организация"
+        },
+        "name": {
+            "value": "f_company"
+        },
+        "value": {
+            "value": ""
+        },
+        "placeholder": {
+            "value": ""
+        },
+        "coleline": {
+            "value": "3"
+        },
+        "userType": {
+            "value": "юр лицо"
+        }
+    },
+    "input|170000": {
+        "required": {
+            "value": 1
+        },
+        "typeInput": {
+            "value": "текст"
+        },
+        "label": {
+            "value": "Пароль"
+        },
+        "name": {
+            "value": "f_password"
+        },
+        "value": {
+            "value": ""
+        },
+        "placeholder": {
+            "value": ""
+        },
+        "coleline": {
+            "value": "2"
+        }
+    }
+}

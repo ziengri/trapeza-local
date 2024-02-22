@@ -1,0 +1,212 @@
+form#kalc_lising span.ras_liz_form a {
+    color: white;
+    font-weight: bold;
+    text-shadow: 0px 2px 0.3px rgba(0,0,0,0.2);
+    padding: 8px 17px 9px;
+    text-transform: uppercase;
+    letter-spacing: 0px;
+    box-shadow: 0 -2px 0 rgba(0,0,0,0.2) inset;
+    margin: 0 auto;
+    display: inline-block;
+    background: #5082CD;
+    -moz-border-radius: 2px;
+    -webkit-border-radius: 2px;
+    -khtml-border-radius: 2px;
+    border-radius: 2px;
+    text-decoration: none;
+    margin-top: 10px;
+    border-bottom: 0px;
+}
+form#kalc_lising {
+    display: block;
+    border: 2px solid #5082CD;
+    -webkit-border-radius: 3px;
+    -moz-border-radius: 3px;
+    border-radius: 3px;
+    padding: 15px;
+    background: rgba(182, 223, 255, 0.07);
+}
+form#kalc_lising .form_line_main{
+    font-size: 0;
+}
+form#kalc_lising .form_line_main>div {
+    font-size: 14px;
+}
+form#kalc_lising input, textarea, button {
+    font-size: 12px;
+    padding: 4px 6px;
+    -moz-border-radius: 2px;
+    -webkit-border-radius: 2px;
+    -khtml-border-radius: 2px;
+    border: 1px #ccc solid;
+    border-radius: 2px;
+}
+form#kalc_lising .no_input input[type="text"] {
+    background: #ECECEC;
+}
+form#kalc_lising .form_line_main.form_line_main1>div {
+    vertical-align: middle;
+}
+form#kalc_lising .form_line_main1 {
+    margin-bottom: 26px;
+}
+input#lising_res:hover {
+    background: #E64F4F;
+}
+form#kalc_lising .no_input:before {
+    content: "";
+    display: block;
+    height: 100%;
+    width: 100%;
+    position: absolute;
+    top: 0;
+    left: 0;
+}
+form#kalc_lising .form_line_main1 {
+    margin-bottom: 21px;
+    padding-bottom: 20px;
+    border-bottom: 1px dashed rgba(80, 130, 205, 0.27);
+}
+form#kalc_lising .f_line_5:nth-of-type(2) span.line_int {
+    margin-bottom: 6px;
+}
+body form#kalc_lising input#lising_res {
+    background: #E64F4F;
+    cursor: pointer;
+    border: 0px solid;
+    font-size: 14px;
+    color: white;
+    font-weight: bold;
+    text-shadow: 0px 2px 0.3px rgba(0,0,0,0.2);
+    padding: 11px 10px;
+    text-transform: uppercase;
+    letter-spacing: 0px;
+    box-shadow: 0 -2px 0 rgba(0,0,0,0.2) inset;
+    margin: 0 auto;
+    display: inline-block;
+    -moz-border-radius: 2px;
+    -webkit-border-radius: 2px;
+    -khtml-border-radius: 2px;
+    border-radius: 2px;
+    text-decoration: none;
+    border-bottom: 0px;
+}
+body form#kalc_lising input#lising_res:hover {
+    opacity: 0.8;
+}
+form#kalc_lising .no_input {
+    position: relative;
+}
+form#kalc_lising input {
+    padding: 8px 10px;
+    width: 170px;
+    text-align: center;
+}
+form#kalc_lising span.line_int label {
+    display: inline-block;
+    margin-right: 6px;
+    cursor: pointer;
+}
+form#kalc_lising .none{
+	display: none !important;
+}
+form#kalc_lising input[type="radio"] {
+    width: auto;
+    height: 14px;
+    margin: 3px;
+    width: 15px;
+}
+form#kalc_lising span.line_name {
+    display: block;
+    text-align: center;
+    padding: 1px 7px 1px 0;
+    margin-bottom: 9px;
+}
+form#kalc_lising input[type="radio"] {
+    width: 14px;
+    height: 14px;
+    display: inline-block;
+    vertical-align: top;
+}
+form#kalc_lising span.rad_text {
+    display: inline-block;
+    vertical-align: top;
+    padding-left: 1px;
+}
+form#kalc_lising .form_line {
+    margin-bottom: 4px;
+    display: inline-block;
+    width: 33%;
+}
+form#kalc_lising .f_line_3 input[type="text"] {
+    width: 40px;
+    text-align: center;
+}
+form#kalc_lising span.line_int_first {
+    display: block;
+}
+
+form#kalc_lising span.line_int {
+    display: block;
+    width: 100%;
+    text-align: center;
+}
+form#kalc_lising input.inp_none {
+    background: transparent;
+    border: none;
+    font-size: 22px !important;
+}
+form#kalc_lising span.line_int_first input {
+    text-align: center;
+}
+
+form#kalc_lising input[type="text"] {
+    font-size: 14px;
+}
+
+form#kalc_lising input.resultnone {
+    border: 1px solid #F24545;
+}
+
+form#kalc_lising span.line_name span {
+    color: #f24545;
+}
+
+form#kalc_lising .form_line:last-of-type {
+    border-bottom: 0px;
+}
+form#kalc_lising .form_line_b {
+    text-align: center;
+    padding-top: 16px;
+    width: 100%;
+}
+form#kalc_lising label.radio input[type="radio"] {
+    display: none;
+}
+
+form#kalc_lising label.radio span.rd {
+    display: inline-block;
+    background: #fff;
+    height: 14px;
+    width: 14px;
+    border: 1px #ccc solid;
+    -moz-border-radius: 2px;
+    -webkit-border-radius: 2px;
+    -khtml-border-radius: 2px;
+    vertical-align: top;
+    margin-right: 3px;
+    border-radius: 2px;
+}
+form#kalc_lising label.radio.checked span.rd:before {
+    content: "";
+    display: block;
+    height: 10px;
+    width: 10px;
+    margin: 2px 0 0 2px;
+    background: #333;
+    background: linear-gradient(rgb(226, 155, 155), #FF4545);
+    -moz-border-radius: 1px;
+    -webkit-border-radius: 1px;
+    -khtml-border-radius: 1px;
+    border-radius: 1px;
+}

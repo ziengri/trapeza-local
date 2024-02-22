@@ -1,0 +1,24 @@
+<?php /* Служебная часть */for ($f_RowNum = 0; $f_RowNum < $rowCount; $f_RowNum++) {    if($fetch_row[$f_RowNum] instanceof Iterator) {        extract($fetch_row[$f_RowNum]->to_array(), EXTR_PREFIX_ALL, "f");    } else {        extract($fetch_row[$f_RowNum], EXTR_PREFIX_ALL, "f");    }    foreach($iteration_RecordTemplate[$f_RowNum] as $value) {        extract($value);    }    eval($cc_env["convert2txt"]);    ob_start();/* Конец служебной части */?>
+<?php
+if($f_logo){
+    $logo = $IMG_HOST.$f_logo;
+	$nophoto = 0;
+}else{
+    $logo = $IMG_HOST.$noimage;
+	$nophoto = 1;
+}
+?>
+
+<div class='obj obj<?=$f_RowID?> <?=$animateKey?> <?=(!$f_Checked ? "uncheck" : NULL)?>' <?=($animateKey ? str_replace(",", ".", "data-wow-delay='".($animateDelay + ($f_RowNum * $animateDelayStep))."s'") : "")?>>
+    <div class='<?=($nophoto ? image_fit() : $image_default)?>'>
+        <a <?=(!$f_nolink ? "rel='nofollow' href='".($f_logolink ? $f_logolink : $fullLink)."'" : NULL)?> class='vendor-a'>
+            <img alt='<?=$f_name?>' src='<?=$logo?>' <?=($nophoto ? "class='nophoto'" : "")?> >
+        </a>
+    </div>
+    <?php  if(!$noname){ ?>
+        <a class="vendor-link" <?=(!$f_nolink ? ($f_logolink ? "href='$f_logolink' rel='nofollow' target='_blank'" : "href='$fullLink'") : NULL)?>><span><?=$f_name?></span></a>
+    <?php  } ?>
+    <?=($bitcat ? editObjBut($editLink) : "")?>
+    <?=($f_AdminButtons ? "<div>$f_AdminButtons</div>" : NULL)?>
+</div>
+<?php /* Служебная часть */    echo nc_finishing_RecordTemplate(ob_get_clean(), $inside_admin, $classID, $f_RowID, $parent_message, $cc, $cc_env["Class_Name"], $no_cache_marks);}/* Конец служебной части */?>

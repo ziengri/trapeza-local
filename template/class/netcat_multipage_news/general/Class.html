@@ -1,0 +1,20 @@
+<!-- FormPrefix --><?= $f_AdminCommon; ?><!-- /FormPrefix -->
+
+<!-- RecordTemplate --><?= $f_AdminButtons; ?>
+<a class="news-item" href="<?= $fullLink; ?>">
+    <div class="news-item-image" style="background-image: url(<?= $f_Image; ?>);">
+        <div class="news-item-date news-date tpl-text-alt">
+            <div class="news-date-day tpl-text-alt-biggest"><?= $f_Date_day; ?></div>
+            <div class="news-date-month tpl-text-alt-small"><?= $months_number_to_text[(int)$f_Date_month]; ?></div>
+        </div>
+    </div>
+    <div class="news-item-content">
+        <div class="news-item-title tpl-text-header4"><?= nc_edit_inline('Name', $f_RowID, $cc); ?></div>
+        <div class="news-item-text tpl-text-default"><?= nc_edit_inline('Description', $f_RowID, $cc); ?></div>
+    </div>
+</a><!-- /RecordTemplate -->
+
+<!-- FormSuffix --><?php if ($totRows > $recNum): ?>
+<?= nc_browse_messages($cc_env, 10); ?>
+<?php endif; ?>
+<!-- /FormSuffix -->

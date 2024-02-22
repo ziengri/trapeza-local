@@ -1,0 +1,13 @@
+<!-- FormPrefix --><?= $f_AdminCommon; ?>
+<?php  if ($totRows > 0): ?>
+  <section class="template-partners <?= $cc_settings['border'] === 'on' ? 'border' : ''; ?>">
+<?php  endif; ?><!-- /FormPrefix -->
+
+<!-- RecordTemplate --><?= $f_AdminButtons; ?>
+<div class="partners-object">  
+    <div class="partners-image"><?= $f_Image->resize(200, 120, nc_ImageTransform::RESIZE_TO_BEST_FIT)->as_img(array('title' => strip_tags($f_Title), 'alt' => strip_tags($f_Title))); ?></div>
+</div><!-- /RecordTemplate -->
+
+<!-- FormSuffix --><?php  if ($totRows > 0): ?>
+  </section>
+<?php  endif; ?><!-- /FormSuffix -->

@@ -1,0 +1,108 @@
+<?
+global $DOCUMENT_ROOT, $pathInc2;
+$connectTemplate = $DOCUMENT_ROOT . $pathInc2 . "/template/{$classID}/AddTemplate.html";
+if ($current_catalogue['customCode'] && file_exists($connectTemplate)) {
+    include($connectTemplate);
+} else {
+    ?>
+    <?php if ($warnText) {
+        echo json_encode(
+            array(
+                "title" => "Error",
+                "error" => $warnText
+            )
+        );
+    } else {
+        ?>
+
+        <?php
+        $res = $db->get_var("SELECT CustomSettings FROM Sub_Class WHERE Sub_Class_ID=$cc");
+        ($res ? eval("\$cc_settings = $res") : $cc_settings = NULL);
+        $res = $db->get_var("SELECT CustomSettingsTemplate FROM Class WHERE Class_ID=$classID");
+        eval("\$default_cc_settings = $res");
+        if (!$inside_admin) {
+            $subName = $current_sub['Subdivision_Name'];
+            if (!empty($isNaked) && !empty($_SERVER['HTTP_REFERER'])) {
+                $subName = $nc_core->subdivision->get_by_uri(parse_url($_SERVER['HTTP_REFERER'], PHP_URL_PATH), $catalogue, 'Subdivision_Name');
+            }
+            ?>
+
+            <?php
+            $yourName = $setting_texts['you_name']['checked'] ? $setting_texts['you_name']['name'] : "Ваше имя";
+            $yourNameReq = $setting_texts['you_name_req']['checked'] ? $setting_texts['you_name_req']['name'] : 1;
+            $yourEmail = $setting_texts['you_email']['checked'] ? $setting_texts['you_email']['name'] : "Ваш e-mail";
+            $yourEmailReq = $setting_texts['you_email_req']['checked'] ? $setting_texts['you_email_req']['name'] : 1;
+            $yourText = $setting_texts['you_text']['checked'] ? $setting_texts['you_text']['name'] : "Текст письма";
+            $yourTextReq = $setting_texts['you_text_req']['checked'] ? $setting_texts['you_text_req']['name'] : 1;
+            $yourPhoneReq = $setting_texts['you_phone_req']['checked'] ? $setting_texts['you_phone_req']['name'] : 0;
+            $noYourMail = $setting_texts['no_you_email']['checked'] ? $setting_texts['no_you_email']['name'] : 0;
+            ?>
+
+            <?= ($cc_settings['TextBefore'] ? $cc_settings['TextBefore'] : $default_cc_settings['TextBefore']['default_value']) ?>
+            <form name='tomail' class='ajax2 json form' method='post' action='<?= $SUB_FOLDER . $HTTP_ROOT_PATH ?>add.php'
+                data-metr='mail'>
+                <?php $nc_core->token->get_input() ?>
+                
+                
+                <input name='cc' type='hidden' value='<?= $cc ?>'>
+                <input name='sub' type='hidden' value='<?= $sub ?>'>
+                <input name='catalogue' type='hidden' value='<?= $catalogue ?>'>
+                <input name='f_subname' type='hidden' value='<?= $subName ?>'>
+                <input type='hidden' name='posting' value='1'>
+                <input type='hidden' name='f_page' value='<?=($isNaked ? $_SERVER['HTTP_REFERER'] : "http://".$_SERVER['HTTP_HOST'].$_SERVER['REQUEST_URI'])?>'>
+                <?= ($mgr > 0 ? "<input type='hidden' name='mgr' value='{$mgr}'>" : "") ?>
+                <?= ($itemId > 0 ? "<input type='hidden' name='f_itemID' value='{$itemId}'>" : "") ?>
+                <div class="userline">
+                    <?= bc_input_standart(
+                        "f_Name",
+                        trim("{$current_user['fam']} {$current_user['ForumName']} {$current_user['otch']}"),
+                        $yourName,
+                        "maxlength='255' size='50' title='{$yourName}'",
+                        $yourNameReq
+                    ) ?>
+                </div>
+                <?php if ($setting_texts['you_phone']['checked']): ?>
+                    <div class="userline">
+                        <?= bc_input_standart(
+                            "f_phone", $current_user['Phone'], $setting_texts['you_phone']['name'],
+                            "maxlength='55' size='20'",
+                            $yourPhoneReq
+                        ) ?>
+                    </div>
+                <?php endif; ?>
+                <?php if (!$noYourMail): ?>
+                    <div class="userline">
+                        <?= bc_input_standart(
+                            "f_Email", $current_user['Email'],
+                            $yourEmail,
+                            "maxlength='55' size='20' title='{$yourEmail}'",
+                            $yourEmailReq
+                        ) ?>
+                    </div>
+                <?php endif; ?>
+                <div class="userline">
+                    <?= bc_textarea_standart(
+                        "f_mailtext",
+                        $f_mailtext,
+                        $yourText,
+                        "title='{$yourText}'",
+                        $yourTextReq
+                    ) ?>
+                </div>
+                <?= politika() ?>
+                <div class='result center'></div>
+                <div class="modal_button_main"><span class="btn-strt"><input
+                            value='<?= ($setting_texts['you_btn']['checked'] ? $setting_texts['you_btn']['name'] : "Отправить") ?>'
+                            type='submit' /></span></div>
+                <?php if (!$AUTH_USER_ID && $current_cc['UseCaptcha'] && $MODULE_VARS['captcha']) { ?>
+                    <p>
+                        <?= nc_captcha_formfield() ?><br />
+                        <?= NETCAT_MODERATION_CAPTCHA ?> (*):<br /><input type='text' name='nc_captcha_code' size='10'>
+                    </p>
+                <?php } ?>
+            </form>
+
+        <? } ?>
+
+    <? } ?>
+<? } ?>

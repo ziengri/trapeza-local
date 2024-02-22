@@ -1,0 +1,21 @@
+{
+  "name": "r0dgerv/api-client-tradesoft",
+  "description": "API client tradesoft.ru",
+  "keywords": ["api", "client", "tradesoft"],
+  "license": "MIT",
+  "authors": [
+    {
+      "name": "Andrey Bunyaev",
+      "email": "abunyaev@gmail.com"
+    }
+  ],
+  "autoload": {
+    "psr-4": {
+      "R0dgerV\\ApiClientTradesoft\\": "src/"
+    }
+  },
+  "require": {
+    "php": ">=5.5",
+    "guzzlehttp/guzzle": "~6.0"
+  }
+}

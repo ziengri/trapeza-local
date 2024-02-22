@@ -1,0 +1,129 @@
+&
+{
+    min-height: 60px
+}
+
+.tpl-block-list-objects {
+    /*margin-left: auto;*/
+    /*margin-right: auto;*/
+    /*display: flex;*/
+    /*flex-wrap: wrap;*/
+}
+
+.contacts-object {
+    display: flex;
+    /*padding: 30px 0;*/
+    flex-direction: column;
+    margin: 0px auto;
+    /*max-width: 560px;*/
+}
+
+.tpl-block-list-objects .contacts-object-image {
+    /*	width: 160px;
+        height: 160px;
+        min-width: 160px;
+        min-height: 160px;
+        */
+    overflow: hidden;
+    margin-bottom: 20px;
+}
+
+.tpl-block-list-objects .contacts-object-image img {
+    width: 160px;
+    height: 160px;
+    object-fit: cover;
+}
+
+.tpl-block-list-objects .contacts-object.rounded img {
+    border-radius: 50%;
+}
+
+.tpl-block-list-objects .contacts-object-info {
+    font-family: var(--tpl-font-family-common);
+}
+
+.tpl-block-list-objects .contacts-object-info-header {
+    font-size: 1.6rem;
+    line-height: 1.23;
+    font-weight: 600;
+}
+
+.tpl-block-list-objects .contacts-object-info-about {
+    font-size: 0.9rem;
+    line-height: 1.5;
+    font-weight: 300;
+    margin-top: 4px;
+}
+
+/*.contacts-object-info-header + .contacts-object-info-about {*/
+    /*margin-bottom: 35px;*/
+/*}*/
+
+.tpl-block-list-objects .contacts-object-items {
+    font-family: var(--tpl-font-family-common);
+}
+
+.tpl-block-list-objects .contacts-object-items-item {
+    font-size: 1.1rem;
+    line-height: 1.55;
+    font-weight: 300;
+}
+
+.tpl-block-list-objects .contacts-object-items-item strong {
+    font-weight: 600;
+}
+.tpl-block-list-objects .contacts-object-socials {
+    margin-top: 5px;
+}
+.tpl-block-list-objects .contacts-object-items + .tpl-block-list-objects .contacts-object-socials {
+    margin-top: 45px;
+}
+
+.tpl-block-list-objects .contacts-object-socials-social {
+    margin: 0 4px;
+    width: 30px;
+    height: 30px;
+    background-color: var(--tpl-color-background-accent);
+    display: inline-block;
+    border-radius: 50%;
+    padding: 4px;
+}
+
+.tpl-block-list-objects .contacts-object-socials-social svg {
+    width: 1.5rem !important;
+    height: 1.5rem !important;
+
+}
+
+.tpl-block-list-objects .contacts-object-socials-social svg path {
+    fill: var(--tpl-color-foreground-accent);
+}
+
+
+.align-items-center {
+    align-items: center;
+}
+
+.align-items-left {
+    align-items: start;
+}
+
+.align-items-right {
+    align-items: end;
+}
+
+.text-center {
+    text-align: center;
+}
+
+.text-left {
+    text-align: left;
+}
+
+.text-right {
+    text-align: right;
+}
+
+.text-justify {
+    text-align: justify;
+}

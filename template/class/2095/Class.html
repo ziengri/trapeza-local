@@ -1,0 +1,105 @@
+<!-- FormPrefix --><?=($inside_admin ? $f_AdminCommon : addObjBut($addLink,$isTitle,null,'новость', 0))?>
+
+<?php 
+    # json раздела
+    if(isJson($settingsSub)) $settingsSub = orderArray($current_sub['settingsSub']);
+    # ширина объекта
+    $sizeitemTotal = 0;
+    if($sizehave){
+        if($sizeitem_select=='count') $sizeitemTotal = $sizeitem_counts;
+        else if($sizeitem && is_numeric($sizeitem)) $sizeitemTotal = $sizeitem;
+    }
+    if(!$sizeitemTotal && $settingsSub["sizehave"]){
+        if($settingsSub["sizeitem_select"]=='count') $sizeitemTotal = $settingsSub["sizeitem_counts"];
+        else if(is_numeric($settingsSub["sizeitem"])) $sizeitemTotal = $settingsSub["sizeitem"];
+    }
+    if(!$sizeitemTotal){
+        if($setting["size".$classID."_select"]=='count') $sizeitemTotal = $setting["size".$classID."_counts"];
+        else $sizeitemTotal = $setting["size".$classID];
+    }
+    # отступ
+    if($sizehave && is_numeric($sizeitem_margin))  $margin = $sizeitem_margin;
+    else if($settingsSub["sizehave"] && is_numeric($settingsSub["sizeitem_margin"])) $margin = $settingsSub["sizeitem_margin"];
+    else if(is_numeric($setting["size".$classID."_margin"])) $margin = $setting["size".$classID."_margin"];
+    else $margin = 15;
+    # Шаблон вывода
+    if($template_block) $template = $template_block;
+    else if($settingsSub["template"]) $template = $settingsSub["template"];
+    else if($setting["size".$classID."_template"]) $template = $setting["size".$classID."_template"];
+    
+    # Открывать в модальном окне
+    if($objInModal) $objInModal = $objInModal;
+    else if($settingsSub["objInModal"]) $objInModal = $settingsSub["objInModal"];
+    else if($setting["size".$classID."_objinmodal"]) $objInModal = $setting["size".$classID."_objinmodal"];
+    
+    $data = subdivisionData(array(
+        'type' => 'news',
+        'sizeitem' => $sizeitemTotal,
+        'margin' => $margin,
+        'imagefit' => $imagefit,
+        'scrolling' => $scrolling,
+        'scrollspeed' => $scrollspeed,
+        'scrollNav' => $scrollNav,
+        'scrollDots' => $scrollDots,
+        'autoplay' => $autoplay,
+        'template' => $template
+    ));
+?>
+
+<?php  if ($totRows) { ?>
+	<ul class='<?=$data['class']?>' <?=$data['attr']?>>
+<?php  } ?>
+
+<?php  if(!$totRows){ ?> <p class='no-obj'>Новостей не найдено</p> <?php }?><!-- /FormPrefix -->
+
+<!-- RecordTemplate --><?php 
+  $fields = array(
+    "objInModal" => $objInModal,
+    "sub" => $sub,
+    "cc" => $cc,
+    "block_id" => $block_id,
+    "classID" => $classID,
+    "nc_ctpl" => $nc_ctpl,
+    "fullLink" => $fullLink,
+    "editLink" => $editLink,
+    "image_default" => $image_default,
+    "AdminButtons" => $f_AdminButtons,
+    "fastprew" => $fastprew,
+    "current_sub" => $current_sub,
+    "current_cc" => $current_cc,
+    "current_catalogue" => $current_catalogue,
+    "RowID" => $f_RowID,
+    "Checked" => $f_Checked,
+    "template" => $template,
+    "date" => $f_date,
+    "name" => $f_name,
+    "text" => $f_text,
+    "textfull" => $f_textfull,
+    "photo_preview" => $f_photo_preview,
+    "photo" => $f_photo,
+    "autor" => $f_autor,
+    "source" => $f_source,
+    "url" => $f_url,
+    "openlink" => $f_openlink,
+    "citytarget" => $f_citytarget,
+    "showphoto" => $f_showphoto
+  );
+  $class2003 = new Class2003($fields);
+  echo $class2003->getItem();
+?><!-- /RecordTemplate -->
+
+<!-- FormSuffix --><?php  if ($totRows) { ?>
+	</ul>
+<?php  } ?>
+<?=getPagination(array(
+    'isTitle' => $isTitle,
+    'cc_env' => $cc_env,
+    'prevLink' => $prevLink,
+    'nextLink' => $nextLink,
+    'totRows' => $totRows,
+    'recNum' => $recNum,
+    'vars_str2' => $vars_str2,
+    'sub' => $sub,
+    'cc' => $cc,
+    'inside_admin' => $inside_admin
+))?><!-- /FormSuffix -->

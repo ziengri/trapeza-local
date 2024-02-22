@@ -1,0 +1,61 @@
+<?php /* Служебная часть */
+for ($f_RowNum = 0; $f_RowNum < $rowCount; $f_RowNum++) {
+    if($fetch_row[$f_RowNum] instanceof Iterator) {
+        extract($fetch_row[$f_RowNum]->to_array(), EXTR_PREFIX_ALL, "f");
+    } else {
+        extract($fetch_row[$f_RowNum], EXTR_PREFIX_ALL, "f");
+    }
+    foreach($iteration_RecordTemplate[$f_RowNum] as $value) {
+        extract($value);
+    }
+    eval($cc_env["convert2txt"]);
+    ob_start();
+/* Конец служебной части */?>
+<?php
+    # Отделение [START]
+    $seporateFile = $DOCUMENT_ROOT.$pathInc2."/template/class/{$classID}/RecordTemplate.html";
+    if ($current_catalogue['customCode'] && file_exists($seporateFile)) : 
+        include $seporateFile;
+    else : 
+        unset($seporateFile);
+?>
+    <?php
+    $fields = array(
+        "sub" => $sub,
+        "cc" => $cc,
+        "classID" => $classID,
+        "nc_ctpl" => $nc_ctpl,
+        "fullLink" => $fullLink,
+        "editLink" => $editLink,
+        "AdminButtons" => $f_AdminButtons,
+        "image_default" => $image_default,
+        "fastprew" => $fastprew,
+        "current_sub" => $current_sub,
+        "current_cc" => $current_cc,
+        "current_catalogue" => $current_catalogue,
+        "RowID" => $f_RowID,
+        "RowNum" => $f_RowNum,
+        "animateKey" => $animateKey,
+        "animateDelay" => $animateDelay,
+        "animateDelayStep" => $animateDelayStep,
+        "Checked" => $f_Checked,
+        "template" => $template,
+        "date" => $f_date,
+        "name" => $f_name,
+        "text" => $f_text,
+        "settings" => $f_settings,
+        "banner" => $f_banner,
+        "link" => $f_link
+    );
+    $class244 = new Class244($fields);
+    echo $class244->getItem();
+?>
+<?php 
+    endif; 
+    unset($seporateFile);
+    # Отделение [END]
+?>
+<?php /* Служебная часть */
+    echo nc_finishing_RecordTemplate(ob_get_clean(), $inside_admin, $classID, $f_RowID, $parent_message, $cc, $cc_env["Class_Name"], $no_cache_marks);
+}
+/* Конец служебной части */?>

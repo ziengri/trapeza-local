@@ -1,0 +1,52 @@
+<?php  
+
+global $IMG_HOST,$action, $mainpage, $bitcat, $cityid, $cityname, $citylink, $setting,
+$action, $db, $setting_texts, $find, $current_sub, $kurs, $catalogue;
+
+
+if ($current_catalogue['customCode']) {
+  GLOBAL $pathInc2;
+    $includeClass = NULL;
+  $thisFile = $DOCUMENT_ROOT.$pathInc2."/template/class/{$classID}/AddTemplate.html";
+  $thisFile2 = $DOCUMENT_ROOT.$pathInc2."/template/{$classID}/template/AddTemplate.html";
+  if (file_exists($thisFile)) $includeClass = 1;
+  elseif (file_exists($thisFile2)) $includeClass = 2;
+}
+
+if ($includeClass==1) { include($thisFile); } elseif ($includeClass==2) {include($thisFile2);} else { # ############ START ##########
+
+if ($warnText) { 
+    echo json_encode(ARRAY(
+        "title" => "Error",
+        "error" => $warnText
+    ));
+} else {
+?>
+  <form name='adminForm' id='adminForm' class='ajax2' enctype='multipart/form-data' method='post' action='<?= $SUB_FOLDER ?><?= $HTTP_ROOT_PATH ?>add.php'>
+    <div id='nc_moderate_form'>
+      <input name='admin_mode' type='hidden' value='<?= $admin_mode ?>' />
+      <?= $nc_core->token->get_input() ?>
+      <input name='catalogue' type='hidden' value='<?= $catalogue ?>' />
+      <input name='cc' type='hidden' value='<?= $cc ?>' />
+      <input name='sub' type='hidden' value='<?= $sub ?>' /><input name='posting' type='hidden' value='1' />
+      <input name='curPos' type='hidden' value='<?= $curPos ?>' />
+      <input name='f_Parent_Message_ID' type='hidden' value='<?= $f_Parent_Message_ID ?>' />
+      <?= nc_form_moderate('add', $admin_mode, 0, $systemTableID, $current_cc, (isset($f_Checked) ? $f_Checked  : null), $f_Priority , $f_Keyword, $f_ncTitle, $f_ncKeywords, $f_ncDescription ) ?>
+    </div>
+    
+    <?php 
+		$connectForm = $DOCUMENT_ROOT.$pathInc2."/template/{$classID}/form.php";
+        echo $connectForm;
+		if($current_catalogue['customCode'] && file_exists($connectForm)){
+			include($connectForm);
+		}else{
+            include("form.php");
+		}
+    ?>
+    
+    <div class="bc_submitblock">
+        <div class='result'></div>
+        <span class="btn-strt"><?= nc_submit_button(NETCAT_MODERATION_BUTTON_ADD) ?></span>
+    </div>
+  </form>
+<?php } }?>

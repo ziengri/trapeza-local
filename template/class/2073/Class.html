@@ -1,0 +1,86 @@
+<!-- FormPrefix --><?=($inside_admin ? $f_AdminCommon : addObjBut($addLink,$isTitle))?>
+
+<?php 
+    # json раздела
+    if(isJson($settingsSub)) $settingsSub = orderArray($current_sub['settingsSub']);
+    # ширина объекта
+    $sizeitemTotal = 0;
+    if($sizehave){
+        if($sizeitem_select=='count') $sizeitemTotal = $sizeitem_counts;
+        else if($sizeitem && is_numeric($sizeitem)) $sizeitemTotal = $sizeitem;
+    }
+    if(!$sizeitemTotal && $settingsSub["sizehave"]){
+        if($settingsSub["sizeitem_select"]=='count') $sizeitemTotal = $settingsSub["sizeitem_counts"];
+        else if(is_numeric($settingsSub["sizeitem"])) $sizeitemTotal = $settingsSub["sizeitem"];
+    }
+    if(!$sizeitemTotal){
+        if($setting["size".$classID."_select"]=='count') $sizeitemTotal = $setting["size".$classID."_counts"];
+        else $sizeitemTotal = $setting["size".$classID];
+    }
+    # отступ
+    if($sizehave && is_numeric($sizeitem_margin))  $margin = $sizeitem_margin;
+    else if($settingsSub["sizehave"] && is_numeric($settingsSub["sizeitem_margin"])) $margin = $settingsSub["sizeitem_margin"];
+    else if(is_numeric($setting["size".$classID."_margin"])) $margin = $setting["size".$classID."_margin"];
+    else $margin = 15;
+    # Шаблон вывода
+    if($template_block) $template = $template_block;
+    else if($settingsSub["template"]) $template = $settingsSub["template"];
+    else if($setting["size".$classID."_template"]) $template = $setting["size".$classID."_template"];
+    
+    # Открывать в модальном окне
+    if($objInModal) $objInModal = $objInModal;
+    else if($settingsSub["objInModal"]) $objInModal = $settingsSub["objInModal"];
+    else if($setting["size".$classID."_objinmodal"]) $objInModal = $setting["size".$classID."_objinmodal"];
+    
+    $data = subdivisionData(array(
+        'type' => 'gencomponent',
+        'sizeitem' => $sizeitemTotal,
+        'margin' => $margin,
+        'imagefit' => $imagefit,
+        'scrolling' => $scrolling,
+        'scrollspeed' => $scrollspeed,
+        'scrollNav' => $scrollNav,
+        'scrollDots' => $scrollDots,
+        'autoplay' => $autoplay,
+        'template' => $template
+    ));
+?>
+
+<?php  if ($totRows) { ?>
+	<ul class='<?=$data['class']?>' <?=$data['attr']?>>
+<?php  } ?>
+
+<?php if(!$totRows){ ?> <p class='no-obj'>Объектов не найдено</p> <?php }?><!-- /FormPrefix -->
+
+<!-- RecordTemplate --><?php  echo $f_AdminButtons; ?><?php 
+	if ($f_oneitem) {
+	    include $DOCUMENT_ROOT."/template/class/2073/RecordTemplateFull.html";
+	} else {
+        $fields = array(
+        "inModal" => $inModal,
+        "sub" => $sub,
+        "cc" => $cc,
+        "classID" => $classID,
+        "nc_ctpl" => $nc_ctpl,
+        "fullLink" => $fullLink,
+        "editLink" => $editLink,
+        "image_default" => $image_default,
+        "current_sub" => $current_sub,
+        "current_cc" => $current_cc,
+        "current_catalogue" => $current_catalogue,
+        "RowID" => $f_RowID,
+        "Checked" => $f_Checked,
+        "template" => $template,
+        "inputs" => $f_inputs,
+        "image" => $f_image,
+        "text" => $f_text,
+        );
+        $class2073 = new Class2073($fields);
+        echo $class2073->getItem();
+    }
+?><!-- /RecordTemplate -->
+
+<!-- FormSuffix --><?php  if ($totRows) { ?>
+	</ul>
+    <?=(!$isTitle ? getLoadMore(array("totRows" => $totRows, "recNum" => $recNum, "sub" => $sub, "cc" => $cc)) : "")?>
+<?php  } ?><!-- /FormSuffix -->

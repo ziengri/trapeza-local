@@ -1,0 +1,94 @@
+&{
+    min-height: 60px
+}
+
+.align-items-center {
+    align-items: center;
+}
+
+.align-items-start {
+    align-items: start;
+}
+
+.align-items-end {
+    align-items: end;
+}
+.tpl-block-list-objects {
+    max-width: 1200px;
+    margin-left: auto;
+    margin-right: auto;
+    display: flex;
+    flex-wrap: wrap;
+}
+
+.tpl-block-list-objects .contacts-object {
+    display: flex;
+    padding: 30px 0;
+    flex-direction: column;
+    margin: 0px auto;
+    min-width: 210px;
+    max-width: 310px;
+    /*font-family: var(--tpl-font-family-common);*/
+}
+
+.tpl-block-list-objects .contacts-object-image {
+    /*margin-bottom: 30px;*/
+    /*width: 64px;*/
+    /*height: 64px;*/
+}
+.tpl-block-list-objects .contacts-object-image * {
+    width: 100%;
+    height: 100%;
+}
+.tpl-block-list-objects .contacts-object-image img {
+    width: 100%;
+    height: 100%;
+    object-fit: containt;
+}
+
+.tpl-block-list-objects .contacts-object-image svg, .tpl-block-list-objects .contacts-object-image img {
+    max-width: 64px !important;
+    max-height: 64px !important;
+}
+
+.tpl-block-list-objects .contacts-object-header {
+    /*font-size: 24px;*/
+    /*line-height: 1.35;*/
+    /*font-weight: 600;*/
+}
+
+.tpl-block-list-objects .contacts-object-header + .contacts-object-about {
+    /*margin-top: 20px;*/
+}
+
+.tpl-block-list-objects .contacts-object-about {
+    /*font-weight: 300;*/
+    /*font-size: 18px;*/
+    /*line-height: 1.55;*/
+}
+
+.tpl-block-list-objects .contacts-object-socials-social {
+    margin: 0 4px;
+    width: 3rem;
+    height: 3rem;
+    background-color: var(--tpl-color-background-accent);
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    padding: 4px;
+}
+
+.tpl-block-list-objects .contacts-object-socials-social svg {
+    width: 2rem !important;
+    height: 2rem !important;
+}
+.tpl-block-list-objects .contacts-object-socials-social svg path {
+    fill: var(--tpl-color-foreground-accent);;
+}
+.tpl-block-list-objects .contacts-map {
+    -webkit-box-flex: 1;
+    -ms-flex-positive: 1;
+    flex-grow: 1;
+    max-width: 660px;
+}

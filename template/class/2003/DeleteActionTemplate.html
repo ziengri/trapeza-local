@@ -1,0 +1,28 @@
+<?php 
+clearCache($classID,$sub);
+
+# очистка связи тэгов
+(function() use ($classID, $message){
+    $tagProvider = new App\modules\Korzilla\Tag\Provider();
+
+    $filter = $tagProvider->filterGet();
+    $filter->objectId[] = $message;
+    $filter->objectType[] = $classID;
+
+    foreach ($tagProvider->bindGetList($filter) as $bind) {
+        $tagProvider->bindRemove($bind);
+    }
+})();
+
+if($inside_admin) {
+    ob_end_clean();
+    header('Location: '.$goBackLink.'&inside_admin=1');
+    exit;
+} else { 
+    echo json_encode(ARRAY(
+        "title" => "ОК",
+        "succes" =>  "ОК",
+        "reload" => 1
+    ));
+}
+?>

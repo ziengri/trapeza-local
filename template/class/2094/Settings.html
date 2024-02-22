@@ -1,0 +1,12 @@
+<?php
+    global $MODULE_FOLDER, $setting, $catalogue, $pathInc, $db, $current_user;
+    require_once $MODULE_FOLDER.'default/iiko.php';
+    $auth = array(
+        'login' => $setting['iikoLogin'],
+        'pass' => $setting['iikoPassword']
+    );
+    $iiko = new Iiko($auth, $catalogue, $db);
+    // $iiko->deleteAll();
+    $a = $iiko->sendOrder('11790', $current_user);
+
+?>

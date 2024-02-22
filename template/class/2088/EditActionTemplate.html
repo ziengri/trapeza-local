@@ -1,0 +1,20 @@
+<?php 
+global $setting;
+if (!$inside_admin) actionObject($classID, $message, $f_Checked, $Checked);
+
+if (!$inside_admin) objsys($bc_objsys,$classID,$message);
+clearCache($classID,$sub);
+
+if($inside_admin) {
+    ob_end_clean();
+    header('Location: '.$goBackLink.'&inside_admin=1');
+    exit;
+} else { 
+    echo json_encode(ARRAY(
+        "title" => "ОК",
+        "modal" => "close",
+        "reload" => "1",
+        "succes" =>  NETCAT_MODERATION_MSG_OBJCHANGED
+    ));
+}
+?>

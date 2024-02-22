@@ -1,0 +1,178 @@
+<!-- FormPrefix --><?=($inside_admin ? $f_AdminCommon : addObjBut($addLink,$isTitle,null,'портфолио'))?>
+<?php  
+    if ($current_catalogue['customCode']) {
+        global $pathInc2;
+        $includeClass = NULL;
+        $thisFile = $DOCUMENT_ROOT.$pathInc2."/template/class/{$classID}/FormPrefix.html";
+        $thisFile2 = $DOCUMENT_ROOT.$pathInc2."/template/{$classID}/template/FormPrefix.html";
+        if (file_exists($thisFile)) $includeClass = 1;
+        elseif (file_exists($thisFile2)) $includeClass = 2;        
+    }
+
+    $recordCustomPath = $DOCUMENT_ROOT.$pathInc2."/template/class/{$classID}/RecordTemplate.html";
+    $isIncludeRecordCustom = !empty($current_catalogue['customCode']) && file_exists($recordCustomPath);
+
+    if ($includeClass==1) { include($thisFile); } elseif ($includeClass==2) {include($thisFile2);} else { # ############ START ##########
+?>
+<?php
+    # ширина объекта
+    $sizeitemTotal = 0;
+    if($sizehave){
+        if($sizeitem_select=='count') $sizeitemTotal = $sizeitem_counts;
+        else if($sizeitem && is_numeric($sizeitem)) $sizeitemTotal = $sizeitem;
+    }
+    if(!$sizeitemTotal && $settingsSub["sizehave"]){
+        if($settingsSub["sizeitem_select"]=='count') $sizeitemTotal = $settingsSub["sizeitem_counts"];
+        else if(is_numeric($settingsSub["sizeitem"])) $sizeitemTotal = $settingsSub["sizeitem"];
+    }
+    if(!$sizeitemTotal){
+        if($setting["size".$classID."_select"]=='count') $sizeitemTotal = $setting["size".$classID."_counts"];
+        else $sizeitemTotal = $setting["size".$classID];
+    }
+    # отступ
+    if($sizehave && is_numeric($sizeitem_margin))  $margin = $sizeitem_margin;
+    else if($settingsSub["sizehave"] && is_numeric($settingsSub["sizeitem_margin"])) $margin = $settingsSub["sizeitem_margin"];
+    else if(is_numeric($setting["size".$classID."_margin"])) $margin = $setting["size".$classID."_margin"];
+    else $margin = 15;
+
+    $data = subdivisionData(array(
+        'type' => 'portfolio',
+        'sizeitem' => $sizeitemTotal,
+        'margin' => $margin,
+        'scrolling' => $scrolling,
+        'scrollspeed' => $scrollspeed,
+        'scrollNav' => $scrollNav,
+        'scrollDots' => $scrollDots,
+        'autoplay' => $autoplay
+    ));
+
+    # animate
+    $animateKey = "";
+    $animateDelay = 0;
+    $animateDelayStep = 0.16;
+    if($animate){
+        if($animate_title && $animate_title != "_empty_") $animateDelay += $animateDelayStep;
+        if($animate_text && $animate_text != "_empty_") $animateDelay += $animateDelayStep;
+        if($animate_items && $animate_items != "_empty_") $animateKey = $animate_items;
+    }
+    if(!$animateKey && $settingsSub["animate"]){
+        if($settingsSub["animate_title"] && $settingsSub["animate_title"] != "_empty_") $animateDelay += $animateDelayStep;
+        if($settingsSub["animate_text"] && $settingsSub["animate_text"] != "_empty_") $animateDelay += $animateDelayStep;
+        if($settingsSub["animate_items"] && $settingsSub["animate_items"] != "_empty_") $animateKey = $settingsSub["animate_items"];
+    }
+    if(!$animateKey){
+        if($setting["size".$classID."_animate"] && $setting["size".$classID."_animate"] != "_empty_") $animateKey = $setting["size".$classID."_animate"];
+    }
+    if($animateKey) $animateKey = "wow {$animateKey}";
+
+    $tagProvider = new \App\modules\Korzilla\Tag\Provider();
+?>
+
+<?php  if ($totRows) { ?>
+    <?php
+        if (!$isTitle) {
+            echo getSubdivisionTagsHtml(
+                getTagsFromSubdivision($classID, $sub),
+                $current_sub['Hidden_URL'].vars_str($_GET, "recNum,nc_ctpl,curPos,sort"),
+                $tag
+            );
+        }
+    ?>
+	<ul class='<?=$data['class']?>' <?=$data['attr']?> <?=$recNum?>>
+<?php  } ?>
+
+<?php  if(!$totRows && !$isTitle){ ?> <p class='no-obj'>Работ не найдено</p> <?php }?>
+
+<?php  } ##### END ?>
+<!-- <div class='lol'></div> zachem? -->
+<!-- /FormPrefix -->
+
+<!-- RecordTemplate --><?php /* Служебная часть */for ($f_RowNum = 0; $f_RowNum < $rowCount; $f_RowNum++) {    if($fetch_row[$f_RowNum] instanceof Iterator) {        extract($fetch_row[$f_RowNum]->to_array(), EXTR_PREFIX_ALL, "f");    } else {        extract($fetch_row[$f_RowNum], EXTR_PREFIX_ALL, "f");    }    foreach($iteration_RecordTemplate[$f_RowNum] as $value) {        extract($value);    }    eval($cc_env["convert2txt"]);    ob_start();/* Конец служебной части */?>
+<?php /* Служебная часть */
+for ($f_RowNum = 0; $f_RowNum < $rowCount; $f_RowNum++) {
+    if($fetch_row[$f_RowNum] instanceof Iterator) {
+        extract($fetch_row[$f_RowNum]->to_array(), EXTR_PREFIX_ALL, "f");
+    } else {
+        extract($fetch_row[$f_RowNum], EXTR_PREFIX_ALL, "f");
+    }
+    foreach($iteration_RecordTemplate[$f_RowNum] as $value) {
+        extract($value);
+    }
+    eval($cc_env["convert2txt"]);
+    ob_start();
+/* Конец служебной части */?>
+<?php 
+    if ($isIncludeRecordCustom) {
+        include $recordCustomPath;
+    } else {
+?>
+    <?php
+        $fields = array(
+            "sub" => $sub,
+            "cc" => $cc,
+            "classID" => $classID,
+            "nc_ctpl" => $nc_ctpl,
+            "fullLink" => $fullLink,
+            "editLink" => $editLink,
+            "image_default" => $image_default,
+            "fastprew" => $fastprew,
+            "current_sub" => $current_sub,
+            "current_cc" => $current_cc,
+            "current_catalogue" => $current_catalogue,
+            "RowID" => $f_RowID,
+            "RowNum" => $f_RowNum,
+            "animateKey" => $animateKey,
+            "animateDelay" => $animateDelay,
+            "animateDelayStep" => $animateDelayStep,
+            "totRows" => $totRows,
+            "RowNum" => $f_RowNum,
+            "animateKey" => $animateKey,
+            "animateDelay" => $animateDelay,
+            "animateDelayStep" => $animateDelayStep,
+            "Checked" => $f_Checked,
+            "name" => $f_name,
+            "text" => $f_text,
+            "textfull" => $f_textfull,
+            "textfull_bottom" => $f_textfull_bottom,
+            "photo_preview" => $f_photo_preview,
+            "photo" => $f_photo,
+            "price" => $f_price,
+            "firstprice" => $f_firstprice,
+            "link" => $f_link,
+            "vendor" => $f_citytarget,
+            "adminButtons" => $f_adminButtonsl,
+        );
+        $class2021 = new Class2021($fields);
+        echo $class2021->getItem();
+    ?>
+<?php } ?>
+<?php /* Служебная часть */
+    echo nc_finishing_RecordTemplate(ob_get_clean(), $inside_admin, $classID, $f_RowID, $parent_message, $cc, $cc_env["Class_Name"], $no_cache_marks);
+}
+/* Конец служебной части */?>
+
+
+<?php /* Служебная часть */    echo nc_finishing_RecordTemplate(ob_get_clean(), $inside_admin, $classID, $f_RowID, $parent_message, $cc, $cc_env["Class_Name"], $no_cache_marks);}/* Конец служебной части */?><!-- /RecordTemplate -->
+
+<!-- FormSuffix --><?php 
+    $formSuffixCustomPath = $DOCUMENT_ROOT.$pathInc2."/template/class/{$classID}/FormSuffix.html";
+    if (!empty($current_catalogue['customCode']) && file_exists($formSuffixCustomPath)) {
+        include $formSuffixCustomPath;
+    } else {
+?>
+    <?php  if ($totRows) { ?>
+        </ul>
+        <?=getPagination(array(
+            'isTitle' => $isTitle,
+            'cc_env' => $cc_env,
+            'prevLink' => $prevLink,
+            'nextLink' => $nextLink,
+            'totRows' => $totRows,
+            'recNum' => $recNum,
+            'vars_str2' => $vars_str2,
+            'sub' => $sub,
+            'cc' => $cc,
+            'inside_admin' => $inside_admin
+        ))?>
+    <?php   } ?>
+<?php } ?><!-- /FormSuffix -->

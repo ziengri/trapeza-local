@@ -1,0 +1,48 @@
+{
+    "targeting": {
+        "name": "Таргетинг",
+        "row": [{
+                "name": "targeting",
+                "label": "Таргетинг по городам",
+                "type": "checkbox",
+                "colline": 2
+            },
+            {
+                "name": "targdomen",
+                "label": "Таргетинг на поддоменах",
+                "type": "checkbox",
+                "colline": 2
+            },
+            {
+                "name": "targReq",
+                "label": "Обязательный выбор города",
+                "type": "checkbox",
+                "colline": 2
+            },
+            {
+                "permission": "('seo') || ('superadmin')",
+                "name": "cities_links_seo",
+                "label": "Вывод ссылок для индексации",
+                "type": "checkbox",
+                "colline": 2
+            },
+            {
+                "name": "cities_links_sitemap",
+                "label": "Вывод городов в sitemap",
+                "type": "checkbox",
+                "colline": 2
+            }
+        ]
+    },
+    "cities_targeting": {
+        "name": "Города таргетинга",
+        "row": [
+            {
+                "name": "lists_targetcity",
+                "type": "multi_line",
+                "type_old": "11",
+                "colline": "height"
+            }
+        ]
+    }
+}

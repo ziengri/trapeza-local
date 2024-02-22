@@ -1,0 +1,18 @@
+<?php
+$connectTemplate = $DOCUMENT_ROOT . $pathInc2 . "/template/{$classID}/templateEdit/EditActionTemplate.html";
+if ($current_catalogue['customCode'] && file_exists($connectTemplate)) {
+    include($connectTemplate);
+} else {
+    if ($inside_admin) {
+        ob_end_clean();
+        header('Location: ' . $goBackLink . '&inside_admin=1');
+        exit;
+    } else {
+        echo json_encode(array(
+            "title" => "ОК",
+            "succes" =>  NETCAT_MODERATION_MSG_OBJCHANGED,
+            "reloadtab" => 1,
+            "modal" => "close"
+        ));
+    }
+}

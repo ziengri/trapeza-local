@@ -1,0 +1,30 @@
+<?php /* Служебная часть */for ($f_RowNum = 0; $f_RowNum < $rowCount; $f_RowNum++) {    if($fetch_row[$f_RowNum] instanceof Iterator) {        extract($fetch_row[$f_RowNum]->to_array(), EXTR_PREFIX_ALL, "f");    } else {        extract($fetch_row[$f_RowNum], EXTR_PREFIX_ALL, "f");    }    foreach($iteration_RecordTemplate[$f_RowNum] as $value) {        extract($value);    }    eval($cc_env["convert2txt"]);    ob_start();/* Конец служебной части */?>
+<?= $f_AdminButtons; ?>
+<?php
+$phones = null;
+if ($f_Phones) {
+    $phones = explode(',', $f_Phones);
+    if (count($phones)) {
+        foreach ($phones as $i => $phone) {
+            $phones[$i] = '<a href="tel:' . nc_normalize_phone_number($phone) . '">' . $i_open . $phone . $i_close . '</a>';
+        }
+        $phones = implode(', ', $phones);
+    }
+}
+
+$shops[] = array(
+    'name' => $f_Name,
+    'address' => $f_Address,
+    'phones' => $f_Phones,
+    'phones_processed' => $phones,
+    'working_time' => $f_WorkingTime,
+    'coordinates' => $f_Coordinates,
+);
+?>
+<div class="nc-shop-grid-item tpl-text-default">
+    <span class="title tpl-text-alt-smaller"><?= $f_Name; ?></span><br>
+    <span class="subtitle tpl-text-default-big"><?= $f_Address; ?></span><br>
+    <span class="body tpl-text-alt"><?= $f_WorkingTime; ?></span><br>
+    <span class="body tpl-text-alt"><?= $phones; ?></span>
+</div>
+<?php /* Служебная часть */    echo nc_finishing_RecordTemplate(ob_get_clean(), $inside_admin, $classID, $f_RowID, $parent_message, $cc, $cc_env["Class_Name"], $no_cache_marks);}/* Конец служебной части */?>

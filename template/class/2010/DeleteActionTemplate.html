@@ -1,0 +1,15 @@
+<?php 
+clearCache($classID,$sub);
+
+if($inside_admin) {
+    ob_end_clean();
+    header('Location: '.$goBackLink.'&inside_admin=1');
+    exit;
+} else { 
+    echo json_encode(ARRAY(
+        "title" => "ОК",
+        "succes" =>  "ОК",
+        "reload" => 1
+    ));
+}
+?>

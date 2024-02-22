@@ -1,0 +1,64 @@
+Array
+(
+    [Host] => dobryydok.ru
+    [X-Forwarded-For] => 141.8.142.46
+    [X-Forwarded-Proto] => https
+    [X-Forwarded-Port] => 443
+    [Connection] => close
+    [Content-Length] => 921
+    [User-Agent] => Mozilla/5.0 (compatible; YandexTurbo/1.0; +http://yandex.com/bots)
+    [Accept] => */*
+    [Accept-Encoding] => gzip, deflate
+    [Content-Type] => application/json
+    [Cookie] => ced=46e5dc5211c07b429b787c08ca874842
+)
+Array
+(
+    [order] => Array
+        (
+            [status] => PROCESSING
+            [delivery] => Array
+                (
+                    [price] => 
+                )
+
+            [currency] => RUB
+            [user] => Array
+                (
+                    [id] => 4366142
+                    [phone] => 8 921 750-40-16
+                    [email] => gas-007m@mail.ru
+                    [name] => Минченко
+                )
+
+            [fake] => 
+            [buyer] => Array
+                (
+                    [id] => 4366142
+                    [phone] => 8 921 750-40-16
+                    [email] => gas-007m@mail.ru
+                    [name] => Минченко
+                )
+
+            [id] => 4530554
+            [paymentType] => POSTPAID
+            [items] => Array
+                (
+                    [0] => Array
+                        (
+                            [count] => 1
+                            [price] => 1850
+                            [offerName] => СИМПАРИКА д/собак 20-40кг
+                            [offerId] => 868269
+                        )
+
+                )
+
+            [notes] => Адрес доставки
+С.Петербург.ул.Заречная д.45.к.2.кв.673
+
+            [substatus] => STARTED
+            [paymentMethod] => 
+        )
+
+)

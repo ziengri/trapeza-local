@@ -1,0 +1,382 @@
+<?php
+define('USER_TYPE_PHYSICAL', 0);
+define('USER_TYPE_LEGAL', 1);
+
+define('DELIVERY_PICKUP', 1);
+define('DELIVERY_DELIVERY', 2);
+
+global $AUTH_USER_ID;
+$connectTemplate = $DOCUMENT_ROOT . $pathInc2 . "/template/{$classID}/templateAdd/AddCond.html";
+
+if ($current_catalogue['customCode'] && file_exists($connectTemplate)) {
+    include($connectTemplate);
+} else {
+    
+    # вариант 1: из корзины
+    if ($_SESSION['cart'] && $type_order != 'buy_one_click') {
+        # обработка кавычек в имени товара
+        $sesscart = $_SESSION['cart'];
+
+        if (md5(implode('', array_keys($sesscart['items']))) != $hex_item && $hex_item) {
+            $posting = 0;
+            echo json_encode(
+                array(
+                    "title" => getLangWord('error', 'Ошибка '),
+                    "error" => getLangWord('er_txt_ordEmp', "Заказ не совпадает с контрольной суммой. Перезагрузите страницу"),
+                    "reload" => 1,
+                )
+            );
+            exit;
+        }
+
+        foreach ($sesscart['items'] as $id => $crt) {
+            $sesscart['items'][$id]['name'] = addslashes($crt['name']) . ($crt['variant'] ? " (" . $crt['variant'] . ")" : "");
+        }
+
+        $f_deliverySum = $_SESSION['cart']['delivery']['sum'];
+        $f_deliveryType = $_SESSION['cart']['delivery']['type'];
+
+        # службы доствки
+        if (isset($sesscart['delivery']['assist'])) {
+            switch ($sesscart['delivery']['assist']['type']) {
+                case 'cdek':
+                    if (empty($sesscart['delivery']['assist']['error'])) {
+                        $f_deliveryAssist = json_encode(
+                            array(
+                                'type' => 'cdek',
+                                'pvzcode' => $sesscart['delivery']['assist']['pvzCode'],
+                                'description' => addslashes($sesscart['delivery']['assist']['description']),
+                                'tariffid' => $sesscart['delivery']['assist']['tariffId']
+                            )
+                        );
+                    } else {
+                        $f_delivery = null;
+                    }
+                    break;
+                case 'edost':
+                    $cartDelAssist = $sesscart['delivery']['assist'];
+                    $delSelected = $sesscart['delivery'][$cartDelAssist['type']]['list'][$cartDelAssist['key']];
+                    $delNames = array('edost' => 'eDost');
+                    $delAssist = array(
+                        'type' => $cartDelAssist['type'],
+                        'name' => $delNames[$cartDelAssist['type']],
+                        'description' => addslashes($delSelected['description'])
+                    );
+                    $f_deliveryAssist = json_encode($delAssist);
+                    break;
+                case 'pochta_russia':
+                    if ($sesscart['delivery']['assist']['success']) {
+                        $f_deliveryAssist = json_encode(
+                            array(
+                                'type' => 'pochta_russia',
+                                'description' => addslashes($sesscart['delivery']['assist']['description']),
+                                'mailType' => $sesscart['delivery']['assist']['mailType'],
+                                'pvzType' => $sesscart['delivery']['assist']['pvzType'],
+                            )
+                        );
+                    } else {
+                        $f_delivery = null;
+                    }
+                    break;
+            }
+            if ($sesscart['delivery']['assist']['description'])
+                $sesscart['delivery']['assist']['description'] = addslashes($sesscart['delivery']['assist']['description']);
+        }
+        $f_totalSum = $sesscart['totaldelsum'];
+        # массив в json
+        $f_orderlist = json_encode($sesscart);
+    }
+
+    # вариант 2: под заказ / заказ в 1 клик
+    if ($type_order == 'buy_one_click') {
+        $Order = new App\modules\Korzilla\Cart\Model\Order($type_order);
+        $orderlist = $Order->order;
+
+        $item = current($orderlist['items']);
+        if (empty($item)) {
+            echo json_encode([
+                "title" => getLangWord('error', 'Ошибка '),
+                "item" => $item,
+                "error" => getLangWord('er_txt_ordEmp', "Заказ пуст")
+            ]);
+            exit;
+        }
+
+        $f_deliverySum = $orderlist['delivery']['sum'];
+        $f_deliveryType = $orderlist['delivery']['type'];
+
+        # службы доствки
+        if (isset($orderlist['delivery']['assist'])) {
+            switch ($orderlist['delivery']['assist']['type']) {
+                case 'cdek':
+                    if (empty($orderlist['delivery']['assist']['error'])) {
+                        $f_deliveryAssist = json_encode(
+                            array(
+                                'type' => 'cdek',
+                                'pvzcode' => $orderlist['delivery']['assist']['pvzCode'],
+                                'description' => addslashes($orderlist['delivery']['assist']['description']),
+                                'tariffid' => $orderlist['delivery']['assist']['tariffId']
+                            )
+                        );
+                    } else {
+                        $f_delivery = null;
+                    }
+                    break;
+                case 'edost':
+                    $cartDelAssist = $orderlist['delivery']['assist'];
+                    $delSelected = $orderlist['delivery'][$cartDelAssist['type']]['list'][$cartDelAssist['key']];
+                    $delNames = array('edost' => 'eDost');
+                    $delAssist = array(
+                        'type' => $cartDelAssist['type'],
+                        'name' => $delNames[$cartDelAssist['type']],
+                        'description' => addslashes($delSelected['description'])
+                    );
+                    $f_deliveryAssist = json_encode($delAssist);
+                    break;
+            }
+            if ($orderlist['delivery']['assist']['description'])
+                $orderlist['delivery']['assist']['description'] = addslashes($orderlist['delivery']['assist']['description']);
+        }
+        $f_totalSum = $orderlist['totaldelsum'];
+        # массив в json
+        $f_orderlist = json_encode($orderlist);
+    }
+    
+    if (!isset($_SESSION['cart']['delivery']['assist'])) {
+        if ((int) $_SESSION['cart']['delivery']['id'] != (int) $f_delivery) {
+            $warnText = getLangWord('er_delivery_select', 'Выберите способ доставки');
+            $posting = 0;
+        }
+    }
+    
+    // заказ меньше мин. порога
+    if ($setting['minOrderSum'] > 0) {
+        if ($_SESSION['cart']['totalsum'] < $setting['minOrderSum']) {
+            $warnText = getLangWord('er_txt_minOrdSum', "Сумма заказа меньше минимальной") . ": " . $setting['minOrderSum'];
+            $posting = 0;
+        }
+    }
+
+    // пустой заказ Почему проверяется f_orderlist вне if (type_order == 'buy_one_click') ???
+    if (!$f_orderlist) {
+        $warnText = getLangWord('er_txt_ordEmp', "Заказ пуст");
+        $posting = 0;
+    }
+
+
+    // проверка полей на обязательность
+    if ($is_reqlist) {
+        foreach ($is_reqlist as $req) {
+            if (!$$req) {
+                switch ($req) {
+                    case 'f_delivery':
+                        $warnText = getLangWord('er_txt_select', 'Выберите') . ' "' . getLangWord('cart_methDelivery', 'Способы доставки') . '"';
+                        break;
+                    case 'f_payment':
+                        $warnText = getLangWord('er_txt_select', 'Выберите') . ' "' . getLangWord('cart_methPay', 'Способы оплаты') . '"';
+                        break;
+                    default:
+                        $warnText = getLangWord('er_txt_fillReq', 'Заполните необходимые поля, отмеченные *');
+                        break;
+                }
+                $posting = 0;
+                echo json_encode(
+                    array(
+                        "title" => getLangWord('error', 'Ошибка'),
+                        "error" => $warnText
+                    )
+                );
+                exit;
+            }
+        }
+        if (in_array('f_delivery', $is_reqlist)) {
+            $deliveryType = Class2005::getListName('delivery', $f_delivery);
+            $checkTypes = array('edost');
+            if (in_array($deliveryType['type'], $checkTypes) && !$$deliveryType['type']) {
+                $posting = 0;
+                echo json_encode(
+                    array(
+                        "title" => getLangWord('error', 'Ошибка'),
+                        "error" => getLangWord('er_txt_select', 'Выберите') . ' "' . getLangWord('cart_methDelivery', 'Способы доставки') . '"',
+                        'lol' => 'f_delivery'
+                    )
+                );
+                exit;
+            }
+            if (empty($deliveryType['userType']))
+                $deliveryType['userType'] = 1;
+            $typeuser = $f_usertype == 0 && !in_array($deliveryType['userType'], [1, 2]) || $f_usertype == 1 && !in_array($deliveryType['userType'], [1, 3]);
+            if ($typeuser) {
+                $posting = 0;
+                echo json_encode(
+                    array(
+                        "title" => getLangWord('error', 'Ошибка'),
+                        "error" => getLangWord('er_txt_select', 'Выберите') . ' "' . getLangWord('cart_change_delivery', 'другой способы доставки') . '"',
+                        'lol' => 'f_delivery',
+                        'log' => $deliveryType
+                    )
+                );
+                exit;
+            }
+        }
+
+        $paymentType = Class2005::getListName('payment', $f_payment);
+        if (empty($paymentType['userType']))
+            $paymentType['userType'] = 1;
+        $typeuser = $f_usertype == 0 && !in_array($paymentType['userType'], [1, 2]) || $f_usertype == 1 && !in_array($paymentType['userType'], [1, 3]);
+        if ($typeuser) {
+            $posting = 0;
+            echo json_encode(
+                array(
+                    "title" => getLangWord('error', 'Ошибка'),
+                    "error" => getLangWord('er_txt_select', 'Выберите') . ' "' . getLangWord('cart_change_payment', 'другой способы оплаты') . '"',
+                )
+            );
+            exit;
+        }
+    }
+
+    // проверка доп.полей на обязательность из сгенерированой формы
+    if ($req_customf) {
+
+        $noReqFieldDeliveryPickup = [
+            'city',
+            'address'
+        ];
+
+        foreach ($req_customf as $reqcus) {
+            if ($deliveryType['delivery_type'] == DELIVERY_PICKUP && in_array($reqcus, $noReqFieldDeliveryPickup))
+                continue;
+
+            // Поверка на тип пользователя физик/юрик
+            $typeuser = true;
+            switch ($f_usertype) {
+                case USER_TYPE_PHYSICAL:
+                    $typeuser = ($customf[$reqcus]['userType'] !== 'юр лицо' && !stristr($customf[$reqcus]['name'], "(Юр.лицо)"));
+                    break;
+                case USER_TYPE_LEGAL:
+                    $typeuser = ($customf[$reqcus]['userType'] !== 'физ лицо' && !stristr($customf[$reqcus]['name'], "(Физ.лицо)"));
+                    break;
+            }
+
+            $val = trim($customf[$reqcus]['value']);
+
+            if ($reqcus == 'phone')
+                $val = clearPhoneSNG($customf[$reqcus]['value']);
+
+            if ($customf[$reqcus]['name'] && !$val && $typeuser) {
+                // echo $customf[$reqcus]['name']."<br>".$val;
+
+                if($deliveryType['name'] =='Доставка СДЭК' && 
+                    ($customf[$reqcus]['name'] == 'Город / Населенный пункт' || $customf[$reqcus]['name'] == 'Адрес доставки') ){
+                        continue;
+                }
+                $posting = 0;
+                echo json_encode(
+                    array(
+                        "log2" => [$customf[$reqcus]['name'],$val],
+                        "title" => getLangWord('error', 'Ошибка '),
+                        "error" => getLangWord('er_txt_fillField', "Заполните поле") . " \"" . getLangWord("cart_oform_{$reqcus}", $customf[$reqcus]['name']) . "\"",
+                        'log' => $deliveryType
+                    )
+                );
+                exit;
+            }
+        }
+    }
+
+    // файл
+    if ($_FILES) {
+        foreach ($_FILES as $file) {
+            if (!fileForm($file)) {
+                $posting = 0;
+                echo json_encode(
+                    array(
+                        "title" => getLangWord('error', 'Ошибка'),
+                        "error" => getLangWord('er_txt_invFile', "Недопустимый формат файл")
+                    )
+                );
+                exit;
+            }
+            if ($file['size'] >= 2100000) {
+                $posting = 0;
+                echo json_encode(
+                    array(
+                        "title" => getLangWord('error', 'Ошибка'),
+                        "error" => getLangWord('er_txt_fileOverSize', "Файл превышает размер в 2 Мб")
+                    )
+                );
+                exit;
+            }
+        }
+    }
+
+    // ФИО
+    if ($customf['name']['value'])
+        $f_fio = $customf['name']['value'];
+    // Телефон
+    if ($customf['phone']['value'])
+        $phone = preg_replace("/\D/", "", $customf['phone']['value']);
+    if ($customf['phone']['value'])
+        $f_phone = preg_replace("/\D/", "", $customf['phone']['value']);
+    if ($customf['email']['value'])
+        $f_email = $customf['email']['value'];
+
+    // коммент
+    if ($customf['comments']['value'])
+        $f_textcomment = $customf['comments']['value'];
+
+    // Проверка email
+    if ($f_email && filter_var($f_email, FILTER_VALIDATE_EMAIL) === false) {
+        $warnText = getLangWord('er_txt_wronEmail', "Неверный email");
+        $posting = 0;
+    }
+
+    if (mb_strlen($phone) == 10)
+        $customf['phone']['value'] = "8" . $customf['phone']['value'];
+    // проверка телефона
+    if ($customf['phone']['value'] && (mb_strlen($phone) < 6 || mb_strlen($phone) > 20)) {
+        $warnText = getLangWord('er_txt_wronPhone', "Неверный номер телефона");
+        $posting = 0;
+    }
+
+    if ($customf) {
+        foreach ($customf as $key => $data) {
+            if ($data['value'] && validateDate($data['value'], 'Y-m-d'))
+                $customf[$key]['value'] = date("d.m.Y", strtotime($data['value']));
+        }
+    }
+
+    // Сгенерированные поля
+    $f_customf = json_encode($customf);
+
+    // ID сайта
+    $f_Catalogue_ID = $catalogue;
+
+    // антиспам от робота
+    if (!$setting['language'] && !preg_match("/[А-Яа-яё]/iu", $f_fio)) {
+        $posting = 0;
+        echo json_encode(
+            array(
+                "title" => getLangWord('error', "Ошибка"),
+                "error" => getLangWord('er_txt_wrongFIO', "Error 14")
+            )
+        );
+        exit;
+    }
+
+    // антиспам от робота
+    if ($catalogue != 1050) {
+        if (!$hdiaca || $hdiaca / 63312 != date("j")) {
+            $posting = 0;
+            echo json_encode(
+                array(
+                    "title" => getLangWord('error', "Ошибка"),
+                    "error" => "Ошибка. Спам",
+                    "hdiaca" => $hdiaca
+                )
+            );
+            exit;
+        }
+    }
+}

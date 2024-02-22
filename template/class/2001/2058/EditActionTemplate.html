@@ -1,0 +1,40 @@
+<?php 
+global $setting;
+$waterPosition = ($setting[waterPosition] ? ($setting[waterPosition]==5 ? "0" : $setting[waterPosition]) : 4);
+
+if (!$inside_admin) objsys($bc_objsys,$classID,$message);
+clearCache('','', '', $catalogue);
+if ($removeID) removeObj($message,$classID,$removeID);
+
+if ($pathInc && file_exists($DOCUMENT_ROOT.$pathInc.'/images/watermark.png')) {
+  @require_once($INCLUDE_FOLDER."classes/nc_imagetransform.class.php");
+  
+  //$otheritem = $db->get_results("select Message_ID from Message2001 where Checked = 1 AND Subdivision_ID = '$sub'",ARRAY_A);
+  $otheritem = $db->get_results("select Message_ID from Message2001 where Catalogue_ID = '$catalogue'",ARRAY_A);
+  if ($otheritem) {
+    foreach($otheritem as $mes) {
+        $msgs[] = $mes['Message_ID'];
+    }
+  }
+  $photos = $db->get_results("select Path, ID from Multifield where Size != '1' AND Size != '2' AND (Message_ID = '$message'".($msgs ? " OR Message_ID IN (".implode(",",$msgs).")" : NULL).") AND Field_ID = '2353'", ARRAY_A);
+  if ($photos) {
+    foreach($photos as $fot) {
+      if (!$notWater) nc_ImageTransform::putWatermark_file($fot[Path], $pathInc.'/images/watermark.png', $waterPosition);
+      $db->query("UPDATE Multifield set Size = '1' where ID = '$fot[ID]'");
+    }
+  }
+}
+
+if($inside_admin) {
+    ob_end_clean();
+    header('Location: '.$goBackLink.'&inside_admin=1');
+    exit;
+} else { 
+    echo json_encode(ARRAY(
+        "title" => "ОК",
+        "succes" =>  NETCAT_MODERATION_MSG_OBJCHANGED,
+        "reload" => 1
+    ));
+
+}
+?>

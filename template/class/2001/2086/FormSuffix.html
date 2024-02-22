@@ -1,0 +1,20 @@
+<?php
+    $sql  = "SELECT `Subdivision_ID` AS id, `Subdivision_Name` AS name";
+    $sql .= " FROM `Subdivision`";
+    $sql .= " WHERE `Subdivision_ID` IN (".implode(',', array_keys($struct)).")";
+    $dbRows = $db->get_results($sql, ARRAY_A);
+    $subNames = [];
+    if (is_array($dbRows)) {
+        foreach ($dbRows as $row) {
+            $subNames[$row['id']] = $row['name'];
+        }
+    }
+?>
+<?php foreach ($struct as $id => $html) : ?>
+    <tr class='sub_title' data-id="<?=$id?>">
+        <td colspan='9'><h2><?=$subNames[$id]?></h2></td>
+    </tr>
+    <?=$html?>
+<?php endforeach; ?>
+<?php  require $DOCUMENT_ROOT."/template/class/2001/2025/FormSuffix.html"; ?>
+

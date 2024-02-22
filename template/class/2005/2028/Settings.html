@@ -1,0 +1,10 @@
+<?php
+global $setting, $currency, $pathInc2, $DOCUMENT_ROOT;
+
+if ($refcode) {
+    $query_where = "refcode = '$refcode'";
+} else {
+    $query_where = "User_ID = '$user'";
+}
+$query_order = "Created DESC, code DESC";
+?>

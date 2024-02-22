@@ -1,0 +1,61 @@
+{
+    "yml": {
+        "name": "Yml для Яндекс Маркета",
+        "row": [
+            {
+                "name": "all_yml",
+                "label": "Брать все товары",
+                "type": "checkbox",
+                "colline": 2
+            },
+            {
+                "name": "picup_yml",
+                "label": "Возможность самовывоза",
+                "type": "select",
+                "data": {
+                    "1": "Да",
+                    "0": "Нет"
+                },
+                "colline": 2
+            },
+            {
+                "name": "store_yml",
+                "label": "Наличие розничного магазина",
+                "type": "select",
+                "data": {
+                    "1": "Да",
+                    "0": "Нет"
+                },
+                "colline": 2
+            },
+            {
+                "name": "delivery_yml",
+                "label": "Возможность доставки",
+                "type": "select",
+                "data": {
+                    "1": "Да",
+                    "0": "Нет"
+                },
+                "colline": 2
+            },
+            {
+                "name": "sales_notes_on_yml",
+                "label": "Включить примечания",
+                "type": "checkbox",
+                "colline": 1
+            },
+            {
+                "name": "sales_notes_yml",
+                "label": "Примечание, например о минимальной сумме для бесплатной доставки",
+                "type": "text",
+                "colline": 1
+            },
+            {
+                "name": "allnalich_yml",
+                "label": "Все товары в наличие",
+                "type": "checkbox",
+                "colline": 2
+            }
+        ]
+    }
+}

@@ -1,0 +1,24 @@
+<!-- FormPrefix --><!-- /FormPrefix -->
+
+<!-- RecordTemplate --><h3><?=$f_name?></h3>
+<?=($f_photo ? "<p><img src='{$f_photo->get_record(1)}'></p>" : NULL)?>
+<?=($f_vendor ? "<p>Цена: {$f_vendor}</p>" : NULL)?>
+<?=($f_price ? "<p>Цена: {$f_price}</p>" : NULL)?>
+<?=($f_price2 ? "<p>Цена 2: {$f_price2}</p>" : NULL)?>
+<?=($f_price3 ? "<p>Цена 3: {$f_price3}</p>" : NULL)?>
+<?=($f_price4 ? "<p>Цена 4: {$f_price4}</p>" : NULL)?>
+<?=$f_AdminButtons?>
+<hr><!-- /RecordTemplate -->
+
+<!-- FormSuffix --><?=getPagination(array(
+    'isTitle' => $isTitle,
+    'cc_env' => $cc_env,
+    'prevLink' => $prevLink,
+    'nextLink' => $nextLink,
+    'totRows' => $totRows,
+    'recNum' => $recNum,
+    'vars_str2' => $vars_str2,
+    'sub' => $sub,
+    'cc' => $cc,
+    'inside_admin' => $inside_admin
+))?><!-- /FormSuffix -->

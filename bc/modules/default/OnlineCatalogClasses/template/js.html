@@ -1,0 +1,28 @@
+<div class="lds_suppliers"><div></div><div></div><div></div></div>
+<script>
+    const servicesP = <?=json_encode($settingServiceSupplers)?>;
+    const servicePromes = [];
+    const find = '<?=$find?>';
+    for(service of servicesP) {
+        servicePromes.push($.get('/bc/modules/default/OnlineCatalogClasses/', {module: service, find}))
+    }
+    
+    Promise.all(servicePromes).finally(values => { 
+        $.get('/search/' + location.search + '&isNaked=1').then(res => {
+            let html = $(res);
+   
+            $('.zone-content').replaceWith(res)
+            $('.lnkpage').each(function () {
+                $(this).attr('href', $(this).attr('href')?.replace('&isNaked=1', ''))
+            })
+            const totalrows = $('[data-totrows]').data('totrows');
+            if($('.zone-sort').length && totalrows) {
+                $('.filter-item-total').text(totalrows)
+                $('.zone-sort').show();
+                $('.filter-item-count').show();
+            } else {
+                $('.zone-content').text('Товаров не найдено')
+            }
+        }, 'html')
+      });
+</script>

@@ -1,0 +1,146 @@
+<?php  if ($warnText) { 
+    echo json_encode(ARRAY(
+        "title" => "Error",
+        "error" => $warnText
+    ));
+} else {
+?>
+<form name='adminForm' id='adminForm' class='nc-form' enctype='multipart/form-data' method='post' action='<?= $SUB_FOLDER ?><?= $HTTP_ROOT_PATH ?>message.php'>
+<div id='nc_moderate_form'>
+<div class='nc_clear'></div>
+<input name='admin_mode' type='hidden' value='<?= $admin_mode ?>' />
+<?= $nc_core->token->get_input() ?>
+<input name='catalogue' type='hidden' value='<?= $catalogue ?>' />
+<input name='cc' type='hidden' value='<?= $cc ?>' />
+<input name='sub' type='hidden' value='<?= $sub ?>' /><input name='message' type='hidden' value='<?= $message ?>' />
+<input name='posting' type='hidden' value='1' />
+<input name='curPos' type='hidden' value='<?= $curPos ?>' />
+<input name='f_xlslist' type='hidden' value='<?= $f_xlslist ?>' />
+<input name='f_fromxls' type='hidden' value='<?= $f_fromxls ?>' />
+<input name='f_Parent_Message_ID' type='hidden' value='<?= $f_Parent_Message_ID ?>' />
+<?= nc_form_moderate('change', $admin_mode, 0, $systemTableID, $current_cc, (isset($f_Checked) ? $f_Checked  : null), $f_Priority , $f_Keyword, $f_ncTitle, $f_ncKeywords, $f_ncDescription ) ?>
+</div>
+<?= nc_string_field('name', "maxlength='255' size='50'", ($class_id ? $class_id : $classID), 1) ?><br /><br />
+<?= nc_string_field('vendor', "maxlength='255' size='50'", ($class_id ? $class_id : $classID), 1) ?><br /><br />
+<?= nc_text_field('descr', "", ($class_id ? $class_id : $classID), 1) ?><br /><br />
+<?= nc_text_field('text', "", ($class_id ? $class_id : $classID), 1) ?><br /><br />
+
+<ul id=admtabs>
+    <li class='admact' rel='tab_photo'>Фотографии</li>
+    <li rel='tab_variable'>Варианты товара</li>
+    <li rel='tab_colors'>Цвета товара</li>
+    <?=($setting[targeting] ? "<li rel='tab_pricecity'>Цены в городах</li>" : NULL)?>
+</ul>
+<div class='admtab' id='tab_photo'>
+<?php  $f_photo->settings->resize(700, 700)->preview(300, 900)->use_name('Описание фото');
+echo $f_photo->form();
+?>
+</div>
+<div class='admtab none' id='tab_variable'>
+Варианты товара (цвета, размеры, комплектации):
+<div id='variants'>
+<?php 
+$i = 0;
+if ($f_variable) {
+    foreach(orderArray($f_variable) as $variantid => $variant) {
+        if ($variant[name]) {
+           $i=$variantid+1;
+           $fieldsVariant.= "<div class=variant data-num='{$variantid}'><input placeholder='Название' type=text value='{$variant[name]}' name='variable[{$variantid}][name]'><input placeholder='цена' type=text value='{$variant[price]}' name='variable[{$variantid}][price]'><input min='0' placeholder='количество' type=number value='{$variant[stock]}' name='variable[{$variantid}][stock]'></div>";
+        }
+    }
+} 
+echo $fieldsVariant."<div class=variant data-num='$i'><input placeholder='Название' type=text name='variable[$i][name]'><input placeholder='цена' type=text name='variable[$i][price]'><input min='0' placeholder='количество' type=number name='variable[$i][stock]'></div>";
+?>
+<div><a href='' onclick="add_variant(); return false;">добавить еще</a></div>
+</div><br>
+
+<?= nc_bool_field('buyvariable', "", ($class_id ? $class_id : $classID ), 1) ?>
+</div>
+
+<div class='admtab none' id='tab_colors'>
+Цвета:
+<div id='colors'>
+<?php 
+$i2 = 0;
+if ($f_colors) {
+    foreach(orderArray($f_colors) as $colorid => $colors) {
+        if ($colors[name]) {
+            $i2=$colorid+1;
+            $fieldsColor.= "<div class=colors data-num='{$colorid}'><input placeholder='Название цвета' type=text value='{$colors[name]}' name='colors[{$colorid}][name]'> <input class=color2 type=text value='{$colors[code]}' name='colors[{$colorid}][code]'> <input value='{$colors[price]}' placeholder='цена' type=text name='colors[{$colorid}][price]'> <input value='{$colors[stock]}' min='0' placeholder='количество' type=number name='colors[{$colorid}][stock]'> <input value='{$colors[photo]}' min='1' placeholder='номер фото' type=number name='colors[{$colorid}][photo]'></div>";
+        }
+    }
+}
+echo $fieldsColor."<div class=colors data-num='$i2'><input placeholder='Название цвета' type=text name='colors[$i2][name]'> <input class=color2 type=text name='colors[$i2][code]'> <input value='' placeholder='цена' type=text name='colors[$i2][price]'> <input value='' min='0' placeholder='количество' type=number name='colors[$i2][stock]'> <input value='' min='1' placeholder='номер фото' type=number name='colors[$i2][photo]'></div>";
+?>
+<div><a href='' onclick="add_color(); return false;">добавить еще</a></div>
+</div><br>
+
+<?=nc_bool_field('buycolors', "", ($class_id ? $class_id : $classID ), 1)?>
+</div>
+<?php  if ($setting['targeting']) { ?>
+<div class='admtab none' id='tab_pricecity'>
+<?php 
+  if ($f_pricecity) $pricecity = orderArray($f_pricecity);
+  echo  nc_city_prices($pricecity);
+?>
+<?=nc_city_field($f_citytarget)?>
+</div>
+<?php  } ?>
+<br><br>
+
+<?=nc_float_field('price', "maxlength='12' size='12'", ( $class_id ? $class_id : $classID), 1) ?><br />
+<br />
+
+<?=nc_bool_field('notmarkup', "", ($class_id ? $class_id : $classID ), 1)?><br /><br /> 
+<?=nc_bool_field('firstprice', "", ($class_id ? $class_id : $classID ), 1) ?><br /><br />
+<?=nc_bool_field('dogovor', "", ($class_id ? $class_id : $classID ), 1) ?><br /><br />
+<?= nc_bool_field('torg', "", ($class_id ? $class_id : $classID ), 1) ?><br /><br />
+<?= nc_bool_field('nocart', "", ($class_id ? $class_id : $classID ), 1) ?><br /><br />
+<?=nc_bool_field('noorder', "", ($class_id ? $class_id : $classID ), 1)?><br /><br />
+
+<?=nc_bool_field('spec', "", ($class_id ? $class_id : $classID ), 1)?><br><br>
+<?=nc_bool_field('main', "", ($class_id ? $class_id : $classID ), 1)?><br><br>
+<?=nc_bool_field('recomend', "", ($class_id ? $class_id : $classID ), 1)?><br><br>
+<?=nc_bool_field('action', "", ($class_id ? $class_id : $classID ), 1)?><br><br>
+
+<?=nc_int_field('stock', "maxlength='12' size='12'", ($class_id ? $class_id : $classID), 1) ?><br /><br />
+
+<?=nc_int_field('discont', "maxlength='12' size='12'", ($class_id ? $class_id : $classID), 1) ?> 
+<?=nc_float_field('pricediscont', "maxlength='12' size='12'", ( $class_id ? $class_id : $classID), 1) ?><br /><br />
+
+<?=nc_date_field('disconttime', "", ($class_id ? $class_id : $classID), 1) ?><br /><br />
+<?=nc_string_field('art', "maxlength='255' size='50'", ($class_id ? $class_id : $classID), 1) ?><br /><br />
+<?=nc_string_field('code', "maxlength='255' size='50'", ($class_id ? $class_id : $classID), 1) ?><br /><br />
+
+<?=nc_string_field('ves', "maxlength='255' size='50'", ($class_id ? $class_id : $classID), 1)?><br /><br />
+<?=nc_string_field('edizm', "maxlength='255' size='50'", ($class_id ? $class_id : $classID), 1)?><br /><br />
+
+<?=($setting['lists_texts']['var1']['checked'] ? $setting['lists_texts']['var1']['name'].": ".nc_string_field('var1', "maxlength='255' size='50'", ($class_id ? $class_id : $classID), 0)."<br /><br />" : NULL)?>
+<?=($setting['lists_texts']['var2']['checked'] ? $setting['lists_texts']['var2']['name'].": ".nc_string_field('var2', "maxlength='255' size='50'", ($class_id ? $class_id : $classID), 0)."<br /><br />" : NULL)?>
+<?=($setting['lists_texts']['var3']['checked'] ? $setting['lists_texts']['var3']['name'].": ".nc_string_field('var3', "maxlength='255' size='50'", ($class_id ? $class_id : $classID), 0)."<br /><br />" : NULL)?>
+<?=($setting['lists_texts']['var4']['checked'] ? $setting['lists_texts']['var4']['name'].": ".nc_string_field('var4', "maxlength='255' size='50'", ($class_id ? $class_id : $classID), 0)."<br /><br />" : NULL)?>
+<?=($setting['lists_texts']['var5']['checked'] ? $setting['lists_texts']['var5']['name'].": ".nc_string_field('var5', "maxlength='255' size='50'", ($class_id ? $class_id : $classID), 0)."<br /><br />" : NULL)?>
+<?=($setting['lists_texts']['var6']['checked'] ? $setting['lists_texts']['var6']['name'].": ".nc_string_field('var6', "maxlength='255' size='50'", ($class_id ? $class_id : $classID), 0)."<br /><br />" : NULL)?>
+<?=($setting['lists_texts']['var7']['checked'] ? $setting['lists_texts']['var7']['name'].": ".nc_string_field('var7', "maxlength='255' size='50'", ($class_id ? $class_id : $classID), 0)."<br /><br />" : NULL)?>
+<?=($setting['lists_texts']['var8']['checked'] ? $setting['lists_texts']['var8']['name'].": ".nc_string_field('var8', "maxlength='255' size='50'", ($class_id ? $class_id : $classID), 0)."<br /><br />" : NULL)?>
+<?=($setting['lists_texts']['var9']['checked'] ? $setting['lists_texts']['var9']['name'].": ".nc_string_field('var9', "maxlength='255' size='50'", ($class_id ? $class_id : $classID), 0)."<br /><br />" : NULL)?>
+<?=($setting['lists_texts']['var10']['checked'] ? $setting['lists_texts']['var10']['name'].": ".nc_string_field('var10', "maxlength='255' size='50'", ($class_id ? $class_id : $classID), 0)."<br /><br />" : NULL)?>
+
+
+<?=nc_text_field('analog', "", ($class_id ? $class_id : $classID), 1) ?><br /><br />
+<?=nc_text_field('buywith', "", ($class_id ? $class_id : $classID), 1)?><br><br>
+
+<?=nc_string_field('tags', "maxlength='255' size='50'", ($class_id ? $class_id : $classID), 1)?><br><br>
+<?=nc_string_field('extlink', "maxlength='255' size='50'", ($class_id ? $class_id : $classID), 1)?><br /><br />
+
+<?=nc_bool_field('oneitem', "", ($class_id ? $class_id : $classID ), 1)?><br /><br />
+
+
+<?=editItemChecked($f_Checked, $f_Priority, $f_Keyword, $f_ncTitle, $f_ncKeywords, $f_ncDescription,'',$classID)?>
+
+<div class=result><?= NETCAT_MODERATION_INFO_REQFIELDS ?></div><br/>
+<span class="btn-strt"><?= nc_submit_button(NETCAT_MODERATION_BUTTON_CHANGE) ?></span>
+<?=dropObjBut($message,$classID)?>
+
+</form>
+<?php  } ?>

@@ -1,0 +1,53 @@
+<?=($inside_admin ? $f_AdminCommon : addObjBut($addLink,$isTitle,null,'новость', 0))?>
+
+<?php 
+    # json раздела
+    if(isJson($settingsSub)) $settingsSub = orderArray($current_sub['settingsSub']);
+    # ширина объекта
+    $sizeitemTotal = 0;
+    if($sizehave){
+        if($sizeitem_select=='count') $sizeitemTotal = $sizeitem_counts;
+        else if($sizeitem && is_numeric($sizeitem)) $sizeitemTotal = $sizeitem;
+    }
+    if(!$sizeitemTotal && $settingsSub["sizehave"]){
+        if($settingsSub["sizeitem_select"]=='count') $sizeitemTotal = $settingsSub["sizeitem_counts"];
+        else if(is_numeric($settingsSub["sizeitem"])) $sizeitemTotal = $settingsSub["sizeitem"];
+    }
+    if(!$sizeitemTotal){
+        if($setting["size".$classID."_select"]=='count') $sizeitemTotal = $setting["size".$classID."_counts"];
+        else $sizeitemTotal = $setting["size".$classID];
+    }
+    # отступ
+    if($sizehave && is_numeric($sizeitem_margin))  $margin = $sizeitem_margin;
+    else if($settingsSub["sizehave"] && is_numeric($settingsSub["sizeitem_margin"])) $margin = $settingsSub["sizeitem_margin"];
+    else if(is_numeric($setting["size".$classID."_margin"])) $margin = $setting["size".$classID."_margin"];
+    else $margin = 15;
+    # Шаблон вывода
+    if($template_block) $template = $template_block;
+    else if($settingsSub["template"]) $template = $settingsSub["template"];
+    else if($setting["size".$classID."_template"]) $template = $setting["size".$classID."_template"];
+    
+    # Открывать в модальном окне
+    if($objInModal) $objInModal = $objInModal;
+    else if($settingsSub["objInModal"]) $objInModal = $settingsSub["objInModal"];
+    else if($setting["size".$classID."_objinmodal"]) $objInModal = $setting["size".$classID."_objinmodal"];
+    
+    $data = subdivisionData(array(
+        'type' => 'news',
+        'sizeitem' => $sizeitemTotal,
+        'margin' => $margin,
+        'imagefit' => $imagefit,
+        'scrolling' => $scrolling,
+        'scrollspeed' => $scrollspeed,
+        'scrollNav' => $scrollNav,
+        'scrollDots' => $scrollDots,
+        'autoplay' => $autoplay,
+        'template' => $template
+    ));
+?>
+
+<?php  if ($totRows) { ?>
+	<ul class='<?=$data['class']?>' <?=$data['attr']?>>
+<?php  } ?>
+
+<?php  if(!$totRows){ ?> <p class='no-obj'>Новостей не найдено</p> <?php }?>

@@ -1,0 +1,54 @@
+<?
+if ($AUTH_USER) $warnText = "Неверный логин или пароль";
+?>
+<?=$warnText?>
+<?php
+    $isAuthPage = false;
+    if (strpos($_SERVER['REQUEST_URI'], 'bc/modules/auth') !== false) $isAuthPage = true;
+    if (strpos($_SERVER['REQUEST_URI'], '/profile/') !== false && strpos($_SERVER['REQUEST_URI'], 'isNaked=1') === false) $isAuthPage = true;
+    if (strpos($_SERVER['REQUEST_URI'], '/registration/') !== false) $isAuthPage = true;
+
+    if ($isAuthPage) $requestUrl = '/profile/';
+    else {
+        $requestUrl = str_replace(nc_get_scheme() . '://' . $_SERVER['HTTP_HOST'], '', $_SERVER['HTTP_REFERER']);
+    }
+?>
+<div class='page_login'>
+    <form method="post" action="/bc/modules/auth/" class="<?=($_GET['sites'] ? "ajax2" : "login_form login-phone")?>">
+        <input type='hidden' name='AuthPhase' value='1' />
+        <input type='hidden' name='REQUESTED_FROM' value='<?= $requestUrl ?>' />
+        <input type='hidden' name='REQUESTED_BY' value='GET' />
+        <input type='hidden' name='catalogue' value='<?= $catalogue ?>' />
+        <input type='hidden' name='sub' value='<?= $sub ?>' />
+        <input type='hidden' name='cc' value='<?= $cc ?>' />
+
+        <div class='variant-login'>
+            <a href=# data-var_login='login' data-swap-var_login='phone' data-swap-text='По номеру телефона'>По логину</a>
+        </div>
+        <div class="userline" data-var_login='phone'>
+            <?=bc_input_standart("AUTH_PHONE", $Login, "Телефон")?>
+        </div>
+        <div class="userline"  data-var_login='login' style='display: none;'>
+            <?=bc_input_standart("AUTH_USER", htmlspecialchars($AUTH_USER, ENT_QUOTES), NETCAT_MODULE_AUTH_LOGIN)?>
+        </div>
+        <?php  #data-eye ?>
+        <div class="userline"><?=bc_input_standart("AUTH_PW", "", NETCAT_MODULE_AUTH_PASSWORD, "")?></div>
+
+		<?php  if ($ADMIN_AUTHTYPE == "manual" && $AUTHORIZATION_TYPE == "cookie") : ?>
+			<div class="modal_check">
+				 <label><input type="checkbox" name="loginsave" value="1"> Сохранить </label>
+				 <a href="/bc/modules/auth/password_recovery.php" class="forgotpass"><span>Забыли пароль?</span></a>
+			</div>
+		<?php  endif; ?>
+
+        <div class='result center'><?=($warnText ? "<div class='warnText'>{$warnText}</div>" : NULL)?></div>
+        <div class="modal_button_main"><span class="btn-strt"><input value='Войти' type='submit' /></span></div>
+        <div class='login-req-link'><a href='/registration/'>Зарегистрироваться</a></div>
+    </form>
+    </div>
+
+<?php  if ($isNaked || $template==1000) : ?>
+	<div class="noregistr">
+		<a href="/registration/">Еще не зарегестрированы?</a>
+	</div>
+<?php  endif; ?>

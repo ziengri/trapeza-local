@@ -1,0 +1,44 @@
+<!-- FormPrefix --><?php  echo $f_AdminCommon; ?>
+<div class='nc_list nc_vacancies'>
+<div class='nc_text_block'>
+    <?php  echo $cc_settings['TextBefore'] ?>
+</div><!-- /FormPrefix -->
+
+<!-- RecordTemplate --><div class='nc_row'>
+    <?=$f_AdminButtons ?>
+    <h3>
+        <?php 
+        if (!$cc_settings['ShowAll'] && ($f_Obligation || $f_Demands || $f_Conditions)) { ?>
+            <a href='<?php  echo $fullLink; ?>'><?php  echo $f_Post; ?></a> <?php 
+        }
+        else {
+            echo $f_Post;
+        }?>
+    </h3>
+    <?php 
+    if ($f_City) { ?><div class='nc_item'>(<?php  echo $f_City ?>)</div><?php  }
+    if ($f_Pay) { ?>
+        <div class='nc_price'><span class='nc_title'>Зарплата: </span><span class='nc_value'><?php  echo $f_Pay." ".$pay; ?>
+        </span></div><?php 
+    }
+    if ($cc_settings['ShowAll']) {
+        if ($f_Obligation) {
+            ?> <div class='nc_item'><span class='nc_title'>Обязанности: </span><span class='nc_value'><?php  echo $f_Obligation; ?></span></div><?php 
+        }
+        if ($f_Demands) {
+            ?> <div class='nc_item'><span class='nc_title'>Требования: </span><span class='nc_value'><?php  echo $f_Demands; ?></span></div><?php 
+        }
+        if ($f_Conditions) {
+            ?> <div class='nc_item'><span class='nc_title'>Условия: </span><span class='nc_value'><?php  echo $f_Conditions; ?></span></div><?php 
+        }
+    }
+    ?></div><!-- /RecordTemplate -->
+
+<!-- FormSuffix --><?php 
+if (!$totRows) { ?>
+    <p class='nc_text_block'><?php  echo $cc_settings['TextNoVacancy'] ?></p><?php 
+} ?>
+<br />
+<p class='comment'> <?php  echo $cc_settings['TextAfter'] ?> </p>
+
+</div><!-- /FormSuffix -->

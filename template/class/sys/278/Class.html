@@ -1,0 +1,89 @@
+<!-- FormPrefix --><?php 
+foreach($db->get_results("select * from PermissionGroup") as $g) { $group[$g->PermissionGroup_ID] = $g->PermissionGroup_Name; }
+?>
+<div class="header_search" style="border: 1px solid; margin: 0 0 15px;">
+  <form method="GET" action="<?= $cc_env['Hidden_URL'] ?>" class="searchform iconsCol" onsubmit="bc_locadSearchContent(this)">
+      <?php if ($cc_env['Class_ID'] != $cc_env['Real_Class_ID']) : ?>
+          <input type="hidden" name="nc_ctpl" value="<?= $cc_env['Real_Class_ID'] ?>" />
+      <?php endif; ?>
+      <div class="searchform-inp">
+          <input type="search" name="search" value="<?= $_GET['search'] ?? '' ?>" placeholder="Поиск" class="inp" /> 
+      </div>
+      <span class="btn-strt">
+          <input type="submit" class="submit" value="Найти">
+      </span>
+  </form>
+</div>
+<table class='table-order'>
+  <thead>
+    <tr>
+      <th class="t-num">№</th>
+      <th class="t-login">Логин</th>
+      <th class="t-group">Группа</th>
+      <th class="t-phone center">Телефон</th>
+      <th class="t-email center">Эл.почта</th>
+      <th class="t-city center">Город</th>
+      <th class="t-org none">Организация</th>
+      <th class="t-date center">Дата регистрации</th>
+    </tr>
+  </thead>
+  <tbody><!-- /FormPrefix -->
+
+<!-- RecordTemplate --><?php /* Служебная часть */for ($f_RowNum = 0; $f_RowNum < $rowCount; $f_RowNum++) {    if($fetch_row[$f_RowNum] instanceof Iterator) {        extract($fetch_row[$f_RowNum]->to_array(), EXTR_PREFIX_ALL, "f");    } else {        extract($fetch_row[$f_RowNum], EXTR_PREFIX_ALL, "f");    }    foreach($iteration_RecordTemplate[$f_RowNum] as $value) {        extract($value);    }    eval($cc_env["convert2txt"]);    ob_start();/* Конец служебной части */?>
+<?php /* Служебная часть */
+for ($f_RowNum = 0; $f_RowNum < $rowCount; $f_RowNum++) {
+    if($fetch_row[$f_RowNum] instanceof Iterator) {
+        extract($fetch_row[$f_RowNum]->to_array(), EXTR_PREFIX_ALL, "f");
+    } else {
+        extract($fetch_row[$f_RowNum], EXTR_PREFIX_ALL, "f");
+    }
+    foreach($iteration_RecordTemplate[$f_RowNum] as $value) {
+        extract($value);
+    }
+    eval($cc_env["convert2txt"]);
+    ob_start();
+/* Конец служебной части */?>
+
+<tr data-orderid="<?=$f_RowID?>" class='<?=(!$f_Checked ? 'uncheck' : "")?>'>
+    <td class='t-num'><?=($f_User_ID)?></td>
+    <td class='t-login'>
+        <div class="t-first"><?=$f_Login?> (<?=($f_ForumName ? $f_ForumName : "")?><?=($f_fam ? " {$f_fam}" : "")?><?=($f_otch ? " {$f_otch}" : "")?>)</div>
+        <div class="t-second t-link">
+            <a href="/profile/edit_profile_<?=$f_RowID?>.html?isNaked=1" data-lc-options='{"maxWidth":950,"maxHeight":1100,"groupClass":"modal-edit-user modal-edit"}' title="Пользователь <?=$f_Login?>" data-rel="lightcase">Редактировать</a>
+        </div>
+    </td>
+    <td class='t-group'><?=$group[$f_PermissionGroup_ID]?></td>
+    <td class='t-phone center'><?=($f_phone ? $f_phone : "-")?></td>
+    <td class='t-email center'><?=($f_Email ? $f_Email : "-")?></td>
+    <td class='t-city center'><?=($f_city ? $f_city : "-")?></td>
+    <td class='t-org none'><?=($f_org || $f_company ? $f_org." ".$f_company : "-")?></td>
+    <td class='t-date center'><?=$f_Created_day.".".$f_Created_month.".".$f_Created_year." - ".$f_Created_hours.":".$f_Created_minutes?></td>
+</tr>
+
+<?php /* Служебная часть */
+    echo nc_finishing_RecordTemplate(ob_get_clean(), $inside_admin, $classID, $f_RowID, $parent_message, $cc, $cc_env["Class_Name"], $no_cache_marks);
+}
+/* Конец служебной части */?>
+<?php /* Служебная часть */    echo nc_finishing_RecordTemplate(ob_get_clean(), $inside_admin, $classID, $f_RowID, $parent_message, $cc, $cc_env["Class_Name"], $no_cache_marks);}/* Конец служебной части */?><!-- /RecordTemplate -->
+
+<!-- FormSuffix -->    </tbody>
+</table>
+<div class="view-footer">
+	
+    <?=getPagination(array(
+        'isTitle' => $isTitle,
+        'cc_env' => $cc_env,
+        'prevLink' => $prevLink,
+        'nextLink' => $nextLink,
+        'totRows' => $totRows,
+        'recNum' => $recNum,
+        'vars_str2' => $vars_str2,
+        'sub' => $sub,
+        'cc' => $cc,
+        'inside_admin' => 1,
+        'url' => '/profile/?nc_ctpl=278&template=4'
+    ))?>
+    
+    
+	<p class='nc_info_block'><?=($srch ? "Найдено пользователей:" : "Всего зарегистрированных пользователей:")?> <b><?=$totRows;?></b></p>
+</div><!-- /FormSuffix -->

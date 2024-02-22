@@ -1,0 +1,251 @@
+<!-- FormPrefix --><?=($inside_admin ? $f_AdminCommon : addObjBut($addLink,$isTitle,null,'контакт'))?>
+
+<?php 
+    # json раздела
+    if(isJson($settingsSub)) $settingsSub = orderArray($current_sub['settingsSub']);
+    # Шаблон вывода
+    if($template_block) $template = $template_block;
+    else if($settingsSub["template"]) $template = $settingsSub["template"];
+    else if($setting["size".$classID."_template"]) $template = $setting["size".$classID."_template"];
+
+    $data = subdivisionData(array(
+        'type' => 'contacts',
+        'template' => $template
+    ));
+?>
+
+<?php 
+    global $db, $catalogue, $pathInc;
+
+    ## api ключ
+    $apikey = $cc_settings[apikey] ? $cc_settings[apikey] : "40ccb50f-1978-4218-a10f-1749b439a583";
+    $dealerscoord = $dealersname = $dealersdesc = $citiesList = '';
+    $objects = $db->get_results("SELECT * FROM Message2088 WHERE Catalogue_ID = {$catalogue} AND Subdivision_ID = {$sub} AND Checked = 1 ORDER BY city", ARRAY_A);
+    foreach ($objects as $key => $obj) {
+        $search = array('[',']');
+        $dealerscoord[$key] = str_replace($search, "", $obj['coordinates']);
+        $dealersname[$key] = $obj['name'];
+        $dealersdesc[$key] = $obj['description'] ? $obj['description']: NULL;
+        $citiesList[$key] = $obj['city'];
+        $otherdesc[$key]['address'] .= $obj['address'] ? $obj['address']."<br>": NULL;
+        $otherdesc[$key]['phones'] .= $obj['phones'] ? $obj['phones']."<br>": NULL;
+        $otherdesc[$key]['time'] .= $obj['time'] ? $obj['time']."<br>": NULL;
+        $otherdesc[$key]['email'] .= $obj['email'] ? $obj['email']: NULL;
+        $otherdesc[$key]['site'] .= $obj['site'] ? $obj['site']: NULL;
+        $photoArr = $obj['photo'] ? explode(':',$obj['photo']): NULL;
+        $otherdesc[$key]['photo'] .= $photoArr ? $photoArr[3]: NULL;
+    }
+    $dealersHtml = "";
+    $citiesArr = array_unique($citiesList,SORT_STRING);
+    foreach ($citiesArr as $city) {
+        $dealersHtml .= "<div class='dealer-city'>
+            <details><summary>{$city}</summary>
+            <span class='onmap'>на карте</span>
+            <ul class='dealers-list'>";
+        foreach ($dealersname as $i => $name) {
+            if ($citiesList[$i] == $city) {
+                $dealersHtml .= "<li>
+                    <input type='hidden' value='{$i}'>
+                    <p class='dealer-name'>{$name}</p>
+                    <p class='dealer-desc'>{$dealersdesc[$i]}</p>
+                    <p class='dealer-other'>
+                        ".$otherdesc[$i]['address']."
+                        ".$otherdesc[$i]['phones']."
+                        ".$otherdesc[$i]['time']."
+                        <a target='_blank' href='mailto:{$otherdesc[$i]['email']}'>{$otherdesc[$i]['email']}</a>
+                        <a target='_blank' href='{$otherdesc[$i]['site']}'>{$otherdesc[$i]['site']}</a>
+                    </p>
+                </li>";
+            }
+        }
+        $dealersHtml .= "</ul></details></div>";
+    }
+?>
+    <div class='dealer-wrapper'>
+        <div class="dealer-left">
+            <input type='text' class='dealer-search' placeholder='Ваш город'>
+            <div class='locality'>
+            <?php  echo $dealersHtml; ?>
+            </div>
+        </div>
+        <div class='dealer-map dealer-right' id='map'></div>
+    </div>
+<script src='https://api-maps.yandex.ru/2.1/?lang=ru-RU&amp;apikey=<?php  echo $apikey; ?>' type='text/javascript'></script>
+<script type='text/javascript'>
+    ymaps.ready(function () {
+        var myMap = new ymaps.Map('map', {
+                center: [64.31593584, 76.29396800],
+                zoom: 3,
+                controls: []
+            });
+        var isclientmap = <?=($cc_settings[clientmap] == 'on' ? 1 : 0)?>;
+        clusterer = new ymaps.Clusterer({
+            preset: isclientmap != 1 ? 'islands#invertedRedClusterIcons' : 'islands',
+            groupByCoordinates: false,
+            clusterHideIconOnBalloonOpen: false,
+            geoObjectHideIconOnBalloonOpen: false
+        });
+
+        var coordsArr = <?php  echo json_encode($dealerscoord); ?>;
+        var dealername = <?php  echo json_encode($dealersname); ?>;
+        var dealerdesc = <?php  echo json_encode($dealersdesc); ?>;
+        var dealerotherdesc = <?php  echo $otherdesc ? json_encode($otherdesc): NULL; ?>;
+
+        getPointData = function (index) {
+
+            var dealerotherinfo = '';
+            var isclientmap = <?=($cc_settings[clientmap]=="on" ? 1 : 0)?>;
+            if (isclientmap == 1) {
+                var imglink = <?=($pathInc ? "'".$pathInc."/files/'" : "''")?>;
+                imglink = dealerotherdesc[index]['photo'] ? imglink : "";
+                var link = dealerotherdesc[index]['site'] ? "<a target='_blank' href='"+dealerotherdesc[index]['site']+"'>" : "";
+                imglink += dealerotherdesc[index]['photo'] ? dealerotherdesc[index]['photo']: '';
+                var img = imglink ? "<img src='"+imglink+"' alt=''>" : "";
+                var contentHtml = imglink ? "<div class='cnp_img'><div class='image-cover'>" + (link ? link : '') + img + (link ? '</a>' : '') + "</div></div>" : "";
+                // var contentHtml = "<div class='cnp_img'><div class='image-cover'></div></div>";
+                return {
+                    balloonContentHeader: "<font size=3><b>"+dealername[index]+"</b></font>",
+                    balloonContentBody: contentHtml
+                }
+            }
+            else {
+                $.each(dealerotherdesc[index],function(key,value){
+                    if (value.indexOf("http") != -1) {
+                        dealerotherinfo += "<a href='"+value+"'>"+value+"</a>";
+                    }
+                    else if (value.indexOf("@") != -1) {
+                        dealerotherinfo += "<a href='mailto:"+value+"'>"+value+"</a>";
+                    }
+                    else dealerotherinfo += value ? value: "";
+                })
+                var descHtml = '<p>' + (!dealerdesc[index] ? dealerotherinfo : dealerdesc[index]+'<br>'+dealerotherinfo) + '</p>';
+                return {
+                    balloonContentHeader: '<font size=3><b>'+dealername[index]+'</b></font>',
+                    balloonContentBody: descHtml
+                    //balloonContentFooter: 'Если нужен футер балуна'
+                };
+            }
+        }
+        getPointOptions = function () {
+            var isclientmap = <?=($cc_settings[clientmap] == 'on' ? 1 : 0)?>;
+            return {
+                preset: isclientmap != 1 ? 'islands#redIcon' : 'islands'
+            };
+        }
+
+        $.each(coordsArr,function(key,value){
+            coordsArr[key] = value.split(',');
+            coordsArr[key][0] = parseFloat(coordsArr[key][0]);
+            coordsArr[key][1] = parseFloat(coordsArr[key][1]);
+        })
+        geoObjects = [];
+        for(var i = 0, len = coordsArr.length; i < len; i++) {
+            geoObjects[i] = new ymaps.Placemark(coordsArr[i], getPointData(i), getPointOptions());
+        }
+        clusterer.add(geoObjects);
+        myMap.geoObjects.add(clusterer);
+
+        // Взятие крайних точек
+        // geoObjects[2].geometry.getBounds();
+
+        $('body').on('click','.onmap',function () {
+            var index = $(this).parents('.dealer-city').index();
+            var city = $(this).parent().find('summary').text();
+            var cityObj = ymaps.geocode(city, { boundedBy: geoObjects[index].geometry.getBounds(), strictBounds: false });
+            cityObj.then(function(res){
+                var coordsArr = res.geoObjects.get(0).geometry._coordinates;
+                myMap.setCenter(coordsArr,10);
+                if ($(window).width() < 780) scrollToMap();
+            })
+        })
+
+        $('.dealers-list').on('click','li',function(){
+            var index = $(this).find('[type=hidden]').val();
+            myMap.setCenter(geoObjects[index].geometry._coordinates,14);
+            if ($(window).width() < 780) scrollToMap();
+        })
+
+        $('.dealer-search').keyup(function () {
+            var search = $(this).val().toLowerCase();
+            if (search.length) {
+                $('.locality .dealer-city').hide();
+                $('.locality .dealer-city').filter(function(index){
+                    var city = $(this).find('summary').text();
+                    return city.toLowerCase().indexOf(search) != -1;
+                }).show();
+            }
+            else {
+                $('.locality .dealer-city').show();
+            }
+        })
+
+    });
+    function scrollToMap(){
+        $('html, body').animate({
+            scrollTop: $('.dealer-map').offset().top - 70
+        }, 500);
+    }
+</script>
+
+<?php  if ($totRows) { ?>
+    <ul class='<?=$data["class"]?>'>
+<?php  } ?>
+<!-- /FormPrefix -->
+
+<!-- RecordTemplate --><?php 
+  $fields = array(
+    "isTitle" => $isTitle,
+    "block_id" => $block_id,
+    "sub" => $sub,
+    "cc" => $cc,
+    "classID" => $classID,
+    "nc_ctpl" => $nc_ctpl,
+    "fullLink" => $fullLink,
+    "editLink" => $editLink,
+    "AdminButtons" => $f_AdminButtons,
+    "image_default" => $image_default,
+    "fastprew" => $fastprew,
+    "current_sub" => $current_sub,
+    "current_cc" => $current_cc,
+    "current_catalogue" => $current_catalogue,
+    "template" => $template,
+    "RowID" => $f_RowID,
+    "Checked" => $f_Checked,
+    "recNum" => $f_recNum,
+    "name" => $f_name,
+    "city" => $f_city,
+    "phones" => $f_phones,
+    "fax" => $f_fax,
+    "time" => $f_time,
+    "email" => $f_email,
+    "site" => $f_site,
+    "skype" => $f_skype,
+    "icq" => $f_icq,
+    "coordinates" => $f_coordinates,
+    "address" => $f_address,
+    "description" => $f_description,
+    "msg" => $msg,
+    "citytarget" => $f_citytarget,
+    "targetcode" => $f_targetcode,
+    "targetphone" => $f_targetphone,
+    "type" => $template_block
+  );
+  $class2088 = new Class2088($fields); // class2088
+  echo $class2088->getContact(); // class2013
+?><!-- /RecordTemplate -->
+
+<!-- FormSuffix --><?php  if ($totRows) { ?>
+    </ul>
+<?php  } ?>
+<?=getPagination(array(
+    'isTitle' => $isTitle,
+    'cc_env' => $cc_env,
+    'prevLink' => $prevLink,
+    'nextLink' => $nextLink,
+    'totRows' => $totRows,
+    'recNum' => $recNum,
+    'vars_str2' => $vars_str2,
+    'sub' => $sub,
+    'cc' => $cc,
+    'inside_admin' => $inside_admin
+))?><!-- /FormSuffix -->

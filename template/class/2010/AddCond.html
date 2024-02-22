@@ -1,0 +1,23 @@
+<?php
+normalizeImageRotateFromFiles();
+
+$f_citytarget = ",".implode(",",$f_citytarget).",";
+if ($f_citytarget==',,') $f_citytarget='';
+
+$f_lang = json_encode($f_lang);
+
+$f_Catalogue_ID = $catalogue;
+
+if (
+	empty($multifile_id['photo'][0])
+	&& empty($f_photo_file['tmp_name'][0])
+    && !$f_video_link 
+    && !isset($_FILES['f_video'])
+) {
+	$posting = 0;
+	#information text
+	$warnText = 'Объект не может быть пустым, загрузите фото или видео';
+}
+
+
+?>

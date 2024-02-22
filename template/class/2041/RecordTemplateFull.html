@@ -1,0 +1,535 @@
+<?php 
+global $AUTH_USER_ID;
+
+if ($current_catalogue[https]) {
+	if (substr($_SERVER[HTTP_REFERER],0,strlen($_SERVER[HTTP_HOST])+8)!='https://'.$_SERVER[HTTP_HOST]) header('Location: /');
+} else {
+	if (substr($_SERVER[HTTP_REFERER],0,strlen($_SERVER[HTTP_HOST])+7)!='http://'.$_SERVER[HTTP_HOST]) header('Location: /');
+}
+
+
+if ($current_catalogue['customCode']) {
+  GLOBAL $pathInc2;
+    $includeClass = NULL;
+  $thisFile = $DOCUMENT_ROOT.$pathInc2."/template/class/{$classID}/RecordTemplateFull.html";
+  if (file_exists($thisFile)) $includeClass = 1;
+}
+
+if ($includeClass==1) { include($thisFile); } else { # ############ START ##########
+
+unset($arr); unset($fields); unset($field); unset($insub);
+
+$arr = orderArray($f_data);
+foreach($arr['checked'] as $d) {
+    $field .= ($field ? "," : "").$d;
+}
+
+if ($f_subs) {
+   $insub = getallparentsub($f_subs);
+}
+
+$noSearchInText = array(209);
+
+$fields = $db->get_results("select Field_ID, Field_Name, Description, TypeOfData_ID, Format from Field where Field_ID IN ($field)",ARRAY_A);
+
+$EnglishName = $EnglishName2 ? $EnglishName2 : $current_sub['EnglishName'];
+
+
+/* учитыть в следующих фильтрах уже выбранные */
+if ($f_adaptiv) {
+	if ($_GET[flt]) {
+		foreach($_GET[flt] as $fk => $fl) {
+			if (empty($fk))
+				continue;
+			if (is_array($fl)) {
+				foreach($fl as $f) {
+					if ($f) $lastFltResult[$fk] .= ($lastFltResult[$fk] ? " OR " : "(")."$fk = ".(is_numeric($f) ? $f : "'{$f}'");
+				}
+			} else {
+				if ($fl) $lastFltResult[$fk] .= ($lastFltResult[$fk] ? " OR " : "(")."$fk = ".(is_numeric($fl) ? $fl : "'{$fl}'");
+			}
+
+		}
+	}
+	if ($_GET[flt1]) {
+		foreach($_GET[flt1] as $fk => $fl) {
+				foreach($fl as $k => $f) {
+					if ($f>0) $lastFltResult[$fk] .= ($lastFltResult[$fk] ? " AND " : "(")."$fk ".($k==0 ? ">=" : "<=")." ".(is_numeric($f) ? $f : "'{$f}'");
+				}
+		}
+	}
+}
+/* END учитыть в следующих фильтрах уже выбранные */
+
+if($subfind){
+	$findWhere = getFindQuery($subfind);
+	if($findWhere) $findWhere = "AND {$findWhere}";
+}
+
+if (!$nc_ctpl || $nc_ctpl==1) { /* ВЕРТИКАЛЬНЫЙ */
+	$_f = $db->get_var("SELECT data FROM Message2041 WHERE Catalogue_ID=".$catalogue." and Message_ID=".$message." LIMIT 0,1");
+    $_f = json_decode($_f, true);
+    $allField1 = array();#Итоговый
+    #сортировка по приоритету
+    asort($_f['priority']);
+    foreach($_f['priority'] as $k => $v){
+        foreach($fields as $v1){
+        	if ($v1['Field_ID']==$k){
+        		$allField1[] = $v1;
+        		break;
+        	}
+        }
+    }
+    $classtemplate = $db->get_var("SELECT Class_Template_ID FROM Sub_Class WHERE Subdivision_ID = {$thissub2}");
+    $fields = $allField1;
+    #echo '<!--|||'.print_r($fields,1).'-->';
+	foreach($fields as $f) {
+		$fielvals = $selvar = $fname = $fid = $list = $nofilter = NULL;
+
+		$fname= $f[Field_Name];
+		$fid= $f[Field_ID];
+
+		if ($f[TypeOfData_ID]==4 && $f[Format]) {
+			$list = $db->get_results("select `{$f[Format]}_Name` as name, `{$f[Format]}_ID` as id from Classificator_{$f[Format]} where Checked = 1 ORDER by `{$f[Format]}_Name`", ARRAY_A);
+			foreach($list as $l) { unset($id);
+				$id =  $l['id'];
+				$listArr[$id] = $l['name'];
+			}
+		}
+		
+		if ($arr['minimized'][$fid]) { # свернутый изначально
+			$podrob_title_class = "js-acord-none";
+			$podrob_body_class = "none";
+		}
+
+		if ($arr['otdo'][$fid]==1) { // от - до
+
+			# classtemplate != 2086
+			$arrPole = array("Цена"=>"price","Площадь"=>"var1");
+
+			// $where = $findWhere ? $findWhere : ($searchincur2>0 && $classtemplate != "2086" ? " AND Subdivision_ID = '$searchincur2'" : ($thiscid2==2001 && $EnglishName!='search' && !$current_sub['find'] ? "  AND Subdivision_ID IN (".getallparentsub($thissub2).")" : NULL))." AND {$fname} is not null AND {$fname} != '' LIMIT 0,1";
+
+			$where = $findWhere ? $findWhere : (($insub ? " AND Subdivision_ID IN (".$insub.")" : ($thiscid2==2001 && $EnglishName!='search' && !$current_sub['find'] ? " AND Subdivision_ID IN (".getallparentsub($thissub2).")" : ($stringsearchAll ?  "AND ({$stringsearchAll})" : NULL))).(count($lastFltResult)>0 ? " AND (".implode(") AND ",$lastFltResult)."))" : NULL))." AND {$fname} is not null AND {$fname} != '' LIMIT 0,1";
+
+			$max = $db->get_var("select max(".$fname."*100) from Message2001 as a where Catalogue_ID = '$catalogue' AND Checked = 1 {$where}")/100;
+			$min = $db->get_var("select min(".$fname."*100) from Message2001 as a where Catalogue_ID = '$catalogue' AND Checked = 1 {$where}")/100;
+
+			# если запросы вернули 0, то пропускать
+			if (!$max && !$min) continue;
+
+			# цены в валюте
+			if ($fname == 'price') {
+				$siteCurrency = array(542 => 3);
+				if ($siteCurrency[$catalogue]) $reslt[] ="<input type=hidden name=currenc value='".$siteCurrency[$catalogue]."'>";
+				if($siteCurrency[$catalogue]==2 && $kurs[dollar]>0) { $max = ceil($max*$kurs[dollar]); $min = ceil($min*$kurs[dollar]); }
+				if($siteCurrency[$catalogue]==3 && $kurs[euro]>0) { $max = ceil($max*$kurs[euro]); $min = ceil($min*$kurs[euro]); }
+			}
+
+			if ($max<=100){
+				$max = ceil($max);
+				$min = ceil($min);
+			}
+
+			$reslt[] ="<div class='podbor_block podbor_block_price' data-filterid='".$fid."'>
+				<div class='podrob_title js-acord-head {$podrob_title_class}'>
+					<div class='podbor_name'>{$arr['name'][$fid]}".($arr['name'][$fid]=="Цена" ? " ".$currency['html'] : "")."</div>
+				</div>
+				<div class='podrob_body js-acord-body slider-blue {$podrob_body_class}'>
+					<div class='podbor_p_inp hov'>
+						<div class='p_p_inp p_p_inp_1'>
+							<input type='text' class='inp_slider_start' name='flt1[{$fname}][0]' value='".strip_tags($_GET[flt1][$fname][0])."' data-number='' data-def='".$min."' placeholder1='".$min."'>
+							<span class='clear_inpsl'>✕</span>
+						</div>
+						<div class='p_p_inp p_p_inp_2'>
+							<input type='text' class='inp_slider_end' name='flt1[{$fname}][1]' value='".strip_tags($_GET[flt1][$fname][1])."' data-number='' data-def='".$max."' placeholder1='".$max."'>
+							<span class='clear_inpsl'>✕</span>
+						</div>
+					</div>
+					<div class='p_p_slider'>
+						<input type='text' class='inp_slider' data-start='".$min."' data-end='".$max."' data-cur1='".strip_tags($_GET[flt1][$fname][0])."' data-cur2='".strip_tags($_GET[flt1][$fname][1])."'>
+					</div>
+				</div>
+			</div>";
+		}
+		if ($arr['checked'][$fid] && !$arr['otdo'][$fid]) { // списки
+			if ($current_sub['find']) {
+			    $find = htmlspecialchars(strip_tags($current_sub['find']));
+				$zamArr = array("\\" => " ", "/" => " ", "-" => " ", "," => " ",", " => " ","." => " "," и " => " "," на " => " ");
+				$find = strtr($find, $zamArr);
+				$find = str_replace("  "," ",$find);
+
+				$findVars = explode(" или ",$find);
+
+				foreach($findVars as $fvar) {
+					 $fvar = strtr($fvar, $zamArr);
+					 $fvar = str_replace("  "," ",$fvar);
+					 $findArr = explode(" ",$fvar);
+					 $stringsearch = '';
+					  foreach($findArr as $word) { unset($wordF);
+						if ($word) {
+						  $word = trim($word);
+						  $wordF = $word;
+						  if (!is_numeric($word) && mb_strlen($word)>5 && mb_strlen($word)<8 && preg_match('/[а-яА-Я]+/', $word)) $word = mb_substr($word,0,-1);
+						  if (!is_numeric($word) && mb_strlen($word)>=8 && mb_strlen($word)<12 && preg_match('/[а-яА-Я]+/', $word)) $word = mb_substr($word,0,-2);
+						  if (!is_numeric($word) && mb_strlen($word)>=12 && preg_match('/[а-яА-Я]+/', $word)) $word = mb_substr($word,0,-3);
+						  $stringsearch .= ($stringsearch ? " AND " : NULL)."(
+										name like '%$word%' OR
+										art like '%$wordF%' OR
+										".(!in_array($catalogue,$noSearchInText) ? "text like '%$word%' OR " : NULL)."
+										vendor like '%$word%' OR
+										code like '%$wordF%' OR
+										analog like '%$wordF%' OR
+										tags like '% $wordF %' OR tags like '$wordF' OR tags like '$wordF,%' OR tags like '$wordF %' OR tags like '% $wordF,%' OR tags like '%,$wordF,%' OR tags like '% $wordF' OR tags like '%,$wordF' OR
+										".(!in_array($catalogue,$noSearchInText) ? "var1 like '% $wordF %' OR var1 like '$wordF' OR var1 like '$wordF,%' OR var1 like '$wordF %' OR var1 like '% $wordF,%' OR var1 like '%,$wordF,%' OR var1 like '% $wordF' OR var1 like '%,$wordF' OR " : NULL)."
+										var2 like '%$wordF%' OR
+										var3 like '%$wordF%' OR
+										var4 like '%$wordF%' OR
+										var5 like '%$wordF%' OR
+										var6 like '%$wordF%' OR
+										var7 like '%$wordF%' OR
+										var8 like '%$wordF%' OR
+										var9 like '%$wordF%' OR
+										var10 like '%$wordF%' OR
+										var11 like '%$wordF%' OR
+										var12 like '%$wordF%' OR
+										var13 like '%$wordF%' OR
+										var14 like '%$wordF%' OR
+										var15 like '%$wordF%'
+										)";
+						}
+					  }
+					  $stringsearchAll .= ($stringsearchAll ? " OR " : NULL).$stringsearch;
+				}
+			}
+			$where = $findWhere ? $findWhere : ($EnglishName == 'spec'? 'AND a.spec = 1': ($insub ? " AND Subdivision_ID IN (".$insub.")" : ($thiscid2==2001 && $EnglishName!='search' && !$current_sub['find'] ? " AND Subdivision_ID IN (".getallparentsub($thissub2).")" : ($stringsearchAll ?  "AND ({$stringsearchAll})" : NULL)))).(count($lastFltResult)>0 ? " AND (".implode(") AND ",$lastFltResult)."))" : NULL);
+
+			// echo $where;
+			/* если заполнен find у раздела*/
+			$find = $db->get_var("SELECT find FROM Subdivision WHERE Subdivision_ID = {$thissub2}");
+			if($find) $where = " AND ".getFindQuery($find);
+
+			$sqlfind = "select `{$fname}` as fld from Message2001 as a where Catalogue_ID = '{$catalogue}' AND Checked = 1 {$where} ORDER by `{$fname}`";
+			$fielvalsTmp = $db->get_results($sqlfind, ARRAY_A);
+
+			if ($fielvalsTmp) { // перебор товаров для подсчета кол-ва товаров в каждом фильтре
+				$fielvals = array();
+				$start = microtime(true);
+                if ($arr['fltsort'][$fid]) fltSort($fielvalsTmp);
+				foreach($fielvalsTmp as $f) {
+					$val = $f[fld];
+
+					if (strstr($val,";")) { // несколько значений
+						foreach(explode(";",$val) as $cnt1) {
+							$fielvals[trim($cnt1)]['fld']=trim($cnt1);
+							$fielCnt[trim($cnt1)]++;
+						}
+					} else { // нет несколько значений
+						#Mir
+						#Объединение значений таких как США и Сша, т.е. что бы они раздельно в фильтре не показывались
+						#if ($catalogue == 623){
+							if (empty($val))
+								continue;
+							if (!empty($fielvals)){
+								$_f = false;
+								foreach($fielvals as $fk => $ff){
+									if (mb_strtolower($fk) == mb_strtolower($val)){
+										$fielCnt[$fk]++;
+										$_f = true;
+										break;
+									}
+								}
+								if (!$_f){
+									$fielvals[$val]['fld']=$val;
+									$fielCnt[$val]++;
+								}
+							}
+							else {
+								$fielvals[$val]['fld']=$val;
+								$fielCnt[$val]++;
+							}
+						#End Mir
+						#}
+					}
+					/*
+					else {
+						if ($fielvals[$val][fld]) $fielCnt[$val]++;
+						if (!$fielvals[$val][fld]) { $fielvals[$val]['fld']=$val; $fielCnt[$val]++; }
+					}
+					*/
+				}
+			}
+
+
+			if ($fielvals) { # перебор значений
+				foreach($fielvals as $fv) { $val = $getvars = $val2 = NULL;
+					$val = $fv[fld];
+
+                    if (strstr($val,";")) { // несколько значений
+						foreach(explode(";",$val) as $cnt1) {
+							$val2[trim($cnt1)]=trim($cnt1);
+							$fielCnt[trim($cnt1)]++;
+						}
+
+					}
+
+
+
+					if($fname == "colors"){
+						$json = orderArray($val);
+						if(is_array($json)){
+							foreach ($json as $jsonItem) {
+								if($jsonItem[name]){
+									$colors[$jsonItem[name]][code] = $jsonItem[code];
+									$colors[$jsonItem[name]][count]++;
+									if ($_GET[flt][$fname]) $getvars = stripslashes(urldecode(implode(",",$_GET[flt][$fname])));
+								}
+							}
+						}
+					}else if ($val) {
+                                if ($arr['view'][$fid]==1) { # или select
+                                     $selvar.= "<option ".($_GET[flt][$fname] && $val==$_GET[flt][$fname] ? "selected" : NULL)." value='{$val}'>".($f[TypeOfData_ID]==4 ? $listArr[$val] : $val)."</option>";
+                                } else { # или checkbox
+                                    if ($_GET[flt][$fname]) $getvars = ",".stripslashes(urldecode(implode(",",$_GET[flt][$fname]))).",";
+                                    $selvar.= "<div class='podbor_dch'>".bc_checkbox_standart("flt[{$fname}][]", urlencode($val), ($f[TypeOfData_ID]==4 ? $listArr[$val] : $val)." <span class='ch-num'>(<span class='ch-n'>{$fielCnt[$val]}</span>)</span>", ($_GET[flt][$fname] && strstr($getvars,",".$val.",")))."</div>";
+                                }
+  					}
+				}
+
+				if($colors){
+					foreach ($colors as $name => $data) {
+						$selvar.= "<div class='podbor_dch'>".bc_checkbox_standart("flt[{$fname}][]", $name, "{$name} <span class='ch-num'>(<span class='ch-n'>{$data[count]}</span>)</span>", ($_GET[flt][$fname] && strstr($getvars, $name)))."</div>";
+						// $selvar.= "<div class='podbor_dch'>".bc_checkbox_standart("flt[{$fname}][]", $name, "{$name} <span class='ch-num'>(<span class='ch-n'>{$data[count]}</span>)</span>", ($_GET[flt][$fname] && strstr($getvars, ",".$val.",")))."</div>";
+					}
+					unset($colors);
+				}
+			} else {
+				$selvar.= "<div class='podbor_dch filter-not-have'>В фильтре<br>нет подходящих значений {$subfind}</div>";
+				$nofilter = 1;
+			}
+			if (!$selvar) $nofilter = 1;
+
+			if ($current_sub[Hidden_URL]!='search' && !$nofilter) {
+				$reslt[]="
+				".($AUTH_USER_ID2 ? $sqlfind : NULL)."
+				<div class='podbor_block pd_close ".encodestring($arr['name'][$fid],1)."'>
+				<div class='podrob_title js-acord-head'>
+					<div class='podbor_name'>{$arr['name'][$fid]} ".($arr['view'][$fid] && $arr['view'][$fid]<3 ? "<a href='' class='clear_filter fr'>Очистить</a>" : NULL)."</div>
+				</div>
+				<div class='podrob_body js-acord-body {$podrob_body_class}'>";
+				if ($arr['view'][$fid]==1) { # список значений select
+					$reslt[]="<select name='flt[{$fname}]' class='select-style'><option value=''>- выберите -</option>{$selvar}</select>";
+				}
+				if ($arr['view'][$fid]==2) { # список значений checkbox
+					$reslt[]="<div class='podbor_checkb cb'>{$selvar}</div>";
+				}
+
+				if ($arr['view'][$fid]==3) { # да/нет одна галочка
+					$reslt[]="<div class='podbor_checkb scrollbar-inner'>
+						<div class='podbor_dch '>".bc_checkbox_standart("flt3[{$fname}]", 1, "да", $_GET[flt3][$fname])."</div>
+					</div>";
+				}
+				$reslt[]="</div></div>";
+			}
+
+		}
+
+		if (!$reslt) $reslt[]=$selvar;
+	}
+	// доп параметры
+	if (count($setting_params)>0) {
+		//echo print_r($setting_params,1);
+		$dopParams = $db->get_results("select params from Message2001 where Catalogue_ID = '{$catalogue}' AND Checked = 1 AND params != '' AND params IS NOT NULL AND Subdivision_ID IN (".getallparentsub($thissub2).")", ARRAY_A);
+
+		if ($dopParams) {
+			foreach($dopParams as $dp) {
+				$paramPara = explode("\r\n",trim($dp[params]));
+				if (count($paramPara)>0) {
+					foreach($paramPara as $paramRow) {
+						$paramRow = explode("||",$paramRow);
+						if (trim($paramRow[1],"|")) $dopParamsValues[$paramRow[0]][trim($paramRow[1],"|")] = trim($paramRow[1],"|");
+					}
+				}
+
+			}
+			//echo print_r($dopParamsValues,1);
+			$iid=5000;
+			foreach($setting_params as $dopvar) {
+				$iid++;
+				$setting_params2[($dopvar['priority'] ? $dopvar['priority'] : $iid)] = $dopvar;
+			}
+			ksort($setting_params2);
+
+			foreach($setting_params2 as $dopvar) {
+				$dmin = $dmax = $allvar = null;
+				$dopfiltID++;
+				if (!$dopvar['in_filter']) continue;
+				if (count($dopParamsValues[$dopvar['keyword']])>0) {
+					if ($dopvar['otdo_filter']) {
+						foreach($dopParamsValues[$dopvar['keyword']] as $name => $data) {
+							if ($dmin>$data) $dmin = (float)$data;
+							if ($dmax<$data) $dmax = (float)$data;
+							if ((float)$data>0) $allvar[] =  $data;
+						}
+
+						$reslt[] ="<div class='podbor_block podbor_block_price' data-filterid='".$fid.$dopfiltID."'>
+								<div class='podrob_title js-acord-head {$podrob_title_class}'>
+									<div class='podbor_name'>{$dopvar['name']}</div>
+									<input type='hidden' name='r[{$dopvar['keyword']}]' value='".implode("_",$allvar)."'>
+								</div>
+								<div class='podrob_body js-acord-body slider-blue {$podrob_body_class}'>
+									<div class='podbor_p_inp hov'>
+										<div class='p_p_inp p_p_inp_1'>
+											<input type='text' class='inp_slider_start' name='flt[params][{$dopvar['keyword']}][0]' value='".strip_tags($_GET[flt][params][$dopvar['keyword']][0])."' data-number='' data-def='".$dmin."' placeholder='".$dmin."'>
+											<span class='clear_inpsl'>✕</span>
+										</div>
+										<div class='p_p_inp p_p_inp_2'>
+											<input type='text' class='inp_slider_end' name='flt[params][{$dopvar['keyword']}][1]' value='".strip_tags($_GET[flt][params][$dopvar['keyword']][1])."' data-number='' data-def='".$dmax."' placeholder='".$dmax."'>
+											<span class='clear_inpsl'>✕</span>
+										</div>
+									</div>
+									<div class='p_p_slider'>
+										<input type='text' class='inp_slider' data-start='".$dmin."' data-end='".$dmax."' data-cur1='".strip_tags($_GET[flt][params][$dopvar['keyword']][0])."' data-cur2='".strip_tags($_GET[flt][params][$dopvar['keyword']][1])."'>
+									</div>
+								</div>
+							</div>";
+					}
+
+
+					if (!$dopvar['otdo_filter']) {
+						$selvar="<div class='podbor_block pd_close'>
+							<div class='podrob_title js-acord-head {$podrob_title_class}'>
+								<div class='podbor_name'>{$dopvar['name']} <a href='' class='clear_filter fr'>Очистить</a></div>
+							</div>
+							<div class='podrob_body js-acord-body {$podrob_body_class}'><div class='podbor_checkb cb'>";
+						foreach($dopParamsValues[$dopvar['keyword']] as $name => $data) {
+							$selvar.= "<div class='podbor_dch'>".bc_checkbox_standart("flt[params][{$dopvar['keyword']}][{$data}]", $data, "{$data}", $_GET[flt]['params'][$dopvar['keyword']][$data])."</div>";
+						}
+						$selvar.= "</div></div></div>";
+						$reslt[] = $selvar;
+					}
+
+				}
+			}
+		}
+	} // end доп параметры
+
+	/*if ($AUTH_USER_ID==1) $reslt[] = "sdfsdfsdf".print_r($arr);*/ // debug
+?>
+
+<div class="podbor_rovarov obj obj<?=$message?>">
+	<form action='<?=($searchincur2	? $cururl : "/search/")?>'>
+		<input type=hidden name='filter' value='1'>
+        <?=($recNum ? "<input type=hidden name='recNum' value='{$recNum}'>" : "")?>
+        <?=($sort ? "<input type=hidden name='sort' value='{$sort}'>" : "")?>
+        <?=($desc ? "<input type=hidden name='desc' value='{$desc}'>" : "")?>
+        <?=($insub || $thiscid2==2001 ? "<input type=hidden name='subr' value='".($insub ? $insub : ($EnglishName!='search' ? $thissub2 : null) )."'>" : null )?>
+		<?=implode("",$reslt)?>
+		<div class='podbor_click' <?=$AUTH_USER_ID?>><input type='submit' value=''>
+			<a href='/' class='podbor_add podbor_input btn-strt-a'><div class='none fdsfsf'><?=$sqlfind.$current_sub['EnglishName']?></div>
+				<span class='podbor_add_t'><?=($f_button ? $f_button : "Применить")?></span>
+			</a>
+			<a href='' class='clear_filter'>Сбросить</a>
+		</div>
+	</form>
+<?=editObjBut($editLink)?>
+</div>
+
+
+<?php  } else { /* ГОРИЗОНТАЛЬНЫЙ */ ?>
+
+
+<?php 
+	foreach($fields as $f) {
+		unset($fielvals); unset($selvar); unset($fname); unset($fid); unset($list);
+		$fname = $f[Field_Name];
+		$fid = $f[Field_ID];
+		$fdes = $f[Description];
+		$sites = array(786);
+		if (in_array($catalogue, $sites)) {
+			var_dump($fname);
+		}
+		if (strstr($fname, ";")) continue;
+
+		if ($f[TypeOfData_ID]==4 && $f[Format]) {
+			$list = $db->get_results("select `{$f[Format]}_Name` as name, `{$f[Format]}_ID` as id from Classificator_{$f[Format]} where Checked = 1 ORDER by `{$f[Format]}_Name`", ARRAY_A);
+			foreach($list as $l) { unset($id);
+				$id =  $l['id'];
+				$listArr[$id] = $l['name'];
+			}
+		}
+		if ($arr['otdo'][$fid]==1) { // от - до
+			$where = $findWhere ? $findWhere : ($f_subs? "AND Subdivision_ID IN (".$insub.")" : ($thiscid2==2001 && $EnglishName!='search' ? " AND Subdivision_ID IN (".getallparentsub($thissub2).")" : null));
+			$max = $db->get_var("select price from Message2001 as a where Catalogue_ID = '$catalogue' AND Checked = 1 {$where} ORDER BY Price DESC LIMIT 0,1");
+			$min = $db->get_var("select price from Message2001 as a where Catalogue_ID = '$catalogue' AND Checked = 1 {$where} ORDER BY Price LIMIT 0,1");
+			$reslt.="<div class='filter_m_item cb filter-main-slider'>".($f_namefieldbool ?"<div class='filter_m_title'>{$fdes}:</div><div class='filter_m_bodyt'>":NULL)."
+							<input type='text' id='filter_sld_start' name='flt1[{$fname}][0]' value='".strip_tags($_GET[flt1][$fname][0])."' data-number='' data-def='$min'>
+							<input type='text' id='filter_sld_end' name='flt1[{$fname}][1]' value='".strip_tags($_GET[flt1][$fname][1])."' data-number='' data-def='$max'>
+							<input type='text' class='filter_sld' data-start='0' data-end='$max' data-cur1='".strip_tags($_GET[flt1][$fname][0])."' data-cur2='".strip_tags($_GET[flt1][$fname][1])."'>
+			".($f_namefieldbool ?"</div>":NULL)."</div>";
+		} else { // списки
+			$where = $findWhere ? $findWhere : ($insub ? " AND Subdivision_ID IN (".$insub.")" : ($thiscid2==2001 && $EnglishName!='search' ? " AND Subdivision_ID IN (".getallparentsub($thissub2).")" : null ));
+			$fielvals = $db->get_results("select `{$fname}` as fld from Message2001 as a where Catalogue_ID = '".$catalogue."' AND Checked = 1 {$where} GROUP BY `{$fname}` ORDER by `{$fname}`", ARRAY_A);
+
+			if ($fielvals) { # перебор значений
+				foreach($fielvals as $fv) { unset($val);
+					$val = $fv[fld];
+					if ($val) {
+						if ($arr['view'][$fid]==2) { # или checkbox
+							$getvars = ",".stripslashes(urldecode(implode(",",$_GET[flt][$fname]))).",";
+							$selvar.= "<div class='podbor_dch '>".bc_checkbox_standart("flt[{$fname}][]", urlencode($val), ($f[TypeOfData_ID]==4 ? $listArr[$val] : $val), ($_GET[flt][$fname] && strstr($getvars,",".$val.",")))."</div>";
+						}else { # или select
+							 $selvar.= "<option ".($_GET[flt][$fname] && $val==$_GET[flt][$fname] ? "selected" : NULL)." value='{$val}'>".($f[TypeOfData_ID]==4 ? $listArr[$val] : $val)."</option>";
+						}
+					}
+				}
+			}
+			//if ($_SERVER[REMOTE_ADDR]=='31.13.133.138') echo "<div style='font-size:10px;'>select `{$fname}` as fld from Message2001 as a where Catalogue_ID = '".$catalogue."' AND Checked = 1 {$where} GROUP BY `{$fname}` ORDER by `{$fname}`</div>";
+
+			$reslt.="<div class='filter_m_item cb'>".($f_namefieldbool ?"<div class='filter_m_title'>{$arr['name'][$fid]}:</div><div class='filter_m_bodyt'>":NULL);
+
+			if ($arr['view'][$fid]==2) {
+				$reslt.="<div class='podbor_checkb cb'>{$selvar}</div>";
+			}else {
+				$reslt.="<select name='flt[{$fname}]' class='select-style' data-placeholder='{$arr['name'][$fid]}'><option value=''>Все</option>{$selvar}</select>";
+			}
+
+
+			$reslt.= ($f_namefieldbool ?"</div>":NULL)."</div>";
+		}
+
+		if (!$reslt) $reslt=$selvar;
+	}
+?>
+<?=($f_hide_bigfilter? "<div class='filter_m_hide'>" :NULL)?>
+
+	<div class='filter_m_body <?=($f_file_newline? "filter_m_newline" :NULL)?> obj obj<?=$message?>'>
+		<form action='/search/'>
+            <input type=hidden name='filter' value='1'>
+            <?=($recNum ? "<input type=hidden name='recNum' value='{$recNum}'>" : "")?>
+            <?=($sort ? "<input type=hidden name='sort' value='{$sort}'>" : "")?>
+            <?=($desc ? "<input type=hidden name='desc' value='{$desc}'>" : "")?>
+            <?=($insub || $thiscid2==2001 ? "<input type=hidden name='subr' value='".($insub ? $insub : ($current_sub['EnglishName']!='search' ? $thissub2 : null) )."'>" : null )?>
+			<?=$reslt?>
+			<div class='filter_m_item cb'><input type='submit' value=''>
+				<a href='#' class='button_green btn-strt-a'>
+					<span class='btn_green_1 icons i_check'></span>
+					<span class='btn_green_2'><!--<span class='btn_green_num'>54</span>--> <?=($f_button ? $f_button : "Применить")?></span>
+				</a>
+			</div>
+		</form>
+		<?=editObjBut($editLink)?>
+	</div>
+
+<?php if($f_hide_bigfilter){?>
+		<div class="filter_m_hide_footer">
+			<div class="filter_m_tx">
+				<div class="f_m_hide">Показать фильтр</div>
+				<div class="f_m_show">Скрыть фильтр</div>
+			</div>
+		</div>
+	</div>
+<?php }?>
+
+
+<?php  /* END горизонтальный */ } ?>
+<?php  } ?>

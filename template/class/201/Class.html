@@ -1,0 +1,128 @@
+<!-- FormPrefix --><?=($inside_admin || $office ? $f_AdminCommon : addObjBut($addLink,$isTitle,null,' сотрудника'))?>
+
+<?php 
+if ($scrolling==1 && $scrollspeed>0) {
+	$scrollAttr = "data-scrollto='left' data-scrollspeed='{$scrollspeed}'";
+	$cssclass .= " block_scroll";
+}
+if ($scrolling==2) {
+
+	if (!$scrollspeed) $scrollspeed = 50;
+	$scrollAttr = "data-interval='".($scrollspeed*100)."'";
+	$cssclass .= " block_slide";
+	
+	if ($scrollbut) {
+		$scrollinfo = "<div class='blk_buttom'>
+						  <span class='block_slide_next icons i_right'></span><span class='block_slide_prev icons i_left'></span>
+					  </div>";
+	}
+	if ($scrollbut==2) {
+		$scrollbutClass = "blk_arrow2";
+	}
+}
+
+
+# PAGE
+if (browse_messages($cc_env, 15) && !$isTitle) {
+	$pagination = "<div class='pagination'><div class='pgn-line'>
+		".($prevLink ? "<a href='$prevLink' class='icons i_left pag_prev'></a>" : NULL)."
+		".browse_messages($cc_env, 15)."
+		<span class='pag_text'>из</span> <a href='?curPos=".(ceil($totRows/$recNum)*$recNum-$recNum)."{$vars_str2}'>".ceil($totRows/$recNum)."</a>
+		</div>".($nextLink ? "<div class='next_page'><a href='$nextLink' class=' icons i_right'>Следующая страница</a></div>" : NULL)."
+	</div>";
+}
+?>
+
+
+
+
+
+<?php  if ($totRows) { ?>
+ <?=($scrollinfo ? "<div class='block_slide_nav {$scrollbutClass}'>{$scrollinfo}</div>" : NULL)?>
+ <?=($scrolling ? "<div {$scrollAttr} class='{$cssclass}'>" : NULL)?>
+
+ <div class="contact_piople <?=($office>0 ? "contact_piople_office" : NULL)?>">
+<?php  } ?>
+
+<?php
+/** подключение отделенного вывода объекта */
+$includeFilePath = $DOCUMENT_ROOT . $pathInc2 . "/template/class/{$classID}/RecordTemplate.html";
+$isInclude = $current_catalogue['customCode'] && file_exists($includeFilePath);
+?><!-- /FormPrefix -->
+
+<!-- RecordTemplate --><?php /* Служебная часть */
+for ($f_RowNum = 0; $f_RowNum < $rowCount; $f_RowNum++) {
+    if($fetch_row[$f_RowNum] instanceof Iterator) {
+        extract($fetch_row[$f_RowNum]->to_array(), EXTR_PREFIX_ALL, "f");
+    } else {
+        extract($fetch_row[$f_RowNum], EXTR_PREFIX_ALL, "f");
+    }
+    foreach($iteration_RecordTemplate[$f_RowNum] as $value) {
+        extract($value);
+    }
+    eval($cc_env["convert2txt"]);
+    ob_start();
+/* Конец служебной части */?>
+
+<?php /* Служебная часть */
+for ($f_RowNum = 0; $f_RowNum < $rowCount; $f_RowNum++) {
+    if($fetch_row[$f_RowNum] instanceof Iterator) {
+        extract($fetch_row[$f_RowNum]->to_array(), EXTR_PREFIX_ALL, "f");
+    } else {
+        extract($fetch_row[$f_RowNum], EXTR_PREFIX_ALL, "f");
+    }
+    foreach($iteration_RecordTemplate[$f_RowNum] as $value) {
+        extract($value);
+    }
+    eval($cc_env["convert2txt"]);
+    ob_start();
+/* Конец служебной части */?>
+
+<?php if ($isInclude) : ?>
+    <?php include $includeFilePath; ?>
+<?php else : ?>
+    <?php 
+    if(strstr((string)$cityid, $f_citytarget)){
+        var_dump($f_citytarget);
+    }else{
+        var_dump($cityid);
+    }
+    ?>
+    
+    <div class="cnp_item obj obj<?=$f_RowID?> <?=objHidden($f_Checked,$f_citytarget,$cityid)?>">
+        <?=($f_photo ? "<div class='cnp_img'><div class='image-default image-cover'><img src='{$IMG_HOST}{$f_photo}' alt=''></div></div>" : NULL)?>
+        <div class="cnp_data">
+                <div class="cnp_name"><?=$f_name?></div>
+                <?=($f_text ? "<div class='cnp_opis'>$f_text</div>" : NULL)?>
+                <?php  foreach(explode("\r\n", $f_phone) as $ph) {
+                    if ($ph) echo "<div class='cnp_phone iconsCol icons i_tel'>$ph</div>";
+                } ?>
+
+                <?php  foreach(explode(",", $f_email) as $email) {
+                    if ($email){
+                        echo "<div class='cnp_email mailaj iconsCol icons i_email'><span>E-mail:</span> <a ".safeEmailContact(trim($email))." href=''></a></div>";
+                    }
+                } ?>
+
+                <?=($f_mailsend ? "<div class='cnp_mailsend iconsCol icons i_sendmail'><a href='/feedback/add_feedback.html?isNaked=1&mgr={$f_RowID}' class='dotted' title='Связаться с менеджером' data-rel='lightcase' data-maxwidth='380' data-groupclass='feedback modal-form'>Связаться с менеджером</a></div>" : NULL)?>
+                <?=($f_icq ? "<div class='cnp_phone iconsCol'><img src='http://wwp.icq.com/scripts/online.dll?icq={$f_icq}&amp;img=27'>$f_icq</div>" : NULL)?>
+        </div><?=($bitcat ? editObjBut($editLink) : "")?>
+    </div>
+<?php endif; ?>
+<?php /* Служебная часть */
+    echo nc_finishing_RecordTemplate(ob_get_clean(), $inside_admin, $classID, $f_RowID, $parent_message, $cc, $cc_env["Class_Name"], $no_cache_marks);
+}
+/* Конец служебной части */?>
+
+<?php /* Служебная часть */
+    echo nc_finishing_RecordTemplate(ob_get_clean(), $inside_admin, $classID, $f_RowID, $parent_message, $cc, $cc_env["Class_Name"], $no_cache_marks);
+}
+/* Конец служебной части */?><!-- /RecordTemplate -->
+
+<!-- FormSuffix --><?=($scrolling ? "</div>" : NULL)?>
+<?php  if ($totRows) { ?>
+</div>
+<?php }?>
+
+
+<?=$pagination?><!-- /FormSuffix -->

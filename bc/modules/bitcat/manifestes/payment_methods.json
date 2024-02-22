@@ -1,0 +1,13 @@
+{
+    "payment_methods": {
+        "row": [
+            {
+                "name": "lists_payment",
+                "label": "Способы оплаты",
+                "type": "multi_line",
+                "type_old": "11",
+                "colline": "height"
+            }
+        ]
+    }
+}

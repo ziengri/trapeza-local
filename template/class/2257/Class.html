@@ -1,0 +1,48 @@
+<!-- FormPrefix --><div class="view-body-inline export-excel">
+  <div class="v-title">
+    <a href="<?=$addLink?>?isNaked=1" class="add-btn" title="Добавление прайса" data-rel="lightcase" data-lc-options='{"maxWidth":700,"groupClass":"modal-edit modal-export-excel"}'>Добавить прайс</a>
+  </div>
+  <div class="v-body">
+    <?php  if (!$totRows) { ?> <div class='v-line center nobefore'><div class='v-inline'>Нет ни одной выгрузки каталога из Excel</div></div> <?php  } ?>
+<!-- /FormPrefix -->
+
+<!-- RecordTemplate --><?php /* Служебная часть */
+for ($f_RowNum = 0; $f_RowNum < $rowCount; $f_RowNum++) {
+    if($fetch_row[$f_RowNum] instanceof Iterator) {
+        extract($fetch_row[$f_RowNum]->to_array(), EXTR_PREFIX_ALL, "f");
+    } else {
+        extract($fetch_row[$f_RowNum], EXTR_PREFIX_ALL, "f");
+    }
+    foreach($iteration_RecordTemplate[$f_RowNum] as $value) {
+        extract($value);
+    }
+    eval($cc_env["convert2txt"]);
+    ob_start();
+/* Конец служебной части */?>
+
+
+<div class="v-line">
+        <div class="v-inline v-line-name">
+            <span><?=($f_RowNum+1).'.'?></span> <?=($f_name ? $f_name : get_namesub_link($f_parent))?> <span>: </span>
+        </div>
+        <div class="v-inline v-line-exa">
+            <?=($f_excel ? "<a href='{$f_excel}'>{$f_excel_name}</a>": "файл не выбран")?>
+        </div>
+        <div class="v-line-param">
+            <div class="v-first"></div>
+            <div class="v-second">
+                <a href="<?=$editLink?>?isNaked=1&panel=1" class="v-setting" title="Добавление прайса" data-rel="lightcase" data-lc-options='{"maxWidth":700,"groupClass":"modal-edit modal-export-excel"}'></a>
+                <a title='Удалить прайс?<?=($f_excel ? "<br>{$f_excel_name}" : "")?>' data-rel='lightcase' data-lc-options='{"maxWidth":500,"showTitle":false}' data-confirm-success='{succes: 1,modal:"close",reloadtab:1}' data-confirm-href='<?=$dropLink?>' href='#сonfirm-actions' class='v-remove'></a>
+                <?=$f_AdminButtons?>
+            </div>
+        </div>
+    </div>
+
+<?php /* Служебная часть */
+    echo nc_finishing_RecordTemplate(ob_get_clean(), $inside_admin, $classID, $f_RowID, $parent_message, $cc, $cc_env["Class_Name"], $no_cache_marks);
+}
+/* Конец служебной части */?>
+<!-- /RecordTemplate -->
+
+<!-- FormSuffix -->      </div>
+    </div><!-- /FormSuffix -->

@@ -1,0 +1,36 @@
+<?php
+// preg_match_all("/video=([\w\/]+).mp4/", strip_tags($f_textfull), $video_matches);
+
+// foreach($video_matches[1] as $video) {
+//     if(!file_exists("/var/www/krza/data/www/krza.ru/a/speakenglish/lessons_files/{$video}.mp4")) {
+//         $posting = 0;
+//         echo json_encode(ARRAY(
+//             "title" => getLangWord('error',"Ошибка"),
+//             "error" => getLangWord('er_txt_badMail',"{$video}.Файл не найден файл"),
+//         ));
+//     }
+//     $videoHTML = "<video controls><source src='/a/speakenglish/lessons_files/{$video}.mp4' type='video/mp4'>Not supported</video>";
+//     $f_textfull = str_replace("video={$video}.mp4", $videoHTML, $f_textfull);
+// }
+
+// preg_match_all("/audio=([\w\/]+).mp3/", strip_tags($f_textfull), $audio_matches);
+// foreach($audio_matches[1] as $audio) {
+//     if(!file_exists("/var/www/krza/data/www/krza.ru/a/speakenglish/lessons_files/{$audio}.mp3")) {
+//         $posting = 0;
+//         echo json_encode(ARRAY(
+//             "title" => getLangWord('error',"Ошибка"),
+//             "error" => getLangWord('er_txt_badMail',"{$audio}.mp3.Файл не найден файл"),
+//         ));
+//     }
+//     $audioHTML = "<audio
+//                     controls
+//                     src='/var/www/krza/data/www/krza.ru/a/speakenglish/lessons_files/{$audio}.mp3'>
+//                         Your browser does not support the
+//                         <code>audio</code> element.
+//                     </audio>";
+
+//     $f_textfull = str_replace("audio={$audio}.mp3", $audioHTML, $f_textfull);
+// }
+
+$ob = new Class2260();
+$f_files = $ob->cleanArray($files);

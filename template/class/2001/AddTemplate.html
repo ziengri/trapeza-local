@@ -1,0 +1,214 @@
+<?php
+    $connectTemplate = $DOCUMENT_ROOT.$pathInc2."/template/{$classID}/templateAdd/AddTemplate.html";
+    if($current_catalogue['customCode'] && file_exists($connectTemplate)) include($connectTemplate);
+    else{
+?>
+    <?php  if(!$inside_admin){ ?>
+        <?php  if ($warnText) { 
+        echo json_encode(ARRAY(
+            "title" => "Error",
+            "error" => $warnText
+        ));
+        } else { ?>
+            <form name='adminForm' class='ajax2' id="adminForm" enctype='multipart/form-data' method='post' action='<?= $SUB_FOLDER ?><?= $HTTP_ROOT_PATH ?>add.php'>
+                <div id='nc_moderate_form'>
+                    <input name='admin_mode' type='hidden' value='<?= $admin_mode ?>' />
+                    <?= $nc_core->token->get_input() ?>
+                    <input name='catalogue' type='hidden' value='<?= $catalogue ?>' />
+                    <input name='cc' type='hidden' value='<?= $cc ?>' />
+                    <input name='sub' type='hidden' value='<?= $sub ?>' /><input name='posting' type='hidden' value='1' />
+                    <input name='f_xlslist' type='hidden' value='<?= $f_xlslist ?>' />
+                    <input name='f_fromxls' type='hidden' value='<?= $f_fromxls ?>' />
+                    <input name='f_rate' type='hidden' value='0' />
+                    <input name='f_ratecount' type='hidden' value='0' />
+                    <input name='f_Parent_Message_ID' type='hidden' value='<?= $f_Parent_Message_ID ?>' />
+                    <?= nc_form_moderate('add', $admin_mode, 0, $systemTableID, $current_cc, (isset($f_Checked) ? $f_Checked  : null), $f_Priority , $f_Keyword, $f_ncTitle, $f_ncKeywords, $f_ncDescription ) ?>
+                </div>
+        
+                <?php  include("form.php"); ?>
+        
+        
+                <div class="bc_submitblock">
+                    <div class='result'></div>
+                    <span class="btn-strt"><?= nc_submit_button(NETCAT_MODERATION_BUTTON_ADD) ?></span>
+                </div>
+        
+            </form>
+        <?php  } ?>
+    <?php  }else{ ?>
+        <?=( $warnText ? "<div class='warnText'>$warnText</div>" : NULL )?>
+        <form name='adminForm' id='adminForm' class='nc-form' enctype='multipart/form-data' method='post' action='<?= $SUB_FOLDER ?><?= $HTTP_ROOT_PATH ?>add.php'>
+        <div id='nc_moderate_form'>
+        <div class='nc_clear'></div>
+        <input name='admin_mode' type='hidden' value='<?= $admin_mode ?>' />
+        <?= $nc_core->token->get_input() ?>
+        <input name='catalogue' type='hidden' value='<?= $catalogue ?>' />
+        <input name='cc' type='hidden' value='<?= $cc ?>' />
+        <input name='sub' type='hidden' value='<?= $sub ?>' /><input name='posting' type='hidden' value='1' />
+        <input name='curPos' type='hidden' value='<?= $curPos ?>' />
+        <input name='f_Parent_Message_ID' type='hidden' value='<?= $f_Parent_Message_ID ?>' />
+        <?= nc_form_moderate('add', $admin_mode, 0, $systemTableID, $current_cc, (isset($f_Checked) ? $f_Checked  : null), $f_Priority , $f_Keyword, $f_ncTitle, $f_ncKeywords, $f_ncDescription ) ?>
+        </div>
+        <?= nc_string_field('name', "maxlength='255' size='50'", ($class_id ? $class_id : $classID), 1) ?><br />
+        <br />
+        <?= nc_text_field('text', "", ($class_id ? $class_id : $classID), 1) ?><br />
+        <br />
+        <?php  $f_photo->settings->resize(800, 800)->preview(900, 900)->use_name('Описание фото'); ?>
+        <?= $f_photo->form() ?><br />
+        <br />
+        <?= nc_string_field('vendor', "maxlength='255' size='50'", ($class_id ? $class_id : $classID), 1) ?><br />
+        <br />
+        <?= nc_float_field('price', "maxlength='12' size='12'", ( $class_id ? $class_id : $classID), 1) ?><br />
+        <br />
+        <?= nc_float_field('price2', "maxlength='12' size='12'", ( $class_id ? $class_id : $classID), 1) ?><br />
+        <br />
+        <?= nc_float_field('price3', "maxlength='12' size='12'", ( $class_id ? $class_id : $classID), 1) ?><br />
+        <br />
+        <?= nc_float_field('price4', "maxlength='12' size='12'", ( $class_id ? $class_id : $classID), 1) ?><br />
+        <br />
+        <?= nc_bool_field('firstprice', "", ($class_id ? $class_id : $classID ), 1) ?><br />
+        <br />
+        <?= nc_bool_field('dogovor', "", ($class_id ? $class_id : $classID ), 1) ?><br />
+        <br />
+        <?= nc_bool_field('torg', "", ($class_id ? $class_id : $classID ), 1) ?><br />
+        <br />
+        <?= nc_bool_field('nocart', "", ($class_id ? $class_id : $classID ), 1) ?><br />
+        <br />
+        <?= nc_bool_field('noorder', "", ($class_id ? $class_id : $classID ), 1) ?><br />
+        <br />
+        <?= nc_text_field('variable', "", ($class_id ? $class_id : $classID), 1) ?><br />
+        <br />
+        <?= nc_bool_field('buyvariable', "", ($class_id ? $class_id : $classID ), 1) ?><br />
+        <br />
+        <?= nc_int_field('stock', "maxlength='12' size='12'", ($class_id ? $class_id : $classID), 1) ?><br />
+        <br />
+        <?= nc_int_field('stock2', "maxlength='12' size='12'", ($class_id ? $class_id : $classID), 1) ?><br />
+        <br />
+        <?= nc_int_field('stock3', "maxlength='12' size='12'", ($class_id ? $class_id : $classID), 1) ?><br />
+        <br />
+        <?= nc_int_field('stock4', "maxlength='12' size='12'", ($class_id ? $class_id : $classID), 1) ?><br />
+        <br />
+        <?= nc_bool_field('notmarkup', "", ($class_id ? $class_id : $classID ), 1) ?><br />
+        <br />
+        <?= nc_int_field('discont', "maxlength='12' size='12'", ($class_id ? $class_id : $classID), 1) ?><br />
+        <br />
+        <?= nc_float_field('pricediscont', "maxlength='12' size='12'", ( $class_id ? $class_id : $classID), 1) ?><br />
+        <br />
+        <?= nc_date_field('disconttime', "", ($class_id ? $class_id : $classID), 1) ?><br />
+        <br />
+        <?= nc_string_field('art', "maxlength='255' size='50'", ($class_id ? $class_id : $classID), 1) ?><br />
+        <br />
+        <?= nc_string_field('art2', "maxlength='255' size='50'", ($class_id ? $class_id : $classID), 1) ?><br />
+        <br />
+        <?= nc_string_field('artnull', "maxlength='255' size='50'", ($class_id ? $class_id : $classID), 1) ?><br />
+        <br />
+        <?= nc_string_field('code', "maxlength='255' size='50'", ($class_id ? $class_id : $classID), 1) ?><br />
+        <br />
+        <?= nc_string_field('ves', "maxlength='255' size='50'", ($class_id ? $class_id : $classID), 1) ?><br />
+        <br />
+        <?= nc_string_field('edizm', "maxlength='255' size='50'", ($class_id ? $class_id : $classID), 1) ?><br />
+        <br />
+        <?= nc_text_field('analog', "", ($class_id ? $class_id : $classID), 1) ?><br />
+        <br />
+        <?= nc_bool_field('spec', "", ($class_id ? $class_id : $classID ), 1) ?><br />
+        <br />
+        <?= nc_int_field('xlslist', "maxlength='12' size='12'", ($class_id ? $class_id : $classID), 1) ?><br />
+        <br />
+        <?= nc_bool_field('fromxls', "", ($class_id ? $class_id : $classID ), 1) ?><br />
+        <br />
+        <?= nc_string_field('extlink', "maxlength='255' size='50'", ($class_id ? $class_id : $classID), 1) ?><br />
+        <br />
+        <?= nc_text_field('buywith', "", ($class_id ? $class_id : $classID), 1) ?><br />
+        <br />
+        <?= nc_string_field('itemlabel', "maxlength='255' size='50'", ($class_id ? $class_id : $classID), 1) ?><br />
+        <br />
+        <?= nc_string_field('variablename', "maxlength='255' size='50'", ($class_id ? $class_id : $classID), 1) ?><br />
+        <br />
+        <?= nc_text_field('colors', "", ($class_id ? $class_id : $classID), 1) ?><br />
+        <br />
+        <?= nc_bool_field('buycolors', "", ($class_id ? $class_id : $classID ), 1) ?><br />
+        <br />
+        <?= nc_bool_field('new', "", ($class_id ? $class_id : $classID ), 1) ?><br />
+        <br />
+        <?= nc_bool_field('action', "", ($class_id ? $class_id : $classID ), 1) ?><br />
+        <br />
+        <?= nc_text_field('pricecity', "", ($class_id ? $class_id : $classID), 1) ?><br />
+        <br />
+        <?= nc_text_field('citytarget', "", ($class_id ? $class_id : $classID), 1) ?><br />
+        <br />
+        <?= nc_string_field('capacity', "maxlength='255' size='50'", ($class_id ? $class_id : $classID), 1) ?><br />
+        <br />
+        <?= nc_string_field('sizes_item', "maxlength='255' size='50'", ($class_id ? $class_id : $classID), 1) ?><br />
+        <br />
+        <?= nc_string_field('height', "maxlength='255' size='50'", ($class_id ? $class_id : $classID), 1) ?><br />
+        <br />
+        <?= nc_string_field('width', "maxlength='255' size='50'", ($class_id ? $class_id : $classID), 1) ?><br />
+        <br />
+        <?= nc_string_field('depth', "maxlength='255' size='50'", ($class_id ? $class_id : $classID), 1) ?><br />
+        <br />
+        <?= nc_bool_field('oneitem', "", ($class_id ? $class_id : $classID ), 1) ?><br />
+        <br />
+        <?= nc_text_field('descr', "", ($class_id ? $class_id : $classID), 1) ?><br />
+        <br />
+        <?= nc_text_field('photourl', "", ($class_id ? $class_id : $classID), 1) ?><br />
+        <br />
+        <?= nc_string_field('tags', "maxlength='255' size='50'", ($class_id ? $class_id : $classID), 1) ?><br />
+        <br />
+        <?= nc_text_field('var1', "", ($class_id ? $class_id : $classID), 1) ?><br />
+        <br />
+        <?= nc_string_field('var2', "maxlength='255' size='50'", ($class_id ? $class_id : $classID), 1) ?><br />
+        <br />
+        <?= nc_string_field('var3', "maxlength='255' size='50'", ($class_id ? $class_id : $classID), 1) ?><br />
+        <br />
+        <?= nc_string_field('var4', "maxlength='255' size='50'", ($class_id ? $class_id : $classID), 1) ?><br />
+        <br />
+        <?= nc_string_field('var5', "maxlength='255' size='50'", ($class_id ? $class_id : $classID), 1) ?><br />
+        <br />
+        <?= nc_string_field('var6', "maxlength='255' size='50'", ($class_id ? $class_id : $classID), 1) ?><br />
+        <br />
+        <?= nc_string_field('var7', "maxlength='255' size='50'", ($class_id ? $class_id : $classID), 1) ?><br />
+        <br />
+        <?= nc_string_field('var8', "maxlength='255' size='50'", ($class_id ? $class_id : $classID), 1) ?><br />
+        <br />
+        <?= nc_string_field('var9', "maxlength='255' size='50'", ($class_id ? $class_id : $classID), 1) ?><br />
+        <br />
+        <?= nc_string_field('var10', "maxlength='255' size='50'", ($class_id ? $class_id : $classID), 1) ?><br />
+        <br />
+        <?= nc_string_field('var11', "maxlength='255' size='50'", ($class_id ? $class_id : $classID), 1) ?><br />
+        <br />
+        <?= nc_string_field('var12', "maxlength='255' size='50'", ($class_id ? $class_id : $classID), 1) ?><br />
+        <br />
+        <?= nc_string_field('var13', "maxlength='255' size='50'", ($class_id ? $class_id : $classID), 1) ?><br />
+        <br />
+        <?= nc_string_field('var14', "maxlength='255' size='50'", ($class_id ? $class_id : $classID), 1) ?><br />
+        <br />
+        <?= nc_string_field('var15', "maxlength='255' size='50'", ($class_id ? $class_id : $classID), 1) ?><br />
+        <br />
+        <?= nc_string_field('rate', "maxlength='255' size='50'", ($class_id ? $class_id : $classID), 1) ?><br />
+        <br />
+        <?= nc_int_field('ratecount', "maxlength='12' size='12'", ($class_id ? $class_id : $classID), 1) ?><br />
+        <br />
+        <?= nc_bool_field('timer', "", ($class_id ? $class_id : $classID ), 1) ?><br />
+        <br />
+        <?= nc_int_field('view', "maxlength='12' size='12'", ($class_id ? $class_id : $classID), 1) ?><br />
+        <br />
+        <?= nc_text_field('params', "", ($class_id ? $class_id : $classID), 1) ?><br />
+        <br />
+        <?= nc_string_field('Subdivision_IDS', "maxlength='255' size='50'", ($class_id ? $class_id : $classID), 1) ?><br />
+        <br />
+        <?= nc_string_field('h1', "maxlength='255' size='50'", ($class_id ? $class_id : $classID), 1) ?><br />
+        <br />
+        <?= nc_list_field('currency', "", ($class_id ? $class_id : $classID), 1) ?><br />
+        <br />
+        <?= nc_text_field('text2', "", ($class_id ? $class_id : $classID), 1) ?><br />
+        <br />
+        <?= nc_string_field('outItems', "maxlength='255' size='50'", ($class_id ? $class_id : $classID), 1) ?><br />
+        <br />
+        <?= nc_string_field('variablenameSide', "maxlength='255' size='50'", ($class_id ? $class_id : $classID), 1) ?><br />
+        <br />
+        <?php  if (!$AUTH_USER_ID && $current_cc['UseCaptcha'] && $MODULE_VARS['captcha']) { ?><?= nc_captcha_formfield() ?><br/><br/><?= NETCAT_MODERATION_CAPTCHA ?> (*):<br/><input type='text' name='nc_captcha_code' size='10'><br/><br/><?php  } ?>
+        <div><?= NETCAT_MODERATION_INFO_REQFIELDS ?></div><br/>
+        <?= nc_submit_button(NETCAT_MODERATION_BUTTON_ADD) ?>
+        </form>
+    <?php  } ?>
+<?php  } ?>

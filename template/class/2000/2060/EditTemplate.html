@@ -1,0 +1,65 @@
+<?=( $warnText ? "<div class='warnText'>$warnText</div>" : NULL )?>
+<form name='adminForm' id='adminForm' class='nc-form' enctype='multipart/form-data' method='post' action='<?= $SUB_FOLDER ?><?= $HTTP_ROOT_PATH ?>message.php'>
+<div id='nc_moderate_form'>
+<div class='nc_clear'></div>
+<input name='admin_mode' type='hidden' value='<?= $admin_mode ?>' />
+<?= $nc_core->token->get_input() ?>
+<input name='catalogue' type='hidden' value='<?= $catalogue ?>' />
+<input name='cc' type='hidden' value='<?= $cc ?>' />
+<input name='sub' type='hidden' value='<?= $sub ?>' /><input name='message' type='hidden' value='<?= $message ?>' />
+<input name='posting' type='hidden' value='1' />
+<input name='curPos' type='hidden' value='<?= $curPos ?>' />
+<input name='f_Parent_Message_ID' type='hidden' value='<?= $f_Parent_Message_ID ?>' />
+<?= nc_form_moderate('change', $admin_mode, 0, $systemTableID, $current_cc, (isset($f_Checked) ? $f_Checked  : null), $f_Priority , $f_Keyword, $f_ncTitle, $f_ncKeywords, $f_ncDescription ) ?>
+</div>
+<?= nc_list_field('htmlShema', "", ($class_id ? $class_id : $classID), 1) ?><br />
+<br />
+<?= nc_list_field('colorShema', "", ($class_id ? $class_id : $classID), 1) ?><br />
+<br />
+<?= nc_file_field('bg', "size='50'", ($class_id ? $class_id : $classID), 1) ?><br />
+<br />
+<?= nc_custom_field('wincolor', "maxlength='255' size='50'", ($class_id ? $class_id : $classID), 1, "color") ?><br />
+<br />
+<?= nc_list_field('consPos', "", ($class_id ? $class_id : $classID), 1) ?><br />
+<br />
+
+<?= nc_int_field('headerHeight', "maxlength='12' size='12'", ($class_id ? $class_id : $classID), 1) ?><br />
+<br />
+<?= nc_custom_field('icons', "", ($class_id ? $class_id : $classID), 1, "color") ?><br />
+<br />
+<?= nc_custom_field('iconcart', "", ($class_id ? $class_id : $classID), 1, "color") ?><br />
+<br />
+<?= nc_custom_field('bgcolor', "maxlength='255' size='50'", ($class_id ? $class_id : $classID), 1, "color") ?><br />
+<br />
+<?= nc_float_field('opacity', "maxlength='12' size='12'", ( $class_id ? $class_id : $classID), 1) ?><br />
+<br />
+<?= nc_int_field('radius', "maxlength='12' size='12'", ($class_id ? $class_id : $classID), 1) ?><br />
+<br />
+<?= nc_custom_field('linkcolor', "maxlength='255' size='50'", ($class_id ? $class_id : $classID), 1, "color") ?><br />
+<br />
+<?= nc_custom_field('buttoncolor', "maxlength='255' size='50'", ($class_id ? $class_id : $classID), 1, "color") ?><br />
+<br />
+<?= nc_bool_field('notopcontact', "", ($class_id ? $class_id : $classID ), 1) ?><br />
+<br />
+<?= nc_bool_field('nomailform', "", ($class_id ? $class_id : $classID ), 1) ?><br />
+<br />
+<?= nc_bool_field('nocallform', "", ($class_id ? $class_id : $classID ), 1) ?><br />
+<br />
+<?= nc_custom_field('blocktext', "maxlength='255' size='50'", ($class_id ? $class_id : $classID), 1, "color") ?><br />
+<br />
+<?= nc_custom_field('blockShadow', "maxlength='255' size='50'", ($class_id ? $class_id : $classID), 1, "color") ?> <label><input <?=($f_blockShadow ? "" : "checked")?> type=checkbox name=nocolorshadow value=1> убрать тень</label><br />
+<br />
+БЛОКИ: Фон заголовков ( <a href='http://colorzilla.com/gradient-editor/' target=_blank>открыть генератор кода</a> ):<br>
+<?= nc_text_field('blockcolor', "", ($class_id ? $class_id : $classID), 0) ?><br />
+<br />
+<?= nc_bool_field('nobanner', "", ($class_id ? $class_id : $classID ), 1) ?><br />
+<br />
+<?= nc_int_field('bannerHeight', "maxlength='12' size='12'", ($class_id ? $class_id : $classID), 1) ?><br />
+<br />
+<?= nc_int_field('bannerTextBot', "maxlength='12' size='12'", ($class_id ? $class_id : $classID), 1) ?><br />
+<br />
+<?= nc_file_field('createrLogo', "size='50'", ($class_id ? $class_id : $classID), 1) ?><br />
+<br />
+<div><?= NETCAT_MODERATION_INFO_REQFIELDS ?></div><br/>
+<?= nc_submit_button(NETCAT_MODERATION_BUTTON_CHANGE) ?>
+</form>

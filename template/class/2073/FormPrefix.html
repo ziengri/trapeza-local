@@ -1,0 +1,74 @@
+<?php
+    global $DOCUMENT_ROOT, $pathInc2;
+
+    if ($current_catalogue['customCode']) {
+        $includeClass = NULL;
+        $thisFile = $DOCUMENT_ROOT.$pathInc2."/template/class/{$classID}/FormPrefix.html";
+        $thisFile2 = $DOCUMENT_ROOT.$pathInc2."/template/{$classID}/template/FormPrefix.html";
+        if (file_exists($thisFile)) $includeClass = 1;
+        elseif (file_exists($thisFile2)) $includeClass = 2;
+    }
+    if (!empty($includeClass)) {
+        include $includeClass == 1 ? $thisFile : $thisFile2;
+    }
+    else {
+        echo $inside_admin ? $f_AdminCommon : addObjBut($addLink,$isTitle);
+        # json раздела
+        if(isJson($settingsSub)) $settingsSub = orderArray($current_sub['settingsSub']);
+        # ширина объекта
+        $sizeitemTotal = 0;
+        if($sizehave){
+            if($sizeitem_select=='count') $sizeitemTotal = $sizeitem_counts;
+            else if($sizeitem && is_numeric($sizeitem)) $sizeitemTotal = $sizeitem;
+        }
+        if(!$sizeitemTotal && $settingsSub["sizehave"]){
+            if($settingsSub["sizeitem_select"]=='count') $sizeitemTotal = $settingsSub["sizeitem_counts"];
+            else if(is_numeric($settingsSub["sizeitem"])) $sizeitemTotal = $settingsSub["sizeitem"];
+        }
+        if(!$sizeitemTotal){
+            if($setting["size".$classID."_select"]=='count') $sizeitemTotal = $setting["size".$classID."_counts"];
+            else $sizeitemTotal = $setting["size".$classID];
+        }
+        # отступ
+        if($sizehave && is_numeric($sizeitem_margin))  $margin = $sizeitem_margin;
+        else if($settingsSub["sizehave"] && is_numeric($settingsSub["sizeitem_margin"])) $margin = $settingsSub["sizeitem_margin"];
+        else if(is_numeric($setting["size".$classID."_margin"])) $margin = $setting["size".$classID."_margin"];
+        else $margin = 15;
+        # Шаблон вывода
+        if($template_block) $template = $template_block;
+        else if($settingsSub["template"]) $template = $settingsSub["template"];
+        else if($setting["size".$classID."_template"]) $template = $setting["size".$classID."_template"];
+
+        # Открывать в модальном окне
+        if($objInModal) $objInModal = $objInModal;
+        else if($settingsSub["objInModal"]) $objInModal = $settingsSub["objInModal"];
+        else if($setting["size".$classID."_objinmodal"]) $objInModal = $setting["size".$classID."_objinmodal"];
+
+        $data = subdivisionData(array(
+            'type' => 'gencomponent',
+            'sizeitem' => $sizeitemTotal,
+            'margin' => $margin,
+            'imagefit' => $imagefit,
+            'scrolling' => $scrolling,
+            'scrollspeed' => $scrollspeed,
+            'scrollNav' => $scrollNav,
+            'scrollDots' => $scrollDots,
+            'autoplay' => $autoplay,
+            'template' => $template
+        ));
+?>
+
+    <?php  if ($totRows) { ?>
+    	<ul class='<?=$data['class']?>' <?=$data['attr']?>>
+    <?php  } ?>
+
+    <?php if(!$totRows){ ?> <p class='no-obj'>Объектов не найдено</p> <?php }?>
+
+<?php } ?>
+
+<?php
+    global $pathInc2, $DOCUMENT_ROOT;
+    $recordCustomFile = $DOCUMENT_ROOT.$pathInc2."/template/{$classID}/template/RecordTemplate.html";
+    $isIncludeRecord = $current_catalogue['customCode'] && file_exists($recordCustomFile);
+
+?>

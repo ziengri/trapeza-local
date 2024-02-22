@@ -1,0 +1,9 @@
+<?php 
+global $bitcat, $settingCont;
+
+//записать дату просмотра для админки
+$namesetd = ($zayav ? 'callme1': 'callme');
+if($setdata == 1) setDateOrders($namesetd);
+
+if ($zayav) $query_where = "time = '1'"; else $query_where = "time != '1'";
+?>

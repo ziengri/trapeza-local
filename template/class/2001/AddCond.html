@@ -1,0 +1,78 @@
+<?php
+global $catalogue;
+
+$connectTemplate = $DOCUMENT_ROOT.$pathInc2."/template/{$classID}/templateAdd/AddCond.html";
+if($current_catalogue['customCode'] && file_exists($connectTemplate)) include($connectTemplate);
+else{
+	normalizeImageRotateFromFiles();
+    
+    $db->query("update Message2001 set Keyword = NULL where Keyword = ''");
+
+	$f_Subdivision_IDS = $subs ? ",".implode(",", $subs)."," : "";
+
+	$f_variable = addslashes(json_encode($variable));
+	$f_colors = addslashes(json_encode($colors));
+	$f_pricecity = addslashes(json_encode($pricecity));
+	$f_lang = json_encode($f_lang);
+
+	if ($f_extlink) $f_extlink = str_replace("http://{$_SERVER[HTTP_HOST]}","",$f_extlink);
+
+	$f_citytarget = ",".implode(",",$f_citytarget).",";
+	if ($f_citytarget==',,') $f_citytarget='';
+
+	if ($otherItem) $f_otherItem = implode(";",$otherItem);
+
+	if ($orgform==2) { // юр.лицо
+		if (!$f_org || !$f_company || !$f_inn) $warnText .= "Не указаны данные о компании. ";
+
+	}
+
+	// уникальный артикул
+	if ($f_art) {
+		$uniqArt = array("36");
+		$artbar = $db->get_row("select name, Message_ID from Message{$classID} where Catalogue_ID = '$catalogue' AND art = '$f_art'");
+		if ($artbar && in_array($catalogue,$uniqArt)) {
+			$warnText .= "Артикул {$f_art} уже используется для товара: <a target=_blank href='".nc_message_link($artbar->Message_ID,$classID)."'>{$artbar->name}</a>. ";
+		}
+	}
+
+	// лейбл
+	$f_itemlabel = is_array($itemlabel) && $itemlabel ? implode($itemlabel, ",") : "null";
+
+	// параметры
+	if (count($params)>0) {
+		foreach($params as $keyp => $par) {
+			if ($par) $paramA[] = $keyp."||".$par."|";
+		}
+		$f_params = implode("\r\n",$paramA);
+	}
+
+	# Цена от кол-ва в корзине [START]
+	$orderCountPrice = [];
+	foreach ($f_order_count_price ?? [] as $key => $val) {
+			if (empty($val['count']) || empty($val['price'])) continue;
+			$orderCountPrice[] = [
+					'count' => (int) $val['count'],
+					'price' => round((float) str_replace(',', '.', $val['price']), 2),
+			];
+	}
+	$f_order_count_price = $orderCountPrice ? json_encode($orderCountPrice) : null;
+	# Цена от кол-ва в корзине [END]
+	
+	if ($f_inn) $f_inn =  preg_replace("/\D/","",$f_inn);
+
+	// Портфолио и фотогаллереи
+	$f_outItems = is_array($outItems) ? json_encode($outItems) : "{}";
+
+	$f_Catalogue_ID = $catalogue;
+
+	$f_variablenameSide = $main_variant ? 0 : 1;
+	
+	if ($warnText) {
+		$posting = 0;
+	}
+}
+
+
+
+?>

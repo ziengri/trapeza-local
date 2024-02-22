@@ -1,0 +1,154 @@
+<?php
+global $pathInc2;
+$connectTemplate = $_SERVER['DOCUMENT_ROOT'] . $pathInc2 . "/template/class/sys/EditTemplate.html";
+if ($current_catalogue['customCode'] && file_exists($connectTemplate)) {
+  include($connectTemplate);
+} else {
+  if ($warnText) {
+    echo json_encode(array(
+      "title" => "Error",
+      "error" => $warnText
+    ));
+  } else {
+
+    global $setting;
+
+    $org = $db->get_results("select org_ID as id, org_Name as name from Classificator_org where Checked = 1", ARRAY_A);
+    $option_org = "<option>не выбрано</option>";
+    foreach ($org as $key => $value) {
+      $option_org .= "<option value='{$value['id']}' " . ($f_org == $value['id'] ? "selected" : "") . ">{$value['name']}</option>";
+    }
+
+    $fieldsHTML = '';
+    $fieldsData = orderArray($setting['registration_form'] ?: file_get_contents($_SERVER['DOCUMENT_ROOT'] . '/template/class/sys/default_fields_reg_form.json'), 1);
+    $hiddenFields = '';
+    $f_customf = orderArray($f_customf);
+    foreach ($fieldsData as $key => $value) {
+      $type = @explode('|', $key)[0];
+      $name = $value['name']['value'];
+      $valueField = stripslashes($$name);
+      $title = $value['label']['value'];
+      $trimName = str_replace('f_', '', $name);
+
+      if (in_array($name, ['f_Login', 'f_password'])) continue;
+
+      if ($name === $trimName) {
+        $hiddenFields .= "<input type='hidden' name='customf[{$name}][name]' value='{$title}'>";
+        $valueField = stripslashes($f_customf[$name]['value']);
+        $name = "customf[{$name}][value]";
+      }
+
+
+
+      $fields = '';
+      switch ($type) {
+        case 'input':
+          $attr = "maxlength='255' size='50'";
+          $fields = bc_input_standart($name, $valueField, $title, $attr, $value['required']['value']);
+          break;
+        case 'textarea':
+          $fields = bc_textarea_standart($name, $valueField, $title, '', $value['required']['value']);
+          break;
+        case 'file':
+          if ($name && $$name) $old = $name . '_old';
+          if ($$name) $nname = $$name;
+          $fields = bc_file($name, $old, $title, $nname, $classID, $value['required']['value']);
+          break;
+        case 'select':
+          $options = "";
+          foreach ($param["selectGroup"]["values"] as $i => $select) {
+            $options .= "<option value=" . ($select['value']) . ">" . getLangWord($select['value']) . "</option>";
+          }
+          if ('f_org' == $name) {
+            $options =  nc_list_field("org", $f_org, $classID, 0);
+          }
+          $fields = bc_select_standart($name, $options, $title, '', $param['required']['value']);
+          break;
+        case 'title':
+          $fields = "<h3>{$param['label']['value']}</h3>";
+          break;
+        case 'date':
+          $fields = bc_input_standart($name, $valueField, $title, "maxlength='255' size='50' data-oneline {$value['placeholder']['value']} type='date'", $value['required']['value']);
+          break;
+        case 'radio':
+          $radios = "";
+          foreach ($value["radioGroup"]["values"] as $i => $radio) {
+            $radios .= "<div class='person_line {$value['name']['value']}_{$i}'>" . bc_radio_standart($name,  $radio["value"],  $radio["value"], ($radio["value"] == $valueField)) . "</div>";
+          }
+          $fields = "<div class='input-fields-cart input-oneline'>" . bc_label_standart($title, "", $value['required']['value']) . "<div class='field-second'>{$radios}</div></div>";
+          break;
+        case 'checkbox':
+          $checkboxs = "";
+          foreach ($value["checkboxGroup"]["values"] as $i => $checkbox) {
+            $checkboxs .= "<div class='person_line {$value['name']['value']}_{$i}'>
+			  					" . bc_checkbox_standart($name . "[]", $checkbox["value"], $checkbox["value"], (in_array($checkbox["value"], $valueField))) . "
+							</div>";
+          }
+          $fields = "<div class='input-fields-cart input-oneline'>" . bc_label_standart($title, "", $value['required']['value']) . "<div class='field-second'>{$checkboxs}</div></div>";
+          break;
+      }
+      if ($fields) $fieldsHTML .= "<div class='userline userline-" . ($value['coleline']['value'] ?: '1') . " userline-req-{$trimName}'>
+                                      {$fields}
+                                    </div>";
+    }
+
+
+?>
+    <form name='adminForm' id='adminForm' class='ajax2' enctype='multipart/form-data' method='post' action='<?= $SUB_FOLDER ?><?= $HTTP_ROOT_PATH ?>message.php'>
+      <div class="modal-body">
+        <div id='nc_moderate_form'>
+          <div class='nc_clear'></div>
+          <input name='admin_mode' type='hidden' value='<?= $admin_mode ?>' />
+          <?= $nc_core->token->get_input() ?>
+          <input name='catalogue' type='hidden' value='<?= $catalogue ?>' />
+          <input name='cc' type='hidden' value='<?= $cc ?>' />
+          <input name='sub' type='hidden' value='<?= $sub ?>' /><input name='message' type='hidden' value='<?= $message ?>' />
+          <input name='posting' type='hidden' value='1' />
+          <input name='curPos' type='hidden' value='<?= $curPos ?>' />
+          <input name='f_Parent_Message_ID' type='hidden' value='<?= $f_Parent_Message_ID ?>' />
+          <?= nc_form_moderate('change', $admin_mode, 1, $systemTableID, $current_cc, null,  $f_Priority, $f_Keyword, $f_ncTitle, $f_ncKeywords, $f_ncDescription) ?>
+          <?= $hiddenFields ?>
+        </div>
+
+        <?php if ($current_user['PermissionGroup_ID'] == 1) { ?>
+          <div class='userline userline-2' <?= $message ?>><?= bc_checkbox("f_Checked", 1, "Пользователь включен", $f_Checked) ?></div>
+          <?php
+          $res = $db->get_results("SELECT * FROM PermissionGroup WHERE PermissionGroup_Name LIKE 'Группа %'", ARRAY_A);
+
+          if (!empty($res)) {
+            $_res = $db->get_var("SELECT PermissionGroup_ID FROM User WHERE Login='" . $f_Login . "'");
+            if ($_res > 1) {
+              $options = [];
+              foreach ($res as $v) {
+                $options[$v['PermissionGroup_ID']] = $v['PermissionGroup_Name'];
+              }
+              $optionsHtml = getOptionsFromArray($options, $_res);
+              echo "<div class='userline userline-2'>" . bc_select("f_group", $optionsHtml, "Группа пользователя", "class='ns'") . "</div>";
+            } else {
+              echo "<div class='userline userline-2'>" . bc_text("Группа: Администратор") . "</div>";
+            }
+          }
+          ?>
+          <div class='userline userline-1'><?= bc_input_standart("f_external_id", $f_external_id, "ID пользователя во внешней системе", "maxlength='255' size='50'") ?></div>
+        <?php  } ?>
+
+        <?= $fieldsHTML ?>
+        <?php /*
+			<?php  if (false) { ?>
+				<?php  if (nc_field_check_admin_perm()) { ?>
+					<div class='userline userline-2'><?=bc_input("f_refcode", $f_refcode, "Реферальный код", "maxlength='255' size='50'")?></div>
+				<?php  } ?>
+				<?php  if (nc_field_check_admin_perm()) { ?>
+					<div class='userline userline-2'><?=bc_input("f_refdiscont", $f_refdiscont, "Размер скидки (число или число с %)", "maxlength='255' size='50'")?></div>
+				<?php  } ?>
+			<?php  } ?>
+			*/ ?>
+      </div>
+      <div class="bc_submitblock">
+        <div class='result'><?= NETCAT_MODERATION_INFO_REQFIELDS ?></div>
+        <span class="btn-strt"><?= nc_submit_button(NETCAT_MODERATION_BUTTON_CHANGE) ?></span>
+
+      </div>
+    </form>
+  <?php  } ?>
+<?php  } ?>

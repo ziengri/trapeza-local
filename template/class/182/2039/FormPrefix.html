@@ -1,0 +1,15 @@
+<?= "<?php xml version='1.0' encoding='{$nc_core->NC_CHARSET}'?>"; ?>
+                <?= "<?php xml-stylesheet type='text/xsl' href='/images/rss.xsl'?>"; ?>
+                    <rss version="2.0" xml:lang="ru-RU">
+                        <channel>
+                            <title><?= htmlspecialchars($system_env["ProjectName"], ENT_QUOTES); ?></title>
+                            <link>http://<?= $_SERVER["HTTP_HOST"]; ?>/</link>
+                            <description><?= htmlspecialchars(strip_tags($current_sub["Description"]), ENT_QUOTES); ?></description>
+                            <language>ru-RU</language>
+                            <copyright>Copyright <?= date("Y"); ?> <?= htmlspecialchars($system_env["ProjectName"], ENT_QUOTES); ?></copyright>
+                            <lastBuildDate><?= gmdate("D, d M Y H:i:s", $nc_last_update); ?> GMT</lastBuildDate>
+                            <generator>CMS NetCat</generator>
+                            <category><?= htmlspecialchars(strip_tags($current_sub["Subdivision_Name"]), ENT_QUOTES); ?></category>
+                            <managingEditor><?= $system_env["SpamFromEmail"]; ?> (<?= htmlspecialchars($system_env["SpamFromName"], ENT_QUOTES); ?>)</managingEditor>
+                            <webMaster><?= $system_env["SpamFromEmail"]; ?> (<?= htmlspecialchars($system_env["SpamFromName"], ENT_QUOTES); ?>)</webMaster>
+                            <ttl>30</ttl>

@@ -1,0 +1,4 @@
+<?php 
+  // Вытаскиваем номера зон
+  $zones = $db->get_col("SELECT zone_id from Message2000 where Catalogue_ID = '$catalogue'");
+?>

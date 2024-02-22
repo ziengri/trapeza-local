@@ -1,0 +1,55 @@
+<?php 
+	global $pathInc2;
+    $recordCustomPath = $DOCUMENT_ROOT.$pathInc2."/template/class/{$classID}/2048/RecordTemplate.html";
+    $isIncludeRecordCustom = !empty($current_catalogue['customCode']) && file_exists($recordCustomPath);
+    if ($isIncludeRecordCustom) {
+        include $recordCustomPath;
+    } else {
+?>
+<?php /* Служебная часть */
+for ($f_RowNum = 0; $f_RowNum < $rowCount; $f_RowNum++) {
+    if($fetch_row[$f_RowNum] instanceof Iterator) {
+        extract($fetch_row[$f_RowNum]->to_array(), EXTR_PREFIX_ALL, "f");
+    } else {
+        extract($fetch_row[$f_RowNum], EXTR_PREFIX_ALL, "f");
+    }
+    foreach($iteration_RecordTemplate[$f_RowNum] as $value) {
+        extract($value);
+    }
+    eval($cc_env["convert2txt"]);
+    ob_start();
+/* Конец служебной части */?>
+
+<?php 
+unset($otvetAut);
+if ($f_otvet) {
+	$otvetAut = getUser($f_LastUser_ID);
+}
+if ($f_UserID>0) {
+	$userAut = getUser($f_UserID);
+}
+
+if (date("dmY")==$f_Created_day.$f_Created_month.$f_Created_year) {
+	$date = "Сегодня";
+} else {
+	$date = "$f_Created_day ".month($f_Created_month)." в $f_Created_hours:$f_Created_minutes";
+}
+?>
+
+
+<div class='obj <?=(!$f_Checked ? "uncheck" : NULL)?> obj<?=$f_RowID?>'>
+	<div class="otz_person">
+		<div class="otz_img"><img src="<?=($userAut[photo] ? $userAut[photo] : $nophoto)?>" alt=""></div>
+		<div class="otz_name"><b><?=($f_name ? $f_name : "Аноним")?></b></div>
+	</div>
+	<div class="otz_text">
+		<?=$f_textt?>
+	</div>
+	<?=($bitcat ? editObjBut($editLink,1) : "")?>
+</div>
+
+<?php /* Служебная часть */
+    echo nc_finishing_RecordTemplate(ob_get_clean(), $inside_admin, $classID, $f_RowID, $parent_message, $cc, $cc_env["Class_Name"], $no_cache_marks);
+}
+/* Конец служебной части */?>
+<? } ?>

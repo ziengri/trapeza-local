@@ -1,0 +1,10 @@
+<?php
+$protocol = $current_catalogue['https'] ? 'https' : 'http';
+if (!$mess) {
+    echo 'Отсутствует объект';
+} elseif ($inside_admin) {
+    header("Location: ".$HTTP_ROOT_PATH."message.php?inside_admin=1&sub=$sub&cc=$cc&message={$mess}&isNaked={$isNaked}");
+} else {
+    header("Location: ".nc_message_link($mess,$classID,"edit")."&template=1000&isNaked={$isNaked}");
+}
+?>

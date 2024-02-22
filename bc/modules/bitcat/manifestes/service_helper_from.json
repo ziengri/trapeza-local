@@ -1,0 +1,54 @@
+{
+    "dadata": {
+        "name": "DaData.ru",
+        "row": [
+            {
+                "name": "dadata_token",
+                "label": "Ключ API",
+                "type": "text",
+                "colline": 1
+            },
+            {
+                "name": "dadata_autocomplit_by_inn",
+                "label": "Автозаполнение полей по ИНН",
+                "type": "checkbox",
+                "colline": 1
+            },
+            {
+                "name": "dadata_okved",
+                "label": "Расшифровка ОКВЭД",
+                "type": "checkbox",
+                "colline": 1
+            }
+			
+        ]
+    },
+	"importyml": {
+        "name": "Импорт YML",
+        "row": [
+            {
+                "name": "fileName",
+                "label": "Ссылка на YML файл для выгрузки каталога",
+                "type": "text",
+                "colline": 1
+            },
+			{
+                "name": "classTemplate",
+                "label": "Шаблон каталога",
+                "type": "select",
+                "colline": 2,
+                "data": {
+                    "": "Плитки",
+                    "2025": "Каталог: таблица без фото",
+					"2031": "Каталог: таблица с фото",
+					"2052": "Каталог: список"
+                }
+            }
+        ]
+    }
+}
+
+
+
+
+

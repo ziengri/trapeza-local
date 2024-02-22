@@ -1,0 +1,36 @@
+<? 
+  $fields = array(
+    "full" => 1,
+    "isTitle" => $isTitle,
+    "sub" => $sub,
+    "cc" => $cc,
+    "classID" => $classID,
+    "nc_ctpl" => $nc_ctpl,
+    "fullLink" => $fullLink,
+    "editLink" => $editLink,
+    "image_default" => $image_default,
+    "fastprew" => $fastprew,
+    "current_sub" => $current_sub,
+    "current_cc" => $current_cc,
+    "current_catalogue" => $current_catalogue,
+    "RowID" => $f_RowID,
+    "Checked" => $f_Checked,
+    "recNum" => $f_recNum,
+    "name" => $f_name,
+    "adres" => $f_adres,
+    "phones" => $f_phones,
+    "fax" => $f_fax,
+    "time" => $time,
+    "email" => $f_email,
+    "site" => $f_site,
+    "skype" => $f_skype,
+    "icq" => $f_icq,
+    "map" => $f_map,
+    "citytarget" => $f_citytarget,
+    "targetcode" => $f_targetcode,
+    "targetphone" => $f_targetphone,
+    "soc_show" => $f_soc_show
+  );
+  $class2012 = new Class2012($fields);
+  echo $class2012->getContactFull();
+?>

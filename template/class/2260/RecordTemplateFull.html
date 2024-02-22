@@ -1,0 +1,34 @@
+<?= $f_AdminButtons; ?>
+
+<?php
+  $fields = array(
+    "objInModal" => $objInModal,
+    "sub" => $sub,
+    "cc" => $cc,
+    "block_id" => $block_id,
+    "classID" => $classID,
+    "nc_ctpl" => $nc_ctpl,
+    "fullLink" => $fullLink,
+    "editLink" => $editLink,
+    "image_default" => $image_default,
+    "AdminButtons" => $f_AdminButtons,
+    "fastprew" => $fastprew,
+    "current_sub" => $current_sub,
+    "current_cc" => $current_cc,
+    "current_catalogue" => $current_catalogue,
+    "RowID" => $f_RowID,
+    "RowNum" => $f_RowNum,
+    "animateKey" => $animateKey,
+    "animateDelay" => $animateDelay,
+    "animateDelayStep" => $animateDelayStep,
+    "Checked" => $f_Checked,
+    "template" => $template,
+    "name" => $f_name,
+    "text" => $f_text,
+    "textfull" => $f_textfull,
+    "preview" => $f_preview,
+  );
+  $class2260 = new Class2260();
+  $class2260->main($fields);
+  echo $class2260->getItemFull();
+?>

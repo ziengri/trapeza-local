@@ -1,0 +1,24 @@
+<?php
+
+if (!function_exists('nc_parse_coordinates_to_lat_long')) {
+    function nc_parse_coordinates_to_lat_long($coordinates) {
+        list($latitude, $longitude) = explode(',', $coordinates);
+        $latitude = floatval(trim($latitude, ' '));
+        $longitude = floatval(trim($longitude, ' '));
+        return array(
+            'latitude' => $latitude,
+            'longitude' => $longitude,
+        );
+    }
+}
+
+if (!function_exists('nc_process_phone')) {
+    function nc_process_phone($phone) {
+        return str_replace(array(' ','-','(',')'), '', $phone);
+    }
+}
+
+$b_open = '<span style="font-weight:bold;">';
+$b_close = '</span>';
+$i_open = '<span style="font-style: italic;">';
+$i_close = '</span>';

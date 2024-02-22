@@ -1,0 +1,72 @@
+<?=($inside_admin ? $f_AdminCommon : addObjBut($addLink,$isTitle,null,'фото/видео'))?>
+<?php
+   $f_photo_tpl = array(
+        'record' => "%Preview%"
+    );
+?>
+
+<?php
+    # ширина объекта
+    $sizeitemTotal = 0;
+    if($sizehave){
+        if($sizeitem_select=='count') $sizeitemTotal = $sizeitem_counts;
+        else if($sizeitem && is_numeric($sizeitem)) $sizeitemTotal = $sizeitem;
+    }
+    if(!$sizeitemTotal && $settingsSub["sizehave"]){
+        if($settingsSub["sizeitem_select"]=='count') $sizeitemTotal = $settingsSub["sizeitem_counts"];
+        else if(is_numeric($settingsSub["sizeitem"])) $sizeitemTotal = $settingsSub["sizeitem"];
+    }
+    if(!$sizeitemTotal){
+        if($setting["size".$classID."_select"]=='count') $sizeitemTotal = $setting["size".$classID."_counts"];
+        else $sizeitemTotal = $setting["size".$classID];
+    }
+    if(!$sizeitemTotal) $sizeitemTotal = 1;
+    # отступ
+    if($sizehave && is_numeric($sizeitem_margin))  $margin = $sizeitem_margin;
+    else if($settingsSub["sizehave"] && is_numeric($settingsSub["sizeitem_margin"])) $margin = $settingsSub["sizeitem_margin"];
+    else if(is_numeric($setting["size".$classID."_margin"])) $margin = $setting["size".$classID."_margin"];
+    else $margin = 15;
+    # masonry
+    if($masonry && $type_masonry){}
+    else if($settingsSub["masonry"] && $settingsSub["type_masonry"]){ $masonry = $settingsSub["masonry"]; $type_masonry = $settingsSub["type_masonry"]; }
+    # image procent
+    if($sizehave && is_numeric($sizeitem_image))  $sizeitem_image = $sizeitem_image;
+    else if($settingsSub["sizehave"] && $settingsSub["sizeitem_image"]) $sizeitem_image = $settingsSub["sizeitem_image"];
+    else $sizeitem_image = $setting["size".$classID."_image"];
+
+    $data = subdivisionData(array(
+        'type' => 'gallery',
+        'sizeitem' => $sizeitemTotal,
+        'margin' => $margin,
+        'sizeitem_image' => $sizeitem_image,
+        'scrolling' => $scrolling,
+        'scrollspeed' => $scrollspeed,
+        'scrollNav' => $scrollNav,
+        'scrollDots' => $scrollDots,
+        'autoplay' => $autoplay,
+        'masonry' => $masonry,
+        'type_masonry' => $type_masonry
+    ));
+    # animate
+    $animateKey = "";
+    $animateDelay = 0;
+    $animateDelayStep = 0.16;
+    if($animate){
+        if($animate_title && $animate_title != "_empty_") $animateDelay += $animateDelayStep;
+        if($animate_text && $animate_text != "_empty_") $animateDelay += $animateDelayStep;
+        if($animate_items && $animate_items != "_empty_") $animateKey = $animate_items;
+    }
+    if(!$animateKey && $settingsSub["animate"]){
+        if($settingsSub["animate_title"] && $settingsSub["animate_title"] != "_empty_") $animateDelay += $animateDelayStep;
+        if($settingsSub["animate_text"] && $settingsSub["animate_text"] != "_empty_") $animateDelay += $animateDelayStep;
+        if($settingsSub["animate_items"] && $settingsSub["animate_items"] != "_empty_") $animateKey = $settingsSub["animate_items"];
+    }
+    if(!$animateKey){
+        if($setting["size".$classID."_animate"] && $setting["size".$classID."_animate"] != "_empty_") $animateKey = $setting["size".$classID."_animate"];
+    }
+    if($animateKey) $animateKey = "wow {$animateKey}";
+?>
+
+<?php  if ($totRows) { ?>
+	<ul class='<?=$data['class']?>' <?=$data['attr']?>>
+<?php  } ?>

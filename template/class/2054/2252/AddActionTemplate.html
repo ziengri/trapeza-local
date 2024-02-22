@@ -1,0 +1,52 @@
+<?
+clearCache($classID,$sub);
+
+
+global $setting;
+if (!$setting) $setting = getSettings();
+
+if ($admdate[0] && $admdate[1] && $admdate[2]) {
+    $db->query("update Message{$classID} set Checked = '1', Created = '".$admdate[2]."-".$admdate[1]."-".$admdate[0]." ".$admdate[3].":".$admdate[4].":23' where Message_ID = '{$message}'");
+}
+
+rateUpdate($message);
+
+if($inside_admin) {
+    ob_end_clean();
+    header('Location: '.$goBackLink.'&inside_admin=1');
+    exit;
+}
+
+$tovar = tovarByID($f_tovar,"name",1);
+
+$Text = "
+Отзыв к товару: <a href='http://{$_SERVER['HTTP_HOST']}{$tovar['url']}'>{$tovar['name']}</a><br>
+Имя: $f_name<br>
+Текст отзыва: $f_otzyvtext<br><br>
+Просто включить на сайте: <a href='http://{$_SERVER['HTTP_HOST']}/index/otzyvtovar/checked_otzyvtovar_{$message}.html'>http://{$_SERVER['HTTP_HOST']}/index/otzyvtovar/checked_otzyvtovar_{$message}.html</a><br>
+Написать ответ: <a href='http://{$_SERVER['HTTP_HOST']}/index/otzyvtovar/edit_otzyvtovar_{$message}.html'>http://{$_SERVER['HTTP_HOST']}/index/otzyvtovar/edit_otzyvtovar_{$message}.html</a><br>
+Удалить: <a href='http://{$_SERVER['HTTP_HOST']}/index/otzyvtovar/delete_otzyvtovar_{$message}.html'>http://{$_SERVER['HTTP_HOST']}/index/otzyvtovar/delete_otzyvtovar_{$message}.html</a>";
+
+if (!$bitcat) {
+$toemail = ($cc_settings['EmailTo'] ? $cc_settings['EmailTo'] : ($setting['email'] ? $setting['email'] : $system_env['SpamFromEmail']));
+$frommail = ($f_Email ?: getDomenMail());
+$mailer = new CMIMEMail();
+$mailer->mailbody(strip_tags($Text),$Text);
+$mailer->send($toemail, $frommail, $frommail, "Отзыв к товару на сайте {$current_catalogue['Catalogue_Name']}", $current_catalogue['Catalogue_Name']);
+}
+
+
+
+if($inside_admin) {
+    ob_end_clean();
+    header('Location: '.$goBackLink.'&inside_admin=1');
+    exit;
+} else {
+    $text = $setting_texts['review_result']['checked'] ? $setting_texts['review_result']['name'] : "Комментарий отправлен. Он будет опубликован после проверки администратором.";
+    echo json_encode(ARRAY(
+      "title" => getLangWord('title_thank',"Спасибо!"),
+      "succes" => getLangWord('sucForm', $text),
+      "field" => "clear"
+    ));
+}
+?>

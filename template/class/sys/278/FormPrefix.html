@@ -1,0 +1,30 @@
+<?php 
+foreach($db->get_results("select * from PermissionGroup") as $g) { $group[$g->PermissionGroup_ID] = $g->PermissionGroup_Name; }
+?>
+<div class="header_search" style="border: 1px solid; margin: 0 0 15px;">
+  <form method="GET" action="<?= $cc_env['Hidden_URL'] ?>" class="searchform iconsCol" onsubmit="bc_locadSearchContent(this)">
+      <?php if ($cc_env['Class_ID'] != $cc_env['Real_Class_ID']) : ?>
+          <input type="hidden" name="nc_ctpl" value="<?= $cc_env['Real_Class_ID'] ?>" />
+      <?php endif; ?>
+      <div class="searchform-inp">
+          <input type="search" name="search" value="<?= $_GET['search'] ?? '' ?>" placeholder="Поиск" class="inp" /> 
+      </div>
+      <span class="btn-strt">
+          <input type="submit" class="submit" value="Найти">
+      </span>
+  </form>
+</div>
+<table class='table-order'>
+  <thead>
+    <tr>
+      <th class="t-num">№</th>
+      <th class="t-login">Логин</th>
+      <th class="t-group">Группа</th>
+      <th class="t-phone center">Телефон</th>
+      <th class="t-email center">Эл.почта</th>
+      <th class="t-city center">Город</th>
+      <th class="t-org none">Организация</th>
+      <th class="t-date center">Дата регистрации</th>
+    </tr>
+  </thead>
+  <tbody>

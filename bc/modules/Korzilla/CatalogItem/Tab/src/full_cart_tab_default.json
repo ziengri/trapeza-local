@@ -1,0 +1,29 @@
+{
+    "cart-param": {
+        "id": "cart-param",
+        "name": "Описание",
+        "params": {
+            "contenttype": "2",
+            "default_tab_type": "cart-param"
+        },
+        "Checked": "1"
+    },
+    "cart-param-2": {
+        "id": "cart-param-2",
+        "name": "Характеристики",
+        "params": {
+            "contenttype": "2",
+            "default_tab_type": "cart-param-2"
+        },
+        "Checked": 1
+    },
+    "cart-review": {
+        "id": "cart-review",
+        "name": "Отзывы",
+        "params": {
+            "contenttype": "2",
+            "default_tab_type": "cart-review"
+        },
+        "Checked": 0
+    }
+}

@@ -1,0 +1,46 @@
+<?php 
+if ($warnText) {
+    echo json_encode(ARRAY("title" => "Ошибка",
+                           "error" => $warnText
+                    ));
+} else {
+?>
+
+<form name='order' id='order' class='ajax json form' enctype='multipart/form-data' method='post' action='<?= $SUB_FOLDER ?><?= $HTTP_ROOT_PATH ?>add.php'>
+<div id='nc_moderate_form'>
+<input name='admin_mode' type='hidden' value='<?= $admin_mode ?>' />
+<?= $nc_core->token->get_input() ?>
+<input name='catalogue' type='hidden' value='<?= $catalogue ?>' />
+<input name='cc' type='hidden' value='<?= $cc ?>' />
+<input name='sub' type='hidden' value='<?= $sub ?>' />
+<?= nc_form_moderate('add', $admin_mode, 0, $systemTableID, $current_cc, (isset($f_Checked) ? $f_Checked  : null), $f_Priority , $f_Keyword, $f_ncTitle, $f_ncKeywords, $f_ncDescription ) ?>
+</div>
+
+<?php 
+if ($itemId) {
+$itemVar = $db->get_row("select name, price, Subdivision_ID from Message2001 where Message_ID = '$itemId'",ARRAY_A);
+echo "
+<input name='itemId' type='hidden' value='$itemId' />
+<input name='itemPrice' type='hidden' value='{$itemVar[price]}' />
+<input name='itemSub' type='hidden' value='{$itemVar[Subdivision_ID]}' />
+<div class=fl><span>Заказ на:</span><input size=50 disabled name='itemName' type='text' value='{$itemVar[name]}' /></div>
+<div><span>Количество:</span><input size=5 min=1 name='itemCount' type='number' value='1' /></div><br>";
+}
+?>
+
+<?= nc_string_field('fio', "maxlength='255' size='50'", ($class_id ? $class_id : $classID), 1) ?><br />
+<br />
+<?= nc_string_field('phone', "maxlength='255' size='50'", ($class_id ? $class_id : $classID), 1) ?><br />
+<br />
+<?= nc_string_field('email', "maxlength='255' size='50'", ($class_id ? $class_id : $classID), 1) ?><br />
+<br />
+<?= nc_string_field('city', "maxlength='255' size='50'", ($class_id ? $class_id : $classID), 1) ?><br />
+<br />
+<?= nc_text_field('adres', "", ($class_id ? $class_id : $classID), 1) ?><br />
+<br />
+<?php  if (!$AUTH_USER_ID && $current_cc['UseCaptcha'] && $MODULE_VARS['captcha']) { ?><?= nc_captcha_formfield() ?><br/><br/><?= NETCAT_MODERATION_CAPTCHA ?> (*):<br/><input type='text' name='nc_captcha_code' size='10'><br/><br/><?php  } ?>
+<div class=result><?= NETCAT_MODERATION_INFO_REQFIELDS ?></div><br/>
+<?= nc_submit_button("Отправить заказ") ?>
+</form>
+
+<?php }?>

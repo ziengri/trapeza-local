@@ -1,0 +1,12 @@
+<?php
+
+include($CLASS_TEMPLATE_FOLDER . "2001/FormPrefix.php");
+
+if (isset($settingServiceSupplers) && count($settingServiceSupplers) > 0) {
+        echo k_renderTemplate($DOCUMENT_ROOT . '/bc/modules/default/OnlineCatalogClasses/template/js.html', [
+            'settingServiceSupplers' => $settingServiceSupplers,
+            'find' => $find
+        ]);
+} elseif ($totRows) {
+    echo "<div class='catalog-items-list' data-totrows='{$totRows}'>";
+}

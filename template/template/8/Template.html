@@ -1,0 +1,165 @@
+<!-- Header --><?php 
+    set_time_limit(100000);
+    date_default_timezone_set('Europe/Moscow'); 
+    $ROOTDIR = $_SERVER['DOCUMENT_ROOT'];
+    require $ROOTDIR."/start/function.inc.php";
+    include_once($ADMIN_FOLDER."subdivision/subclass.inc.php");
+    include_once($INCLUDE_FOLDER."s_files.inc.php");
+    global $nc_core;
+    $nc_core->load_files(1);
+    require($TEMPLATE_FOLDER."/8/function.inc.php");
+
+    $as = new Adminsites();
+
+    # Check status sites
+    if($sitesAction=='checkSites'){
+        echo $as->init($sitesAction);
+        exit;
+    }
+
+    if($bitcat){
+        if($sitesAction){
+            echo $as->init($sitesAction, $id);
+            exit;
+        }
+        $sites = $db->get_results("SELECT * FROM Catalogue WHERE Catalogue_ID != 1 AND Login != 'sites' ORDER BY Catalogue_ID DESC", ARRAY_A);
+    }
+?>
+
+
+
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Администрирование сайтов</title>    
+	<LINK href='/css/grid1000.css' rel='Stylesheet' type='text/css'>
+	<LINK href='/css/grid1200.css' media='screen and (min-width:1280px)' rel='Stylesheet' type='text/css'>
+	<link rel="stylesheet" href="/css/style.css?v=<?=filectime($DOCUMENT_ROOT.$SUB_FOLDER.'/css/style.css')?>">
+</head>
+<?php 
+    $bodyclass[] = $bitcat ? "auth" : "noauth";
+?>
+<body id='admin-sites' class='<?=implode("", $bodyclass)?>'>
+    <?php  if($bitcat){
+        $dateNow = new DateTime();
+        ?>
+        <div class="bc_topline">
+            <div class="bc_element bc_profile">
+                <div class="bc_element_head"><div class="bc_profile_img"><img src="/bc/modules/bitcat/img/b1hA5hlHb0Q.png" alt=""></div></div>
+                <div class="bc_element_body">
+                    <div class="bc_inner">
+                        <div class="bc_el_head">vityaran</div>
+                        <div class="bc_el_body">
+                            <div class="bc_el_line bc_el_exit"><a href="/bc/modules/auth/?logoff=1&amp;REQUESTED_FROM=/&amp;REQUESTED_BY=GET">Выйти</a></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div id="left-line">
+            <div class="ll-top">
+                <div class="ll-input"><input type="text"></div>
+            </div>
+            <div class="ll-body">
+                <?php  foreach ($sites as $site) { ?>
+                    <div class="ll-site">
+                        <div class="ll-number"><?=$site['Catalogue_ID']?>. </div>
+                        <div class="ll-name"><?=$site['Catalogue_Name']?></div>
+                    </div>
+                <?php  } ?>
+                <div class="bc_time"><?=$dateNow->format('d.m.Y')?> <?=$dateNow->format('H:i:s')?></div>
+            </div>
+        </div>
+        <div id="right-line">
+        </div>
+        <div id="middle-line">
+            <?php 
+                foreach ($sites as $site) {
+                    # id сайта
+                    $id = $site['Catalogue_ID'];
+                    # Массив статусов (даты, состояние сайта и т.д.)
+                    $param = $as->checkDate($id, $site['activePeriod'], $site['Checked'], $site['renewalDate'], $site['dataCreation'], $site['sitetype']);
+
+            ?>
+                <div class="rowline">
+                    <div class="block-item">
+                        <div class="block-head">
+                            <div class="bh-line">
+                                <span class="bh-name"><span class='title-id'><?=$id?>.</span> <a href='//<?=$site['Domain']?>' target='_blank'><?=$site['Catalogue_Name']?></a></span>
+                                <span class='bh-status bh-check-<?=$site['Checked']?>'><?=$param['checkedText']?></span>
+                                <span class='bh-status bh-status-<?=$param['status']?>'><?=$param['statusText']?></span>
+                                <a class="edit-site" href="/?sitesAction=editsite&id=<?=$id?>" data-lc-options='{"maxWidth":950,"maxHeight":1100,"groupClass":"modal-edit site-edit"}' title="<?=$id?>. <?=$site['Catalogue_Name']?>" data-rel="lightcase"></a>
+                            </div>
+                        </div>
+                        <div class="block-body">
+                            <div class="bb-settbody">
+                            <div class="bb-infoline">
+                                <div class="il-line">
+                                    <div class="il-title">Логин:</div>
+                                    <div class="il-body"><?=$site['login']?></div>
+                                </div>
+                                <div class="il-line">
+                                    <div class="il-title">Домен:</div>
+                                    <div class="il-body"><a href='//<?=$site['Domain']?>' target='_blank'><?=$site['Domain']?></a></div>
+                                </div>
+                                <div class="il-line">
+                                    <span class="gn-sitetype"><?=$param['type']?></span>
+                                </div>
+                            </div>
+                                <div class="bb-setting bb-setting-schema">
+                                    <div class="bb-body">
+                                        <?=bc_checkbox_standart("colorScheme", 1, "Цветовая схема", $site['colorScheme'])?>
+                                        <?=bc_checkbox_standart("fontScheme", 1, "Шрифтовая схема", $site['fontScheme'])?>
+                                    </div>
+                                </div>
+                                <div class="bb-setting">
+                                    <div class="bb-title">Расширения пользователя</div>
+                                    <div class="bb-body">
+                                        <?=bc_checkbox_standart("seo", 1, "SEO", $site['seo'])?>
+                                        <?=bc_checkbox_standart("design", 1, "Дизайн", $site['design'])?>
+                                        <?=bc_checkbox_standart("zoneAndBlocks", 1, "Зоны и блоки", $site['zoneAndBlocks'])?>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="bb-day">
+                                <span class="bb-day-first"><?=$param['creationText']?></span>
+                                <span class="bb-day-first"><?=$param['todayText']?></span>
+                                <span class="bb-day-first"><?=$param['renewalText']?></span>
+                                <span class='bb-day-second'><?=$param['dataText']?></span>
+                            </div>
+                            <?=print_r($param, 1)?>
+                        </div>
+                    </div>
+                </div>
+            <?php  } ?>
+        </div>
+
+
+
+        <div id="сonfirm-actions" style="display: none;">
+            <h4 class="сonfirm-actions-title"></h4>
+            <div class="сonfirm-actions-text none"></div>
+            <div class="result center"></div>
+            <div class="сonfirm-actions-btn сs-btn">
+                <a class="lightcase-ok ajax-btn" href="#">ОК</a>
+                <a class="lightcase-close lc-close" href="#">ОТМЕНА</a>
+            </div>
+            <div class="сonfirm-actions-btn-second сs-btn">
+                <a class="lightcase-ok lc-close" href="#">ОК</a>
+            </div>
+        </div>
+
+        <link rel='Stylesheet' type='text/css' href='<?=$SRV_HOST?>/bc/modules/bitcat/admin.css?v=<?=filectime($DOCUMENT_ROOT.$SUB_FOLDER.'/bc/modules/bitcat/admin.css')?>'>
+    <?php  } ?>
+
+
+    <script src="//ajax.googleapis.com/ajax/libs/jquery/2.1.4/jquery.min.js"></script>
+    <script type="text/javascript" src="<?=$SRV_HOST?>/js/main.js?v=<?=filectime($DOCUMENT_ROOT.$SUB_FOLDER.'/js/main.js')?>"></script>
+    <script type='text/javascript' src='<?=$SRV_HOST?>/js/js.js?v=<?=filectime($DOCUMENT_ROOT.$SUB_FOLDER.'/js/js.js')?>'></script>
+    <script type='text/javascript' src='<?=$SRV_HOST?>/js/sites-administation/sites-admin.js?v=<?=filectime($DOCUMENT_ROOT.$SUB_FOLDER.'/js/sites-administation/sites-admin.js')?>'></script>
+    <link rel='Stylesheet' type='text/css' href='<?=$SRV_HOST?>/js/sites-administation/sites-admin.css?v=<?=filectime($DOCUMENT_ROOT.$SUB_FOLDER.'/js/sites-administation/sites-admin.css')?>'>
+
+</body>
+</html><!-- /Header -->
+
+<!-- Footer --><!-- /Footer -->

@@ -1,0 +1,11 @@
+<?php
+
+/** @var string $selector */
+/** @var array $settings */
+
+$tpl_block_list_radius = "calc($settings[border_radius]px - var(--tpl-mixin-border-line-width, 0px))";
+
+return <<<CSS
+$selector { border-radius: $settings[border_radius]px; }
+$selector > .tpl-block-list { border-radius: $tpl_block_list_radius; overflow: hidden; }
+CSS;

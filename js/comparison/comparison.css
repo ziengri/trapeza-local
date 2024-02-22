@@ -1,0 +1,63 @@
+/* comparison */
+.blk_comparison { margin-bottom: 10px; z-index: 1; position: relative; }
+.comparison-add { font-size: 12px; cursor: pointer; padding: 3px 8px 3px 7px; border-radius: 3px; transition: 0.2s; }
+.comparison-count { display: none; }
+.comparison-add .icons { height: 16px; width: 16px; }
+.comparison-add > * { display: inline-block; vertical-align: top; }
+.comparison-add .icons:before { top: 0; left: 0; bottom: 0; right: 0; margin: auto; width: 13px; height: 12px; line-height: 13px; }
+.comparison-info {opacity: 0;visibility: hidden;font-size: 11px;background: #fff;border: 1px solid rgba(51, 51, 51, 0.09);border-radius: 3px;padding: 7px 12px 8px;white-space: nowrap;position: absolute;left: -54px;top: 100%;top: calc(100% - 6px);transition: 0.3s cubic-bezier(0, 0, 0.16, 1.21);box-shadow: 0 0 6px 0px rgba(51, 51, 51, 0.11);pointer-events: none;}
+.comparison.active:hover .comparison-info,
+.comparison-add:hover + .comparison-info { opacity: 1; visibility: visible; top: 100%; top: calc(100% + 4px); }
+.comparison-link { display: none; }
+.comparison {display: inline-block;color: #616161;position: relative;font-family: 'Noto Sans', sans-serif !important;}
+.comparison-add-text { cursor: default; }
+.comparison-add:hover { background: #f3f3f3; }
+.comparison-info:before { content: ''; position: absolute; left: 0; right: 0; top: -5px; margin: auto; background: #fff; width: 8px; height: 8px; border-top: 1px solid rgba(51, 51, 51, 0.09); border-right: 1px solid rgba(51, 51, 51, 0.09); -webkit-transform: rotate(-45deg); -moz-transform: rotate(-45deg); -ms-transform: rotate(-45deg); -o-transform: rotate(-45deg); transform: rotate(-45deg); }
+.comparison.active .comparison-add { color: #e70404; }
+.comparison.active .comparison-add-text { display: none; }
+.comparison.active .comparison-link { display: block; }
+.comparison.active .comparison-info { left: -52px; }
+.comparison-info:after { content: ''; left: 0; top: -10px; width: 100%; height: 10px; position: absolute; }
+.comparison.active .comparison-info { pointer-events: fill; }
+
+/* FULL comparison */
+section.comparison-full { margin-bottom: 60px; }
+.comparison-right {width: 100%;overflow: hidden;position: absolute;top: 0;left: 0;padding-left: 229px;z-index: 0;}
+ul.comparison-param-value {width: 100%;overflow: visible;}
+ul.comparison-list li,
+ul.comparison-param-name li {white-space: nowrap; overflow-x:hidden; font-weight: bold; padding: 16px 24px; border-top: 1px solid #e6e6e6; }
+li.comparison-product {position: relative;float: left;width: 260px;text-align: center;-webkit-transition: opacity 0.3s, visibility 0.3s, -webkit-transform 0.3s;-moz-transition: opacity 0.3s, visibility 0.3s, -moz-transform 0.3s;transition: opacity 0.3s, visibility 0.3s, transform 0.3s;border: 1px solid #e6e6e6;border-left-width: 0px;}
+.comparison-namefull .image-default { max-width: 169px; margin: 0 auto; }
+.comparison-namefull,
+.comparison-info-first { position: relative; padding: 20px 25px; overflow: hidden; }
+.comparison-namefull h3 { font-size: 14px; margin: 15px 0 15px; }
+.comparison-left {left: 0;z-index: 1;width: 230px;background-color: #fafafa;opacity: .95;border: 1px solid #e6e6e6;position: relative;}
+.comparison-namefull:after { content: ''; position: absolute; left: 0; top: 100%; height: 4px; width: 100%; background-color: transparent; background-image: -webkit-linear-gradient(top, rgba(0, 0, 0, 0.06), transparent); background-image: linear-gradient(to bottom,rgba(0, 0, 0, 0.06), transparent); opacity: 0; }
+.comparison-table > * { display: inline-block; vertical-align: top; font-size: 14px; }
+.comparison-table {font-size: 0;position: relative;}
+.comparison-full .owl-item:first-child li.comparison-product { border-left-width: 1px; }
+li.comparison-product.comparison-product-first { border: 0; width: 229px; }
+
+section.comparison-full .owl-carousel .owl-nav .owl-next { right: 10px; }
+section.comparison-full .owl-carousel .owl-nav .owl-prev { left: 10px; }
+section.comparison-full .owl-carousel .owl-nav div { top: 105px; bottom: auto; border-radius: 2px; height: 50px; }
+section.comparison-full .owl-carousel .owl-nav div.disabled {opacity: 0.2;}
+.comparison-full .owl-item .comparison-product { width: 100%; moz-box-sizing: border-box; -webkit-box-sizing: border-box; box-sizing: border-box; }
+ul.comparison-param-name li { font-weight: normal; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.comparison-close:before { content: '\e9ce'; text-decoration: none; font-family: 'krz-font' !important; speak: none; font-style: normal; font-weight: normal; font-variant: normal; text-transform: none; line-height: 1; -webkit-font-smoothing: antialiased; -moz-osx-font-smoothing: grayscale; height: 100%; width: 100%; position: absolute; left: 0; line-height: 21px; font-size: 10px; margin: auto; color: #ffffff; text-align: center; }
+.comparison-close {z-index:1; position: absolute; right: 10px; top: 10px; width: 20px; height: 20px; cursor: pointer; border-radius: 3px; overflow: hidden; background: rgba(64, 64, 66, 0.6); opacity: 0; transition: 0.3s; }
+li.comparison-product:hover .comparison-close { opacity: 0.3; }
+li.comparison-product .comparison-close:hover { opacity: 1; }
+.card_comparison { position: relative; }
+.catalog-item-full.template-type1 .card_comparison .comparison { position: absolute; right: 29px; top: -42px; }
+.item-full-fastprew.template-type1 .card_comparison .comparison { top: -31px; }
+.catalog-item-full.template-type2 .card_comparison { position: absolute; right: 29px; margin-top: 1px; z-index: 1;}
+
+.comparison-last-price { font-weight: normal; position: relative; display: inline-block; font-size: 15px; }
+.comparison-price { font-size: 18px; }
+.comparison-last-price:before { content: ''; position: absolute; top: 9px; left: 0; width: 100%; height: 1px; background: #E22C39; }
+li.comparison-data-price:not(.comparison-data-price-sale) { line-height: 38px; }
+.comparison-param-name .comparison-data-price { line-height: 39px; font-size: 18px; font-weight: bold; }
+li.comparison-data-price { min-height: 40px; }
+
+.comparison-info-first{display:flex;flex-direction:column}.comparison-info-first .title{margin:10px 0;font-weight:700}.comparison-info-first .title:first-of-type{margin-top:0}.remove_comparison_list:after{content:'\e9ce';font-family:krz-font!important;font-size:10px;color:#fff;background:rgb(64 64 66 / 30%);width:10px;height:10px;padding:5px;border-radius:3px;margin-left:5px;text-decoration:none!important;display:inline-block}

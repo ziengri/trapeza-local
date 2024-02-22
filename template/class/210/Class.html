@@ -1,0 +1,530 @@
+<!-- FormPrefix --><?php
+
+if ($setting['acatLogin']!='' and $setting['acatPass']!=''){
+echo 1;
+    define("DS","/");
+    define("T",".");
+    define("TIMEZONE","Europe/Moscow");
+    define("DEBUG",TRUE);
+    define('WWW_ROOT', realpath(dirname(__FILE__)).DS);
+    define('API_HOST',"http://auto2d.com");
+    define('API_VERSION',"api");
+    define("LOGIN",$setting['acatLogin']);
+    define("PASSWD",$setting['acatPass']);
+
+    $oA2D = ADC::instance();
+
+    $katalog = $current_sub[Hidden_URL];
+    $er = false;
+
+    $oTypeList = $oA2D->getTypeList();
+	
+
+    if (count($oTypeList)>1){
+        $sTypeID = isset($_GET['typeID'])?intval($_GET['typeID']):0;
+        if ($sTypeID>0 and $sTypeID<12) #1-11
+            ;
+        else 
+            $sTypeID = $oTypeList[0]['type_id'];
+    }
+    else 
+        $sTypeID = -1;
+		
+echo print_r($oTypeList,1);
+    if (!empty($_GET['detail'])){ #Нужно для поиска
+
+        $_GET['detail'] = str_replace(array('"', "'"), '', $_GET['detail']);
+        $detail = $oA2D->rcv('detail'); /// Номер детали
+        $mark   = $oA2D->rcv('mark');   /// Марка, в рамках которой искать
+        $model  = $oA2D->rcv('model');  /// Модель, в рамках которой искать
+        if( $detail ){
+            $whereName = $whereValue = NULL;
+            if( $mark ){ /// Строить поиск в пределах марки
+                $whereName  = "mark"; /// На сервере принимает строго только mark или model
+                $whereValue = $mark;  /// Идентификатор марки
+            } 
+            if( $model ){ /// Строить посик в пределах модели
+                $whereName  = "model"; /// На сервере принимает строго только mark или model
+                $whereValue = $model;  /// Идентификатор модели
+            }
+            $detailed = FALSE;
+            $fs = substr($detail, 0, 1); /// Первый символ
+            $ls = substr($detail, -1);   /// Последний символ
+            if( $fs==$ls && in_array($fs,array('"',"'",'#','@','!',':',';','*','^','%','$','~')) ) $detailed = TRUE;
+            if( $fs=="(" && $ls==")" ) $detailed = TRUE;
+            if( $detailed ) $detail = trim( $detail, "\\{$fs}\\{$ls}" );
+            $aDetails = $oA2D->searchNumber($detail,$whereName,$whereValue,$detailed); ///$oA2D->e([$detail,$whereName,$whereValue,$aDetails]);
+            #if( ($aErrors=A2D::property($aDetails,'errors')) ) $oA2D->error($aErrors,404);
+            if( ($aErrors=A2D::property($aDetails,'errors')) ) $er=true;
+        }
+        else{
+            #$oA2D->error("Пустой поисковый запрос",404);
+            $er=true;
+        }
+        $bred = '<a href="'.$katalog.'">Автокаталог</a>';
+
+    }
+    elseif (!empty($_GET['modelID']) and !empty($_GET['treeID'])){ #деталь схема
+        $sTreeID  = $oA2D->rcv('treeID');
+        $sModelID = $oA2D->rcv('modelID');
+        $bBrowser = $oA2D->rcv('browser');
+        $sJumpPic = $oA2D->rcv('jumpPic');
+        $vMapImg  = $oA2D->getDetails($sModelID,$sTreeID,$sJumpPic);
+        if( ($aErrors=A2D::property($vMapImg,'errors')) ) $er=true;
+        $sTypeID    = A2D::property($vMapImg,'typeID');    /// Идентификатор группы
+        $sTypeName  = A2D::property($vMapImg,'typeName');  /// Имя группы
+        $sMarkID    = A2D::property($vMapImg,'markID');    /// Идентификатор марки
+        $sMarkName  = A2D::property($vMapImg,'markName');  /// Имя марки
+        $sModelName = A2D::property($vMapImg,'modelName'); /// Имя модели
+        $sTreeName  = A2D::property($vMapImg,'treeName');  /// Имя узла (двигатель, рулевое управление, кузов)
+        $sMapName   = A2D::property($vMapImg,'mapName');   /// Имя выбранной детали
+        $sMapNameTree = ((strlen($sMapName)>43)?substr($sMapName, 0, 40)."...":$sMapName); /// Сокращение имени выбранной модели для последней крошки
+        $mapImg     = A2D::property($vMapImg,'mapImg');    /// Иллюстрация детали с позициями элементов
+        $aDetails   = A2D::property($vMapImg,'details');   /// Номенклатура к иллюстрации
+        $aNav       = A2D::property($vMapImg,'nav');       /// Навигации - предыдущая и следующая деталь
+        $_prev      = A2D::property($aNav,'prev');         /// предыдущая
+        $_next      = A2D::property($aNav,'next');         /// следующая
+        $bMultiArray = 0; /// Нужно для крошек, чтобы при переходе не получить другой массив. Хотя отсутсвие и означает FALSE/0 - для понимания
+        A2D::$searchWhere['tabs']  = array('detail');                        /// В какой вкладке включить
+        A2D::$searchWhere['name']  = "model";                           /// Поиск в пределах модели (либо марки)
+        A2D::$searchWhere['value'] = $sModelID;                         /// Идентификатор модели
+        A2D::$searchWhere['desc']  = "искать в $sMarkName $sModelName"; /// Наименования чекбокса, второй "искать везде"
+        A2D::$searchWhere['hide']  = "_displayNone";                    /// Если нужен только ограниченный поиск, то прописываем класс для скрытие чекбоксов
+        $bred = '<a href="'.$katalog.'">Автокаталог</a> &raquo; <a href="?typeID='.$sTypeID.'&markID='.$sMarkID.'">'.$sMarkName.'</a> &raquo; <a href="?modelID='.$sModelID.'">'.$sModelName.'</a>';
+    }
+    elseif (!empty($_GET['modelID'])){ #список деталей
+        $sModelID    = $oA2D->rcv('modelID');
+        $bMultiArray = (boolean) $oA2D->rcv('multiArray');
+        $oTreelList  = $oA2D->getTreeList($sModelID,$bMultiArray);
+        if( ($aErrors=A2D::property($oTreelList,'errors')) ) $er=true;
+        $sTypeID     = A2D::property($oTreelList,'typeID');    /// Идентификатор группы
+        $sTypeName   = A2D::property($oTreelList,'typeName');  /// Имя группы
+        $sMarkID     = A2D::property($oTreelList,'markID');    /// Идентификатор марки
+        $sMarkName   = A2D::property($oTreelList,'markName');  /// Имя марки
+        $sModelName  = A2D::property($oTreelList,'modelName'); /// Имя модели
+        $aTreelList  = A2D::property($oTreelList,'details');   /// список деталей
+        A2D::$searchWhere['tabs']  = array('detail');                        /// В какой вкладке включить
+        A2D::$searchWhere['name']  = "model";                           /// Поиск в пределах модели (либо марки)
+        A2D::$searchWhere['value'] = $sModelID;                         /// Идентификатор модели
+        A2D::$searchWhere['desc']  = "искать в $sMarkName $sModelName"; /// Наименования чекбокса, второй "искать везде"
+        A2D::$searchWhere['hide']  = "_displayNone";                    /// Если нужен только ограниченный поиск, то прописываем класс для скрытие чекбоксов
+        $bred = '<a href="'.$katalog.'">Автокаталог</a> &raquo; <a href="?typeID='.$sTypeID.'&markID='.$sMarkID.'">'.$sMarkName.'</a> &raquo; '.$sModelName;
+    }
+    elseif (!empty($_GET['markID'])){
+        $sMarkID = $oA2D->rcv('markID');
+        $oModelList = $oA2D->getModelList($sMarkID,$sTypeID);
+        if( ($aErrors=A2D::property($oModelList,'errors')) ) $er=true;
+        $sTypeName = A2D::property($oModelList,'typeName');
+        $sMarkName = A2D::property($oModelList,'markName');
+        $oModels   = A2D::property($oModelList,'models');
+        $bMultiArray = FALSE;
+        A2D::$searchWhere['tabs']  = array('detail');            /// В какой вкладке включить
+        A2D::$searchWhere['name']  = "mark";                /// Поиск в пределах марки (либо модели)
+        A2D::$searchWhere['value'] = $sMarkID;              /// Идентификатор марки
+        A2D::$searchWhere['desc']  = "искать в $sMarkName"; /// Наименования чекбокса, второй "искать везде"
+        A2D::$searchWhere['hide']  = "_displayNone";        /// Если нужен только ограниченный поиск, то прописываем класс для скрытие чекбоксов
+        $bred = '<a href="'.$katalog.'">Автокаталог</a> &raquo; '.$sMarkName;
+    }
+    else {
+        $oMarkList = $oA2D->getMarkList($sTypeID);
+        if( ($aErrors=A2D::property($oMarkList,'errors')) ) $er=true;
+        $aMarkList = A2D::property($oMarkList,'marks');
+        $sTypeName = A2D::property($oMarkList,'typeName');
+        $bred = 'Автокаталог';
+    }
+    if (!$er){
+        $a = $tName = FALSE; /// Нет ни одной активной вкладки
+        foreach( A2D::$searchTabs AS $t ){
+            if(!empty($t['alias'])) $tab = "from".ucfirst($t['alias']);
+            else $tab = "from";
+            if( A2D::get($_GET,$tab) ){
+                $a = TRUE; /// Выстрелило
+                ${"tab".$t['id']}    ='tab_active';
+                ${"tabDiv".$t['id']} ='tabkont_active';
+                $tName = $t['tName'];
+            }
+            else{
+                ${"tab".$t['id']}    ='tab';
+                ${"tabDiv".$t['id']} ='tabkont';
+            }
+        }
+        if( !$a ){ /// Если нет активных вкладок, включаем первую
+            $tab1    ='tab_active';
+            $tabDiv1 ='tabkont_active';
+        }
+    ?>
+
+    <link href="/template/class/<?=$classID?>/acat.css" media="all" rel="stylesheet" type="text/css">
+    <script type="text/javascript" src="/template/class/<?=$classID?>/acat.js"></script>
+    <div id="AutoDealer">
+        <div style="margin-bottom:20px;"><?=$bred;?></div>
+
+        <section id="searchForm">
+            <div class="searchForm" id="A2DSearch">
+                <?php $t=A2D::$searchTabs[0];$i=0; $multi=A2D::get($t,'multi'); $hidden=A2D::get($t,'hidden',array()); ?>
+                <div class="<?=${"tabDiv".$t['id']}?>" id="tabkont<?=$t['id']?>" >
+                    <form id="searchForm<?=($i+1)?>" name="searchForm<?=($i+1)?>" method="<?=A2D::$searchMethod?>">
+                        <input type="hidden" name="mark" value="<?=(isset($_GET['mark'])&&intval($_GET['mark'])>0)?intval($_GET['mark']):'';?>">
+                        <input type="hidden" name="from<?=ucfirst($t['alias'])?>" value="1">
+                        <?php foreach( $hidden as $hName=>$hValue ){ //Добавление скрытых полей ?>
+                            <input type="hidden" name="<?=$hName?>" value="<?=$hValue?>">
+                        <?php }?>
+                        <?php if( $multi ){
+                                foreach( $multi AS $mt ){
+                                    if($mt['list']==''){?>
+                                        <input type="text" name="<?=$mt['alias']?>" class="search<?=count($multi)?>failds" placeholder="Укажите <?=$mt['name']?>" value="<?=A2D::get($_GET,$mt['alias']);?>">
+                                        <?php if( $mt!=end($multi) ){?>&ensp;&mdash;&ensp;<?php }
+                                    }else{ $lists=$mt['list'];?>
+                                        <select name="<?=$mt['alias']?>" class="search2failds low" >
+                                            <?php foreach( $lists AS $key=>$market ){
+                                                if( (A2D::get($_GET,$mt['alias'])=='' && (($root=='nissan' && $key=='el' ) || ($root=='infiniti' && $key=='elinf' ) ))
+                                                    || ( A2D::get($_GET,$mt['alias'])==$key )
+                                                ) $selected = "selected";
+                                                else    $selected = '';
+                                                ?>
+                                                <option value="<?=$key?>" <?=$selected?>><?=$market?></option>
+                                            <?php }?>
+                                        </select><?php
+                                    }
+                                }
+                            }else{?>
+                            <input type="text" name="<?=$t['alias']?>" class="spare_parts" placeholder="Укажите <?=$t['name']?>" value="<?=A2D::get($_GET,$t['alias']);?>">
+                        <?php }?>
+                        <span class="btn-strt">
+                            <input type="submit" class="searchBttn uppercase" value="Найти">
+                        </span>
+                                        <?php $where=A2D::get(A2D::$searchWhere,'tabs',array()); ?>
+                        <?php if( in_array($t['alias'],$where) && count(A2D::$searchWhere)>1 ){ $_wsc=( ($_c=A2D::get(A2D::$searchWhere,'hide')) )?" $_c":"";?>
+                            <div class="whereSearch<?=$_wsc?>">
+                                <div class="inlineFlex fl"><span id="everyWhere" class="a2dCheckBox mr5"></span> <label for="everyWhere">искать везде</label></div>
+                                <div class="item fl ml55 mr20"><span id="onlyHere" class="a2dCheckBox active mr5"></span> <label for="onlyHere" style="float:right"><?=A2D::get(A2D::$searchWhere,'desc')?></label></div>
+                                <?php if( ($lists=A2D::get(A2D::$searchWhere,'lists',array())) ) foreach( $lists AS $select ){?>
+                                                        <div class="item fl">
+                                    <select name="<?=$select['alias']?>" class="form-control input-sm">
+                                        <?php foreach( $select['options'] AS $option ){?>
+                                        <option value="<?=$option->code?>"<?=( A2D::get($_GET,$select['alias'])==$option->code )? " selected":"";?>><?=$option->ru?></option>
+                                        <?php }?>
+                                    </select>
+                                                        </div>
+                                <?php }?>
+                                <div class="clear"></div>
+                                <input type="hidden" name="<?=A2D::get(A2D::$searchWhere,'name')?>" value="<?=A2D::get(A2D::$searchWhere,'value')?>" class="whereSearchInput">
+                            </div>
+                        <?php }?>
+                    </form>
+                </div>
+            </div>
+        </section>
+
+        <?php
+        if (count($oTypeList)>1){
+            echo '<div class="_types">';
+            foreach($oTypeList as $k => $v){
+                echo '<a href="?typeID='.$v['type_id'].'"><img src="'.$v['type_url'].'" title="'.$v['type_name'].'" /><div>'.$v['type_name'].'</div></a>';
+            }
+            echo '</div>';
+        }
+        ?>
+		
+		
+        <?php if (!empty($_GET['detail'])){ ?>
+            <?php if( !empty($aDetails) && count($aDetails)>0 ){?>
+            <h2>Результаты поиска по каталогу запчастей</h2>
+            <table border="0" align="center" cellpadding="3" cellspacing="2">
+            <tr>
+                <td align="left">
+                    <?php
+                    if( count($aDetails)>100 ){
+                        $_out = "<br>Найдено: <b style='color:red'>больше 100 деталей, введите более точные критерии поиска</b>";
+                    }
+                    else{
+                        $_out = "<br>Найдено: <b style='color:red'>".count($aDetails)."</b>";
+                    }
+                    $_out .= "\n".'<hr size=1 style=width:100%><ul id="l1" class="my_tree">'."\n";
+                    $old_mark_name = $old_auto = $old_t1 = $old_t2 = $old_t3 = false;
+                    foreach( $aDetails as $d ){
+                        if ($d->mark_id!=$old_mark_name){
+                            $_out         .= ($old_mark_name!==false?str_repeat('</ul></li>', 5):'').'<li>'.$d->mark_name.'<ul>'."\n";
+                            $old_mark_name = $d->mark_id;
+                            $old_auto      = $old_t1=$old_t2=$old_t3=false;
+                        }
+                        if ($d->model_id!=$old_auto){
+                            $_out    .= ($old_auto!==false?str_repeat('</ul></li>', 4):'').'<li>'.$d->model_name.' ('.$d->modification.')<ul>'."\n";
+                            $old_auto = $d->model_id;
+                            $old_t1   = $old_t2=$old_t3=false;
+                        }
+                        if ($d->tree_id1!=$old_t1){
+                            $_out  .= ($old_t1!==false?str_repeat('</ul></li>', 3):'').'<li>'.$d->t1.'<ul>'."\n";
+                            $old_t1 = $d->tree_id1;
+                            $old_t2 = $old_t3=false;
+                        }
+                        if ($d->tree_id2!=$old_t2){
+                            $_out  .= ($old_t2!==false?str_repeat('</ul></li>', 2):'').'<li>'.$d->t2.'<ul>'."\n";
+                            $old_t2 = $d->tree_id2;
+                            $old_t3 = false;
+                        }
+                        if ($d->tree_id3!=$old_t3){
+                            $_out  .= ($old_t3!==false?str_repeat('</ul></li>', 1):'').'<li>'.$d->t3.'<ul>'."\n";
+                            $old_t3 = $d->tree_id3;
+                        }
+                        $_out .= '<li class=leaf><a href="?modelID='.$d->model_id.'&treeID='.$d->tree_id3.'#l'.$d->detail_id.'">'.$d->detail_name.'</a> ('.$d->detail_no.')</li>'."\n";
+                    }
+                    $_out.=str_repeat('</ul></li>', 5).'</ul>';
+                    echo $_out;
+                    ?>
+                </td>
+            </tr>
+            </table>
+            <?php }else{?>
+                <div class="warning">По вашему запросу ничего не найдено</div>
+            <?php }?>
+        <?php } elseif (!empty($_GET['modelID']) and !empty($_GET['treeID'])){ ?>
+            <div id="map">
+                <h2><?=$sMapName?></h2>
+                <div id="iframe">
+                    <div id="imageFrame"><?=$mapImg?></div>
+                    <!--Nav-->
+                    <div id="zoomer">
+                        <div class="ml20">
+                            <INPUT type="checkbox" checked onclick="showlabels(this.checked);" value="1" style="vertical-align:middle;" id="cl1" title="hide-show">
+                            <label title="hide-show" for="cl1">метки</label>&nbsp;
+                            <B style="vertical-align:middle">Масштаб: </B>
+                            <input type="text" readonly style="vertical-align:middle;width:40px;font-size:10pt;height:16px;background: transparent; border: 0px #000000 Solid;" id="map_info" value="100%">
+                            <span class="zoomBttn" onclick="izoom(-1);" title="-Zoom-">-</span>&nbsp;
+                            <span class="zoomBttn" onclick="izoom(0);" title="=Zoom=">100%</span>&nbsp;
+                            <span class="zoomBttn" onclick="izoom(1);" title="+Zoom+">+</span>
+                        </div>
+                    </div>
+                    <!--/Nav-->
+                </div>
+            </div>
+
+            <div id="nav">
+                <?php if( $_prev ){?>
+                    <a href="?modelID=<?=$sModelID?>&treeID=<?=$_prev->id?>">
+                        <span class="pointer" title="<?=$_prev->tree_name?>">&larr;</span>
+                    </a>
+                <?php }else{?>
+                    <span>&larr;</span>
+                <?php }?>
+                &nbsp;
+                <span>Запчасти</span>
+                &nbsp;
+                <?php if( $_next ){?>
+                    <a href="?modelID=<?=$sModelID?>&treeID=<?=$_next->id?>">
+                        <span class="pointer" title="<?=$_next->tree_name?>">&rarr;</span>
+                    </a>
+                <?php }else{?>
+                    <span>&rarr;</span>
+                <?php }?>
+            </div><!--/Nav-->
+            <div class="clear"></div>
+
+            <!--List-->
+            <table id="detailsList" class="table_main">
+                <thead>
+                    <tr>
+                        <th>№</th>
+                        <th>Наименование</th>
+                        <th>Номер</th>
+                        <th>Цена</th>
+                        <th>Купить</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <?php foreach( $aDetails as $sDetail ){
+                        #echo '<!--|||'.print_r($_SESSION,1).'-->';
+                        #echo '<!--|||'.print_r($sDetail,1).'-->';
+                        $_exst = '';
+                        if ($sDetail->detail_num)
+                            $_exst = $db->get_results("SELECT * FROM Message2001 as a WHERE ".findTovarSql($sDetail->detail_num)." AND a.Catalogue_ID=".$catalogue." LIMIT 0,1", ARRAY_A);
+                        $_price = 0;
+                        $_id = 0;
+                        $attrItem = '';
+                        if ($_exst){
+                            $_price = $_exst[0]['price'];
+                            $_id = $_exst[0]['Message_ID'];
+                            $attrItem .= " data-typecount='1'";
+                            $attrItem .= " data-id='{$_id}'";
+                            $attrItem .= " data-origname=\"".$_exst[0]['name']."\"";
+                            $attrItem .= " data-name=\"".$_exst[0]['name']."\"";
+                            $attrItem .= " data-sub='".$_exst[0]['Subdivision_ID']."'";
+                            $attrItem .= " data-origprice='".$_exst[0]['price']."'";
+                            $attrItem .= " data-price='".$_exst[0]['price']."'";
+                            $attrItem .= " data-count='1'";
+                            $attrItem .= " data-origstock='".$_exst[0]['stock']."'";
+                            $attrItem .= " data-stock='".$_exst[0]['stock']."'";
+                            $attrItem .= " data-hex='".hexprice($_exst[0]['price'])."'";
+                            $attrItem .= " data-orighex='".hexprice($_exst[0]['price'])."'";
+                        }
+                        else {
+                            $_id = $sDetail->detail_id;
+                            $attrItem .= " data-id='{$_id}'";
+                            $attrItem .= " data-origname=\"".$sDetail->detail_name.' ('.$sMarkName.' - '.$sModelName.' - '.$sDetail->detail_num.")\"";
+                            $attrItem .= " data-name=\"".$sDetail->detail_name.' ('.$sMarkName.' - '.$sModelName.' - '.$sDetail->detail_num.")\"";
+                            $attrItem .= " data-origprice='0'";
+                            $attrItem .= " data-typecount='1'";
+                            $attrItem .= " data-price='0'";
+                            $attrItem .= " data-count='1'";
+                            $attrItem .= " data-sub='1'";
+                            $attrItem .= " data-origstock='0'";
+                            $attrItem .= " data-stock='0'";
+                            $attrItem .= " data-hex='".hexprice(0)."'";
+                            $attrItem .= " data-orighex='".hexprice(0)."'";
+                            $attrItem .= " data-l='".intval($_GET['modelID']).':'.intval($_GET['treeID'])."'";
+                        }
+                        ?>
+                        <tr id="tr<?=$sDetail->detail_id?>" data-position="<?=$sDetail->detail_pos?>">
+                        <td align="right" id="detailInfo"><?=($sDetail->detail_inc)?$sDetail->detail_inc.'.':''?></td>
+                        <td>
+                            <?php  if ($_exst) { ?>
+                              <a target=_blank href="<?=nc_message_link($_exst[0]['Message_ID'],2001)?>">
+                            <?php } else {?>
+                              <a href="#" onclick="return td(<?=$sDetail->detail_id?>,1,<?=$sDetail->detail_pos?>);">
+                            <?php }?>
+                                <?=$sDetail->detail_name?>
+                            </a>
+                        </td>
+                        <td align=center>
+                            <a href="#" onclick="return td(<?=$sDetail->detail_id?>,1,<?=$sDetail->detail_pos?>);" title="more">
+                                <?=$sDetail->detail_num?>
+                            </a>
+                        </td>
+                        <td align=center>
+                            <?php
+                            if ($_exst && $_price>0) {
+                                echo "<div class='normal_price'><b itemprop='price' class='cen'>{$_price}</b> <span class='rubl'>c</span></div>";
+                                if ($sDetail->detail_num) echo "<div><a target=_blank href='/search/?find={$sDetail->detail_num}'>все цены</a></div>";
+                            } else {
+                                echo "<div>под заказ</div>";
+                            }
+                            ?>
+                       
+                        </td>
+                        <td data-id="<?=$_id;?>" class="product-item" <?=$attrItem;?>>
+                            <a class="add_basket incart btn-bg mainmenubg"><span class="add_text">В корзину</span></a>
+                            <?php
+                            /*<a target="_blank" href="/search/?find=<?=str_replace(' ','-',$sDetail->detail_num);?>" class="blk_incard mainmenubg"><span>&nbsp;Узнать цену&nbsp;</span></a>*/
+                            ?>
+                        </td>
+                    </tr>
+                    <?php }?>
+                </tbody>
+            </table>
+        <?php } elseif (!empty($_GET['modelID'])){ ?>
+            <div>
+                <?php /// Рекурсивная функция для построения HTML дерева деталей
+                function buildTree($sModelID,$aTreelList){
+                    $dom = new DOMDocument();
+                    $ul = $dom->appendChild(new DOMElement("ul"));
+                    $ul->setAttribute("class", "my_tree");
+                    $ul->setAttribute("id", "l1");
+                    $aObj = new stdClass();
+                    $aObj->{0} = $ul;
+                    foreach($aTreelList as $f){
+                        $ul = $aObj->{$f->parent_id};
+                        $li = $ul->appendChild(new DOMElement("li"));
+                        $li->setAttribute("class", "close");
+                        $a = $li->appendChild(new DOMElement("a"));
+                        $a->setAttribute("title",$f->tree_name);
+                        if($f->childs != 0){
+                            $b = $a->appendChild(new DOMElement("b"));
+                            $b->appendChild(new DOMText($f->tree_name));
+                            $a->setAttribute("href", "javascript:;");
+                            $ul = $li->appendChild(new DOMElement("ul"));
+                            $ul->setAttribute("class", "close");
+                            $aObj->{$f->id} = $ul;
+                        }else{
+                            $a->appendChild(new DOMText($f->tree_name));
+                            $a->setAttribute("href", '?modelID='.$sModelID.'&treeID='.$f->id);
+                            $a->setAttribute("id", '_'.$f->id);
+                        }
+                    }
+                    echo $dom->saveHTML();
+                }
+                if( !$bMultiArray ){ buildTree($sModelID,$aTreelList); }
+                else{ $oA2D->p((array)$aTreelList); }
+                ?>
+            </div>
+        <?php } elseif (!empty($_GET['markID'])){ ?>
+		
+           <div class="block_acat block_items itm_textbor  card_big noitemcount typeCartBut1"><div>
+			
+                <?php foreach( $oModels AS $aModel ){?>
+					<div class="blk_item obj obj<?=$aModel->model_id?> product-item">
+					<div class="blk_img">
+							<a href="?modelID=<?=$aModel->model_id;?>">
+							<span class="image_h"><img src="<?=$aModel->model_url?>" alt=""></span></a>
+					</div>
+					<div class="blk_text">
+						<div class="blk_bordertext ">
+							<div class="blk_bt_sec">
+								<div class="blk_name">
+									<a href="?modelID=<?=$aModel->model_id;?>"><?=$sMarkName.'-'.$aModel->model_name?></a></div>
+									<?=($aModel->model_actual ? "<div class=art><span class=artzag>Актуальность:</span> <span class=artname>".(strstr($aModel->model_actual,".") ? substr($aModel->model_actual,3) : $aModel->model_actual)." год</span></div>" : NULL)?>         			
+									<div class="blk_opis"><?=$aModel->model_modification?></div>
+							</div>
+						</div>
+					</div>
+					</div>
+                <?php  } ?>
+				
+            </div></div>
+			
+        <?php  } else { ?>
+        <div id="marks">
+            <?php foreach( $aMarkList AS $oMark ){?>
+                <a class="markItem" href="?typeID=<?=$sTypeID;?>&markID=<?=$oMark->mark_id;?>">
+                    <span class="markLogo"><img src="<?=$oMark->mark_img_url?>" width="32" height="32" alt="<?=$oMark->mark_name?>"></span>
+                    <span class="markName"><?=$oMark->mark_name?></span>
+                </a>
+            <?php }?>
+        </div>
+        <?php  } ?>
+    </div>
+
+
+    <div id="frameOverlay" style="z-index:3;background-color:black;visibility:hidden;position:fixed;width:100%;height:100%;top:0;left:0;opacity:0.8;" class="opacity"></div>
+    <div id="_shadow" style="z-index:5;background-color:#224466;visibility:hidden;position:fixed;width:470px;height:360px;top:25%;margin-left:6px;margin-top:6px;" class="opacity"></div>
+    <div id="_iframe" style="z-index:7;visibility:hidden;position:fixed;width:470px;height:360px;top:25%">
+    <iframe id="infoFrame" style="border:1px SteelBlue Solid;width:470px;height:360px;" frameborder="no" scrolling="no"></iframe>
+    </div>
+    <script>
+    $(document).ready(function(){
+        var $form,$where,$value,_action,
+            where  = '.whereSearch',
+            value  = '.whereSearchInput',
+            action = '<?=A2D::get(A2D::$searchWhere,'gSearch')?>'
+            ;
+        $('.a2dCheckBox').click(function(){
+            if( $(this).hasClass('active') ) return false;
+            $form  = $(this).parents('form');
+            $where = $form.find(where);
+
+            action = action || $form.attr('action');
+
+            $where.find('.a2dCheckBox').removeClass('active');
+            $(this).addClass('active');
+
+            if( this.id=="everyWhere" ){
+                $value = $where.find(value).detach();
+                _action = $form.attr('action');
+                $form.attr('action',action);
+            }
+            if( this.id=="onlyHere" ){
+                $value.appendTo($where);
+                $form.attr('action',_action);
+            }
+
+        });
+        $('.whereSearch label').on('click', function(){
+            vr = $(this).attr('for');
+            $('#'+vr).click();
+        });
+    });
+    </script>
+<?php  } } ?><!-- /FormPrefix -->
+
+<!-- RecordTemplate --><!-- /RecordTemplate -->
+
+<!-- FormSuffix --><!-- /FormSuffix -->

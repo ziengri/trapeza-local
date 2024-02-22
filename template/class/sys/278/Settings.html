@@ -1,0 +1,31 @@
+<?php  
+global $bitcat, $setting;
+
+$query_where .= ($query_where ? " AND " : NULL)."a.Catalogue_ID IN ($catalogue)";
+
+$ignore_check = 1;
+
+if (!empty($search)) {
+    foreach (explode(' ', $search) as $searchWord) {
+        if (!$searchWord) continue;
+        
+        $searchQuery = "a.`Email` LIKE '%{$searchWord}%'";
+        $searchQuery .= " OR a.`Login` LIKE '%{$searchWord}%'";
+        $searchQuery .= " OR a.`ForumName` LIKE '%{$searchWord}%'";
+        $searchQuery .= " OR a.`otch` LIKE '%{$searchWord}%'";
+        $searchQuery .= " OR a.`fam` LIKE '%{$searchWord}%'";
+        $searchQuery .= " OR a.`city` LIKE '%{$searchWord}%'";
+        $searchQuery .= " OR a.`adres` LIKE '%{$searchWord}%'";
+        $searchQuery .= " OR a.`phone` LIKE '%{$searchWord}%'";
+        $searchQuery .= " OR a.`company` LIKE '%{$searchWord}%'";
+        $searchQuery .= " OR a.`inn` LIKE '%{$searchWord}%'";
+        
+        $query_where .= $query_where ? " AND " : '';
+        $query_where .= "($searchQuery)";
+    }
+
+    unset($searchWord, $searchQuery);
+}
+
+if (!$bitcat && !$inside_admin) exit; // могут смотреть заказы только админы
+?>

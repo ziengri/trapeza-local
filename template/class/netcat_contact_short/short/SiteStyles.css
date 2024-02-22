@@ -1,0 +1,34 @@
+.object-item {
+  display: flex;
+  align-items: flex-start;
+}
+.object-item.vertical {
+  flex-direction: column;
+}
+.object-item .icon {
+  width:1em;
+  height:1em;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.object-item i {
+  color: var(--tpl-color-brand-dark);
+}
+.object-item .contact-icon {
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: contain;
+  max-width: 100%;
+}
+.object-item .contact-icon:before {
+  color: transparent;
+}
+.object-item img {
+  height: 1em;
+  width: 1em;
+  margin-right: 0.5em;
+}
+.object-item a {
+  text-decoration: none;
+}

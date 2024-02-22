@@ -1,0 +1,371 @@
+<?php
+global $AUTH_USER_ID, $setting, $setting_params;
+
+if ($current_catalogue[https]) {
+	if (substr($_SERVER[HTTP_REFERER],0,strlen($_SERVER[HTTP_HOST])+8)!='https://'.$_SERVER[HTTP_HOST]) header('Location: /');
+} else {
+	if (substr($_SERVER[HTTP_REFERER],0,strlen($_SERVER[HTTP_HOST])+7)!='http://'.$_SERVER[HTTP_HOST]) header('Location: /');
+}
+
+if ($current_catalogue['customCode']) {
+  global $pathInc2;
+  $includeClass = NULL;
+  $thisFile = $DOCUMENT_ROOT.$pathInc2."/template/class/{$classID}/{$cc_env['Real_Class_ID']}/RecordTemplateFull.html";
+  if (file_exists($thisFile)) $includeClass = 1;
+}
+if ($AUTH_USER_ID == 2419) $scriptTime = microtime(true);
+if ($includeClass==1) { include($thisFile); } else { # ############ START ##########
+    $EnglishName = $EnglishName2 ? $EnglishName2 : $current_sub['EnglishName'];
+    # настройки полей фильтра
+    $f_data = orderArray($f_data);
+
+    # забираем из базы параметры полей
+    $fieldsSelct = '';
+    foreach($f_data['checked'] as $fID) $fieldsSelct .= ($fieldsSelct ? "," : "").$fID;
+    $fieldsDB = $db->get_results("SELECT Field_ID, Field_Name, Description, TypeOfData_ID, Format FROM Field WHERE Field_ID IN ($fieldsSelct)", ARRAY_A);
+
+    # выводим id полей в ключ и собираем названия полей для получения из базы
+    $fields = array();
+    $fNames = '';
+    foreach ($fieldsDB as $field) {
+        $fields[$field['Field_ID']] = $field;
+        $fNames .= ($fNames ? ',' : '').$field['Field_Name'];
+    }
+
+    # если есть дополнительные поля
+    $settingParams = array();
+    if (is_array($setting_params)) {
+        foreach ($setting_params as $dopParam) {
+            if ($dopParam['in_filter']) $settingParams[$dopParam['keyword']] = $dopParam;
+        }
+    }
+    if (count($setting_params)) $fNames .= ($fNames ? ',' : '').'params';
+
+    # собираем запрос
+    $mainWhere = $subSearch = $queryWhere = "";
+    if ($f_subs) {  # если указан параметр в настройке фильтра (искать в текущем разделе)
+        $insub = getallparentsub($f_subs);
+    } elseif ($thiscid2==2001 && $EnglishName != 'search') { # Если раздел каталога, но не поиск
+        $insub = getallparentsub($thissub2);
+    } elseif ($EnglishName == 'search' && $find) {
+        $mainWhere .= ($mainWhere ? " AND " : null).getFindQuery($find, $r, 0, '');
+    }
+
+    if ($insub) $findSubIds = explode(',', $insub);
+    # поиск в текущем или дочерних разделах
+    $findSubs = array();
+    if ($insub) $findSubs = $db->get_results("SELECT find, Subdivision_ID FROM Subdivision WHERE Subdivision_ID IN ({$insub}) AND find IS NOT NULL AND find != ''", ARRAY_A);
+    elseif ($EnglishName != 'search' && $current_sub['find']) $findSubs[] = $current_sub['find'];
+    # если в разделах есть find
+    if ($findSubs) {
+        $useFind = array();
+        foreach ($findSubs as $fsub) {
+            $sf = trim($fsub['find']);
+            if (!$sf || isset($useFind[$sf])) continue;
+            $useFind[$sf] = true;
+            $subFindSql = trim(getFindQuery($sf, 0, 0, ''));
+            if ($subFindSql) {
+                $subSearch .= ($subSearch ? " OR " : null).$subFindSql;
+                # удаляем id раздела из запроса, если у раздела есть find
+                if ($insub) {
+                    foreach ($findSubIds as $num => $subID) {
+                        if ($subID == $fsub['Subdivision_ID']) unset($findSubIds[$num]);
+                    }
+                }
+            }
+        }
+        if ($insub) $insub = implode(',', $findSubIds);
+    }
+    # в каких разделах искать
+    if ($insub) {
+        $subQuery = "Subdivision_ID IN ({$insub})";
+        if ($setting['itemMoreSub']) {
+            foreach (explode(',', $insub) as $val) {
+                $subQuery .= " OR Subdivision_IDS LIKE '%,{$val},%'";
+            }
+        }
+        $mainWhere .= ($mainWhere ? " AND " : null)."({$subQuery})";
+    }
+
+
+    $IMPORTANT_WHERE = "Catalogue_ID = {$catalogue} AND Checked = 1";
+
+    if ($mainWhere) $queryWhere = "{$IMPORTANT_WHERE} AND {$mainWhere}";
+    if ($subSearch) $queryWhere = ($queryWhere ? "{$queryWhere} OR " : null)."{$IMPORTANT_WHERE} AND ({$subSearch})";
+    if (!$mainWhere && !$subSearch) $queryWhere = $IMPORTANT_WHERE;
+
+    # учитыть в следующих фильтрах уже выбранные
+    if ($f_adaptiv && $_GET['filter']) {
+        $adaptiveQuery = getFilterQuery('');
+        if ($adaptiveQuery) $queryWhere = "({$queryWhere}) AND {$adaptiveQuery}";
+    }
+
+    $queryWhere = " ({$queryWhere}) ".targeting($queryWhere, '', '');
+    $queryWhere = getLangQuery($queryWhere);
+
+    $goods = $db->get_results("SELECT {$fNames} FROM Message2001 WHERE {$queryWhere}", ARRAY_A);
+
+    unset($queryWhere);
+    unset($subSearch);
+
+    # cборка уникальных значений
+    $fltParams = array();
+    foreach ($goods as $item) {
+        foreach ($f_data['checked'] as $fID) {
+            $fName = $fields[$fID]['Field_Name'];
+            $val = trim($item[$fName]);
+            $useArr = array();
+            if ($fName == 'colors') {
+                $colors = orderArray($val);
+                if (is_array($colors)) {
+                    foreach($colors as $color) {
+                        if (!$color['name']) continue;
+                        $fltParams['main']['values'][$fID][$color['name']] = true;
+                        $fltParams['main']['count'][$fID][$color['name']]++;
+                    }
+                }
+            } elseif (isset($f_data['otdo'][$fID])) { # от-до
+                foreach (explode(';', $val) as $v) {
+                    if (!$v) continue;
+                    $v = str_replace(',', '.', trim($v));
+                    if (!is_numeric($v)) continue;
+                    if (!isset($fltParams['main']['values'][$fID]) || $fltParams['main']['values'][$fID]['min'] > $v) $fltParams['main']['values'][$fID]['min'] = $v;
+                    if (!isset($fltParams['main']['values'][$fID]) || $fltParams['main']['values'][$fID]['max'] < $v) $fltParams['main']['values'][$fID]['max'] = $v;
+                }
+            } else {
+                if (!is_numeric($val) && empty($val)) continue;
+                switch ($f_data['view'][$fID]) {
+                    case 1: # вариант в списке
+                    case 2: # вариант галочками
+                        foreach (explode(';', $val) as $v) {
+                            $v = trim($v);
+                            if (!$v) continue;
+                            $fltParams['main']['values'][$fID][$v] = true;
+                            if (!isset($useArr[$fID][$v])) {
+                                $fltParams['main']['count'][$fID][$v]++;
+                                $useArr[$fID][$v] = true;
+                            }
+                        }
+                        break;
+                    case 3: # да/нет
+                            $fltParams['main']['values'][$fID] = true;
+                        break;
+                    default:
+                        break;
+                }
+            }
+        }
+        # дпоплнительный парамертры товаров включенные в фильтр
+        if (count($settingParams) && $item['params']) {
+            $paramsValues = array();
+			$paramArr = explode("\r\n", trim($item['params']));
+
+			if (count($paramArr)) {
+				foreach($paramArr as $paramRow) {
+                    $paramRow = explode("||", $paramRow);
+                    if (!isset($settingParams[$paramRow[0]])) continue;
+                    $val = trim($paramRow[1], " |");
+                    if ($val) {
+                        if ($settingParams[$paramRow[0]]['otdo_filter']) {
+                            $val = str_replace(',', '.', $val);
+                            if (!is_numeric($val)) continue;
+
+                            if (!isset($fltParams['params']['values'][$paramRow[0]]) || $fltParams['params']['values'][$paramRow[0]]['min'] > $val)
+                                $fltParams['params']['values'][$paramRow[0]]['min'] = $val;
+
+                            if (!isset($fltParams['params']['values'][$paramRow[0]]) || $fltParams['params']['values'][$paramRow[0]]['max'] < $val)
+                                $fltParams['params']['values'][$paramRow[0]]['max'] = $val;
+                            $fltParams['params']['values'][$paramRow[0]]['all'][$val] = true;
+                        } else {
+                            $fltParams['params']['values'][$paramRow[0]][$val] = true;
+                            $fltParams['params']['count'][$paramRow[0]][$val]++;
+                        }
+                    }
+				}
+			}
+        }
+    }
+
+    # обработка условий (основные)
+    foreach ($fltParams['main']['values'] as $fID => $values) {
+        $fName = $fields[$fID]['Field_Name'];
+        if (isset($f_data['otdo'][$fID])) {
+            # если запросы вернули 0, то удалить
+			if ($values['min'] == 0 && $values['max'] == 0) {
+                unset($fltParams[$fID]);
+                continue;
+            }
+            # округление
+			if ($values['max'] <= 100) {
+                $fltParams['main']['values'][$fID]['min'] = ceil($values['min']);
+                $fltParams['main']['values'][$fID]['max'] = ceil($values['max']);
+			}
+        } else {
+            switch ($f_data['view'][$fID]) {
+                case 1: # вариант в списке
+                case 2: # вариант галочками
+                        $fltParams['main']['values'][$fID] = array();
+                        foreach ($values as $val => $checked) $fltParams['main']['values'][$fID][] = $val;
+                        fltSort($fltParams['main']['values'][$fID]);
+                    break;
+                case 3: # да/нет
+
+                    break;
+                default:
+                    break;
+            }
+        }
+    }
+    # обработка условий (params)
+    if ($fltParams['params']) {
+        foreach ($fltParams['params']['values'] as $pName => $values) {
+            if ($settingParams[$pName]['otdo_filter']) {
+                # если запросы вернули 0, то удалить
+    			if ($values['min'] == 0 && $values['max'] == 0) {
+                    unset($fltParams['params']['values'][$pName]);
+                    continue;
+                }
+                # округление
+    			$fltParams['params']['values'][$pName]['min'] = ceil($values['min']);
+    			$fltParams['params']['values'][$pName]['max'] = ceil($values['max']);
+
+                # переводим все уникальные значеня
+                $fltParams['params']['values'][$pName]['all'] = array();
+                foreach ($values['all'] as $val => $checked) $fltParams['params']['values'][$pName]['all'][] = $val;
+
+            } else {
+                $fltParams['params']['values'][$pName] = array();
+                foreach ($values as $val => $checked) $fltParams['params']['values'][$pName][] = $val;
+                fltSort($fltParams['params']['values'][$pName]);
+            }
+        }
+    }
+    # собираем структуру
+    $fltStruct = array();
+    $structPriority = 5000;
+    foreach ($fltParams['main']['values'] as $fID => $values) {
+        $fName = $fields[$fID]['Field_Name'];
+        $classificatorList = $fields[$fID]['TypeOfData_ID'] == 4 ? getClassificator($fields[$fID]['Format']) : array();
+        $html = '';
+        if (isset($f_data['otdo'][$fID])) { # от-до
+            $valMin = strip_tags($_GET['flt1'][$fName][0]);
+            $valMax = strip_tags($_GET['flt1'][$fName][1]);
+            $priority = $f_data['priority'][$fID] ? $f_data['priority'][$fID] : $structPriority;
+
+            $fltStruct[$f_data['priority'][$fID]] .= "<div class='filter_m_item cb filter-main-slider'>
+                                                        ".($f_namefieldbool ? "<div class='filter_m_title'>{$f_data['name'][$fID]}:</div><div class='filter_m_bodyt'>" : null)."
+                                                            <input type='text' id='filter_sld_start' name='flt1[{$fName}][0]' value='{$valMin}' data-number='' data-def='{$values['min']}'>
+                                                            <input type='text' id='filter_sld_end' name='flt1[{$fName}][1]' value='{$valMax}' data-number='' data-def='{$values['max']}'>
+                                                            <input type='text' class='filter_sld' data-start='{$values['min']}' data-end='{$values['max']}' data-cur1='{$valMin}' data-cur2='{$valMax}'>
+                                                         ".($f_namefieldbool ? "</div>" : null)."
+                                                    </div>";
+
+        } else {
+            switch ($f_data['view'][$fID]) {
+                case 1: # вариант в списке
+                        $options = '';
+                        foreach ($values as $val) {
+                            $title = $fields[$fID]['TypeOfData_ID'] == 4 && $classificatorList[$val] ? $classificatorList[$val] : $val;
+                            $options .= "<option ".($_GET['flt'][$fName] && $val == $_GET['flt'][$fName] ? "selected" : NULL)." value='".urlencode($val)."'>{$title}</option>";
+                        }
+                        $html = "<select name='flt[{$fName}]' class='select-style' data-placeholder='{$f_data['name'][$fID]}'><option value=''>{$f_data['name'][$fID]}</option>{$options}</select>";
+                    break;
+                case 2: # вариант галочками
+                        $chekboxes = '';
+                        foreach ($values as $val) {
+                            $title = $fields[$fID]['TypeOfData_ID'] == 4 && $classificatorList[$val] ? $classificatorList[$val] : $val;
+                            if ($_GET['flt'][$fName]) $getvars = ",".stripslashes(urldecode(implode(",",$_GET['flt'][$fName]))).",";
+                            $chekboxes .= "<div class='podbor_dch'>".bc_checkbox_standart("flt[{$fName}][]", urlencode($val), $title, ($_GET['flt'][$fName] && strstr($getvars,",{$val},")))."</div>";
+                        }
+                        $html = "<div class='podbor_checkb cb'>{$chekboxes}</div>";
+                    break;
+                case 3: # да/нет
+                        $html = "<div class='podbor_checkb scrollbar-inner'>
+                                    <div class='podbor_dch '>".bc_checkbox_standart("flt3[{$fName}]", 1, "да", $_GET['flt3'][$fName])."</div>
+                                </div>";
+                    break;
+                default:
+                    break;
+            }
+            if ($html) {
+                $priority = $f_data['priority'][$fID] ? $f_data['priority'][$fID] : $structPriority;
+                $fltStruct[$priority] .= "<div class='filter_m_item cb'>
+                                            ".($f_namefieldbool ? "<div class='filter_m_title'>{$f_data['name'][$fID]}:</div><div class='filter_m_bodyt'>" : null)."
+                                                {$html}
+                                            ".($f_namefieldbool ? "</div>" : null)."
+                                            </div>";
+            }
+        }
+    }
+    # params
+    if ($fltParams['params']) {
+        foreach ($fltParams['params']['values'] as $pName => $values) {
+            $html = '';
+            $priority++;
+            if ($settingParams[$pName]['otdo_filter']) {
+                $valMin = strip_tags($_GET['flt']['params'][$pName][0]);
+                $valMax = strip_tags($_GET['flt']['params'][$pName][1]);
+                $priority = $settingParams[$pName]['priority'] ? $settingParams[$pName]['priority'] : $structPriority;
+
+                $fltStruct[$priority] = "<div class='filter_m_item cb filter-main-slider'>
+                                            ".($f_namefieldbool ? "<div class='filter_m_title'>{$settingParams[$pName]['name']}:</div><div class='filter_m_bodyt'>" : null)."
+                                                <input type='hidden' name='flt[params_range][{$pName}]' value='".(implode('_', $values['all']))."'>
+                                                <input type='text' id='filter_sld_start' name='flt[params][{$pName}][0]' value='{$valMin}' data-number='' data-def='{$values['min']}'>
+                                                <input type='text' id='filter_sld_end' name='flt[params][{$pName}][1]' value='{$valMax}' data-number='' data-def='{$values['max']}'>
+                                                <input type='text' class='filter_sld' data-start='{$values['min']}' data-end='{$values['max']}' data-cur1='{$valMin}' data-cur2='{$valMax}'>
+                                             ".($f_namefieldbool ? "</div>" : null)."
+                                        </div>";
+            } else {
+                $chekboxes = '';
+                foreach ($values as $val) {
+                    $chekboxes .= "<div class='podbor_dch'>".bc_checkbox_standart("flt[params][{$pName}][{$val}]", urlencode($val), $val, isset($_GET['flt']['params'][$pName][$val]))."</div>";
+                }
+                $html = "<div class='podbor_checkb cb'>{$chekboxes}</div>";
+            }
+            if ($html) {
+                $priority = $settingParams[$pName]['priority'] ? $settingParams[$pName]['priority'] : $structPriority;
+                $fltStruct[$priority] .= "<div class='filter_m_item cb'>
+                                            ".($f_namefieldbool ? "<div class='filter_m_title'>{$settingParams[$pName]['name']}:</div><div class='filter_m_bodyt'>" : null)."
+                                                {$html}
+                                            ".($f_namefieldbool ? "</div>" : null)."
+                                            </div>";
+
+            }
+        }
+    }
+    if (count($fltStruct) > 0) ksort($fltStruct);
+    else $fltStruct[] = "<div class='podbor_dch filter-not-have'>В фильтре<br>нет подходящих значений {$subfind}</div>";
+?>
+<?php if ($f_hide_bigfilter) : ?>
+    <div class="filter_m_hide">
+<?php endif; ?>
+        <div class='filter_m_body <?=($f_file_newline? "filter_m_newline" :NULL)?> obj obj<?=$message?>'>
+        	<form action="<?=($searchincur2	? $cururl : "/search/")?>">
+                <input type=hidden name='filter' value='1'>
+                <?=($recNum ? "<input type=hidden name='recNum' value='{$recNum}'>" : "")?>
+                <?=($sort ? "<input type=hidden name='sort' value='{$sort}'>" : "")?>
+                <?=($desc ? "<input type=hidden name='desc' value='{$desc}'>" : "")?>
+                <?=($insub || $thiscid2==2001 ? "<input type=hidden name='subr' value='".($insub ? $insub : ($current_sub['EnglishName']!='search' ? $thissub2 : null) )."'>" : null )?>
+                <?php if ($find) : ?><input type="hidden" name="find" value="<?=$find?>"/><?php endif; ?>
+                <?php if ($r) : ?><input type="hidden" name="r" value="<?=$r?>"/><?php endif; ?>
+        		<?=implode("",$fltStruct)?>
+        		<div class='filter_m_item cb'><input type='submit' value=''>
+        			<a href='#' class='button_green btn-strt-a'>
+        				<span class='btn_green_1 icons i_check'></span>
+        				<span class='btn_green_2'><!--<span class='btn_green_num'>54</span>--> <?=($f_button ? $f_button : "Применить")?></span>
+        			</a>
+        		</div>
+        	</form>
+        	<?=editObjBut($editLink)?>
+        </div>
+<?php if ($f_hide_bigfilter) : ?>
+        <div class="filter_m_hide_footer">
+            <div class="filter_m_tx">
+                <div class="f_m_hide">Показать фильтр</div>
+                <div class="f_m_show">Скрыть фильтр</div>
+            </div>
+        </div>
+    </div>
+<?php endif; ?>
+<?php } # end отделенного файла ?>
+<?= $AUTH_USER_ID == 2419 ? microtime(true) - $scriptTime : null ?>

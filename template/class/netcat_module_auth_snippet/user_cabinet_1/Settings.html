@@ -1,0 +1,9 @@
+<?php
+
+$auth_menu['prefix'] = "<div class='dropdown-menu dropdown-menu-right'>";
+$auth_menu['active'] = "<a class='dropdown-item active' href='%URL'>%NAME</a>";
+$auth_menu['unactive'] = "<a class='dropdown-item' href='%URL'>%NAME</a>";
+$auth_menu['suffix'] = "<div class='dropdown-divider'></div>";
+$auth_menu['suffix'].= "<a class='dropdown-item' href='".nc_module_path('auth')."?logoff=1&REQUESTED_FROM=".$nc_core->REQUEST_URI."'>Выход</a>";
+$auth_menu['suffix'].= "</div>";
+?>

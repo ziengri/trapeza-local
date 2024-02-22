@@ -1,0 +1,22 @@
+.tpl-component-netcat-page-block-form.tpl-template-plain .nc-infoblock-toolbar { position: absolute; top: 0; right: 10px; }
+.tpl-component-netcat-page-block-form.tpl-template-plain .tpl-block-add-form .tpl-block-image, .tpl-component-netcat-page-block-form.tpl-template-plain .tpl-block-add-form .tpl-block-divider, .tpl-component-netcat-page-block-form.tpl-template-plain .tpl-block-add-form .tpl-block-form h4, .tpl-component-netcat-page-block-form.tpl-template-plain .tpl-block-add-form .tpl-block-text-after-header, .tpl-component-netcat-page-block-form.tpl-template-plain .tpl-block-add-form .tpl-caption { display: none; }
+.tpl-component-netcat-page-block-form.tpl-template-plain { position: relative; }
+.tpl-component-netcat-page-block-form.tpl-template-plain .tpl-block-page-block { position: relative; min-width: 460px; }
+.tpl-component-netcat-page-block-form.tpl-template-plain .tpl-block-add-form { max-width: 1000px; margin: 0 auto; padding: 0 20px 0 20px; text-align: center; }
+.tpl-component-netcat-page-block-form.tpl-template-plain .tpl-block-add-form FORM { display: block; text-align: center; }
+.tpl-component-netcat-page-block-form.tpl-template-plain .tpl-block-form .tpl-block-input, .tpl-component-netcat-page-block-form.tpl-template-plain .tpl-block-form .tpl-block-buttons { display: block; width: auto; margin: 0 auto 20px auto; max-width: 340px; }
+.tpl-component-netcat-page-block-form.tpl-template-plain .tpl-block-form.tpl-layout-can-be-horizontal .tpl-block-fields .nc-modal-trigger-overlay { background-size: 52px; }
+.tpl-component-netcat-page-block-form.tpl-template-plain .tpl-block-form.tpl-layout-can-be-horizontal .tpl-block-fields { display: inline-block; width: 66%; text-align: right; vertical-align: top; margin-right: -4px; margin-top: 0; }
+.tpl-component-netcat-page-block-form.tpl-template-plain .tpl-block-form.tpl-layout-can-be-horizontal .tpl-block-buttons { display: inline-block; vertical-align: top; width: 30.6%; padding-left: 1.2%; margin-right: -4px; }
+.tpl-component-netcat-page-block-form.tpl-template-plain .tpl-block-form.tpl-layout-can-be-horizontal .tpl-block-button .tpl-block-button-title { padding-left: 5px; padding-right: 5px; }
+.tpl-component-netcat-page-block-form.tpl-template-plain .tpl-block-form.tpl-layout-can-be-horizontal .tpl-block-input { text-align: left; width: 47%; margin: 0 1.2%; vertical-align: top; display: inline-block; max-width: 340px; }
+.tpl-component-netcat-page-block-form.tpl-template-plain .tpl-block-form.tpl-layout-can-be-horizontal .tpl-field-quantity .tpl-value { margin-bottom: 0; }
+.tpl-component-netcat-page-block-form.tpl-template-plain .tpl-block-form.tpl-layout-short .tpl-block-fields { display: inline-block; width: 30.4%; margin: 0 0.2% 0 0; }
+.tpl-component-netcat-page-block-form.tpl-template-plain .tpl-block-form.tpl-layout-short .tpl-block-input { margin: 0; margin-right: 1.2%; width: 98%; }
+.tpl-component-netcat-page-block-form.tpl-template-plain .tpl-block-form.tpl-layout-short .tpl-block-buttons { display: inline-block; }
+@media (max-width: 760px) { 
+.tpl-component-netcat-page-block-form.tpl-template-plain .tpl-block-form.tpl-layout-can-be-horizontal .tpl-block-fields { display: block; width: 100%; margin: 0; }
+.tpl-component-netcat-page-block-form.tpl-template-plain .tpl-block-form.tpl-layout-can-be-horizontal .tpl-block-input, .tpl-component-netcat-page-block-form.tpl-template-plain .tpl-block-form.tpl-layout-can-be-horizontal .tpl-block-buttons { display: block; width: auto; margin: 0 auto 20px auto; max-width: 340px; }
+.tpl-component-netcat-page-block-form.tpl-template-plain .tpl-block-form.tpl-layout-can-be-horizontal .tpl-block-buttons { padding: 0; }
+.tpl-component-netcat-page-block-form.tpl-template-plain .tpl-block-form.tpl-layout-can-be-horizontal .tpl-block-button { width: 100%; margin: 0; }
+ }

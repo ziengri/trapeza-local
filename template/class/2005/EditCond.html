@@ -1,0 +1,7 @@
+<?php
+$connectTemplate = $DOCUMENT_ROOT.$pathInc2."/template/{$classID}/templateEdit/EditCond.html";
+if ($current_catalogue['customCode'] && file_exists($connectTemplate)) {
+    include($connectTemplate);
+} else {
+}
+?>

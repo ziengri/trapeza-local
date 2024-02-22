@@ -1,0 +1,29 @@
+<?php  if ($AUTH_USER_ID<=2 && !$isNaked) { ?>
+
+<table class='bc_users nc-table'>
+<tr>
+   <th width='1%'></th>
+   <th>Имя</th>
+<th>Код</th>
+<th>Скидка кода</th>
+    <?=($AUTH_USER_ID && $pm_allow  ? "<th width='1%'></th>" : "")?>
+    <?=( $allow_rel ? "<th width='15%'>Отношение</th>" : "" )?>
+    <th width='1%'>Статус</th>
+    <th width='1%'>Зарегистрирован</th>
+</tr>
+
+<?php  }
+if ($AUTH_USER_ID){
+    if($login['login']=="sites"){
+        echo json_encode(ARRAY(
+          "title" => "ОК",
+          "succes" =>  "Авторизирован",
+          "reload" => 1,
+          "modal" => "close"
+        ));
+    }else{
+        header("Location: {$current_sub[Hidden_URL]}{$current_cc[EnglishName]}_{$AUTH_USER_ID}.html");
+    }
+}
+
+?>

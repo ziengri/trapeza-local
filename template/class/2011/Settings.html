@@ -1,0 +1,13 @@
+<?php
+global $mainpage, $setting, $bitcat, $cityid, $cityname, $citylink;
+
+# видимость скрытых для админа
+if (!$isTitle && $bitcat && !$noadmin) {
+    $ignore_check = 1;
+}
+
+# targeting content
+$query_where .= targeting($query_where);
+#language
+$query_where = getLangQuery($query_where);
+?>

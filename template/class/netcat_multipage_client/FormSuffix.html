@@ -1,0 +1,6 @@
+<?php if ($totRows > $recNum): ?>
+  <?= nc_browse_messages($cc_env, 10); ?>
+<?php endif; ?>
+<?php if($admin_mode) { ?>
+<script>jQuery(function () { jQuery('[data-toggle="tooltip"]').tooltip() })</script>
+<?php } ?>

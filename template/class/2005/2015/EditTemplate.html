@@ -1,0 +1,246 @@
+<?php
+$connectTemplate = $DOCUMENT_ROOT.$pathInc2."/template/2005/2015/templateEdit/EditTemplate.html";
+if($current_catalogue['customCode'] && file_exists($connectTemplate)){
+  include($connectTemplate);
+}else{
+?>
+	<?php 
+		$class2005 = new Class2005();
+		$date = new DateTime($f_Created);
+		$dateline = $date->format('d')." ".month($date->format('m'))." ".$date->format('Y').", ".$date->format('H').":".$date->format('i');
+		$lists = array(
+			'paymentList' => array(
+				'label' => array("value" => "Оплата"),
+				'valueList' => (is_numeric($f_payment) ? Class2005::getListName('payment',$f_payment,'name') : $f_payment)
+			),
+			'deliveryList' => array(
+				'label' => array("value" => "Способ доставки"),
+				'valueList' => (is_numeric($f_delivery) ? Class2005::getListName('delivery',$f_delivery,'name') : $f_delivery)
+			)
+		);
+			$items = orderArray($f_orderlist,1); // all items order
+			foreach($items['items'] as $item) $totalsum = $totalsum + $item['sum'];
+		$statusOplaty = $db->get_results("select statusOplaty_ID as id, statusOplaty_Name as name from Classificator_statusOplaty where Checked = 1", ARRAY_A);
+
+		$valuta = $setting['lists_texts']['rubl_char']['checked'] ?$setting['lists_texts']['rubl_char']['name'] : "руб.";
+
+		# название доставки и информация о доставке
+		list($deliveryName, $deliveryInfo) = (function() use ($f_delivery, $f_deliveryAssist, $items) {
+			if (!$f_delivery) return;
+			
+			if (!$f_deliveryAssist) {
+				return [$items['delivery']['type'] ?: $items['delivery']['name']];
+			}
+	
+			$deliveryAssist = orderArray($f_deliveryAssist);
+	
+			switch ($deliveryAssist['type']) {
+				case 'cdek':
+					$cdek = new Cdek();
+					$deliveryName = $cdek->name;
+					$deliveryInfo = $cdek->getDeliveryInfo($deliveryAssist['tariffid'], $deliveryAssist['pvzcode']);
+					break;
+				default:
+					$deliveryName = $deliveryAssist['name'];
+					$deliveryInfo = $deliveryAssist['description'];
+					break;
+			}
+			return [$deliveryName, $deliveryInfo];
+		})();
+
+	?>
+
+	<section id="order-body" class="cb" data-orderid="<?=$message?>" data-reloadview="1">
+		<div class="ob-left">
+			<div class="ob-information">
+				<div class="ob-name"><?=(permission('admin') ? $f_fio : "Имя скрыто")?> <?=($f_usertype ? "<span>(юр.лицо)</span>" : "")?></div>
+				<div class="ob-inputs">
+					<?php   if ($setting['cartForm']){
+									$cartFields = orderArray($setting['cartForm']);
+							$customf = orderArray($f_customf);
+							$cartFields = array_merge($cartFields, $lists);
+									foreach($cartFields as $name => $param) {
+											$name = explode("|", $name);
+											$key = $name[0];
+								$value = $customf[$param['name']['value']]['value'] ? $customf[$param['name']['value']]['value'] : ($param['valueList'] ? $param['valueList'] : "-");
+								$label = str_replace("(Юр.лицо)", "", $param['label']['value']);
+
+								if((stristr($param['label']['value'], "(Юр.лицо)") && !$f_usertype) || $key=="file") continue;
+
+								if($value=="-" && $param['name']['value']=="phone" && $f_phone) $value = $f_phone;
+								if($value=="-" && $param['name']['value']=="email" && $f_email) $value = $f_email;
+								if($value=="-" && $param['name']['value']=="address" && $f_adres) $value = $f_adres;
+
+											switch ($key) {
+													case 'textarea':
+										$field = "<textarea name='{$param['name']['value']}'>{$value}</textarea>";
+										break;
+													case 'title':
+															$field = "<div class='userline usr-title'><h3>{$label}</h3></div>";
+															break;
+													case 'file':
+															$field = "<input type='text' name='{$param['name']['value']}' value='{$value}'>";
+															break;
+													default:
+															$field = "<input type='text' name='{$param['name']['value']}' value='{$value}'>";
+															break;
+
+											}
+									if (permission('admin')) {
+										$html .= "<div class='ob-input ob-type-{$key}'>
+												<div class='obi-name'>{$label}</div>
+												<div class='obi-data'>
+													<div class='obi-first'><div class='obi-text'>{$value}</div></div>
+													<div class='obi-second'>{$field}</div>
+												</div>
+												".(in_array($key, array("textarea", "input")) ?
+													"<div class='obi-edit'>
+														<div class='obi-first'><a href='' class='obi-a-edit'></a></div>
+														<div class='obi-second'><a href='' class='obi-a-save'></a></div>
+													</div>"
+												: "")."
+											</div>";
+								}
+									}
+							echo $html;
+							}
+					?>
+
+				</div>
+				<div class="ob-price cb">
+					<div class="obp-left">
+						<div class="obp-total">
+							<div class="obp-total-text">Всего:</div>
+												<div class="bor_line"></div>
+							<div class="obp-total-price"><?=number_format($totalsum, 2, ',', ' ')?> <?=$valuta?></div>
+						</div>
+						<div class="obp-total">
+							<div class="obp-total-text">Доставка :</div>
+												<div class="bor_line"></div>
+							<div class="obp-total-price">
+								<?=($f_deliverySum ? number_format($f_deliverySum, 2, ',', ' ') : number_format(Class2005::getListName('delivery',$f_delivery,'price'), 2, ',', ' '))?>
+								<?=$valuta?>
+							</div>
+						</div>
+						<?php if($deliveryName):?>
+							<div class="obp-total">
+								<div class="obp-total-text">
+									<span class="delivery-type"><?=$deliveryName?></span>
+									<?php if ($deliveryInfo) : ?>
+										<br/>
+										<span class="delivery-info"><?= $deliveryInfo ?></span>
+									<?php endif; ?>
+								</div>
+							</div>
+						<?php endif;?>
+					</div>
+					<div class="obp-rigth">
+						<div class="opb-result">
+							<div class="obp-r-text">Итого:</div>
+							<div class="obp-r-price"><?=number_format($f_totalSum, 2, ',', ' ')?> <?=$valuta?></div>
+						</div>
+					</div>
+				</div>
+				<div class="ob-composite">
+					<div class="ob-com-title">Состав заказа</div>
+					<table class="ob-table">
+						<thead>
+							<tr>
+								<th class="ob-tablePhoto">Фото</th>
+								<th class="ob-tableName">Наименование</th>
+								<th class="ob-tableCount">Кол-во</th>
+								<th class="ob-tableSum">Сумма</th>
+								<!--<th class="ob-tableDel"></th>-->
+							</tr>
+						</thead>
+						<tbody>
+							<?php  foreach ($items['items'] as $key => $item) {
+								$itemObject = Class2001::getItemById($item['id']);
+								$catalogs = array(776);
+								if (in_array($catalogue, $catalogs)) $item['name'] = $itemObject->name;
+								?>
+								<tr>
+									<td class="ob-tablePhoto">
+										<?=$itemObject->photoMain?>
+									</td>
+									<td class="ob-tableName">
+										<div class="ob-sun-name ws"><a href="<?=$itemObject->fullLink?>" target="_blank"><?=$item['name']?></a><?=($item['art'] ? " <span class='ob-sun-art'>{$item['art']}</span>" : null)?></div>
+										<?=($item['price'] ? "<div class='ob-sun-price'>".number_format($item['price'], 2, ',', ' ')." {$valuta}</div>" : null)?>
+									</td>
+									<td class="ob-tableCount"><input type="text" value="<?=$item['count']?>" readonly></td>
+									<td class="ob-tableSum">
+										<?=number_format($item[sum], 2, ',', ' ')?> <?=$valuta?>
+										<?=($itemObject->edizm ? "<span>/{$itemObject->edizm}</span>" : NULL)?>
+									</td>
+									<!--<td class="ob-tableDel"></td>-->
+								</tr>
+							<?php  } ?>
+						</tbody>
+					</table>
+				</div>
+			</div>
+
+		</div>
+		<div class="ob-rigth">
+			<div class="ob-status">
+				<div class="ob-status-item cb">
+					<div class="obs-name">Статус заказа</div>
+					<select name='f_ShopOrderStatus' class='ns shopOrderStatus'>
+						<?php foreach ($class2005->getOrderStatusList() as $orderStatus) : ?>
+							<option value="<?= $orderStatus['id'] ?>" <?= $f_ShopOrderStatus == $orderStatus['id'] ? 'selected' : ''?>><?= $orderStatus['name'] ?></option>
+						<?php endforeach; ?>
+					</select>
+				</div>
+				<div class="ob-status-item cb">
+					<div class="obs-name">Статус оплат</div>
+							<select name='f_statusOplaty' class='ns statusOplaty'>
+									<?php  foreach ($statusOplaty as $item) echo "<option value='{$item['id']}' class='statusOplaty-{$item['id']}' ".($f_statusOplaty==$item['id'] ? "selected" : null).">{$item['name']}</option>"; ?>
+							</select>
+				</div>
+							<?php  if ($setting['payWithConfirm'] && $f_statusOplaty == 4) : ?>
+									<?php 
+											$paynemtName =  Class2005::getListName('payment', $f_payment, 'name');
+
+											$confirmHref .= "/bc/modules/default/index.php?order_id={$message}&user_action=";
+
+											if (mb_stristr($paynemtName, 'uniteller')) $confirmHref .= 'uniteller_confirm';
+									?>
+								<div class="ob-status-item cb">
+											<a href="<?=$confirmHref?>" class="confirm-pay-btn">Подтвердить заказ</a>
+									</div>
+							<?php  endif; ?>
+			</div>
+			<div class="ob-operator">
+				<form class="ajax2" method='post' action='<?= $SUB_FOLDER ?><?= $HTTP_ROOT_PATH ?>message.php'>
+					<div class="none">
+						<input name='admin_mode' type='hidden' value='<?= $admin_mode ?>' />
+						<?= $nc_core->token->get_input() ?>
+						<input name='catalogue' type='hidden' value='<?= $catalogue ?>' />
+						<input name='cc' type='hidden' value='<?= $cc ?>' />
+						<input name='sub' type='hidden' value='<?= $sub ?>' />
+						<input name='message' type='hidden' value='<?= $message ?>' />
+						<input name='curPos' type='hidden' value='<?= $curPos ?>' />
+						<input name='f_Parent_Message_ID' type='hidden' value='<?= $f_Parent_Message_ID ?>' />
+						<?= nc_form_moderate('change', $admin_mode, 0, $systemTableID, $current_cc, (isset($f_Checked) ? $f_Checked  : null), $f_Priority , $f_Keyword, $f_ncTitle, $f_ncKeywords, $f_ncDescription ) ?>
+					</div>
+					<textarea name="f_textOperator" placeholder="Комментарий оператора"><?=$f_textOperator?></textarea>
+					<input type="submit" value="Сохранить комментарий">
+					<div class="result"></div>
+				</form>
+			</div>
+
+		</div>
+	</section>
+	<script>
+		$(document).ready(function(){
+			modal = $('.modal-admin-order');
+			if(modal.length){
+				title = modal.find("#lightcase-title");
+				obOperator = modal.find("#order-body .ob-operator");
+				title.html('<b>'+title.text()+',</b> <?=$dateline?>');
+				modal.find('.oh-print').remove();
+				obOperator.show().append("<div class='print-order'><a class='oh-print bc-btn-green' href='#'' onclick='window.print();'>Распечатать заказ</a></div>");
+			}
+		});
+	</script>
+<?php } ?>

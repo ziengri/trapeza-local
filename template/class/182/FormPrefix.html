@@ -1,0 +1,11 @@
+<?php
+$thisFile = $DOCUMENT_ROOT.$pathInc2."/template/class/{$classID}/FormPrefix.html";
+if ($current_catalogue['customCode'] && file_exists($thisFile)) include $thisFile;
+else {
+    # [START]
+?>
+<?=($inside_admin ? $f_AdminCommon : (!$is404 ? addObjBut($addLink,$isTitle) : ""))?>
+
+<?=($totRows ? "<div class='text-items txt'>" : NULL)?>
+
+<?php } # [END] ?>

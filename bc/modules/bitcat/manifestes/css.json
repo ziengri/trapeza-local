@@ -1,0 +1,42 @@
+{
+    "css": {
+        "name": "Внутренняя страница",
+        "row": [
+            {
+                "name": "css",
+                "label": "ALL",
+                "type": "textarea",
+                "type_old": 3,
+                "colline": "height"
+            },
+            {
+                "name": "css1280",
+                "label": "780px < w < 1280px",
+                "type": "textarea",
+                "type_old": 3,
+                "colline": "height"
+            },
+            {
+                "name": "css780",
+                "label": "w < 780px",
+                "type": "textarea",
+                "type_old": 3,
+                "colline": "height"
+            },
+            {
+                "name": "cssColor",
+                "label": "Color",
+                "type": "textarea",
+                "type_old": 3,
+                "colline": "height"
+            },
+            {
+                "name": "mobileApp",
+                "label": "Mobile app",
+                "type": "textarea",
+                "type_old": 3,
+                "colline": "height"
+            }
+        ]
+    }
+}

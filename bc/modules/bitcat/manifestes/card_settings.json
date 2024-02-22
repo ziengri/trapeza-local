@@ -1,0 +1,144 @@
+{
+    "basic": {
+        "name": "Основные",
+        "row": [
+            {
+                "name": "templateItem",
+                "label": "Дизайн карточки товара",
+                "type": "select",
+                "colline": 3,
+                "data": {
+                    "type1": "Дизайн #1",
+                    "type2": "Дизайн #2"
+                }
+            },
+            {
+                "name": "cardbg",
+                "label": "Фона карточки",
+                "type": "color",
+                "colline": 3
+            }
+        ]
+    },
+    "border": {
+        "name": "Граница",
+        "row": [
+            {
+                "name": "cardborderwidthpx",
+                "label": "Размер",
+                "type": "text",
+                "colline": 3
+            },
+            {
+                "name": "cardcolorbord",
+                "label": "Цвет",
+                "type": "color",
+                "colline": 3
+            },
+            {
+                "name": "cardborderradiuspx",
+                "label": "Скругление",
+                "type": "text",
+                "colline": 3
+            }
+        ]
+    },
+    "header": {
+        "name": "Заголовок",
+        "row": [
+            {
+                "name": "itemtitlebold",
+                "label": "<b>Жирный</b>",
+                "type": "checkbox",
+                "colline": 4
+            },
+            {
+                "name": "itemtitleupper",
+                "label": "ЗАГЛАВНЫЙ",
+                "type": "checkbox",
+                "colline": 4
+            },
+            {
+                "name": "itemtitleborder",
+                "label": "<span class=\"borbot\">Подчеркнутый</span>",
+                "type": "checkbox",
+                "colline": 4
+            },
+            {
+                "name": "itemtitlecolor",
+                "label": "Цвет",
+                "type": "color",
+                "colline": 4
+            }
+        ]
+    },
+    "body": {
+        "name": "Текст",
+        "row": [
+            {
+                "name": "cardcolortext",
+                "label": "Текста товара в карточке",
+                "type": "color",
+                "colline": 3
+            }
+        ]
+    },
+    "info": {
+        "name": "Вывод информации",
+        "row": [
+            {
+                "name": "itemlistart",
+                "label": "Артикул в карточке",
+                "type": "checkbox",
+                "colline": 2
+            },
+            {
+                "name": "vendorItemName",
+                "label": "Производитель в названии товара",
+                "type": "checkbox",
+                "colline": 2
+            },
+            {
+                "name": "ves",
+                "label": "Вес в карточке",
+                "type": "checkbox",
+                "colline": 2
+            },
+            {
+                "name": "itemlistedism",
+                "label": "Ед.изм. в карточке",
+                "type": "checkbox",
+                "colline": 2
+            },
+            {
+                "name": "itemlistsub",
+                "label": "Раздел в общем списке",
+                "type": "checkbox",
+                "colline": 2
+            },
+            {
+                "name": "variableItemName",
+                "label": "Вариант в названии товара",
+                "type": "checkbox",
+                "colline": 2
+            }
+        ]
+    },
+    "button" : {
+        "name" : "Элемент взаимодействия",
+        "row" : [
+            {
+                "name": "buyOnCklickCart",
+                "label": "Купить в один клик",
+                "type": "checkbox",
+                "colline": 2
+            },
+            {
+                "name": "variableNameInCart",
+                "label" : "Варианты товара",
+                "type" : "checkbox",
+                "colline" : 3
+            }
+        ]
+    }
+}

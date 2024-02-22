@@ -1,0 +1,44 @@
+<?php
+
+if ($current_catalogue['customCode']) {
+    global $pathInc2;
+    $includeClass = NULL;
+    $thisFile = $DOCUMENT_ROOT.$pathInc2."/template/class/{$classID}/AddActionTemplate.html";
+    $thisFile2 = $DOCUMENT_ROOT.$pathInc2."/template/{$classID}/template/AddActionTemplate.html";
+    if (file_exists($thisFile)) $includeClass = 1;
+    elseif (file_exists($thisFile2)) $includeClass = 2;
+}
+if ($includeClass==1) { include($thisFile); } elseif ($includeClass==2) {include($thisFile2);} else { # ############ START ##########
+
+    global $setting;
+    if (!$inside_admin) objsys($bc_objsys,$classID,$message);
+
+    clearCache($classID,$sub);
+
+
+    if ($pathInc && file_exists($DOCUMENT_ROOT.$pathInc.'/images/watermark.png')) {
+      @require_once($INCLUDE_FOLDER."classes/nc_imagetransform.class.php");
+
+      $photos = $db->get_results("select Path, ID from Multifield where Size != '1' AND Message_ID = '$message' AND Field_ID = '2908'", ARRAY_A);
+      if ($photos) {
+        foreach($photos as $fot) {
+          if (!$notWater) nc_ImageTransform::putWatermark_file($fot[Path], $pathInc.'/images/watermark.png', 4);
+          $db->query("UPDATE Multifield set Size = '1' where ID = '$fot[ID]'");
+        }
+      }
+    }
+
+
+    if($inside_admin) {
+        ob_end_clean();
+        header('Location: '.$goBackLink.'&inside_admin=1');
+        exit;
+    } else {
+        echo json_encode(ARRAY(
+            "title" => "ОК",
+            "succes" =>  NETCAT_MODERATION_MSG_OBJADD,
+            "reload" => 1
+        ));
+    }
+}
+?>

@@ -1,0 +1,53 @@
+<?php 
+        global $AUTH_USER_ID, $f_RowID, $DOCUMENT_ROOT, $pathInc;
+        
+        if ($f_RowID) {
+            $sql = "SELECT `Message_ID`, `photo_banner` FROM `Message2001` WHERE `Message_ID` = {$f_RowID}";
+            $row = $db->get_row($sql);
+            $product_banner = [];
+            preg_match_all('/:.*:(.*)/', $row->photo_banner, $product_banner);
+            $ban = $product_banner[1][0];
+        }
+   
+        
+        if ($isTitle && !empty($ban)) {
+            $f_Checked = 1;
+            $f_photo = $f_photo_url = "{$pathInc}/files/{$ban}";
+
+            ?><section class='slider-items owl-carousel <?=($bannerAlign ? "bannerText-".$bannerAlign: "" )?>'  <?=implode(" ", $param)?>><?php
+            
+            ?><div class='sld-item obj <?=objHidden($f_Checked,$f_citytarget,$cityid)?> obj<?=$f_RowID?>'><?php
+            $imsize = getimagesize($DOCUMENT_ROOT.$f_photo_url); 
+            ?><div class="ba-ing"><img src='<?=$f_photo?>'></div>
+            
+            <?=($f_text ? "<div class='ba-text2'>".strip_tags($f_text)."</div>" : NULL)?>
+            <?=($inside_admin ? $f_AdminButtons : editObjBut($editLink))?>
+            </div>
+            </section><?php
+        }
+        ?>
+<?php  if (!$isTitle) { ?>
+	<div class="v-title v-title-bnr">
+		<a href="<?=$addLink?>?isNaked=1" class="add-btn" title="Добавление баннера" data-rel="lightcase" data-lc-options='{"groupClass":"modal-edit"}'>Добавить баннер</a>
+	</div>
+    <div class='sld-items' <?=(!$inside_admin ? "id='sortable-slider'" : null)?>>
+<?php  } else { ?>
+    <?php  if($totRows){
+        if($scrollDots) $param[] = "data-owl-dots='true'";
+        if($scrollDots==2) $param[] = "data-dot-text='1'";
+        if($scrollNav) $param[] = "data-owl-nav='true'";
+        if($scrollspeed) $param[] = "data-owl-speed='{$scrollspeed}'";
+        if($autoplay) $param[] = "data-owl-autoplay='{$autoplay}'";
+        if($banereffect){
+            if(stristr($banereffect, "|")){
+                $banereffectArr = explode("|", $banereffect);
+                $param[] = "data-owl-effect-in='{$banereffectArr[0]}'";
+                $param[] = "data-owl-effect-out='{$banereffectArr[1]}'";
+            }else{
+                $param[] = "data-owl-effect-in='{$banereffect}'";
+            }
+        }
+    ?>
+        <section class='slider-items owl-carousel <?=($bannerAlign ? "bannerText-".$bannerAlign: "" )?>'  <?=implode(" ", $param)?>>
+    <?php  } ?>
+<?php  } ?>

@@ -1,0 +1,77 @@
+<?php 
+$connectTemplate = $DOCUMENT_ROOT.$pathInc2."/template/class/{$classID}/AddActionTemplate.html";
+if($current_catalogue['customCode'] && file_exists($connectTemplate)){
+  include($connectTemplate);
+}else{
+global $setting;
+if (!$setting) $setting = getSettings();
+//if (!$settingCont) $settingCont = $db->get_row("select a.*, a.Message_ID as mesid from Message2024 as a, Subdivision as b where b.Catalogue_ID = '$catalogue' AND a.Subdivision_ID=b.Subdivision_ID order by a.Created limit 0,1", ARRAY_A);
+
+
+$Text = "Посетитель сайта {$_SERVER[HTTP_HOST]} просит Вас перезвонить ему <b>$f_time</b>.<br><br>
+Имя: $f_Name<br>
+Телефон: $f_phone<br>
+Город: $f_city<br>
+".($f_subname ? "Запрос со страницы: {$f_subname}<br>" : "");
+
+
+if ($setting['noticewhatsapp']) {
+    $whatsappMessage = "Посетитель сайта $_SERVER[HTTP_HOST] просит Вас перезвонить ему $f_time\n"
+        . "Имя: $f_Name\n"
+        . "Телефон: $f_phone\n"
+        . "Город: $f_city\n"
+        . ($f_subname ? "Запрос со страницы: {$f_subname}\n" : "");
+
+    sendWhatsappMessage($setting['noticewhatsapp'], $whatsappMessage);
+}
+
+$frommail = getDomenMail();
+$toemail = ($cc_settings['EmailTo'] ? $cc_settings['EmailTo'] : ($setting['email'] ? $setting['email'] : $system_env['SpamFromEmail']));
+
+$tema = "Заказ обратного звонка №{$message}";
+if ($formtype=='createsite') $tema = "Заказ сайта №{$message}";
+
+if ($setting['emailsend'] && $setting['emailpass'] && $setting['emailsmtp'] && $setting['emailport']) { // отправка через SMTP
+    require_once $DOCUMENT_ROOT.'/bc/modules/default/SendMailSmtpClass.php';
+    $mailSMTP = new SendMailSmtpClass($setting['emailsend'] , $setting['emailpass'], $setting['emailsmtp'], $setting['emailport'], "UTF-8");
+
+    $from = array(
+        "", // Имя отправителя (должно быть: пусто или латиница)
+        $setting['emailsend'] // почта отправителя
+    );
+    foreach(explode(",",$toemail) as $tomail1) {
+        $ressend =  $mailSMTP->send(trim($tomail1), $tema, $Text, $from);
+    }
+    
+} else {
+    $mailer = new CMIMEMail();
+    $mailer->mailbody(strip_tags($Text),$Text);
+    foreach(explode(",",$toemail) as $tomail1) {
+        $mailer->send($tomail1, $frommail, $frommail, $tema, $f_Name);
+    }
+    
+}
+
+
+# Bitrix новый лид
+$data = array(
+    'TITLE'     	=> 'Заказ звонка на номер '.$f_phone,
+    'PHONE'     	=> $f_phone,
+    'NAME'      	=> $f_Name,
+    'ADDRESS_CITY'  => $f_city,
+    'COMMENTS'		=> 'Просьба перезвонить '.$f_time
+);
+bitrixNewLead($data);
+
+if ($setting['actoken'] && $setting['acsubdomen']) {
+    amoCrm($data, 'mail');
+}
+
+echo json_encode(ARRAY(
+    "title" => getLangWord('title_thank',"Спасибо!"),
+    "succes" => getLangWord('sucForm',"Спасибо, {$f_Name}. Сообщение отправлено. В ближайшее время с вами свяжутся по указанным контактам"),
+    "submodal" => 1
+));
+
+} # ################# END ############
+?>

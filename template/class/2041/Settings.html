@@ -1,0 +1,10 @@
+<?php
+global $bitcat, $thissub, $thiscc, $thiscid, $altTexts, $currency, $kurs, $current_user, $AUTH_USER_ID;
+
+if ($msg) {
+    $subClassID = $db->get_var("SELECT Class_ID FROM Sub_Class WHERE Subdivision_ID = {$current_sub['Subdivision_ID']} limit 0,1");
+    if ($subClassID != 2001) $query_where = "a.Message_ID = 0";
+    else $query_where = "a.Message_ID = {$msg}";
+}
+
+?>

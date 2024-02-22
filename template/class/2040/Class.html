@@ -1,0 +1,54 @@
+<!-- FormPrefix --><div class='contact_item_wrap'>
+<script src="//api-maps.yandex.ru/2.0-stable/?load=package.full&lang=ru-RU" type="text/javascript"></script><!-- /FormPrefix -->
+
+<!-- RecordTemplate --><?php 
+	global $citylink;
+	if($citylink || $isItem) {
+?>
+	<script type="text/javascript">
+		ymaps.ready(function(){
+
+	    myMap<?=$f_RowID?> = new ymaps.Map("firmmap<?=$f_RowID?>", {
+				center: [<?=$f_lat.",".$f_lon?>],
+				zoom: 16
+		});
+		myMap<?=$f_RowID?>.controls.add('smallZoomControl', {left: '10px', top: '5px'});
+	    myMap<?=$f_RowID?>.controls.add('typeSelector');
+
+
+	myGeoObject<?=$f_RowID?> = new ymaps.GeoObject({
+						geometry: {
+							type: 'Point',
+							coordinates: [<?=$f_lat.",".$f_lon?>]
+						},
+						properties: {
+							iconContent: 'Офис «Деловые линии» в г.<?=$f_name?>',
+							balloonContent: '<b><?=$f_name?></b><br><?=$f_address?>',
+							hintContent: 'Показать контакты'
+						}
+					}, { preset: 'twirl#blueStretchyIcon' });
+					myMap<?=$f_RowID?>.geoObjects.add(myGeoObject<?=$f_RowID?>);
+
+	});</script>
+
+
+	<h3>Получение заказа в г. <?=$f_name?></h3>
+	<div class="this_map" id='firmmap<?=$f_RowID?>' style='height:400px;'></div>
+
+
+
+	<div class="how_get">
+	    <div class="how_get_left">
+			<div class="how_item how_location iconsCol icons i_city">
+				<div class="how_par">
+					<div class="how_name"></div>
+					<div class="how_text"><?=($f_fullAddress ? $f_fullAddress : $f_address)?></div>
+				</div>
+			</div>
+
+	    </div>
+	</div>
+	<?php  echo $f_AdminButtons; ?>
+<?php  } ?><!-- /RecordTemplate -->
+
+<!-- FormSuffix --></div><!-- /FormSuffix -->

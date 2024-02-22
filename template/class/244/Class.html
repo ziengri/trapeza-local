@@ -1,0 +1,131 @@
+<!-- FormPrefix --><?=($inside_admin ? $f_AdminCommon : addObjBut($addLink,$isTitle,null,'преимущество'))?>
+
+<?php
+    # ширина объекта
+    $sizeitemTotal = 0;
+    if($sizehave){
+        if($sizeitem_select=='count') $sizeitemTotal = $sizeitem_counts;
+        else if($sizeitem && is_numeric($sizeitem)) $sizeitemTotal = $sizeitem;
+    }
+    if(!$sizeitemTotal && $settingsSub["sizehave"]){
+        if($settingsSub["sizeitem_select"]=='count') $sizeitemTotal = $settingsSub["sizeitem_counts"];
+        else if(is_numeric($settingsSub["sizeitem"])) $sizeitemTotal = $settingsSub["sizeitem"];
+    }
+    if(!$sizeitemTotal){
+        if($setting["size".$classID."_select"]=='count') $sizeitemTotal = $setting["size".$classID."_counts"];
+        else $sizeitemTotal = $setting["size".$classID];
+    }
+    # отступ
+    if($sizehave && is_numeric($sizeitem_margin))  $margin = $sizeitem_margin;
+    else if($settingsSub["sizehave"] && is_numeric($settingsSub["sizeitem_margin"])) $margin = $settingsSub["sizeitem_margin"];
+    else if(is_numeric($setting["size".$classID."_margin"])) $margin = $setting["size".$classID."_margin"];
+    else $margin = 15;
+    # Шаблон вывода
+    if($template_block) $template = $template_block;
+    else if($settingsSub["template"]) $template = $settingsSub["template"];
+    else if($setting["size".$classID."_template"]) $template = $setting["size".$classID."_template"];
+
+    $data = subdivisionData(array(
+        'type' => 'advantage',
+        'sizeitem' => $sizeitemTotal,
+        'margin' => $margin,
+        'scrolling' => $scrolling,
+        'scrollspeed' => $scrollspeed,
+        'scrollNav' => $scrollNav,
+        'scrollDots' => $scrollDots,
+        'autoplay' => $autoplay,
+        'template' => $template
+    ));
+    # animate
+    $animateKey = "";
+    $animateDelay = 0;
+    $animateDelayStep = 0.16;
+    if($animate){
+        if($animate_title && $animate_title != "_empty_") $animateDelay += $animateDelayStep;
+        if($animate_text && $animate_text != "_empty_") $animateDelay += $animateDelayStep;
+        if($animate_items && $animate_items != "_empty_") $animateKey = $animate_items;
+    }
+    if(!$animateKey && $settingsSub["animate"]){
+        if($settingsSub["animate_title"] && $settingsSub["animate_title"] != "_empty_") $animateDelay += $animateDelayStep;
+        if($settingsSub["animate_text"] && $settingsSub["animate_text"] != "_empty_") $animateDelay += $animateDelayStep;
+        if($settingsSub["animate_items"] && $settingsSub["animate_items"] != "_empty_") $animateKey = $settingsSub["animate_items"];
+    }
+    if(!$animateKey){
+        if($setting["size".$classID."_animate"] && $setting["size".$classID."_animate"] != "_empty_") $animateKey = $setting["size".$classID."_animate"];
+    }
+    if($animateKey) $animateKey = "wow {$animateKey}";
+?>
+<?php  if ($totRows) { ?>
+   <ul class='<?=$data['class']?>' <?=$data['attr']?>>
+<?php  } ?>
+
+<?php  if(!$totRows){ ?> <p class='no-obj'>Преимуществ не найдено</p> <?php }?><!-- /FormPrefix -->
+
+<!-- RecordTemplate --><?php /* Служебная часть */for ($f_RowNum = 0; $f_RowNum < $rowCount; $f_RowNum++) {    if($fetch_row[$f_RowNum] instanceof Iterator) {        extract($fetch_row[$f_RowNum]->to_array(), EXTR_PREFIX_ALL, "f");    } else {        extract($fetch_row[$f_RowNum], EXTR_PREFIX_ALL, "f");    }    foreach($iteration_RecordTemplate[$f_RowNum] as $value) {        extract($value);    }    eval($cc_env["convert2txt"]);    ob_start();/* Конец служебной части */?>
+<?php /* Служебная часть */
+for ($f_RowNum = 0; $f_RowNum < $rowCount; $f_RowNum++) {
+    if($fetch_row[$f_RowNum] instanceof Iterator) {
+        extract($fetch_row[$f_RowNum]->to_array(), EXTR_PREFIX_ALL, "f");
+    } else {
+        extract($fetch_row[$f_RowNum], EXTR_PREFIX_ALL, "f");
+    }
+    foreach($iteration_RecordTemplate[$f_RowNum] as $value) {
+        extract($value);
+    }
+    eval($cc_env["convert2txt"]);
+    ob_start();
+/* Конец служебной части */?>
+
+<?php
+  $fields = array(
+    "sub" => $sub,
+    "cc" => $cc,
+    "classID" => $classID,
+    "nc_ctpl" => $nc_ctpl,
+    "fullLink" => $fullLink,
+    "editLink" => $editLink,
+    "AdminButtons" => $f_AdminButtons,
+    "image_default" => $image_default,
+    "fastprew" => $fastprew,
+    "current_sub" => $current_sub,
+    "current_cc" => $current_cc,
+    "current_catalogue" => $current_catalogue,
+    "RowID" => $f_RowID,
+    "RowNum" => $f_RowNum,
+    "animateKey" => $animateKey,
+    "animateDelay" => $animateDelay,
+    "animateDelayStep" => $animateDelayStep,
+    "Checked" => $f_Checked,
+    "template" => $template,
+    "date" => $f_date,
+    "name" => $f_name,
+    "text" => $f_text,
+    "settings" => $f_settings,
+    "banner" => $f_banner,
+    "link" => $f_link
+  );
+  $class244 = new Class244($fields);
+  echo $class244->getItem();
+?>
+
+<?php /* Служебная часть */
+    echo nc_finishing_RecordTemplate(ob_get_clean(), $inside_admin, $classID, $f_RowID, $parent_message, $cc, $cc_env["Class_Name"], $no_cache_marks);
+}
+/* Конец служебной части */?>
+<?php /* Служебная часть */    echo nc_finishing_RecordTemplate(ob_get_clean(), $inside_admin, $classID, $f_RowID, $parent_message, $cc, $cc_env["Class_Name"], $no_cache_marks);}/* Конец служебной части */?><!-- /RecordTemplate -->
+
+<!-- FormSuffix --><?php  if($totRows){ ?>
+    </ul>
+<?php  } ?>
+<?=getPagination(array(
+    'isTitle' => $isTitle,
+    'cc_env' => $cc_env,
+    'prevLink' => $prevLink,
+    'nextLink' => $nextLink,
+    'totRows' => $totRows,
+    'recNum' => $recNum,
+    'vars_str2' => $vars_str2,
+    'sub' => $sub,
+    'cc' => $cc,
+    'inside_admin' => $inside_admin
+))?><!-- /FormSuffix -->

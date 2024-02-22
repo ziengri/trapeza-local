@@ -1,0 +1,38 @@
+<?php 
+global $setting;
+actionObject($classID, $message, $f_Checked, $Checked);
+
+if (!$inside_admin) objsys($bc_objsys,$classID,$message);
+
+clearCache($classID,$sub);
+
+
+$widthArr = ARRAY(1=>"85",2=>"190",3=>"295",4=>"400",5=>"505",6=>"610",7=>"715",8=>"820",9=>"945",10=>"1030",11=>"1135",12=>"1240",100=>"1600");
+
+@require_once($INCLUDE_FOLDER."classes/nc_imagetransform.class.php");
+if ($_FILES['f_photo'][size] != 0 ) {
+  $photo_path = $DOCUMENT_ROOT.nc_file_path($classID, $message,'photo', "");
+  $imsize = getimagesize($photo_path);
+  $blockinf = $db->get_row("select height, width from Message2016 where Message_ID = '$f_block'", ARRAY_A);
+
+  $ww = $widthArr[$blockinf[width]];
+  $hh = 9000;
+  if ($photo_path) {
+    if (!$notResize) nc_ImageTransform::imgResize($photo_path,$photo_path,$ww,$hh, 0, 'jpg', 100, $message, 'photo');
+    if ($imsize[1]>$blockinf['height']) crop($photo_path, $photo_path, 100, array(0,0,$ww,$blockinf['height']));
+  }
+}
+
+if($inside_admin) {
+    ob_end_clean();
+    header('Location: '.$goBackLink.'&inside_admin=1');
+    exit;
+} else { 
+    echo json_encode(ARRAY(
+        "title" => "ОК",
+        "succes" =>  NETCAT_MODERATION_MSG_OBJCHANGED,
+        "reloadtab" => 1,
+        "modal" => "close",
+    ));
+}
+?>

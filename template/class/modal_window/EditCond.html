@@ -1,0 +1,16 @@
+<?php
+$f_Catalogue_ID = $catalogue + 0;
+
+$f_id_page = "," . implode(",", $f_id_page) . ",";
+if ($f_id_page == ',,') {
+    $f_id_page = '';
+}
+
+if (!$f_content) {
+    $posting = 0;
+    echo json_encode(ARRAY(
+        "title" => "Ошибка",
+        "error" => "Не контента"
+    ));
+    exit;
+}

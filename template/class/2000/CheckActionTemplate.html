@@ -1,0 +1,12 @@
+<?php 
+if($inside_admin) {
+    ob_end_clean();
+    header('Location: '.$goBackLink.'&inside_admin=1');
+    exit;
+} else { 
+    ob_end_clean();
+    header('Location: '.$_SERVER['HTTP_REFERER']);
+    exit;
+
+}
+?>

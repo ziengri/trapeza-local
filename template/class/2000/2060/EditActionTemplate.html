@@ -1,0 +1,17 @@
+<?php 
+
+if ($template==1000) {
+    /*echo json_encode(ARRAY("title" => "Сохранено",
+                       "succes" => savecss()
+    ));*/
+} else {
+    //echo savecss();
+    if($inside_admin) {
+        ob_end_clean();
+        header('Location: '.$goBackLink.'&inside_admin=1');
+        exit;
+    } else { 
+        header('Location: '.$goBackLink.'&inside_admin=1');
+    }
+}
+?>

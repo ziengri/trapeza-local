@@ -1,0 +1,9 @@
+<?php 
+global $setting;
+
+clearCache($classID,$sub);
+
+ ob_end_clean();
+    header('Location: '.$_SERVER[HTTP_REFERER]);
+    exit;
+?>

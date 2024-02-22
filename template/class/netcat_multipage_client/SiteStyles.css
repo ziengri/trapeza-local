@@ -1,0 +1,133 @@
+.object-item {
+    display: flex;
+    flex-direction: column;
+    /*justify-content: stretch;*/
+    /*align-items: center;*/
+}
+
+.object-item .item-image {
+    width: 100%;
+    margin-bottom: 0.5rem;
+    position: relative;
+}
+
+.object-item .item-image:before {
+    display: block; /* отображать элемент как блок */
+    content: ""; /* содержимое псевдоэлемента */
+    width: 75%; /* ширина элемента */
+    padding-top: 61.72%;
+}
+.item-border {
+    border: 1px solid var(--tpl-color-background-accent);
+}
+.object-item .item-image a.image {
+    position: absolute;
+    left:12.5%;top:12.5%;right:12.5%;bottom: 12.5%;
+    /*display: block;*/
+    width: 75%;
+    height: 75%;
+}
+.object-item .item-image a.image * {
+    width: 100%;
+    height:100%;
+}
+.object-item .item-image a.image img {
+    object-fit: contain;
+    width: 100%;
+    height:100%;
+}
+.client-full {
+    padding: 2rem 0;
+}
+
+.client-full .client-info {
+    display: flex;
+}
+
+.client-full .client-info .client-logo {
+    padding: 0 0 2rem 0;
+}
+
+.client-full .client-info .client-logo img {
+    max-width: 100%;
+    width: auto;
+}
+
+.client-full .client-info .client-name {
+    padding: 2rem 0;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+}
+
+.client-full .client-info .client-name .client-category {
+    color: var(--tpl-color-foreground-accent);
+    text-transform: uppercase;
+}
+
+.client-full .client-info .client-details {
+    border-left: 5px solid var(--tpl-color-brand);
+    padding-left: 2rem;
+    color: var(--tpl-color-foreground-accent);
+    margin-bottom: 2rem;
+}
+
+.client-full .client-info .client-details .details-title {
+    color: var(--tpl-color-foreground-main-lighter);
+}
+
+.client-full .client-info .client-details .details-text {
+    padding: 1rem 0;
+}
+
+.client-full .client-info .client-description {
+    margin-bottom: 2rem;
+}
+
+/** max width 500px **/
+.client-full .client-info[max-width~="500px"] {
+    flex-direction: column;
+}
+
+/** min width 500px **/
+.client-full .client-info[min-width~="500px"] {
+    flex-direction: row;
+}
+
+.client-full .client-info[min-width~="500px"][max-width~='1200px'] .client-logo {
+    width: 40%;
+}
+
+.client-full .client-info[min-width~="500px"][max-width~='1200px'] .client-name {
+    margin-left: 5%;
+    width: 60%;
+
+}
+
+.client-full .client-info[min-width~="500px"][max-width~='1200px'] .client-details {
+    width: 40%;
+}
+
+.client-full .client-info[min-width~="500px"][max-width~='1200px'] .client-description {
+    margin-left: 5%;
+    width: 60%;
+}
+
+/** min width 1200px **/
+.client-full .client-info[min-width~='1200px'] .client-logo {
+    width: 20%;
+}
+
+.client-full .client-info[min-width~='1200px'] .client-name {
+    margin-left: 5%;
+    width: 60%;
+}
+
+.client-full .client-info[min-width~='1200px'] .client-details {
+    width: 20%;
+}
+
+.client-full .client-info[min-width~='1200px'] .client-description {
+    margin-left: 5%;
+    width: 60%;
+}

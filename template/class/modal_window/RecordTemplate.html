@@ -1,0 +1,31 @@
+<?php /* Служебная часть */
+for ($f_RowNum = 0; $f_RowNum < $rowCount; $f_RowNum++) {
+    if ($fetch_row[$f_RowNum] instanceof Iterator) {
+        extract($fetch_row[$f_RowNum]->to_array(), EXTR_PREFIX_ALL, "f");
+    } else {
+        extract($fetch_row[$f_RowNum], EXTR_PREFIX_ALL, "f");
+    }
+    foreach ($iteration_RecordTemplate[$f_RowNum] as $value) {
+        extract($value);
+    }
+    eval($cc_env["convert2txt"]);
+    ob_start();
+    /* Конец служебной части */ ?>
+
+<div class="v-line" data-id="<?= $f_Message_ID ?>">
+    <div class="v-inline v-line-name">
+        <span>ID: <?= $f_Message_ID ?></span> <?= ($f_Title ? $f_Title : '') ?> <span>: </span>
+    </div>
+    <div class="v-line-param">
+        <div class="v-first"></div>
+        <div class="v-second">
+            <a href="<?= $editLink ?>?isNaked=1&panel=1" class="v-setting" title="Добавление прайса" data-rel="lightcase" data-lc-options='{"maxWidth":700,"groupClass":"modal-edit modal-export-excel"}'></a>
+            <a title='Удалить прайс?<?= ($f_excel ? "<br>{$f_excel_name}" : "") ?>' data-rel='lightcase' data-lc-options='{"maxWidth":500,"showTitle":false}' data-confirm-success='{succes: 1,modal:"close",reloadtab:1}' data-confirm-href='<?= $dropLink ?>' href='#сonfirm-actions' class='v-remove'></a>
+            <?= $f_AdminButtons ?>
+        </div>
+    </div>
+</div>
+<?php /* Служебная часть */
+    echo nc_finishing_RecordTemplate(ob_get_clean(), $inside_admin, $classID, $f_RowID, $parent_message, $cc, $cc_env["Class_Name"], $no_cache_marks);
+}
+/* Конец служебной части */ ?>

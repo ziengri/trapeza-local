@@ -1,0 +1,61 @@
+<?php
+global $IMG_HOST, $action, $mainpage, $setting, $bitcat, $cityid, $cityname, $citylink, $pathDom, $settingCont, $current_sub, $catalogue, $noimage;
+
+if ($current_catalogue['customCode']) {
+  GLOBAL $pathInc2;
+  $includeClass = NULL;
+  $thisFile = $DOCUMENT_ROOT.$pathInc2."/template/{$classID}/Settings.html";
+  if (file_exists($thisFile)) $includeClass = 1;
+}
+
+if ($includeClass==1) { include($thisFile); } else { # ############ START ##########
+
+	$query_where = ($query_where ? " AND " : NULL)."a.Checked = 1";
+
+	if ($msg) $query_where = ($query_where ? " AND " : NULL)."a.Message_ID = '$msg'";
+	if ($rand) $query_order = "RAND()";
+
+
+	# видимость скрытых для админа
+	if (!$isTitle && ($bitcat || $bitLoadMore)) {
+		$ignore_check = 1;
+	}
+
+	$f_photo_tpl = array(
+		'prefix' => "<ul class='phototype1'>",
+		'record' => "<li><a href='%Path%' rel='photo[fot1]'class='img'><span><img src='%Preview%'></span></a><a href='%Path%' rel='photo[fot2]' class='txt'>%Name%</a></li>",
+		'divider' => " ",
+		'suffix' => "</ul>"
+	);
+
+	# аналогичные товары
+	if ($getphotogallery) {
+		$photogalleryArr = explode(",", $getphotogallery);
+		
+		if ($photogalleryArr) {
+			foreach($photogalleryArr as $pr) {
+				$phgallerysql .= ($phgallerysql ? " OR " : NULL)."a.Message_ID = '".trim($pr)."'";
+			}
+			if ($phgallerysql) {
+				$ignore_sub = $ignore_cc = $ignore_calc = 1;
+				$query_where .= ($query_where ? " AND " : NULL)."($phgallerysql)";
+			}
+		}
+	}
+
+	# size items in sub
+	if(isJson($current_sub['settingsSub'])) $settingsSub = orderArray($current_sub['settingsSub']);
+	# object fit
+	if($sizehave && $sizeitem_fit) $imagefit = $sizeitem_fit;
+	else if($settingsSub["sizehave"] && $settingsSub["sizeitem_fit"]) $imagefit = $settingsSub["sizeitem_fit"];
+	else $imagefit = $setting["size".$classID."_fit"];
+	$image_default = image_fit($imagefit);
+
+	# targeting content
+	$query_where .= targeting($query_where);
+	#language
+	$query_where = getLangQuery($query_where);
+	
+	//if ($AUTH_USER_ID==8) echo "запрос: ".$query_where;
+}
+?>

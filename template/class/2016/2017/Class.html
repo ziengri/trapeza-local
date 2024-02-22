@@ -1,0 +1,23 @@
+<!-- FormPrefix --><?php  echo $f_AdminCommon; ?>
+<table class=nc-table><tr>
+<th>№</th>
+<th>Блок</th>
+<th>Название на сайте</th>
+<th>Колонка</th>
+<th>Ширина</th>
+<th>Изменить</th>
+</tr><!-- /FormPrefix -->
+
+<!-- RecordTemplate --><?php  $params = subParams($f_sub);
+$ctplName = ($f_ctpl ? $db->get_var("select Class_Name from Class where Class_ID = '$f_ctpl'") : "");
+?>
+<tr style='background: #<?=($f_Checked ? "fef9bc" : "fff")?>'>
+<td><?=$f_sub?></td>
+<td><?=$params[name]?><div style='font-size: 11px;'><?=$ctplName?></div></td>
+<td><?=($f_name ? $f_name : $params[name])?></td>
+<td align=center><?=($f_col ? $f_col : "нет")?></td>
+<td align=center><?=$f_width?></td>
+<td><?=$f_AdminButtons?></td>
+</tr><!-- /RecordTemplate -->
+
+<!-- FormSuffix --></table><!-- /FormSuffix -->

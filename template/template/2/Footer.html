@@ -1,0 +1,154 @@
+<?=($current_sub['EnglishName'] == 'sitemap' ? s_browse_sub(0, $browse_map) . (!strstr(s_browse_sub(0, $browse_map), "/catalog/") ? getCatalogSitemap() : "") . getCitySitemap() : null)?>
+
+                                <?php
+                                    if ($current_sub['subdir_id'] == 2 && $action != 'full') {
+                                        $catalogFooter = catalogCategory($sub, array('list' => 1));
+                                    }
+                                    if ($current_sub['subdir_id'] == 4 && $action != 'full') {
+                                        $catalogFooter = catalogCategory($sub);
+                                    }
+                                    echo ($catalogFooter ? "<div class='subdivision-bottom'>{$catalogFooter}</div>" : "");
+                                ?>
+
+                                    <?=($action != 'full' && $current_sub['text2'] && !isset($_GET['curPos']) ? "<div class='txt textsub-bottom'>" . textTargeting(strtr($current_sub['text2'], $titleArr)) . "</div>" : null)?>
+                                    <?
+                                        $seoTextBottom = null;
+                                        ///Добавил проверку для вывода текста под товаром
+                                        if ($action != 'full' && ($current_sub['seoTextBottom'] || $current_sub['seoTextBottom2']) && !isset($_GET['curPos'])) {
+                                           $seoTextBottom = \Korzilla\Replacer::replaceText(
+                                                str_replace('<br />', "\r\n", 
+                                                    textTargeting($current_sub['seoTextBottom'] ?: $current_sub['seoTextBottom2'])
+                                                )
+                                            );
+                                           $seoTextBottom = "<div class='txt textsub-bottom'>{$seoTextBottom}</div>";
+                                        }
+                                    ?>
+                                    <?=$seoTextBottom?>
+                                <?=subTags('bot');?>
+                   
+
+                                <?=(!$mainpage ? "</div></article></section>" : null)?>
+                            </div>
+                        </section>
+
+                        <section class='zone zone5 cb' data-zone='<?=getMessId(5)?>' data-id='5' <?=($bitcat ? "data-name='Под контентом'" : "")?> data-width='9'><div class='container-zone'><?=(($zoneblocks[5] || $bitcat) && !$is404 ? $zoneblocks[5] : "")?></div></section>
+                    </section>
+
+                    <?php  if ($setting['htmlShema'] == 2) {
+                        echo "<section id='sidebar' data-width='3' data-zone='2' class='zone zone2 grid_3 end'><div class='container-zone'>{$zoneblocks[2]}</div></section>";
+                    } ?>
+
+                    <?php  if (!$noleftcol) {
+                        echo ($shema == 5 ? "<div id='rightcol' data-zone='13' data-width='3' class='zone zone13 end grid_3'><div class='container-zone'>{$zoneblocks[13]}</div></div>" : "");
+                    } ?>
+
+                    <div class='clear'></div>
+                </div>
+            </section>
+
+            <?=($zoneall[4] ? $zoneall[4] : "")?>
+
+        </div>
+    </div>
+
+    <?=($zoneall[5] ? $zoneall[5] : "")?>
+
+    <!-- noindex  -->
+    <div id="notification"><div class="alert none"><a class="close" href="#"><i class="icons i_del3"></i></a><div></div></div></div>
+
+    <div id="сonfirm-actions" style="display: none;">
+        <div class="сonfirm-actions-title h4"></div>
+    	
+        <div class="сonfirm-actions-text none"></div>
+        <div class="result center"></div>
+        <div class="сonfirm-actions-btn сs-btn">
+            <a class="lightcase-ok ajax-btn" href="#"><?=getLangWord('modal_true','ОК')?></a>
+            <a class="lightcase-close lc-close" href="#"><?=getLangWord('modal_false','ОТМЕНА')?></a>
+        </div>
+        <div class="сonfirm-actions-btn-second сs-btn">
+            <a class="lightcase-ok lc-close" href="#"><?=getLangWord('modal_success','ОК')?></a>
+        </div>
+    </div>
+
+    <div id="bottombut"><a href="" title='наверх' class="top"><span></span></a> </div><!--/noindex-->
+
+    <?=((!$admin_mode && $bitcat) || $setting['acatToken'] ? "<script src='/js/jquery-ui.min.js'></script>" : "")?>
+    
+    <?  
+    echo((new App\modules\Korzilla\JSON_LD\JsonLdFactory())->BuildJsonLD());
+    ?>
+
+    <?=(!$admin_mode && $bitcat ? "
+    <script type='text/javascript'>var \$nc = jQuery.noConflict();</script>
+    <script type='text/javascript'>if (typeof \$ == 'undefined') \$ = jQuery;</script>
+    <script type='text/javascript' src='/template/jquery/jquery.ajaxfileupload.min.js'></script>
+    <script type='text/javascript' src='/template/jquery/jquery.form.min.js'></script>
+    <script type='text/javascript' src='/template/jquery/jquery.jscrollpane.min.js'></script>
+    <script type='text/javascript' src='/template/jquery/jquery.mousewheel.min.js'></script>
+    <script type='text/javascript' src='/template/jquery/jquery.nclsdisplay.js'></script>
+    <script type='text/javascript' src='/template/jquery/jquery.simplemodal.min.js'></script>
+    <script type='text/javascript' src='/template/jquery/jquery.tablednd.min.js'></script>
+    <script type='text/javascript'>if (typeof(nc_token) == 'undefined') {var nc_token = '".$nc_core->token->get()."';}var nc_save_keycode = 83;</script>
+    <script type='text/javascript' src='/bc/modules/auth/auth.js'></script>
+    <script type='text/javascript' src='/bc/admin/js/lang/ru_utf8.js' charset='utf-8'></script>
+    <script type='text/javascript' src='/bc/admin/js/nc/nc.min.js'></script>
+    <script type='text/javascript' src='/bc/admin/js/nc_admin.js'></script>
+    <script type='text/javascript' src='/bc/admin/js/lib.js'></script>
+    <script type='text/javascript' src='/bc/admin/js/forms.js'></script>
+    <script type='text/javascript' src='/template/jquery/jquery.nclsdisplay.js'></script>
+    <script type='text/javascript' src='/js/jquery.mjs.nestedSortable.js'></script>
+
+    <script type='text/javascript'>var CKEDITOR_BASEPATH = '/bc/editors/ckeditor4/';</script>
+    <script type='text/javascript' src='/bc/editors/ckeditor4/ckeditor.js'></script>
+    " : "")?>
+    <script type="text/javascript" src="/js/lang.js?v=<?=filectime($DOCUMENT_ROOT.$SUB_FOLDER.'/js/lang.js')?>"></script>
+	<script type="text/javascript" src="/js/main_min.js?v=<?=filectime($DOCUMENT_ROOT.$SUB_FOLDER.'/js/main_min.js')?>"></script>
+	
+    <script type='text/javascript' src="/js/js.js?v=<?=filectime($DOCUMENT_ROOT.$SUB_FOLDER.'/js/js.js')?>"></script>
+    
+
+    <?php 
+        if($plugins && is_array($plugins['js'])){
+            foreach($plugins['js'] as $name => $plg) echo "<script type='text/javascript' src='/js/{$name}.js?v=".filectime($DOCUMENT_ROOT.$SUB_FOLDER."/js/{$name}.js")."'></script>";
+        }
+    ?>
+    <?php 
+        if($plugins && is_array($plugins['modules'])){
+            foreach($plugins['modules'] as $name => $plg){
+                echo "<script type='text/javascript' src='/js/{$name}/{$name}.js?v=".filectime($DOCUMENT_ROOT."/js/{$name}/{$name}.js")."'></script>
+                    <link rel='Stylesheet' type='text/css' href='/js/{$name}/{$name}.css?v=".filectime($DOCUMENT_ROOT."/js/{$name}/{$name}.css")."'>";
+            }
+        }
+    ?>
+
+    <?php  if(file_exists($DOCUMENT_ROOT.$pathInc2."/second.css")){ ?>
+        <link rel='Stylesheet' type='text/css' href='<?=$pathInc2?>/second.css?v=<?=filectime($DOCUMENT_ROOT.$pathInc2.'/second.css')?>'>
+    <?php  } ?>
+    <?php  if($current_catalogue['loadJSfile'] && file_exists($DOCUMENT_ROOT.$pathInc2."/js.js")){ ?>
+        <script type='text/javascript' src="<?=$pathInc2?>/js.js?v=<?=filectime($DOCUMENT_ROOT.$pathInc2.'/js.js')?>"></script>
+    <?php  } ?>
+
+    
+    <? if ($setting['dadata_autocomplit_by_inn']): ?>
+    <script>
+        $('form').each(function() {
+           
+            new OrganizationByINNClass($(this), (window.OrganizationByINNSetting ?? {}), (window.OrganizationByINNFindInputs ?? {}))
+        })
+    </script>
+    <? endif; ?>
+    
+    <?=($bitcat ? "
+    <script type='text/javascript'>var bc = ".$AUTH_USER_ID.";</script>
+    <link rel='Stylesheet' type='text/css' href='/bc/modules/bitcat/admin.css?v=".filectime($DOCUMENT_ROOT.$SUB_FOLDER.'/bc/modules/bitcat/admin.css')."'>
+    <script type='text/javascript' src='/bc/modules/bitcat/admin.js?v=".filectime($DOCUMENT_ROOT.$SUB_FOLDER.'/bc/modules/bitcat/admin.js')."'></script>
+    <script type='text/javascript' src='/js/loader.js'></script>
+    " : NULL)?>
+
+    <?=(permission("monster") && !permission('design', 'only') ? "
+    <link rel='Stylesheet' type='text/css' href='/bc/modules/bitcat/separate/separate.css?v=".filectime($DOCUMENT_ROOT.$SUB_FOLDER.'/bc/modules/bitcat/separate/separate.css')."'>
+    <script type='text/javascript' src='/bc/modules/bitcat/separate/separate.js?v=".filectime($DOCUMENT_ROOT.$SUB_FOLDER.'/bc/modules/bitcat/separate/separate.js')."'></script>
+    " : NULL)?>
+    <?=(PochtaRussia::on() ? "<script src='/bc/modules/default/delivery_classes/pochtaRussia/main.js'></script>" : null)?>
+</body>
+</html>

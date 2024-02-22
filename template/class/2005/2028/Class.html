@@ -1,0 +1,127 @@
+<!-- FormPrefix --><?php 
+$connectTemplate = $DOCUMENT_ROOT.$pathInc2."/template/{$classID}/2028/FormPrefix.html";
+if($current_catalogue['customCode'] && file_exists($connectTemplate)){
+  include($connectTemplate);
+}else{
+?>
+
+<?php  if ($totRows) {?>
+<div class="table_person">
+    <table class="pr_table" data-text1='Скрыть заказ' data-text2='Показать заказ'>
+        <thead><tr>
+            <th class=s>№ заказа</th>
+            <th>Дата</th>
+            <?php  if (!$refcode) { ?>
+                <th class='sum'>Сумма заказа</th><th>Статус</th>
+            <?php  } else { ?>
+                <th>Код</th>
+                <th>Сумма заказа</th><th>Статус</th>
+            <?php  } ?>
+        </tr></thead><tbody>
+        
+        
+<?php }?>
+<?php }?>
+    <!-- /FormPrefix -->
+
+<!-- RecordTemplate --><?php 
+$connectTemplate = $DOCUMENT_ROOT.$pathInc2."/template/{$classID}/2028/RecordTemplate.html";
+if($current_catalogue['customCode'] && file_exists($connectTemplate)){
+  include($connectTemplate);
+}else{
+?>
+
+
+<tr data-id='<?=$f_RowID?>'>
+
+        <td>
+            <p><?=$f_RowID ?></p>
+
+            <div class="div_products" style="display: none">
+
+                <?php unset($totalsum); unset($totalnum);
+                if (!$refcode)
+                {
+                    echo "<table style='margin-bottom: 20px'><tr><th>Наименование</th><th>Количество</th><th>Сумма</th></tr>";
+
+                    $items = orderArray($f_orderlist);
+                    foreach($items[items] as $itemid => $item)
+                    {
+                        if (strstr($itemid,"_vr"))
+                        {
+                            $vrID = explode("_vr",$itemid);
+                        }
+                        $param = $db->get_row("select * from Message2001 where Message_ID = '$itemid'", ARRAY_A);
+                        echo "<tr>";
+                        echo "<td>".($param[name] ? "<a target=_blank href='".nc_message_link($itemid,2001).($vrID[1] ? "#v_{$vrID[1]}" : NULL)."'>$item[name]</a></td>" : "Товар уже не существует")."</td>";
+                        echo "<td class='s'>".$item[count]."</td>";
+                        echo "<td class='s'>".$item[sum]."<span class=rubl>Р</span></td>";
+                        echo "</tr>";
+                        $totalsum = $totalsum + $item[sum];
+                        $totalnum = $totalnum + $item[count];
+                    }
+                    $alltotalsum = $alltotalsum + ($f_totalSum ? $f_totalSum : $totalsum);
+                    echo "</table>";
+                    }
+                ?>
+            </div>
+        <a class="btn-strt-a button_set_visibility"><span>Показать заказ (<?=$totalnum?>)</span></a>
+        </td>
+
+        <td style='vertical-align: baseline;'>
+            <?=$f_Created_day?>.<?=$f_Created_month ?>.<?=$f_Created_year?><br><?=$f_Created_hours?>:<?=$f_Created_minutes?>
+        </td>
+
+        <td style='vertical-align: baseline;'>
+            <?=($f_totalSum ? $f_totalSum : ($totalsum ? $totalsum : "&mdash;"))?>
+        </td>
+
+        <td style='vertical-align: baseline;'>
+            <?=($f_ShopOrderStatus ? $f_ShopOrderStatus : "не оплачен")?>
+            <?php if ($setting['rkassaPass1'] && $setting['rkassaPass2'] && $setting['rkassaLogin'] && (!$f_ShopOrderStatus || $f_ShopOrderStatus_id==1) && !$refcode)
+                        {
+                            // your registration data
+                            $mrh_login = $setting['rkassaLogin'];
+                            $mrh_pass1 = $setting['rkassaPass1'];
+
+                            // order properties
+                            $inv_id = $f_RowID;
+                            $inv_desc  = "Заказ №{$f_RowID} в магазине {$current_catalogue['Catalogue_Name']}";
+                            $out_summ  = str_replace(",",".",floatval(($f_totalSum ? $f_totalSum : ($totalsum ? $totalsum : "&mdash;"))));
+
+                            // build CRC value
+                            $crc  = md5("$mrh_login:$out_summ:$inv_id:$mrh_pass1");
+
+                            // build URL
+                            $payUrl = "https://auth.robokassa.ru/Merchant/Index.aspx?MrchLogin=$mrh_login&OutSum=$out_summ&InvId=$inv_id&Desc=$inv_desc&SignatureValue=$crc";
+                            echo "<p class='payButton'><a target=_blank href='{$payUrl}'>Оплатить сейчас</a></p>";
+            }
+            ?>
+        </td>
+    </tr>
+    
+<?php }?><!-- /RecordTemplate -->
+
+<!-- FormSuffix --><?php if ($totRows) {?>
+        </tbody></table></div>
+        
+    <?=getPagination(array(
+        'isTitle' => $isTitle,
+        'cc_env' => $cc_env,
+        'prevLink' => $prevLink,
+        'nextLink' => $nextLink,
+        'totRows' => $totRows,
+        'recNum' => $recNum,
+        'vars_str2' => $vars_str2,
+        'sub' => $sub,
+        'cc' => $cc,
+        'inside_admin' => 1
+    ))?>
+        
+        
+        <?php if (!$refcode) { /* ?>
+            <div class='itogo_orders'><b>Итого заказано на:</b> <span class='totsum'><?=number_format($alltotalsum, 2, ',', ' ')?></span> <span class=rubl>Р</span></div>
+        <?php  */ }?>
+
+<?php }?>
+    <!-- /FormSuffix -->

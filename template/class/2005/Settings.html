@@ -1,0 +1,8 @@
+<?php
+global $setting, $cityid, $citylink, $citylinkPath, $pathInc, $image_default, $currency;
+
+if ($action=='add' && !$isTitle && $current_sub[EnglishName]!='registration') exit;
+
+# магазин отключен
+if (!permission("catalogue")) header("Location: /404/");
+?>

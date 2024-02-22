@@ -1,0 +1,24 @@
+<?php 
+$connectTemplate = $DOCUMENT_ROOT.$pathInc2."/template/{$classID}/2028/FormPrefix.html";
+if($current_catalogue['customCode'] && file_exists($connectTemplate)){
+  include($connectTemplate);
+}else{
+?>
+
+<?php  if ($totRows) {?>
+<div class="table_person">
+    <table class="pr_table" data-text1='<?=getLangWord('profile_page_hide_order','Скрыть заказ')?>' data-text2='<?=getLangWord('profile_page_show_order','Показать заказ')?>'>
+        <thead><tr>
+            <th class=s><?=getLangWord('profile_page_order_N','№ заказа')?></th>
+            <th><?=getLangWord('profile_page_order_date','Дата')?></th>
+            <?php  if (!$refcode) { ?>
+                <th class='sum'><?=getLangWord('profile_page_order_sum','Сумма заказа')?></th><th><?=getLangWord('profile_page_order_status','Статус')?></th>
+            <?php  } else { ?>
+                <th><?=getLangWord('profile_page_order_code','Код')?></th>
+                <th><?=getLangWord('profile_page_order_sum','Сумма заказа')?></th><th><?=getLangWord('profile_page_order_status','Статус')?></th>
+            <?php  } ?>
+        </tr></thead><tbody>
+        
+        
+<?php }?>
+<?php }?>

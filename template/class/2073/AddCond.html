@@ -1,0 +1,21 @@
+<?php
+if ($current_catalogue['customCode']) {
+    global $pathInc2;
+    $includeClass = NULL;
+    $thisFile = $DOCUMENT_ROOT.$pathInc2."/template/class/{$classID}/AddCond.html";
+    $thisFile2 = $DOCUMENT_ROOT.$pathInc2."/template/{$classID}/template/AddCond.html";
+    if (file_exists($thisFile)) $includeClass = 1;
+    elseif (file_exists($thisFile2)) $includeClass = 2;
+}
+
+if ($includeClass==1) { include($thisFile); } elseif ($includeClass==2) {include($thisFile2);} else { # ############ START ##########
+
+    $f_citytarget = ",".implode(",",$f_citytarget).",";
+    if ($f_citytarget==',,') $f_citytarget='';
+
+    if(!$f_name) $f_name = is_array($inputs) ? $inputs[name] : "";
+    $f_inputs = is_array($inputs) ? json_encode($inputs) : "{}";
+
+    $f_Catalogue_ID = $catalogue;
+}
+?>

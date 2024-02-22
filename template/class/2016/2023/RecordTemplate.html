@@ -1,0 +1,27 @@
+<?php /* Служебная часть */for ($f_RowNum = 0; $f_RowNum < $rowCount; $f_RowNum++) {    if($fetch_row[$f_RowNum] instanceof Iterator) {        extract($fetch_row[$f_RowNum]->to_array(), EXTR_PREFIX_ALL, "f");    } else {        extract($fetch_row[$f_RowNum], EXTR_PREFIX_ALL, "f");    }    foreach($iteration_RecordTemplate[$f_RowNum] as $value) {        extract($value);    }    eval($cc_env["convert2txt"]);    ob_start();/* Конец служебной части */?>
+<?php
+    $nosub ='';
+    $params = subParams($f_sub);
+
+    $phpset = orderArray($f_phpset);
+    $contArr = array("1"=>"Вывод из раздела","2"=>"Список разделов (меню)","3"=>"Контактная информация","4"=>"Copyright","5"=>"Создатель сайта");
+
+    $col = in_array($f_col, $zones) ? $f_col : 0;
+    $grid = ($f_col==2 ? '3' : (in_array($f_col, array(3,4,5)) ? ($setting[htmlShema]==1 || $setting[htmlShema]==2? '9' : '6') : '12'));
+    /*if($f_Checked && $col > 0){
+        $zonew = $db->get_var("select Message_ID from Message2000 where zone_id = '$col' AND Catalogue_ID = '$catalogue' LIMIT 1");
+    }*/
+    if(!($db->get_var('select Subdivision_ID from Subdivision where Subdivision_ID = '.$f_sub)>0) && $phpset['contenttype']==1) $nosub = '(Раздел не найден)';
+    $name_blk = ($f_name ? $f_name : ($params[name] ? $params[name] : ($contArr[$phpset[contenttype]] ? $contArr[$phpset[contenttype]] : "Из вкладки контент")));
+    $cols[$col][$f_Checked] .="<div class='admin-block admin-block-".($f_width < $grid ? $f_width : $grid)." ".($f_Checked ? 'admin-blk-on ': 'admin-blk-off ')."' data-blockid='{$f_RowID}' data-gridblk='".($f_width<$grid ? $f_width : $grid)."'>
+        <div class='admin-checkbox-drs'><span>{$name_blk}</span></div>
+        <div class='admin-checkbox'>
+            <div>
+                ".bc_checkbox("block".$f_RowID, 1, "", $f_Checked)."
+                <span class='admin-checkboxtext'><b>{$name_blk}</b>".($nosub ? "<br>".$nosub : "")."</span>
+                <a class='st-add' title='Настройки блока №{$f_RowID}' data-rel='lightcase' data-lc-options='{\"maxWidth\":950,\"groupClass\":\"modal-edit\"}' href='{$editLink}&isNaked=1'>Настройки блока</a>
+            </div>
+        </div>
+    </div>";
+?>
+<?php /* Служебная часть */    echo nc_finishing_RecordTemplate(ob_get_clean(), $inside_admin, $classID, $f_RowID, $parent_message, $cc, $cc_env["Class_Name"], $no_cache_marks);}/* Конец служебной части */?>

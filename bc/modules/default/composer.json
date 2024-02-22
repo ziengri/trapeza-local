@@ -1,0 +1,8 @@
+{
+    "require": {
+        "r0dgerv/api-client-tradesoft": "dev-master",
+        "phpoffice/phpspreadsheet": "^1.8",
+        "longman/telegram-bot": "^0.74.0",
+        "phpmailer/phpmailer": "^6.6"
+    }
+}

@@ -1,0 +1,14 @@
+<?php
+$ignore_sub = $ignore_cc = 1;
+
+
+if ($excel) {
+header("Pragma: public");
+header("Expires: 0");
+header("Cache-Control: must-revalidate, post-check=0, pre-check=0");
+header("Cache-Control: private", false);
+header("Content-Type: application/x-msexcel");
+header("Content-Disposition: attachment; filename=\"search_log_".date("m.d.Y_H-i").".xls\";");
+header("Content-Transfer-Encoding:­ binary");
+}
+?>

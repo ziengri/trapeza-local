@@ -1,0 +1,15 @@
+<?php
+$mainJS = str_replace($_SERVER['DOCUMENT_ROOT'], '', __DIR__ ) . '/main.js';
+?>
+<script src="<?=$mainJS?>"></script>
+<div class="view-body-inline export-yml">
+  <div class="v-title">
+    <a href="<?=$addLink?>?isNaked=1" class="add-btn" title="Добавление прайса" data-rel="lightcase"
+      data-lc-options='{"maxWidth":700,"groupClass":"modal-edit modal-export-yml"}'>Создать экспорт каталога в формате YML</a>
+  </div>
+  <div class="v-body">
+    <?php  if (!$totRows) { ?>
+    <div class='v-line center nobefore'>
+      <div class='v-inline'>Нет ни одного экспорта каталога в формате YML</div>
+    </div>
+    <?php  } ?>

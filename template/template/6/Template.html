@@ -1,0 +1,35 @@
+<!-- Header --><?php
+if ($AUTH_USER_ID=='1') {
+
+# сортировка блоков
+if ($sortblock) {
+    echo sortBlocks($blockid,$place,$prior,$blockid2,$prior2);
+}
+
+}
+
+
+if ($download) {
+    $name = encodestring($current_catalogue['Catalogue_Name'])." ".$current_sub['EnglishName'].".".$download;
+    switch($download) {
+        case 'xls':
+            $mime = "application/vnd.ms-excel";
+            break;
+        case 'doc':
+            $mime = "application/msword";
+            break;
+        case 'xlsx':
+            $mime = "application/vnd.ms-excel";
+            break;
+        case 'docx':
+            $mime = "application/msword";
+            break;
+    }
+  if ($mime) {
+      header("Content-Type: ".$mime);
+      header("Content-disposition: attachment;filename=".$name);
+  }
+}
+?><!-- /Header -->
+
+<!-- Footer --><!-- /Footer -->

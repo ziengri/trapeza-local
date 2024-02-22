@@ -1,0 +1,33 @@
+<?php /* Служебная часть */for ($f_RowNum = 0; $f_RowNum < $rowCount; $f_RowNum++) {    if($fetch_row[$f_RowNum] instanceof Iterator) {        extract($fetch_row[$f_RowNum]->to_array(), EXTR_PREFIX_ALL, "f");    } else {        extract($fetch_row[$f_RowNum], EXTR_PREFIX_ALL, "f");    }    foreach($iteration_RecordTemplate[$f_RowNum] as $value) {        extract($value);    }    eval($cc_env["convert2txt"]);    ob_start();/* Конец служебной части */?>
+<?
+  $fields = array(
+    "sub" => $sub,
+    "cc" => $cc,
+    "classID" => $classID,
+    "nc_ctpl" => $nc_ctpl,
+    "fullLink" => $fullLink,
+    "editLink" => $editLink,
+    "AdminButtons" => $f_AdminButtons,
+    "image_default" => $image_default,
+    "fastprew" => $fastprew,
+    "current_sub" => $current_sub,
+    "current_cc" => $current_cc,
+    "current_catalogue" => $current_catalogue,
+    "RowID" => $f_RowID,
+    "RowNum" => $f_RowNum,
+    "animateKey" => $animateKey,
+    "animateDelay" => $animateDelay,
+    "animateDelayStep" => $animateDelayStep,
+    "Checked" => $f_Checked,
+    "template" => $template,
+    "date" => $f_date,
+    "name" => $f_name,
+    "icon" => $f_icon,
+    "link" => $f_link,
+    "onclick" => $f_onclick
+  );
+
+  $class2245 = new Class2245($fields);
+  echo $class2245->getItem();
+?>
+<?php /* Служебная часть */    echo nc_finishing_RecordTemplate(ob_get_clean(), $inside_admin, $classID, $f_RowID, $parent_message, $cc, $cc_env["Class_Name"], $no_cache_marks);}/* Конец служебной части */?>

@@ -1,0 +1,45 @@
+<?php
+
+$defaulSettingUpload = json_decode(file_get_contents( __DIR__ . '/defaultSettingUpload.json'), 1);
+
+$f_Catalogue_ID = $catalogue + 0;
+
+function setUploadSetting($defaulSettingUpload, $f_setting_upload, $parentKey = '') {
+    foreach ($defaulSettingUpload as $key => $value) {
+        $thisKey = $parentKey . $key;
+        $defaulSettingUpload[$key]['checked'] = (isset($f_setting_upload[$thisKey]) ? 1 : 0);
+        if (isset($defaulSettingUpload[$key]['childs']) && count($defaulSettingUpload[$key]['childs']) > 0) {
+            $defaulSettingUpload[$key]['childs'] = setUploadSetting($defaulSettingUpload[$key]['childs'], $f_setting_upload, $thisKey);
+        }
+    }
+
+    return $defaulSettingUpload;
+}
+$f_setting_upload = json_encode(setUploadSetting($defaulSettingUpload, $f_setting_upload));
+
+if (!is_numeric($f_list) && empty($f_list_name)) {
+    $posting = 0;
+    echo json_encode(ARRAY(
+        "title" => "Ошибка",
+        "error" => "Настройки рабочего листа заданы не верна"
+    ));
+    exit;
+}
+
+if (!is_numeric($f_number_row_head) && empty($f_firsthead)) {
+    $posting = 0;
+    echo json_encode(ARRAY(
+        "title" => "Ошибка",
+        "error" => "Настройки шапки заданы не верна"
+    ));
+    exit;
+}
+
+if (!$f_parent) {
+    $posting = 0;
+    echo json_encode(ARRAY(
+        "title" => "Ошибка",
+        "error" => "Не задан корневой раздел"
+    ));
+    exit;
+}

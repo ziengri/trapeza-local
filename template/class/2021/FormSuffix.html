@@ -1,0 +1,22 @@
+<?php 
+    $formSuffixCustomPath = $DOCUMENT_ROOT.$pathInc2."/template/class/{$classID}/FormSuffix.html";
+    if (!empty($current_catalogue['customCode']) && file_exists($formSuffixCustomPath)) {
+        include $formSuffixCustomPath;
+    } else {
+?>
+    <?php  if ($totRows) { ?>
+        </ul>
+        <?=getPagination(array(
+            'isTitle' => $isTitle,
+            'cc_env' => $cc_env,
+            'prevLink' => $prevLink,
+            'nextLink' => $nextLink,
+            'totRows' => $totRows,
+            'recNum' => $recNum,
+            'vars_str2' => $vars_str2,
+            'sub' => $sub,
+            'cc' => $cc,
+            'inside_admin' => $inside_admin
+        ))?>
+    <?php   } ?>
+<?php } ?>

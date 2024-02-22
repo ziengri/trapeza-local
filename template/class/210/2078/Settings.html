@@ -1,0 +1,586 @@
+<?php 
+global $setting, $current_catalogue;
+class ACAT {
+	private $token = '';
+	private $url = 'https://acat.online/api/catalogs/';
+	public $types = array();
+	public $marks = array();
+	public $typeID = '';
+	public $bread = array();
+	private $link = '';
+
+	function __construct($token='', $link=''){
+		if (empty($token))
+			return false;
+		$this->token = $token;
+		$this->link = $link;
+	}
+	function filter($s){
+		return str_replace(array('%',"\n"), '', $s);
+	}
+	function get($uri='', $post='', $debug=0, $timeout=60){
+		$uri = str_replace('|||','%2F', $this->filter($uri));
+		if (empty($this->token))
+			return false;
+		$process = curl_init($this->url.$uri);
+		curl_setopt($process, CURLOPT_RETURNTRANSFER, 1);
+		curl_setopt($process, CURLOPT_HEADER, $debug);
+		curl_setopt($process, CURLOPT_HTTPHEADER, Array('Authorization: '.$this->token));
+		curl_setopt($process, CURLOPT_TIMEOUT, $timeout);
+		curl_setopt($process, CURLOPT_SSL_VERIFYHOST, 0);
+		curl_setopt($process, CURLOPT_SSL_VERIFYPEER, 0);
+		if (!empty($post)){
+			curl_setopt($process, CURLOPT_POST, 1);
+			curl_setopt($process, CURLOPT_POSTFIELDS, $post);
+		}
+		$return = curl_exec($process);
+		#echo '<!--|||'.$uri.' = '.$return.'-->';
+		curl_close($process);
+		if (strpos($return,'Found. Redirecting to')!==false){
+			#Если переадресация то ищем новый линк
+			#Пример: если наш uri=.../A/101
+			#А в ответе пришло Found. Redirecting to 101/101D/001
+			#То новый линк будет .../A/101/101D/001
+			#Но это не точно)
+			$return = trim(str_replace('Found. Redirecting to','',$return));
+			$r = explode('/', $return);
+			#$t = $r[count($r)-1];
+			$t = '';
+			for($i=1;$i<count($r);$i++){
+				$t .= $r[$i].'/';
+			}
+			$t = trim($t,'/');
+			return $this->get($uri.'/'.$t);
+		}
+		if (substr($return,0,1)=='[' or substr($return,0,1)=='{'){
+			$return = json_decode($return, 1);
+			if (!empty($return['code']) && $return['code']=='404')
+				return false;
+			return $return;
+		}
+		else
+			return $return;
+        global $AUTH_USER_ID;
+	}
+	function getBread($html){
+		if (!$this->bread)
+			return $html;
+		$bread = $this->bread;
+		$cnt = count($bread);
+		$_html = '<div class="xleb-default">';
+		$_html .= '<li class="xleb-default-item"><a href="'.$this->link.'">Автокаталог</a></li>';
+		if (!empty($bread[1])){
+			if (!empty($bread[2]))
+				$_html .= '<li class="xleb-default-item"><a href="?id='.$bread[1]['url'].'">'.$bread[1]['name'].'</a></li>';
+			else
+				$_html .= '<li class="xleb-default-item">'.$bread[1]['name'].'</li>';
+		}
+		if (!empty($bread[2])){
+			if (!empty($bread[3]))
+				$_html .= '<li class="xleb-default-item"><a href="?id='.$bread[1]['url'].'/'.$bread[2]['url'].'">'.$bread[2]['name'].'</a></li>';
+			else
+				$_html .= '<li class="xleb-default-item">'.$bread[2]['name'].'</li>';
+		}
+		if (!empty($bread[3])){
+			if (!empty($bread[4]))
+				$_html .= '<li class="xleb-default-item"><a href="?id='.$bread[1]['url'].'/'.$bread[2]['url'].'/'.$bread[3]['url'].'">'.$bread[3]['name'].'</a></li>';
+			else
+				$_html .= '<li class="xleb-default-item">'.$bread[3]['name'].'</li>';
+		}
+		if (!empty($bread[4]))
+			$_html .= '<li class="xleb-default-item">'.$bread[4]['name'].'</li>';
+		$_html .= '</div>';
+		return str_replace('<!--breadcrumbs-->', trim($_html, '/'), $html);
+	}
+	#TYPES
+	function getTypes(){
+		$tmp = $this->get();
+		if ($tmp){
+			$this->types = $tmp;
+			return $this->getTypesHTML();
+		}
+		return false;
+	}
+	function getTypesHTML(){
+		$types = $this->types;
+		$html = '<div class="_types acat_types">';
+		foreach($types as $type){
+			$html .= '<a href="?id='.$type['value'].'" class="acat_type_'.$type['value'].'"><img src="'.$type['image'].'" title="'.$type['name'].'" /><div>'.$type['name'].'</div></a>';
+		}
+		$html .= '</div>';
+		return $html;
+	}
+	#MARKS
+	function getMarks(){
+		if ($this->types){
+			$this->marks = $this->types[0]['marks'];
+			return $this->getMarksHTML();
+		}
+		return false;
+	}
+	function getMarksHTML(){
+		$html = '';
+		$html = '<div id="marks">';
+		foreach($this->marks as $mark){
+			$html .= '<a class="markItem" href="?id='.$this->typeID.'/'.$mark['value'].'">';
+				$html .= '<span class="markLogo">';
+					$html .= '<img src="'.$mark['image'].'" width="32" height="32" alt="'.$mark['name'].'" />';
+				$html .= '</span>';
+				$html .= '<span class="markName">'.$mark['name'].'</span>';
+			$html .= '</a>';
+		}
+		return $html;
+	}
+	#MODELS
+	function getModelsHTML($mark, $link){
+		$this->bread = $mark['breadcrumbs'];
+		$link = trim($link, '/').'/';
+		$html = '';
+		foreach($mark['models'] as $model){
+			$html .= '<div class="catalog-item obj obj'.$model['short_name'].' item-obj type1">';
+				if ($model['image']){
+					$html .= '<div class="image-default">';
+							$html .= '<a href="?id='.$link.$model['short_name'].'">';
+								$html .= '<img src="'.$model['image'].'" alt="">';
+							$html .= '</a>';
+					$html .= '</div>';
+				}
+				$html .= '<div class="blk_info">';
+					$html .= '<div class="blk_first">';
+						$html .= '<div class="blk_bt_sec">';
+							$html .= '<div class="blk_name">';
+								$html .= '<a href="?id='.$link.$model['short_name'].'">'.($model['name_with_mark']?$model['name_with_mark']:$model['name']).'</a>';
+							$html .= '</div>';
+						$html .= '</div>';
+					$html .= '</div>';
+				$html .= '</div>';
+			$html .= '</div>';
+		}
+		return $html;
+	}
+	#GROUPS
+	function getGroupsHTML($groups, $link){
+		$link = trim($link, '/').'/';
+		$html = '';
+		foreach($groups as $group){
+			if (isset($group['childs'])){
+				$html .= '<li class="close">';
+					$html .= '<a title="Раскрыть/Закрыть ветку" href="javascript:;"><b>'.$group['name'].'</b></a>';
+					$html .= '<ul class="close">';
+						$html .= $this->getGroupsHTML($group['childs'], $link);
+					$html .= '</ul>';
+				$html .= '</li>';
+			}
+			else{
+				$html .= '<li class="leaf">';
+					$html .= '<a title="'.$group['name'].'" href="?id='.$link.$group['short_name'].'">'.$group['name'].'</a>';
+				$html .= '</li>';
+			}
+		}
+		return $html;
+	}
+	#DETAILS
+	function getDetailsHTML($group, $link){
+		global $db, $catalogue, $ROOTDIR;
+		$this->bread = $group['breadcrumbs'];
+		$link = trim($link, '/');
+		$img = '';
+		if (!empty($group['group']['image'])){
+			$img = 'data:image/png;base64,'.base64_encode($this->get($link.'/image'));
+		}
+		$html .= '<h2>'.$group['group']['name'].' '.$group['model']['name_with_mark'].'</h2>';
+		$html .= '<div class="image-area">';
+			$html .= '<div class="image-tab active" id="image-tab-1">';
+				$html .= '<div class="main-image-area">';
+					$html .= '<div class="imageArea-menu">';
+						$html .= '<div class="imageArea-info-label">
+						<!--<img class="eye_open" src="https://212709.selcdn.ru/autocatalog-online/public/images/eye_open.png">
+						<img class="eye_close" src="https://212709.selcdn.ru/autocatalog-online/public/images/eye_close.png">-->
+						</div><span class="imageArea-info-plus">+</span><span class="imageArea-info-minus">-</span>';
+					$html .= '</div>';
+					$html .= '<div class="main-image imageArea" id="imageArea">';
+						$html .= '<span class="imageLayout" id="imageLayout">';
+							$html .= '<img src="'.$img.'" />';
+							foreach($group['numbers'] as $detail){
+								if (!$detail['index'])
+									continue;
+								$html .= '<span class="ladel a2d"
+									data-left="'.$detail['coordinates'][0]['top']['x'].'"
+									data-top="'.$detail['coordinates'][0]['top']['y'].'"
+									title="'.$detail['name'].'"
+									data-index="'.$detail['index'].'"
+									style="
+										position:absolute;
+										padding:1px 5px;
+										left:'.$detail['coordinates'][0]['top']['x'].'px;
+										top:'.$detail['coordinates'][0]['top']['y'].'px;
+										min-width:27px;
+										min-height:30px;
+										line-height:30px;
+										font-size:28px;
+									"
+									>'.$detail['index'].'</span>';
+							}
+						$html .= '</span>';
+					$html .= '</div>';
+				$html .= '</div>';
+			$html .= '</div>';
+		$html .= '</div>';
+		$html .= '<div class="clear"></div>';
+		$html .= '<div class="catalog-table"><table id="detailsList" class="table_main">';
+			$html .= '<thead>';
+				$html .= '<tr>';
+					$html .= '<th>№</th>';
+					$html .= '<th class="th_name">Наименование</th>';
+					$html .= '<th class="th_art nomob">Номер</th>';
+					$html .= '<th class="th_price">Цена</th>';
+					$html .= '<th class="th_incart">Купить</th>';
+				$html .= '</tr>';
+			$html .= '</thead>';
+			$html .= '<tbody>';
+			foreach($group['numbers'] as $detail){
+				$_exst = '';
+				$_id = preg_replace("/\D/","",$detail['number']);
+				$_exst = $db->get_row("SELECT Message_ID, name, price, stock, Subdivision_ID FROM Message2001 as a WHERE ".findTovarSql(str_replace(" ","",$detail['number']))." AND a.Catalogue_ID=".$catalogue."", ARRAY_A);
+				$_price = 0;
+				$attrItem = '';
+				if ($_exst){
+					$_price = $_exst['price'];
+					$_id = $_exst['Message_ID'];
+					$attrItem .= " data-typecount='1'";
+					$attrItem .= " data-id='{$_id}'";
+					$attrItem .= " data-origname=\"".$_exst['name']."\"";
+					$attrItem .= " data-name=\"".$_exst['name']."\"";
+					$attrItem .= " data-sub='".$_exst['Subdivision_ID']."'";
+					$attrItem .= " data-origprice='".$_exst['price']."'";
+					$attrItem .= " data-price='".$_exst['price']."'";
+					$attrItem .= " data-count='1'";
+					$attrItem .= " data-origstock='".$_exst['stock']."'";
+					$attrItem .= " data-stock='".$_exst['stock']."'";
+					$attrItem .= " data-hex='".hexprice($_exst['price'])."'";
+					$attrItem .= " data-orighex='".hexprice($_exst['price'])."'";
+				}
+				else {
+					#$_id = $detail['number'];
+					$attrItem .= " data-id='{$_id}'";
+					$attrItem .= " data-origname=\"".$detail['name'].' ('.$group['breadcrumbs'][2]['name'].' - '.$group['breadcrumbs'][3]['name'].' - '.$_id.")\"";
+					$attrItem .= " data-name=\"".$detail['name'].' ('.$group['breadcrumbs'][2]['name'].' - '.$group['breadcrumbs'][3]['name'].' - '.$_id.")\"";
+					$attrItem .= " data-origprice='0'";
+					$attrItem .= " data-typecount='1'";
+					$attrItem .= " data-price='0'";
+					$attrItem .= " data-count='1'";
+					$attrItem .= " data-sub='1'";
+					$attrItem .= " data-origstock='0'";
+					$attrItem .= " data-stock='0'";
+					$attrItem .= " data-hex='".hexprice(0)."'";
+					$attrItem .= " data-orighex='".hexprice(0)."'";
+					$attrItem .= " data-l='".$link."'";
+				}
+				if ($detail['name']) $html .= '<tr id="tr'.$_id.'" data-position="'.($detail['index']?$detail['index']:'').'">';
+					$html .= '<td align="right" id="detailInfo">'.($detail['index']?$detail['index']:'').'</td>';
+					$html .= '<td class="td_name">';
+						if ($_exst) $html .= '<a target=_blank href="'.nc_message_link($_exst['Message_ID'],2001).'">';
+						$html .= '<span>'.$detail['name'].'</span>';
+						if ($_exst) $html .= '</a>';
+					$html .= '</td>';
+					$html .= '<td class="td_art">';
+						$html .= '<span>'.$detail['number'].'</span>';
+					$html .= '</td>';
+					$html .= '<td class="td_price" nowrap>';
+						if ($_exst['price']) $html.= '<div class="blk_priceblock"><div class="normal_price "><b><span class="cen">'.$_exst['price'].'</span> <span class="rubl">Р</span></b></div></div>'; else $html .= '<div>под заказ </div>';
+					$html .= '</td>';
+					$html .= '<td data-id="'.$_id.'" class="td_incart product-item" '.$attrItem.'>';
+						$html .= '<div class="cart-btn incart-type1 mainmenubg ">
+										<div class="incart-num">
+											<input name="count" value="1" type="number">
+											<span class="icons i_plus incart_up"></span>
+											<span class="icons i_minus incart_down"></span>
+										</div><a href="#" class="incart-js icons i_cart"><span>В корзину</span></a></div>';
+					$html .= '</td>';
+				$html .= '</tr>';
+			}
+			$html .= '</tbody>';
+		$html .= '</table></div>';
+		return $html;
+	}
+	function search($s){
+		$html = '';
+		$marks = $this->get('search?text='.$s);
+		if ($marks){
+			foreach($marks['marks'] as $k => $mark){
+				$link = '';
+				$name = '';
+				foreach($mark['breadcrumbs'] as $bread){
+					$link .= $bread['url'].'/';
+					$name .= $bread['name'].' ';
+				}
+				$html .= '<a href="?id='.trim($link, '/').'">'.$k.'. '.trim($name).'</a><br/>';
+			}
+		} else {
+			$html .= 'Ничего не найдено';
+		}
+		return $html;
+	}
+	function getImageHTML($img){
+		$html = '<div class="image-area">';
+			$html .= '<div class="image-tab active" id="image-tab-1">';
+				$html .= '<div class="main-image-area">';
+					$html .= '<div class="imageArea-menu">';
+						$html .= '<div class="imageArea-info-label">
+						<!--<img class="eye_open" src="https://212709.selcdn.ru/autocatalog-online/public/images/eye_open.png">
+						<img class="eye_close" src="https://212709.selcdn.ru/autocatalog-online/public/images/eye_close.png">-->
+						</div><span class="imageArea-info-plus">+</span><span class="imageArea-info-minus">-</span>';
+					$html .= '</div>';
+					$html .= '<div class="main-image imageArea" id="imageArea">';
+						$html .= '<span class="imageLayout" id="imageLayout">';
+							$html .= '<img src="'.$img.'" />';
+						$html .= '</span>';
+					$html .= '</div>';
+				$html .= '</div>';
+			$html .= '</div>';
+		$html .= '</div>';
+		return $html;
+	}
+	function getList($obj, $link, $name, $key, $doplink=''){
+		$html = '';
+		foreach($obj as $temp){
+			$html .= '<div class="catalog-item obj obj'.$temp[$key].' item-obj type1">';
+				if ($temp['image']){
+					$html .= '<div class="image-default">';
+							$html .= '<a href="?id='.$link.($doplink?$temp[$doplink].'/':'').$temp[$key].'">';
+								$html .= '<img src="'.$temp['image'].'" alt="">';
+							$html .= '</a>';
+					$html .= '</div>';
+				}
+				$html .= '<div class="blk_info">';
+					$html .= '<div class="blk_first">';
+						$html .= '<div class="blk_bt_sec">';
+							$html .= '<div class="blk_name">';
+								$html .= '<a href="?id='.$link.($doplink?$temp[$doplink].'/':'').$temp[$key].'">'.$temp[$name].'</a>';
+							$html .= '</div>';
+						$html .= '</div>';
+					$html .= '</div>';
+				$html .= '</div>';
+			$html .= '</div>';
+		}
+		return $html;
+	}
+	function getTableHTML($obj, $link, $mark, $_index=''){
+		global $db, $catalogue;
+		$html = '<div class="catalog-table"><table id="detailsList" class="table_main">';
+			$html .= '<thead>';
+				$html .= '<tr>';
+					$html .= '<th>№</th>';
+					$html .= '<th class="th_name">Наименование</th>';
+					$html .= '<th class="th_art">Номер</th>';
+					$html .= '<th class="th_price">Цена</th>';
+					$html .= '<th>Купить</th>';
+				$html .= '</tr>';
+			$html .= '</thead>';
+			$html .= '<tbody>';
+			$_exx = array();
+			foreach($obj as $detail){
+				if ($_index)
+					$index = $detail[$_index];
+				else
+					$index = $detail['index'];
+				$_exst = '';
+				$_id = preg_replace("/\D/","",$detail['number']);
+				if (in_array($_id, $_exx))
+					continue;
+				$_exx[] = $_id;
+				$_exst = $db->get_row("SELECT Message_ID, name, price, stock, Subdivision_ID FROM Message2001 as a WHERE ".findTovarSql(str_replace(" ","",$detail['number']))." AND a.Catalogue_ID=".$catalogue."", ARRAY_A);
+				$_price = 0;
+				$attrItem = '';
+				if ($_exst){
+					$_price = $_exst['price'];
+					$_id = $_exst['Message_ID'];
+					$attrItem .= " data-typecount='1'";
+					$attrItem .= " data-id='{$_id}'";
+					$attrItem .= " data-origname=\"".$_exst['name']."\"";
+					$attrItem .= " data-name=\"".$_exst['name']."\"";
+					$attrItem .= " data-sub='".$_exst['Subdivision_ID']."'";
+					$attrItem .= " data-origprice='".$_exst['price']."'";
+					$attrItem .= " data-price='".$_exst['price']."'";
+					$attrItem .= " data-count='1'";
+					$attrItem .= " data-origstock='".$_exst['stock']."'";
+					$attrItem .= " data-stock='".$_exst['stock']."'";
+					$attrItem .= " data-hex='".hexprice($_exst['price'])."'";
+					$attrItem .= " data-orighex='".hexprice($_exst['price'])."'";
+				}
+				else {
+					$name = $detail['name'];
+					if (!$name)
+						$name = $detail['number'];
+					if ($mark)
+						$name .= ' ('.$mark.')';
+
+					$attrItem .= " data-id='{$_id}'";
+					$attrItem .= " data-origname=\"".$name."\"";
+					$attrItem .= " data-name=\"".$name."\"";
+					$attrItem .= " data-origprice='0'";
+					$attrItem .= " data-typecount='1'";
+					$attrItem .= " data-price='0'";
+					$attrItem .= " data-count='1'";
+					$attrItem .= " data-sub='1'";
+					$attrItem .= " data-origstock='0'";
+					$attrItem .= " data-stock='0'";
+					$attrItem .= " data-hex='".hexprice(0)."'";
+					$attrItem .= " data-orighex='".hexprice(0)."'";
+					$attrItem .= " data-l='".$link."'";
+				}
+				if ($name) $html .= '<tr id="tr'.$_id.'" data-position="'.$index.'">';
+					$html .= '<td align="right" id="detailInfo">'.$index.'</td>';
+					$html .= '<td class="td_name">';
+						if ($_exst) $html .= '<a target=_blank href="'.nc_message_link($_exst['Message_ID'],2001).'">';
+						$html .= '<span>'.$name.'</span>';
+						if ($_exst) $html .= '</a>';
+					$html .= '</td>';
+					$html .= '<td class="td_art">';
+						$html .= '<span>'.$detail['number'].'</span>';
+					$html .= '</td>';
+					$html .= '<td class="td_price" nowrap>';
+						if ($_exst['price']) $html.= '<div class="blk_priceblock"><div class="normal_price "><b><span class="cen">'.$_exst['price'].'</span> <span class="rubl">Р</span></b></div></div>'; else $html .= '<div>под заказ </div>';
+					$html .= '</td>';
+					$html .= '<td data-id="'.$_id.'" class="td_incart product-item" '.$attrItem.'>';
+						$html .= '<div class="cart-btn incart-type1 mainmenubg ">
+										<div class="incart-num">
+											<input name="count" value="1" type="number">
+											<span class="icons i_plus incart_up"></span>
+											<span class="icons i_minus incart_down"></span>
+										</div><a href="#" class="incart-js icons i_cart"><span>В корзину</span></a></div>';
+					$html .= '</td>';
+				$html .= '</tr>';
+			}
+			$html .= '</tbody>';
+		$html .= '</table></div>';
+		return $html;
+	}
+	function getMenu($obj, $link){
+		$html = '';
+		$menu = '';
+		$hide = 0;
+		foreach($obj['countries'] as $m){
+			$menu .= '<a href="#_menu" data-key="'.$m['short'].'"'.($hide?'':' class="active"').'>'.$m['name'].'</a>';
+			$html .= '<div class="_'.$m['short'].' _mm" style="display:'.($hide?'none':'block').';">';
+			foreach($m['aggregations'] as $temp){
+				$html .= '<div class="blk_item obj obj'.$temp['short'].' product-item">';
+					if ($temp['image']){
+						$html .= '<div class="blk_img">';
+								$html .= '<a href="?id='.$link.$m['short'].'/'.$temp['short'].'">';
+									$html .= '<span class="image_h"><img src="'.$temp['image'].'" alt=""></span>';
+								$html .= '</a>';
+						$html .= '</div>';
+					}
+					$html .= '<div class="blk_text">';
+						$html .= '<div class="blk_bordertext ">';
+							$html .= '<div class="blk_bt_sec">';
+								$html .= '<div class="blk_name">';
+									$html .= '<a href="?id='.$link.$m['short'].'/'.$temp['short'].'">'.$temp['name'].'</a>';
+								$html .= '</div>';
+							$html .= '</div>';
+						$html .= '</div>';
+					$html .= '</div>';
+				$html .= '</div>';
+			}
+			$html .= '</div>';
+			if (!$hide)
+				$hide = 1;
+		}
+		$menu = '<div class="_menu_">'.$menu.'</div>';
+		$html = $menu.'<hr><br><div id="_menu">'.$html.'</div>';
+		$html .= "<script>$(document).ready(function(){\$('a[href=\"#_menu\"]').on('click',function(data){\$('._menu_>a').removeClass('active');key=\$(this).data('key');\$('._mm').hide();\$('._'+key).show();\$(this).addClass('active');});l});</script>";
+		return $html;
+	}
+}
+function findTovarSql($find) {
+
+$zamArr = array("\\\'" => "","\'" => "","'" => "","\\" => " ","\"" => "", "/" => " ", "-" => " ", "," => " ",", " => " ","." => " "," и " => " "," на " => " ","=" => " ");
+	$find = strtr($find, $zamArr);
+	$find = htmlspecialchars(strip_tags(addslashes($find)));
+	//if ($AUTH_USER_ID==2) echo $find;
+	$find = str_replace("  "," ",$find);
+
+  $findVars = explode(" или ",$find);
+
+  foreach($findVars as $fvar) {
+	 $fvar = strtr($fvar, $zamArr);
+	 $fvar = str_replace("  "," ",$fvar);
+	 $findArr = explode(" ",$fvar);
+	 $stringsearch = '';
+	  foreach($findArr as $word) { unset($wordF);
+		if ($word) {
+		  $word = trim($word);
+		  $wordF = $word;
+		  if (!is_numeric($word) && mb_strlen($word)>5 && mb_strlen($word)<8 && preg_match('/[а-яА-Я]+/', $word)) $word = mb_substr($word,0,-1);
+		  if (!is_numeric($word) && mb_strlen($word)>=8 && mb_strlen($word)<12 && preg_match('/[а-яА-Я]+/', $word)) $word = mb_substr($word,0,-2);
+		  if (!is_numeric($word) && mb_strlen($word)>=12 && preg_match('/[а-яА-Я]+/', $word)) $word = mb_substr($word,0,-3);
+		  $stringsearch .= ($stringsearch ? " AND " : NULL)."(
+						a.name like '%$word%' OR
+						a.art like '%$wordF%' OR
+						a.artnull like '%$word%' OR
+						a.code like '%$wordF%'
+						)";
+		}
+	  }
+
+	  $stringsearchAll .= ($stringsearchAll ? " OR " : NULL).$stringsearch;
+	}
+	return $stringsearchAll;
+}
+/*
+function findTovarSql($find) {
+
+$zamArr = array("\\\'" => "","\'" => "","'" => "","\\" => " ","\"" => "", "/" => " ", "-" => " ", "," => " ",", " => " ","." => " "," и " => " "," на " => " ","=" => " ");
+	$find = strtr($find, $zamArr);
+	$find = htmlspecialchars(strip_tags(addslashes($find)));
+	//if ($AUTH_USER_ID==2) echo $find;
+	$find = str_replace("  "," ",$find);
+
+  $findVars = explode(" или ",$find);
+
+  foreach($findVars as $fvar) {
+	 $fvar = strtr($fvar, $zamArr);
+	 $fvar = str_replace("  "," ",$fvar);
+	 $findArr = explode(" ",$fvar);
+	 $stringsearch = '';
+	  foreach($findArr as $word) { unset($wordF);
+		if ($word) {
+		  $word = trim($word);
+		  $wordF = $word;
+		  if (!is_numeric($word) && mb_strlen($word)>5 && mb_strlen($word)<8 && preg_match('/[а-яА-Я]+/', $word)) $word = mb_substr($word,0,-1);
+		  if (!is_numeric($word) && mb_strlen($word)>=8 && mb_strlen($word)<12 && preg_match('/[а-яА-Я]+/', $word)) $word = mb_substr($word,0,-2);
+		  if (!is_numeric($word) && mb_strlen($word)>=12 && preg_match('/[а-яА-Я]+/', $word)) $word = mb_substr($word,0,-3);
+		  $stringsearch .= ($stringsearch ? " AND " : NULL)."(
+						a.name like '%$word%' OR
+						a.art like '%$wordF%' OR
+						".(!in_array($catalogue,$noSearchInText) ? "a.text like '%$word%' OR a.descr like '%$word%' OR " : NULL)."
+						a.vendor like '%$word%' OR
+						a.code like '%$wordF%' OR
+						a.artnull like '%$wordF%' OR
+						a.analog like '%$wordF%' OR
+						a.tags like '% $wordF %' OR a.tags like '$wordF' OR a.tags like '$wordF,%' OR a.tags like '$wordF %' OR a.tags like '% $wordF,%' OR a.tags like '%,$wordF,%' OR a.tags like '% $wordF' OR a.tags like '%,$wordF' OR
+						".(!in_array($catalogue,$noSearchInText) ? "a.var1 like '% $wordF %' OR a.var1 like '$wordF' OR a.var1 like '$wordF,%' OR a.var1 like '$wordF %' OR a.var1 like '% $wordF,%' OR a.var1 like '%,$wordF,%' OR a.var1 like '% $wordF' OR a.var1 like '%,$wordF' OR " : NULL)."
+						a.var2 like '%$wordF%' OR
+						a.var3 like '%$wordF%' OR
+						a.var4 like '%$wordF%' OR
+						a.var5 like '%$wordF%' OR
+						a.var6 like '%$wordF%' OR
+						a.var7 like '%$wordF%' OR
+						a.var8 like '%$wordF%' OR
+						a.var9 like '%$wordF%' OR
+						a.var10 like '%$wordF%' OR
+						a.var11 like '%$wordF%' OR
+						a.var12 like '%$wordF%' OR
+						a.var13 like '%$wordF%' OR
+						a.var14 like '%$wordF%' OR
+						a.var15 like '%$wordF%'
+						)";
+		}
+	  }
+
+	  $stringsearchAll .= ($stringsearchAll ? " OR " : NULL).$stringsearch;
+	}
+	return $stringsearchAll;
+}
+*/

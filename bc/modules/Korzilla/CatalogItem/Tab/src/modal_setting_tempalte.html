@@ -1,0 +1,134 @@
+<?
+global $db, $nc_core;
+
+$current_catalogue = $nc_core->catalogue->get_by_host_name(str_replace("www.", "", $_SERVER['HTTP_HOST']));
+$catsubArr = $db->get_results(
+    "SELECT 
+        a.Subdivision_Name as subname,
+        a.Subdivision_ID as subid,
+        a.Hidden_URL as psubid,
+        a.Checked,
+        b.Sub_Class_ID as ccid,
+        b.Class_ID
+    FROM 
+        Subdivision as a, 
+        Sub_Class as b
+    WHERE 
+        a.Subdivision_ID = b.Subdivision_ID
+        AND a.Catalogue_ID = '{$current_catalogue['Catalogue_ID']}'
+        AND a.Hidden_URL NOT LIKE '%search%'
+        AND a.Hidden_URL NOT LIKE '%404%'
+        AND a.Hidden_URL NOT LIKE '%zone%'
+        AND a.Hidden_URL NOT LIKE '%blockofsite%'
+        AND a.Hidden_URL NOT LIKE '%sitemap%'
+        AND a.Hidden_URL NOT LIKE '%excel%'
+        AND a.Hidden_URL NOT LIKE '%profile%'
+        AND a.Hidden_URL NOT LIKE '%settings%'
+        AND a.Hidden_URL NOT LIKE '%cart/success%'
+        AND a.Hidden_URL NOT LIKE '%cart/fail%'
+    ORDER BY a.Hidden_URL, a.Priority",
+    ARRAY_A
+);
+
+$catsubOpt = "<option value=''>- не выбран -</option>";
+foreach ($catsubArr as $cs) {
+    $o = '';
+    $c = substr_count($cs['psubid'], "/") - 2;
+    for ($i = 1; $i <= $c; $i++) {
+        $o .= "-";
+    }
+
+    $catsubOpt .= "<option " . ("{$cs['subid']}|{$cs['ccid']}" == $data['params']['f_sub'] ? "selected" : NULL) . " value='{$cs['subid']}|{$cs['ccid']}'>{$o} {$cs['subid']}. {$cs['subname']}</option>";
+}
+
+$contenttype = [
+    0 => 'Текст',
+    1 => 'Вывод из раздела',
+    2 => 'Стандартные табы'
+];
+
+$defaultTabType = [
+    'cart-param' => 'Описание',
+    'cart-param-2' => 'Характеристики',
+    'cart-review' => 'Отзывы',
+    'cart-citymap' => 'Деловые линии',
+    'cart-var1' => 'Доп. описания'
+];
+
+?>
+<form id="item-setting-tab" action="/bc/modules/Korzilla/CatalogItem/Tab/controller.php?action=save_setting_tab" method="post" class="ajax2">
+    <input type="hidden" name="id" value="<?= $data['id'] ?>">
+    <ul class="tabs tabs-border tab-more-tabs">
+        <li class="tab">
+            <a href="#tab_main">Содержимое</a>
+        </li>
+        <li class="tab">
+            <a href="#text">Контент</a>
+        </li>
+    </ul>
+    <div class="modal-body tabs-body">
+        <div id="tab_main" class="active">
+            <!-- Наименовние -->
+            <div class='colline colline-3'>
+                <?= bc_input("name", $data['name'], 'Наименовния', "maxlength='255' size='50'", 1) ?>
+            </div>
+            <!-- Тип вывода -->
+            <div class='colline colline-3'>
+                <?= bc_select("params[contenttype]", getOptionsFromArray($contenttype, $data['params']['contenttype']), "Тип вывода", "class='ns'") ?>
+            </div>
+            <!-- Разделы -->
+            <div class='colline colline-3 colline-sub setgroup1 <?= ($data['params']['contenttype'] != 1 ? "none" : "") ?>'>
+                <?= bc_select("params[f_sub]", $catsubOpt, "Раздела для вывода информации", "class='ns'") ?>
+            </div>
+            <!-- Стандартные табы -->
+            <div class='colline colline-3 colline-sub setgroup2 <?= ($data['params']['contenttype'] != 2 ? "none" : "") ?>'>
+                <?= bc_select("params[default_tab_type]", getOptionsFromArray($defaultTabType, $data['params']['default_tab_type']), "Тип таба", "class='ns'") ?>
+            </div>
+            <div id='classSettings' data-type="<?= $data['params']['contenttype'] ?>" data-sub="<?= $data['params']['f_sub'] ?>" data-typecontcur="<?= $data['params']['contenttype'] ?>_<?= $data['params']['f_sub'] ?>">
+                <?= $data['class_settings_html'] ?>
+
+            </div>
+            <!-- Настройки вывода из раздела-->
+            <div class="colheap setgroup1 <?= ($data['params']['contenttype'] != 1 ? "none" : "") ?>" data-jsopenmain='scrollVyvod'>
+                <h4 data-jsopen='scrollVyvod'>Настройки вывода объектов</h4>
+                <div data-jsopenthis='scrollVyvod' class='none'>
+                    <div class='colline colline-2 colline-recnum'>
+                        <?= bc_input("params[f_recnum]", ($data['params']['f_recnum'] ?: 8), "Количество объектов", "max=200 min=1", 1) ?>
+                    </div>
+                    <div class='colline colline-2 colline-rand'>
+                        <?= bc_checkbox("params[f_rand]", 1, "Сортировка случайным образом", $data['params']['f_rand']) ?>
+                    </div>
+                    <div class='colline colline-2 colline-substr'>
+                        <?= bc_input("params[f_substr]", $data['params']['f_substr'], "Количество символов текста", "maxlength='12' size='12'") ?>
+                    </div>
+                    <div class='colline colline-2 colline-msg'>
+                        <?= bc_input("params[f_msg]", $data['params']['f_msg'], "Запись в разделе №", "maxlength='12' size='12'") ?>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div id="text" style="display: none;">
+            <div class='colline colline-height'>
+                <?= bc_textarea("params[f_text]", $data['params']['f_text'], ('Текст'), "data-ckeditor='1'") ?>
+            </div>
+        </div>
+    </div>
+    <div class="bc_submitblock">
+        <div class='result'></div>
+        <span class="btn-strt">
+            <input type="submit" value="Сохранить изменения" />
+        </span>
+        <div class="check-obj">
+            <div class="switch">
+                <label>
+                    <input type="checkbox" value="1" <?= ($data['Checked'] ? 'checked' : '') ?> name="Checked">
+                    <span class="lever"></span>
+                    <span class="sw-text"><span class="check-first">Выключен</span><span class="check-second">Включен<span></span>
+                        </span></span></label>
+            </div>
+        </div>
+        <a class="btn-strt-a" title="Удалить таб?" data-rel="lightcase" data-lc-options='{"maxWidth":500,"showTitle":false}' href="#сonfirm-actions" data-confirm-href="/bc/modules/Korzilla/CatalogItem/Tab/controller.php?action=drop_tab&id=<?= $data['id'] ?>">
+            <span>Удалить таб</span>
+        </a>
+    </div>
+</form>

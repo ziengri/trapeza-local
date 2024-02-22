@@ -1,0 +1,12 @@
+<?php
+if ($nocolorshadow) $f_blockShadow = "";
+
+if(!$f_htmlShema || !$f_colorShema || !$f_consPos || !$f_linkcolor) {
+	$posting = 0;
+	#information text
+    $warnText = json_encode(ARRAY("title" => "Ошибка",
+                           "error" => NETCAT_MODERATION_INFO_REQFIELDS
+    ));
+	//$warnText = NETCAT_MODERATION_INFO_REQFIELDS;
+}
+?>

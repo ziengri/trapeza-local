@@ -1,0 +1,13 @@
+<?php 
+$f_variable = addslashes(json_encode($variable));
+$f_colors = addslashes(json_encode($colors));
+$f_pricecity = addslashes(json_encode($pricecity));
+
+if ($f_extlink) $f_extlink = str_replace("http://{$_SERVER[HTTP_HOST]}","",$f_extlink);
+
+$f_citytarget = ",".implode(",",$f_citytarget).",";
+if ($f_citytarget==',,') $f_citytarget='';
+
+
+$f_Catalogue_ID = $catalogue;
+?>

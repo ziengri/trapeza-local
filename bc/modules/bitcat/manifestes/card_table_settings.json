@@ -1,0 +1,19 @@
+{
+    "card_table_setting": {
+        "name": "ТАБЛИЦА ТОВАРОВ",
+        "row": [
+            {
+                "name": "fieldInTable",
+                "label": "Доп. поля в таблице товаров",
+                "type": "text",
+                "colline": 2
+            },
+            {
+                "name": "showImageHover",
+                "label": "Показывать картинку при наведении",
+                "type": "checkbox",
+                "colline": 2
+            }
+        ]
+    }
+}

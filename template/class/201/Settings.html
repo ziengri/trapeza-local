@@ -1,0 +1,21 @@
+<?php 
+global $IMG_HOST, $action, $mainpage, $db, $setting, $bitcat, $cityid, $cityname, $citylink, $citylinkPath, $titleArr, $DOCUMENT_ROOT, $pathInc2;
+
+if ($tsub!=$cc_env['Subdivision_ID'] && $tcc!=$cc_env['Sub_Class_ID']) $mirrorCC = 1;
+
+if ($msg) $query_where = ($query_where ? " AND " : NULL)."a.Message_ID = '{$msg}'";
+
+if (!$isTitle && ($bitcat || $bitLoadMore)) {
+    $ignore_check = 1;
+}
+
+if ($office>0) {
+    $query_where = ($query_where ? " AND " : NULL)."office = '$office'";
+	$ignore_sub = $ignore_cc = 1;
+}
+
+//if ($_SERVER[REMOTE_ADDR]=='31.13.133.138') echo $query_where;
+
+#language
+$query_where = getLangQuery($query_where);
+?>

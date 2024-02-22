@@ -1,0 +1,36 @@
+<?php
+global $bitcat, $f_citytarget, $cityid;
+
+
+$f_photo_tpl = array(
+        'prefix' => "<ul class='gallery-items gallery-review count-gallery-4' data-calculated='1'>",
+        'record' => "<li class='obj image-default image-cover'><a href='%Path%' data-rel='lightcase:review-%Message_ID%'><span class='img-preview'><img src='%Preview%'><span></a></li>",
+        'divider' => " ",
+        'suffix' => "</ul>"
+);
+
+$nophoto = "/images/nousericon.png";
+
+
+# видимость скрытых для админа
+if (!$isTitle && $bitcat) {
+    $ignore_check = 1;
+}
+
+
+# случайная сортировка
+if ($rand && $AUTH_USER_ID != 4) {
+	if (!$recNum) $recNum = 4;
+	$sql3 = "select COUNT(Message_ID) as max from Message{$classID} as a where a.Checked = 1 AND a.Catalogue_ID = '$catalogue'  AND ".($sqlsub ? "a.Subdivision_ID IN ($sqlsub)" : "a.Subdivision_ID = '$sub'")."";
+	$tot = $db->get_var($sql3);
+	if ($notobj && $tot>1) $tot--;
+	$maxpage = ceil($tot/$recNum);
+	for($i=0;$i<$maxpage;$i++) {
+		$pageArr[] = $i*$recNum;
+	}
+	$randpage = array_rand($pageArr,1);
+	$ignore_limit = 1;
+	$query_limit = "{$pageArr[$randpage]},{$recNum}";
+}
+
+?>

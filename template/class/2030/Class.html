@@ -1,0 +1,100 @@
+<!-- FormPrefix --><?=($inside_admin ? $f_AdminCommon : addObjBut($addLink,$isTitle,null,'производителя'))?>
+
+<?php
+    # json раздела
+    if(isJson($current_sub['settingsSub'])) $settingsSub = orderArray($current_sub['settingsSub']);
+    # ширина объекта
+    $sizeitemTotal = 0;
+    if($sizehave){
+        if($sizeitem_select=='count') $sizeitemTotal = $sizeitem_counts;
+        else if($sizeitem && is_numeric($sizeitem)) $sizeitemTotal = $sizeitem;
+    }
+    if(!$sizeitemTotal && $settingsSub["sizehave"]){
+        if($settingsSub["sizeitem_select"]=='count') $sizeitemTotal = $settingsSub["sizeitem_counts"];
+        else if(is_numeric($settingsSub["sizeitem"])) $sizeitemTotal = $settingsSub["sizeitem"];
+    }
+    if(!$sizeitemTotal){
+        if($setting["size".$classID."_select"]=='count') $sizeitemTotal = $setting["size".$classID."_counts"];
+        else $sizeitemTotal = $setting["size".$classID];
+    }
+    # отступ
+    if($sizehave && is_numeric($sizeitem_margin))  $margin = $sizeitem_margin;
+    else if($settingsSub["sizehave"] && is_numeric($settingsSub["sizeitem_margin"])) $margin = $settingsSub["sizeitem_margin"];
+    else if(is_numeric($setting["size".$classID."_margin"])) $margin = $setting["size".$classID."_margin"];
+    else $margin = 15;
+    # Шаблон вывода
+    if($template_block) $template = $template_block;
+    else if($settingsSub["template"]) $template = $settingsSub["template"];
+    else if($setting["size".$classID."_template"]) $template = $setting["size".$classID."_template"];
+
+    $data = subdivisionData(array(
+        'type' => 'vendor',
+        'sizeitem' => $sizeitemTotal,
+        'margin' => $margin,
+        'scrolling' => $scrolling,
+        'scrollspeed' => $scrollspeed,
+        'scrollNav' => $scrollNav,
+        'scrollDots' => $scrollDots,
+        'autoplay' => $autoplay,
+        'template' => $template
+    ));
+    # animate
+    $animateKey = "";
+    $animateDelay = 0;
+    $animateDelayStep = 0.16;
+    if($animate){
+        if($animate_title && $animate_title != "_empty_") $animateDelay += $animateDelayStep;
+        if($animate_text && $animate_text != "_empty_") $animateDelay += $animateDelayStep;
+        if($animate_items && $animate_items != "_empty_") $animateKey = $animate_items;
+    }
+    if(!$animateKey && $settingsSub["animate"]){
+        if($settingsSub["animate_title"] && $settingsSub["animate_title"] != "_empty_") $animateDelay += $animateDelayStep;
+        if($settingsSub["animate_text"] && $settingsSub["animate_text"] != "_empty_") $animateDelay += $animateDelayStep;
+        if($settingsSub["animate_items"] && $settingsSub["animate_items"] != "_empty_") $animateKey = $settingsSub["animate_items"];
+    }
+    if(!$animateKey){
+        if($setting["size".$classID."_animate"] && $setting["size".$classID."_animate"] != "_empty_") $animateKey = $setting["size".$classID."_animate"];
+    }
+    if($animateKey) $animateKey = "wow {$animateKey}";
+?>
+
+<?php  if ($totRows) { ?>
+	<div class='<?=$data['class']?> <?=($nc_ctpl ? "template{$nc_ctpl}" : "")?>' <?=$data['attr']?>>
+<?php  } ?><!-- /FormPrefix -->
+
+<!-- RecordTemplate --><?php
+if($f_logo){
+    $logo = $IMG_HOST.$f_logo;
+	$nophoto = 0;
+}else{
+    $logo = $IMG_HOST.$noimage;
+	$nophoto = 1;
+}
+?>
+
+<div class='obj obj<?=$f_RowID?> <?=$animateKey?> <?=(!$f_Checked ? "uncheck" : NULL)?>' <?=($animateKey ? str_replace(",", ".", "data-wow-delay='".($animateDelay + ($f_RowNum * $animateDelayStep))."s'") : "")?>>
+    <div class='<?=($nophoto ? image_fit() : $image_default)?>'>
+        <a <?=(!$f_nolink ? "rel='nofollow' href='".($f_logolink ? $f_logolink : $fullLink)."'" : NULL)?> class='vendor-a'>
+            <img alt='<?=$f_name?>' src='<?=$logo?>' <?=($nophoto ? "class='nophoto'" : "")?> >
+        </a>
+    </div>
+    <?php  if(!$noname){ ?>
+        <a class="vendor-link" <?=(!$f_nolink ? ($f_logolink ? "href='$f_logolink' rel='nofollow' target='_blank'" : "href='$fullLink'") : NULL)?>><span><?=$f_name?></span></a>
+    <?php  } ?>
+    <?=($bitcat ? editObjBut($editLink) : "")?>
+    <?=($f_AdminButtons ? "<div>$f_AdminButtons</div>" : NULL)?>
+</div><!-- /RecordTemplate -->
+
+<!-- FormSuffix --></div>
+<?=getPagination(array(
+    'isTitle' => $isTitle,
+    'cc_env' => $cc_env,
+    'prevLink' => $prevLink,
+    'nextLink' => $nextLink,
+    'totRows' => $totRows,
+    'recNum' => $recNum,
+    'vars_str2' => $vars_str2,
+    'sub' => $sub,
+    'cc' => $cc,
+    'inside_admin' => $inside_admin
+))?><!-- /FormSuffix -->

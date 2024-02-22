@@ -1,0 +1,21 @@
+<?php 
+global $action, $bitcat, $cityid, $cityname, $citylink, $is404;
+
+// if ($msg) $query_where = ($query_where ? " AND " : NULL)."a.Message_ID = '$msg'";
+
+# видимость скрытых для админа
+if (!$isTitle && ($bitcat || $bitLoadMore)) {
+    $ignore_check = 1;
+}
+
+$name ? $query_where .= ($query_where ? " AND " : NULL)."a.name LIKE '%{$name}%'": NULL;
+$mo ? $query_where .= ($query_where ? " AND " : NULL)."a.mo = '{$mo}'" : NULL;
+$shift ? $query_where .= ($query_where ? " AND " : NULL)."a.shift = '{$shift}'" : NULL;
+$date ? $query_where .= ($query_where ? " AND " : NULL)."a.date1 <= '{$date}' AND a.date2 >= '{$date}'" : NULL;
+
+// # targeting content
+// $query_where .= targeting($query_where);
+// #language
+// $query_where = getLangQuery($query_where);
+
+?>

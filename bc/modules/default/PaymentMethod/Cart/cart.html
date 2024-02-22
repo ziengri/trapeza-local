@@ -1,0 +1,66 @@
+<p>Дата и время: <?=$dateCreated?></p>
+<p><b>Содержимое заказа №<?=$Message_ID?>:</b></p>
+<table border=1 cellpadding='2' cellspacing='0'>
+    <thead>
+        <tr>
+            <th>№ п/п</th>
+            <th>Фото</th>
+            <th>Товар</th>
+            <th>Артикул</th>
+            <th>Цена, <?=$currency?></th>
+            <th>Кол-во</th>
+            <th>Сумма, <?=$currency?></th>
+        </tr>
+    </thead>
+    <tbody>
+        <?php foreach($items as $i => $item): ?>
+        <tr>
+            <td><?=++$i?></td>
+            <td><?=(isset($item['img']) ? "<img width='50' src='{$item['img']}'>" : null)?></td>
+            <td><a href="<?=$item['fullLink']?>"><?=$item['name']?></a><?=($item['colorname'] ? "(цвет: {$item['colorname']})" : null)?></td>
+            <td><?=$item['art']?></td>
+            <td><?=$item['price']?></td>
+            <td><?=$item['count']?></td>
+            <td><?=$item['sum']?></td>
+        </tr>
+        <?php endforeach; ?>
+    </tbody>
+    <tfoot>
+        <tr>
+            <td colspan=6><b>Итого:</b></td>
+            <td><?=$totalSum?></td>
+        </tr>
+        <tr>
+            <td colspan=6><b>Доставка <?=$deliveryname?>:</b><?=$deliveryInfo?></td>
+            <td><?=$deliveryvalue?></td>
+        </tr>
+        <?php if ($deliveryvalue > 0): ?>
+        <tr>
+            <td colspan=6><b>Итого с доставкой:</b></td>
+            <td><?=$totalSumToPay?></td>
+        </tr>
+        <?php endif; ?>
+    </tfoot>
+</table>
+<?php if ($paymentname): ?>
+<p><b>Способ оплаты:</b> <?=$paymentname?></p>
+<?php endif; ?>
+<table border=1 cellpadding='2' cellspacing='0'>
+    <thead>
+        <tr>
+            <th colspan=2>Данные заказчика</th>
+        </tr>
+    </thead>
+    <tbody>
+    <?php foreach($user as $param): ?>
+        <tr>
+            <td ><?=$param['name']?></td><td> <?=$param['value']?></td>
+        </tr>
+    <?php endforeach; ?>
+    </tbody>
+</table>
+<br>--
+<br>С уважением, <a href="http://<?=$_SERVER['HTTP_HOST']?>"><?=$siteName?></a>
+<?php if ($settingCont['phone']): ?>
+    <br>Тел: <?=$settingCont['phone']?>
+<?php endif; ?>

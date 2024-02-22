@@ -1,0 +1,74 @@
+<?php /* Служебная часть */
+
+for ($f_RowNum = 0; $f_RowNum < $rowCount; $f_RowNum++) {
+    if($fetch_row[$f_RowNum] instanceof Iterator) {
+        extract($fetch_row[$f_RowNum]->to_array(), EXTR_PREFIX_ALL, "f");
+    } else {
+        extract($fetch_row[$f_RowNum], EXTR_PREFIX_ALL, "f");
+    }
+    foreach($iteration_RecordTemplate[$f_RowNum] as $value) {
+        extract($value);
+    }
+    eval($cc_env["convert2txt"]);
+    ob_start();
+/* Конец служебной части */?>
+
+<?php
+  $fields = array(
+    "objInModal" => $objInModal,
+    "sub" => $sub,
+    "cc" => $cc,
+    "block_id" => $block_id,
+    "classID" => $classID,
+    "nc_ctpl" => $nc_ctpl,
+    "fullLink" => $fullLink,
+    "editLink" => $editLink,
+    "image_default" => $image_default,
+    "AdminButtons" => $f_AdminButtons,
+    "fastprew" => $fastprew,
+    "current_sub" => $current_sub,
+    "current_cc" => $current_cc,
+    "current_catalogue" => $current_catalogue,
+    "RowID" => $f_RowID,
+    "RowNum" => $f_RowNum,
+    "animateKey" => $animateKey,
+    "animateDelay" => $animateDelay,
+    "animateDelayStep" => $animateDelayStep,
+    "Checked" => $f_Checked,
+    "template" => $template,
+    "date" => $f_date,
+    "name" => $f_name,
+    "text" => $f_text,
+    "textfull" => $f_textfull,
+    "photo_preview" => $f_photo_preview,
+    "photo" => $f_photo,
+    "autor" => $f_autor,
+    "source" => $f_source,
+    "url" => $f_url,
+    "openlink" => $f_openlink,
+    "citytarget" => $f_citytarget,
+    "showphoto" => $f_showphoto
+  );
+  $class2003 = new Class2003($fields);
+  echo $class2003->getItem();
+  if ($action != 'full') {
+    try {
+        switch ($fields['current_sub']['type_article']) {
+            case false:
+                (new App\modules\Korzilla\JSON_LD\JsonLdFactory())->CollectionNews()->addNews($class2003);
+                break;
+            case true:
+                (new App\modules\Korzilla\JSON_LD\JsonLdFactory())->CollectionArticles()->addArticle($class2003);
+                break;
+        }
+    } catch (\Throwable $th) {
+        //throw $th;
+    }
+
+    }
+?>
+
+<?php /* Служебная часть */
+    echo nc_finishing_RecordTemplate(ob_get_clean(), $inside_admin, $classID, $f_RowID, $parent_message, $cc, $cc_env["Class_Name"], $no_cache_marks);
+}
+/* Конец служебной части */?>

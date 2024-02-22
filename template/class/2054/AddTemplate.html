@@ -1,0 +1,45 @@
+<?php  if ($warnText) { 
+    echo json_encode(ARRAY(
+        "title" => "Error",
+        "error" => $warnText
+    ));
+} else {
+?>
+	<form name='adminForm' class='form_otzyv ajax2' enctype='multipart/form-data' method='post' action='<?= $SUB_FOLDER ?><?= $HTTP_ROOT_PATH ?>add.php'>
+		<div id='nc_moderate_form'>
+			<input name='admin_mode' type='hidden' value='<?= $admin_mode ?>' />
+			<?= $nc_core->token->get_input() ?>
+			<input name='catalogue' type='hidden' value='<?= $catalogue ?>' />
+			<input name='cc' type='hidden' value='<?= $cc ?>' />
+			<input name='sub' type='hidden' value='<?= $sub ?>' />
+			<input name='f_tovar' type='hidden' value='<?=(is_numeric($f_tovar) ? $f_tovar : NULL) ?>' />
+			<?= nc_form_moderate('add', $admin_mode, 0, $systemTableID, $current_cc, (isset($f_Checked) ? $f_Checked  : null), $f_Priority , $f_Keyword, $f_ncTitle, $f_ncKeywords, $f_ncDescription ) ?>
+		</div>
+
+		<div class="fo_head"><?=getLangWord('comment_write','Написать отзыв')?></div>
+		<div class="fo_block">
+        
+         <?php  if ($current_user[PermissionGroup_ID]==1) { ?>
+                <div class="userline fo_line" style="display:none">
+                    <div class="fo_name">Дата:</div>
+                    <div class="fo_inp">
+						<input style='width:58px' type=text size=2 name='admdate[0]'>
+						-
+						<input style='width:58px' type=text size=2 name='admdate[1]' >
+						-
+						<input style='width:58px' type=text size=4 name='admdate[2]'> 
+						<input style='width:58px' type=text size=2 name='admdate[3]'>
+						:
+						<input style='width:58px' type=text size=2 name='admdate[4]'>
+					</div>
+                </div>
+          <?php  } ?>
+        
+        
+			<div class="userline"><?=bc_input_standart("f_name", $f_name, getLangWord("f_name","Ваше имя"), "maxlength='255' size='50'", 1)?></div>
+		    <div class="userline"><?=bc_textarea_standart("f_otzyvtext", $f_otzyvtext, getLangWord("f_otzyvtext", ($setting_texts['review_text']['checked'] ? $setting_texts['review_text']['name'] : "Текст отзыва")),'',1)?></div>
+		    <div class="userline"><span class='btn-strt'><input type=submit value='<?=getLangWord("btn_send","Отправить")?>'></span></div>
+			<div class='result'></div>
+		</div>
+	</form>
+<?php  } ?>

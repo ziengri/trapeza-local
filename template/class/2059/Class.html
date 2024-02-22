@@ -1,0 +1,131 @@
+<!-- FormPrefix --><?php  if(!$msg){ ?>
+    <?=($inside_admin ? $f_AdminCommon : addObjBut($addLink,$isTitle,1,'форму'))?>
+<?php  } ?>
+<?php  $bc2 = new bc(); ?><!-- /FormPrefix -->
+
+<!-- RecordTemplate --><?php /* Служебная часть */
+for ($f_RowNum = 0; $f_RowNum < $rowCount; $f_RowNum++) {
+    if($fetch_row[$f_RowNum] instanceof Iterator) {
+        extract($fetch_row[$f_RowNum]->to_array(), EXTR_PREFIX_ALL, "f");
+    } else {
+        extract($fetch_row[$f_RowNum], EXTR_PREFIX_ALL, "f");
+    }
+    foreach($iteration_RecordTemplate[$f_RowNum] as $value) {
+        extract($value);
+    }
+    eval($cc_env["convert2txt"]);
+    ob_start();
+/* Конец служебной части */?>
+<?php 
+    $razdel = $db->get_row("select Subdivision_ID as sub, Sub_Class_ID as cc from Sub_Class where Class_ID = 197 AND Catalogue_ID = '$catalogue' LIMIT 0,1", ARRAY_A);
+
+    $fields = $hiddenNames = $required = "";
+    if ($f_data){
+        $data = orderArray($f_data);
+        foreach($data as $name => $param) {
+            $name = explode("|", $name);
+            $key = $name[0];
+
+            if ($setting['language']) {
+                $param['label']['value'] = getLangWord("genform_{$f_RowID}_".($param['name']['value'] ? $param['name']['value'] : $name[1]), $param['label']['value']);
+                $param['placeholder']['value'] = ($param['placeholder']['value'] ? getLangWord("genform_{$f_RowID}_placehold_".($param['name']['value'] ? $param['name']['value'] : $name[1]), $param['placeholder']['value']) : '');
+            }
+
+            $hiddenNames .= "<input name='customf[{$param['name']['value']}][name]' type='hidden' value='{$param['label']['value']}'>";
+            if($param['required']['value']) $hiddenRequired .= "<input name='req_customf[]' type='hidden' value='{$param['name']['value']}'>";
+            $customName = $key=='file' ? "customfile_{$param['name']['value']}" : "customf[{$param['name']['value']}][value]";
+            $placeholder = $param['placeholder']['value'] ? "placeholder='{$param['placeholder']['value']}'" : "";
+            switch ($key) {
+                case 'input':
+                    $type = array("текст" => "text", "число" => "number", "скрытый" => "hidden");
+                    $attrs = "maxlength='255' size='50' {$placeholder} ".($param['typeInput']['value'] && $param['name']['value'] != "phone" ? "type='".$type[$param['typeInput']['value']]."'" : "");
+                    $fields .= "<div class='userline usr-input-{$type[$param['typeInput']['value']]} usr-name-{$param['name']['value']}'>".bc_input_standart($customName, $param['value']['value'], $param['label']['value'], $attrs, $param['required']['value'])."</div>";
+                    break;
+                case 'textarea':
+                    $fields .= "<div class='userline usr-textarea usr-name-{$param['name']['value']}'>".bc_textarea_standart($customName, $param['value']['value'], $param['label']['value'], $placeholder, $param['required']['value'])."</div>";
+                    break;
+                case 'select':
+                    $options = "";
+                    $fields .= "<div class='userline usr-select usr-name-{$param['name']['value']}'>";
+                        $fields .= bc_label_standart($param['label']['value'], "", $param['required']['value']);
+                        foreach ($param["selectGroup"]["values"] as $i => $select)  $options .= "<option value='{$select['value']}'>{$select['value']}</option>";
+                        $fields .= "<select name='{$customName}' class='select-style'>{$options}</select>";
+                    $fields .= "</div>";
+                    break;
+                case 'checkbox':
+                    $fields .= "<div class='userline usr-checkbox usr-name-{$param['name']['value']}'>";
+                        $fields .= bc_label_standart($param['label']['value'], "", $param['required']['value']);
+                        foreach ($param["checkboxGroup"]["values"] as $i => $checkbox) {
+                            $fields .= "<div class='userline-option userline-checkbox uch-{$i}'>".bc_checkbox_standart($customName."[]", $checkbox["value"], $checkbox["value"])."</div>";
+                        }
+                    $fields .= "</div>";
+                    break;
+                case 'radio':
+                    $fields .= "<div class='userline usr-radio usr-name-{$param['name']['value']}'>";
+                        $fields .= bc_label_standart($param['label']['value'], "", $param['required']['value']);
+                        foreach ($param["radioGroup"]["values"] as $i => $radio) {
+                            $fields .= "<div class='userline-option userline-radio ura-{$i}'>".bc_radio_standart($customName,  $radio["value"],  $radio["value"], ($i==0 ? 1 : 0))."</div>";
+                        }
+                    $fields .= "</div>";
+                    break;
+                case 'title':
+                    $fields .= "<div class='userline usr-title' {$name[1]}><div class='h3'>{$param['label']['value']}</div></div>";
+                    break;
+                case 'file':
+                    $fields .= "<div class='userline usr-file'>".bc_file_standart($customName, "", $param['label']['value'])."</div>";
+                    break;
+                case 'date':
+                    $fields .= "<div class='userline usr-file'>".bc_date_standart($customName, "", $param['label']['value'])."</div>";
+                    break;
+            }
+        }
+    }
+
+    $html ="<form enctype='multipart/form-data' name='tomail' class='ajax2' method='post' action='/bc/add.php' data-metr='genform-{$f_RowID}-sent'>
+                <div class='system-field'>
+                    <input name='cc' type='hidden' value='{$razdel[cc]}'>
+                    <input name='sub' type='hidden' value='{$razdel[sub]}'>
+                    <input name='formmes' type='hidden' value='{$f_RowID}'>
+                    <input name='catalogue' type='hidden' value='{$catalogue}'>
+                    <input name='nameform' type='hidden' value='{$f_name}'>
+                    <input name='f_nameform' type='hidden' value='{$f_name}'>
+                    <input name='f_subname' type='hidden' value='{$current_sub['Subdivision_Name']}'>
+                    ".($f_succestext ? "<input name='succestext' type='hidden' value='{$f_succestext}'>" : "")."
+                    ".($f_titleformail ? "<input name='titleformail' type='hidden' value='{$f_titleformail}'>" : "")."
+                    {$hiddenNames}
+                    {$hiddenRequired}
+                </div>
+                {$fields}
+                ".($f_politika ? politika() : "")."
+                <div class='result center'></div>
+                <div class='modal_button_main'>
+                    <span class='btn-strt'><input value='".getLangWord("genform_{$f_RowID}_btn", ($f_sendtext ? $f_sendtext : "Отправить"))."' type='submit'></span>
+                </div>
+            </form>";
+?>
+<?php  if($dev){ ?>
+    <div class="modal-devinfo">
+        <div class="lineinfo lineinfo-a">
+            <div class="line-info-name">Ссылка (модальное окно)</div>
+            <div class="line-info-btn"></div>
+            <textarea><a href="<?=$current_sub[Hidden_URL].'?isNaked=1'.($f_keyid ? "&keyid={$f_keyid}" : "&msg={$f_RowID}")?>" title="<?=$f_name?>" data-rel="lightcase" data-maxwidth="650" data-groupclass="form-generated-id<?=$f_RowID?>" data-metr="genform-<?=$f_RowID?>-open"><?=$f_name?></a></textarea>
+        </div>
+        <div class="lineinfo lineinfo-html">
+            <div class="line-info-name">HTML-код формы</div>
+            <div class="line-info-btn"></div>
+            <textarea><?=htmlspecialchars($html)?></textarea>
+        </div>
+        <div class="lineinfo lineinfo-text">
+            <span>Открытие формы: genform-<?=$f_RowID?>-open, отправка формы: genform-<?=$f_RowID?>-sent</span>
+        </div>
+    </div>
+<?php  } ?>
+<div class="modal-body">
+    <?=$html?><?php  echo $f_AdminButtons; ?>
+</div>
+<?php /* Служебная часть */
+    echo nc_finishing_RecordTemplate(ob_get_clean(), $inside_admin, $classID, $f_RowID, $parent_message, $cc, $cc_env["Class_Name"], $no_cache_marks);
+}
+/* Конец служебной части */?><!-- /RecordTemplate -->
+
+<!-- FormSuffix --><!-- /FormSuffix -->

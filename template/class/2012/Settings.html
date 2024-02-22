@@ -1,0 +1,25 @@
+<?php
+global $action, $mainpage, $setting, $bitcat, $cityid, $cityname, $citylink;
+
+$f_photo_tpl = array(
+    'prefix' => "<ul class='phototype1'>",
+    'record' => "<li><a href='%Path%' rel='photo[fot1]'class='img'><span><img src='%Preview%'></span></a><a href='%Path%' rel='photo[fot2]' class='txt'>%Name%</a></li>",
+    'divider' => " ",
+    'suffix' => "</ul>"
+);
+
+if ($msg) $query_where = ($query_where ? " AND " : NULL)."a.Message_ID = '$msg'";
+
+# видимость скрытых для админа
+if (!$isTitle && $bitcat && !$noadmin) {
+    $ignore_check = 1;
+}
+
+
+
+
+# targeting content
+if (!$msg) $query_where .= targeting($query_where);
+#language
+$query_where = getLangQuery($query_where);
+?>

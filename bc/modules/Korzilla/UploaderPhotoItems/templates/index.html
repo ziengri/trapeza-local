@@ -1,0 +1,112 @@
+<script>
+    Dropzone.options.dropzone = {
+        autoProcessQueue: false,
+        uploadMultiple: true,
+        parallelUploads: 2,
+        maxFiles: 5000,
+        maxFilesize: 3, // Размер картинки в мб,
+        acceptedFiles: '<?=$mimeType?>',
+        paramName: 'photoItem',
+        dictDefaultMessage: 'Перетащите фото или щелкните мышкой по зоне',
+        url: '/bc/modules/bitcat/index.php?bc_action=get_uploader_photo&action=upload_photo',
+        init: function() {
+            const myDropzone = this;
+            $("#dropzone-form input[type=submit]").on("click", function(e) {
+                e.preventDefault();
+                e.stopPropagation();
+                if (myDropzone.getUploadingFiles().length === 0 && myDropzone.getQueuedFiles().length === 0) {
+                    $("#dropzone-form .dropzone-rezult").text('Нет новых файлов для загрузки');
+                    $(this).removeClass('disabled');
+                } else {
+                    $("#dropzone-form .dropzone-rezult").text('');
+                    $(this).addClass('disabled');
+                    myDropzone.processQueue();
+                }
+            });
+
+            this.on("sending", function(file, xhr, formData) {
+                formData.append("attr", $('#dropzone-form input[name="attr[]"]:checked').val());
+            })
+
+            this.on("successmultiple", function(files, response) {
+                const res = JSON.parse(response);
+                const filesSuccess = [];
+                for (const id in files) {
+                    if (!Object.hasOwnProperty.call(files, id))  return true;
+                    const el = $(files[id].previewElement);
+                    const elRes = res[id];
+
+                    if (elRes.status === 0) {
+                        el.removeClass('dz-success').addClass('dz-error')
+                        el.find('.dz-error-message span').text(elRes.message_error);
+                    } else filesSuccess.push(files[id])
+                }
+                setTimeout(() => {
+                    for (const file of filesSuccess) {
+                        myDropzone.removeFile(file);
+                    }
+                }, 3000);
+                myDropzone.processQueue();
+            });
+
+            this.on("complete", function (file) {
+                if (this.getUploadingFiles().length === 0 && this.getQueuedFiles().length === 0) {
+                    $("#dropzone-form input[type=submit]").removeClass('disabled');
+                    $("#dropzone-form .dropzone-rezult").text('Загрузка фото завершена');
+                }
+            });
+        }
+    };
+    Dropzone.options.dropzone.dictMaxFilesExceeded = `Вы не можете загрузить больше ${Dropzone.options.dropzone.maxFiles} файлов за один раз.`;
+</script>
+<form class="bc_form" action="/" id="dropzone-form">
+    <div class="formwrap">
+        <div class="colblock">
+            <div class="userline">
+                <a href="https://docs.google.com/document/d/1F18pPEncxRfQbyvnoTB-zQnMBW3hsW0h/edit?usp=sharing&ouid=106573663312148450021&rtpof=true&sd=true" target="_blank" download="download">Инструкция</a>
+            </div>
+            <div class="userline usr-radio usr-name-attr">
+                <label class="field-title">Атрибут</label>
+                <div class="userline-option userline-radio ura-art">
+                    <div class="radio-standart">
+                        <label>
+                            <input name="attr[]" type="radio" value="art" checked>
+                            <span class="rdo-st"></span>
+                            <span class="rdo-name">Артикул</span>
+                        </label>
+                    </div>
+                </div>
+                <div class="userline-option userline-radio ura-art2">
+                    <div class="radio-standart">
+                        <label>
+                            <input name="attr[]" type="radio" value="art2">
+                            <span class="rdo-st"></span>
+                            <span class="rdo-name">Артикул 2</span>
+                        </label>
+                    </div>
+                </div>
+                <div class="userline-option userline-radio ura-code">
+                    <div class="radio-standart">
+                        <label>
+                            <input name="attr[]" type="radio" value="code">
+                            <span class="rdo-st"></span>
+                            <span class="rdo-name">Код</span>
+                        </label>
+                    </div>
+                </div>
+            </div>
+            <div class="userline">
+                <div class="previews dropzone" id="dropzone"></div>
+            </div>
+            <div class="dropzone-rezult"></div>
+            <span class="bc-btn">
+                <input type="submit" value="Загрузить">
+            </span>
+        </div>
+    </div>
+</form>
+<script>
+    Dropzone.discover();
+  </script>
+
+

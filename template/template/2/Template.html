@@ -1,0 +1,320 @@
+<!-- Header --><?php 
+if ($action=='full' && $message>0 && !$f_name && !$isTitle && $classID==2001) { //если товар был перемещен
+	// ищем товар в базе сайта и получаем новую ссылку
+	$newitemlink = nc_message_link($message,$classID);
+	if ($newitemlink) { header("HTTP/1.1 301 Moved Permanently"); header("Location: $newitemlink"); } else {  header("HTTP/1.0 404 Not Found"); header("Location: /404/"); }
+}
+
+# сайт выключен
+// if(!$current_catalogue[Checked]) header("Location: //korzilla.ru/extend-the-tariff");
+
+# БЛОКИ
+include($DOCUMENT_ROOT.$SUB_FOLDER.$HTTP_TEMPLATE_PATH."blocks.php");
+# Ширина нынешней данной страницы
+$cols = !$noleftcol && $zoneall[2] ? 9 : 12;
+
+if ($_SERVER[HTTP_HOST]=='krzi.ru') {
+	//compress_js('js/main.js');
+}
+
+?>
+
+<!DOCTYPE html>
+<html lang="ru" prefix="og: http://ogp.me/ns#">
+<head>
+
+	<title><?php 
+
+	if ($current_sub[Title2] && $action!='full') {
+		$titlepath = strtr($current_sub[Title2],$titleArr);
+	} else {
+		if (($action!='full' && $nc_core->page->get_title()) || ($action=='full' && $f_ncTitle)) {
+			$titlepath = strtr($nc_core->page->get_title(),$titleArr);
+		} else {
+			if ($current_sub[TitleObj] && $action=='full') $titlepath = strtr($current_sub[TitleObj],$titleArr);
+		}
+	}
+	if (!$titlepath) $titlepath = implode(" / ", array_reverse(explode(" / ", strip_tags(nc_browse_path($browse_path)))));
+	if ($cityname && !strstr($titlepath,$cityname) && !strstr($nc_core->page->get_title(),"NOCITY") && !strstr($current_sub[Title2],"NOCITY") && !strstr($current_sub[TitleObj],"NOCITY")) $titlepath .= " ".getLangCityName($cityname);
+	echo html_entity_decode($titlepath); ?></title>
+
+
+	<?php 
+	// Description
+	if ($current_sub[Description2] && $action!='full' && !$current_sub[Description]) {
+		$descrpath = strtr($current_sub[Description2],$titleArr);
+	} else {
+		if (($action!='full' && $nc_core->page->get_description()) || ($action=='full' && $f_ncDescription)) {
+			$descrpath = strtr($nc_core->page->get_description(),$titleArr);
+		} else {
+			if ($current_sub[DescriptionObj] && $action=='full') $descrpath = strtr($current_sub[DescriptionObj],$titleArr);
+		}
+	}
+	// Keywords
+	if ($current_sub[Keywords2] && $action!='full' && !$current_sub[Keywords]) {
+		$keywpath = strtr($current_sub[Keywords2],$titleArr);
+	} else {
+		if (($action!='full' && $nc_core->page->get_keywords()) || ($action=='full' && $f_ncKeywords)) {
+			$keywpath = strtr($nc_core->page->get_keywords(),$titleArr);
+		} else {
+			if ($current_sub[KeywordsObj] && $action=='full') $keywpath = strtr($current_sub[KeywordsObj],$titleArr);
+		}
+	}
+
+	?>
+	<meta name='Description' content='<?=$descrpath?><?=($cityname && $descrpath && !strstr($descrpath,$cityname) && !strstr($nc_core->page->get_description(),"NOCITY") && !strstr($current_sub[Description2],"NOCITY") && !strstr($current_sub[DescriptionObj],"NOCITY") ? " ".$cityname."." : NULL)?>'>
+	<meta name='Keywords' content='<?=$keywpath?><?=($cityname && $keywpath && !strstr($keywpath,$cityname) && !strstr($nc_core->page->get_keywords(),"NOCITY") && !strstr($current_sub[Keywords2],"NOCITY") && !strstr($current_sub[KeywordsObj],"NOCITY") ? " ".mb_strtolower($cityname) : NULL)?>'>
+
+	<meta charset="utf-8">
+	<meta name="format-detection" content="telephone=no">
+
+	<meta property="og:locale" content="ru_RU" />
+	<meta property='og:type' content='website'/>
+   	<meta property='og:url' content='<?=($current_catalogue[https] ? "https" : "http")?>://<?=$HTTP_HOST.$_SERVER['REQUEST_URI']?>'/>
+
+	<?=($classID==2001 && $action=='full' ? "
+	<meta property='og:title' content='$f_name' />
+	".($f_photo->records[0][Path] ? "<meta property='og:image' content='".($current_catalogue[https] ? "https" : "http")."//".$HTTP_HOST.$f_photo->records[0][Path]."' />" : NULL)."
+	" : "
+	<meta property='og:title' content='$f_title' />
+	")?>
+	<?php 
+	if($mainpage){
+		$img_logo = $db->get_var("select SUBSTRING_INDEX(file, ':', -1) from Message2047 where Catalogue_ID = '{$catalogue}' limit 1");
+		if($img_logo) echo "<meta property='og:image' content='{$pathInc}/files/{$img_logo}'/>";
+	}
+
+	?>
+
+	<?=(!$setting[notmobile] ? "<meta name='viewport' content='width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=0'>" : NULL)?>
+
+	<link rel='icon' href='<?=$favicon?>' type='image/x-icon'><link rel='shortcut icon' href='<?=$favicon?>' type='image/x-icon'>
+
+	<?=(($curPos || $recNum || $show || $flt || $filter || $nc_ctpl) && $_SERVER['REDIRECT_URL'] ? "<link rel='canonical' href='//".$_SERVER['HTTP_HOST'].$_SERVER['REDIRECT_URL']."' />" : NULL)?>
+
+	<script src="/js/jquery-2.1.4.min.js"></script>
+
+	<?=stripcslashes($setting[meta])?>
+
+	<LINK href='<?=$SRV_HOST?>/css/grid1000.css' rel='Stylesheet' type='text/css'>
+	<?=($setting[sitewidth] ? "<LINK href='{$SRV_HOST}/css/grid1200.css' media='screen and (min-width:1280px)' rel='Stylesheet' type='text/css'>" : NULL)?>
+	<link href="//<?=$HTTP_HOST?>/css/style.css?v=<?=filectime($DOCUMENT_ROOT.$SUB_FOLDER.'/css/style.css')?>" rel='Stylesheet' type='text/css'>
+	<?=(!$setting[notmobile] ? "<LINK href='{$SRV_HOST}/css/mobile.css?v=".filectime($DOCUMENT_ROOT.$SUB_FOLDER.'/css/mobile.css')."' media=\"screen and (max-width:780px)\" rel='Stylesheet' type='text/css'>" : NULL)?>
+	<LINK href='<?=$pathInc?>/bc_custom<?=(!$bitcat && file_exists($DOCUMENT_ROOT.$SUB_FOLDER.$pathInc."/bc_custom.min.css") ? ".min" : NULL)?>.css?v=<?=filectime($DOCUMENT_ROOT.$SUB_FOLDER.$pathInc.'/bc_custom.css')?>' rel='Stylesheet' type='text/css'>
+
+	<?=($_SERVER[REQUEST_URI]=='/registration/' ? "<script type='text/javascript' src='{$SRV_HOST}/bc/modules/auth/auth.js'></script>" : NULL)?>
+
+	<?=($setting[mainMenuBg] && $setting[mainMenuBg]!='ffffff' ? "<meta name='theme-color' content='{$setting[mainMenuBg]}'>" : NULL)?>
+
+</head>
+
+<?php 
+
+	if (!$mainpage) {
+		if ($classID==2001 && $action=='full') {
+		} else {
+			$titleH1cont = "<section class='zone-title'>
+				<h1>".($current_sub['AlterTitle'] && $action!='full' ? $current_sub['AlterTitle'] : getLangWord("lang_sub_".$current_sub['EnglishName'], $f_title))."</h1>
+				".($classID==2020 ? "<div class='kz_napisat h1-title'><a href='#reviewAdd'>".($setting_texts['review_write']['checked'] ? $setting_texts['review_write']['name'] : "Написать отзыв")."</a></div>" : "")."
+			</section>";
+		}
+	}
+
+	if ($_SERVER[REQUEST_URI]!='/' && $_SERVER[PHP_SELF] != '/index.php') $bodyclass[] = ($action=='full' ? "page{$sub}obj class{$classID}obj pageobj" : "pagelist");
+
+	$ncctpl = $nc_ctpl>1 ? $nc_ctpl : $current_cc[Class_Template_ID];
+
+	$bodyclass[] = "shema".$shema;
+	$bodyclass[] = $subdivClass;
+	$bodyclass[] = ($setting[sitewidth] ? "sitew1200" : "sitew1000");
+	$bodyclass[] = ($bitcat ? "authbit" : NULL);
+	$bodyclass[] = ($AUTH_USER_ID ? "authuser" : "notauth");
+	$bodyclass[] = ($bitcat ? "devuser" : "");
+	$bodyclass[] = ($mainpage ? "mainpage" : "innerpage");
+	$bodyclass[] = "st".$catalogue;
+	$bodyclass[] = "page".$sub;
+	if($message) $bodyclass[] = "item".$message;
+	$bodyclass[] = "class".$classID;
+    if ($ncctpl) $bodyclass[] = "subclass".$ncctpl;
+	$bodyclass[] = "level".$sub_level_count;
+	$bodyclass[] = "targcookie";
+    $bodyclass[] = $citylink ? $citylink : 'nocity';
+
+	if($current_sub[ajaxload]) $bodyclass[] = "ajaxload";
+	$bodyclass[] = ($cols==9 ? "left-have" : "left-nothave");
+	($AUTH_USER_ID && $_COOKIE["adminkorzilla"] ? $bodyclass[] = "admin-sett-".$_COOKIE["adminkorzilla"] : NULL);
+	(in_array($AUTH_USER_ID, array(1, 96, 119, 121)) ? $bodyclass[] = "SUPERVIKTOR" : NULL);
+    if($setting['language']) $bodyclass[] = "lang-{$langs[langnow]}";
+    if(is_mobile()) $bodyclass[] = "is_mobile";
+    $bodyclass[] = permission('design') ? "design-yes" : "design-no";
+    $bodyclass[] = $setting[editortype];
+
+    if($setting['language']) $bodydata[] = "data-lang='{$langs[langnow]}'";
+	$bodydata[] = "data-metrikaid='{$metrikaid}'";
+	$bodydata[] = "data-sub='{$sub}'";
+	$bodydata[] = "data-catalogue='{$catalogue}'";
+	$bodydata[] = "data-class='{$classID}'";
+	$bodydata[] = "data-nc_ctpl='{$nc_ctpl}'";
+	$bodydata[] = $setting[kopeik] ? "data-kopeek='1'" : "";
+	$bodydata[] = $setting[showImageHover] ? "data-imagehover='1'" : "";
+
+?>
+
+<body <?=implode(" ", $bodydata)?> class='<?=implode(" ", $bodyclass)?>'>
+	<div id="page-preloader"></div>
+	<?=getElements();?>
+	<div id='site'>
+		<div class='topfix'></div>
+		<div id='main'>
+
+			<?=($zoneall[1] ? $zoneall[1] : "")?>
+
+			<section id='center'>
+				<div class='centerwrap container container_12'>
+
+				<?=getXleb(array("type" => 1, "main" => 1))?>
+
+				<?=$titleH1oncont?>
+
+				<?php  # Левая колонка
+	            	if (!$noleftcol && $zoneall[2]) echo "<section id='sidebar' data-zone='".getMessId(2)."' data-id='2' data-width='3' data-name='Зона слева' class='zone zone2 grid_3 start'><div class='container-zone'>{$zoneblocks[2]}</div></section>";
+	            ?>
+				<section id='content' class='end <?=($cols==12 ? " start" : "")?> grid_<?=$cols?>'>
+				    <section class='zone zone3 cb' data-zone='<?=getMessId(3)?>' data-id='3' <?=($bitcat ? "data-name='Над контентом'": "")?> data-width='9'><div class='container-zone'><?=(!$is404 ? $zoneblocks[3] : NULL)?></div></section>
+	                  <?=(!$is404 ? strtr($titleH1cont, $titleArr) : NULL)?>
+	                  <?=$html404?>
+	                  <section class='zone zone4 cb' data-zone='<?=getMessId(4)?>' data-id='4' <?=($bitcat ? "data-name='Контент'": "")?> data-width='9'>
+                          <div class='container-zone'><?=(!$is404 ? $zoneblocks[4] : NULL)?>
+
+                              <?=(!$mainpage ? "<section class='start end zone-content-all grid_{$cols} typeblock'><article>" : NULL)?>
+
+                              <?php 
+                                  if($current_sub['subdir_id']==1 && $action!='full') $catalogHeader = catalogCategory($sub, array('list' => 1));
+                                  if($current_sub['subdir_id']==3 && $action!='full') $catalogHeader = catalogCategory($sub);
+                                  echo ($catalogHeader ? "<div class='subdivision-top'>{$catalogHeader}</div>" : "");
+                              ?>
+                              <?=($current_sub['filtermenu'] ? "<div class='subdivision-filter'>".catalogFilter($current_sub)."</div>" : NULL)?>
+
+                              <?=($classID == '2001' && $action!='full' ? "<div class='zone-sort'>".getCatalogSort()."</div>" : "")?>
+
+                              <?=(!$mainpage ? "<div class='zone-content'>" : NULL)?>
+                                  <?=($action!='full' && $current_sub['text'] ? "<div class='txt textsub-top'>".$current_sub['text']."</div>" : NULL)?>
+<!-- /Header -->
+
+<!-- Footer -->                                    <?=($current_sub['EnglishName']=='sitemap' ? s_browse_sub(0,$browse_map).getCitySitemap() : NULL)?>
+                                    <?=($action!='full' && $current_sub['text2'] ? "<div class='txt textsub-bottom'>".$current_sub['text2']."</div>" : NULL)?>
+                                <?=(!$mainpage ? "</div>" : NULL)?>
+
+                                <?php 
+                                    if($current_sub['subdir_id']==2 && $action!='full') $catalogFooter = catalogCategory($sub, array('list' => 1));
+                                    if($current_sub['subdir_id']==4 && $action!='full') $catalogFooter = catalogCategory($sub);
+                                    echo ($catalogFooter ? "<div class='subdivision-bottom'>{$catalogFooter}</div>" : "");
+                                ?>
+
+                                <?=(!$mainpage ? "</article></section>" : NULL)?>
+                            </div>
+                        </section>
+
+    					<section class='zone zone5 cb' data-zone='<?=getMessId(5)?>' data-id='5' <?=($bitcat ? "data-name='Под контентом'": "")?> data-width='9'><div class='container-zone'><?=(($zoneblocks[5] || $bitcat) && !$is404 ? $zoneblocks[5]: "")?></div></section>
+    				</section>
+
+                    <?php  if ($setting[htmlShema]==2) echo "<section id='sidebar' data-width='3' data-zone='2' class='zone zone2 grid_3 end'><div class='container-zone'>{$zoneblocks[2]}</div></section>"; ?>
+
+    				<?php  if (!$noleftcol) echo ($shema==5 ? "<div id='rightcol' data-zone='13' data-width='3' class='zone zone13 end grid_3'><div class='container-zone'>{$zoneblocks[13]}</div></div>": "") ?>
+
+    				<div class='clear'></div>
+    			</div>
+    		</section>
+
+    		<?=($zoneall[4] ? $zoneall[4] : "")?>
+
+    	</div>
+    </div>
+
+    <?=($zoneall[5] ? $zoneall[5] : "")?>
+
+    <!-- noindex  -->
+    <div id="notification"><div class="alert none"><a class="close" href="#"><i class="icons i_del3"></i></a><div></div></div></div>
+
+    <div id="сonfirm-actions" style="display: none;">
+        <h4 class="сonfirm-actions-title"></h4>
+    	
+        <div class="сonfirm-actions-text none"></div>
+        <div class="result center"></div>
+        <div class="сonfirm-actions-btn сs-btn">
+            <a class="lightcase-ok ajax-btn" href="#"><?=getLangWord('modal_true','ОК')?></a>
+            <a class="lightcase-close lc-close" href="#"><?=getLangWord('modal_false','ОТМЕНА')?></a>
+        </div>
+        <div class="сonfirm-actions-btn-second сs-btn">
+            <a class="lightcase-ok lc-close" href="#"><?=getLangWord('modal_success','ОК')?></a>
+        </div>
+    </div>
+
+    <div id="bottombut"><a href="" title='наверх' class="top"><span></span></a> </div><!--/noindex-->
+
+    <?=((!$admin_mode && $bitcat) || $setting['acatToken'] ? "<script src='https://ajax.googleapis.com/ajax/libs/jqueryui/1.12.0/jquery-ui.min.js'></script>" : "")?>
+
+    <?=(!$admin_mode && $bitcat ? "
+    <script type='text/javascript'>var \$nc = jQuery.noConflict();</script>
+    <script type='text/javascript'>if (typeof \$ == 'undefined') \$ = jQuery;</script>
+    <script type='text/javascript' src='/template/jquery/jquery.ajaxfileupload.min.js'></script>
+    <script type='text/javascript' src='/template/jquery/jquery.form.min.js'></script>
+    <script type='text/javascript' src='/template/jquery/jquery.jscrollpane.min.js'></script>
+    <script type='text/javascript' src='/template/jquery/jquery.mousewheel.min.js'></script>
+    <script type='text/javascript' src='/template/jquery/jquery.nclsdisplay.js'></script>
+    <script type='text/javascript' src='/template/jquery/jquery.simplemodal.min.js'></script>
+    <script type='text/javascript' src='/template/jquery/jquery.tablednd.min.js'></script>
+    <script type='text/javascript'>if (typeof(nc_token) == 'undefined') {var nc_token = '".$nc_core->token->get()."';}var nc_save_keycode = 83;</script>
+    <script type='text/javascript' src='/bc/modules/auth/auth.js'></script>
+    <script type='text/javascript' src='/bc/admin/js/lang/ru_utf8.js' charset='utf-8'></script>
+    <script type='text/javascript' src='/bc/admin/js/nc/nc.min.js'></script>
+    <script type='text/javascript' src='/bc/admin/js/nc_admin.js'></script>
+    <script type='text/javascript' src='/bc/admin/js/lib.js'></script>
+    <script type='text/javascript' src='/bc/admin/js/forms.js'></script>
+    <script type='text/javascript' src='/template/jquery/jquery.nclsdisplay.js'></script>
+    <script type='text/javascript' src='/js/jquery.mjs.nestedSortable.js'></script>
+
+    <script type='text/javascript'>var CKEDITOR_BASEPATH = '/bc/editors/ckeditor4/';</script>
+    <script type='text/javascript' src='/bc/editors/ckeditor4/ckeditor.js'></script>
+    " : "")?>
+    <script type="text/javascript" src="/js/lang.js?v=<?=filectime($DOCUMENT_ROOT.$SUB_FOLDER.'/js/lang.js')?>"></script>
+	<script type="text/javascript" src="/js/main_min.js?v=<?=filectime($DOCUMENT_ROOT.$SUB_FOLDER.'/js/main_min.js')?>"></script>
+	
+    <script type='text/javascript' src="/js/js.js?v=<?=filectime($DOCUMENT_ROOT.$SUB_FOLDER.'/js/js.js')?>"></script>
+
+    <?php 
+        if($plugins && is_array($plugins['js'])){
+            foreach($plugins['js'] as $name => $plg) echo "<script type='text/javascript' src='/js/{$name}.js?v=".filectime($DOCUMENT_ROOT.$SUB_FOLDER."/js/{$name}.js")."'></script>";
+        }
+    ?>
+    <?php 
+        if($plugins && is_array($plugins['modules'])){
+            foreach($plugins['modules'] as $name => $plg){
+                echo "<script type='text/javascript' src='/js/{$name}/{$name}.js?v=".filectime($DOCUMENT_ROOT."/js/{$name}/{$name}.js")."'></script>
+                    <link rel='Stylesheet' type='text/css' href='/js/{$name}/{$name}.css?v=".filectime($DOCUMENT_ROOT."/js/{$name}/{$name}.css")."'>";
+            }
+        }
+    ?>
+
+    <?php  if(file_exists($DOCUMENT_ROOT.$pathInc2."/second.css")){ ?>
+        <link rel='Stylesheet' type='text/css' href='<?=$pathInc2?>/second.css?v=<?=filectime($DOCUMENT_ROOT.$pathInc2.'/second.css')?>'>
+    <?php  } ?>
+    <?php  if($current_catalogue['loadJSfile'] && file_exists($DOCUMENT_ROOT.$pathInc2."/js.js")){ ?>
+        <script type='text/javascript' src="<?=$pathInc2?>/js.js?v=<?=filectime($DOCUMENT_ROOT.$pathInc2.'/js.js')?>"></script>
+    <?php  } ?>
+
+    <?=($bitcat ? "
+    <script type='text/javascript'>var bc = ".$AUTH_USER_ID.";</script>
+    <link rel='Stylesheet' type='text/css' href='/bc/modules/bitcat/admin.css?v=".filectime($DOCUMENT_ROOT.$SUB_FOLDER.'/bc/modules/bitcat/admin.css')."'>
+    <script type='text/javascript' src='/bc/modules/bitcat/admin.js?v=".filectime($DOCUMENT_ROOT.$SUB_FOLDER.'/bc/modules/bitcat/admin.js')."'></script>
+    <script type='text/javascript' src='/js/loader.js'></script>
+    " : NULL)?>
+
+    <?=(permission("monster") && !permission('design', 'only') ? "
+    <link rel='Stylesheet' type='text/css' href='/bc/modules/bitcat/separate/separate.css?v=".filectime($DOCUMENT_ROOT.$SUB_FOLDER.'/bc/modules/bitcat/separate/separate.css')."'>
+    <script type='text/javascript' src='/bc/modules/bitcat/separate/separate.js?v=".filectime($DOCUMENT_ROOT.$SUB_FOLDER.'/bc/modules/bitcat/separate/separate.js')."'></script>
+    " : NULL)?>
+
+</body>
+</html>
+<!-- /Footer -->

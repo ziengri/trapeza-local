@@ -1,0 +1,62 @@
+<style>
+    #row-tabs .row-tab {
+        padding-left: 0;
+        border: 0;
+        padding-bottom: 0;
+        padding-top: 0;
+        margin-bottom: 7px;
+        position: relative;
+        display: flex;
+        flex-wrap: nowrap;
+    }
+
+    #row-tabs .row-tab .wrapper>div {
+        width: fit-content;
+    }
+
+    .row-tab .wrapper {
+        width: 100%;
+        border-bottom: 1px solid #E4ECEE;
+        display: grid;
+        grid-template-columns: 20px 1fr 40px;
+        align-items: center;
+        justify-items: center;
+    }
+
+    ol#row-tabs {
+        padding: 0 24px;
+    }
+
+    .row-tab .wrapper .name {
+        grid-column: 2;
+    }
+
+    .row-tab .wrapper .dropthree {
+        position: relative;
+        grid-column: 1/2;
+        left: 0;
+    }
+
+    #gr_cart_full_tabs a.add-btn {
+        position: absolute;
+        top: 0;
+        right: 24px;
+    }
+</style>
+<ol id="row-tabs">
+    <? foreach ($data as $id => $row) : ?>
+        <li class="row-tab" id="id-<?= uniqid() ?>" data-id="<?= $id ?>">
+            <div class="wrapper <?=(!$row['Checked'] ? 'uncheck' : null)?>">
+                <span class='dropthree'></span>
+                <div class="name"><?= $row['name'] ?></div>
+                <div class="modal_btn">
+                    <a data-rel="lightcase" data-lc-options='{"maxWidth":950,"groupClass":"modal-edit"}' class="btn-a btn-a-edit icons admin_icon_7" data-lc-href="/bc/modules/Korzilla/CatalogItem/Tab/controller.php?action=get_modal_setting&id=<?= $id ?>" href="/bc/modules/Korzilla/CatalogItem/Tab/controller.php?action=get_modal_setting&id=<?= $id ?>" title="Настроки вывода <?= $id ?>"></a>
+                </div>
+            </div>
+        </li>
+    <? endforeach; ?>
+</ol>
+<a class="add-btn" data-rel="lightcase" data-lc-options='{"maxWidth":950,"groupClass":"modal-edit"}' class="btn-a btn-a-edit icons admin_icon_7" data-lc-href="/bc/modules/Korzilla/CatalogItem/Tab/controller.php?action=add_tab" href="/bc/modules/Korzilla/CatalogItem/Tab/controller.php?action=add_tab" title="Настроки вывода">добавить еще</a>
+
+<script src="/bc/modules/Korzilla/CatalogItem/Tab/src/setting.js"></script>
+

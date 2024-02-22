@@ -1,0 +1,90 @@
+<!-- FormPrefix --><?=($inside_admin ? $f_AdminCommon : addObjBut($addLink,$isTitle,null,'сравнение'))?>
+<?php 
+    global $setting_texts;
+    if($_SESSION['comparison']){
+        foreach ($_SESSION['comparison'] as $itemID => $siteID) {
+            if($siteID == $catalogue) $thissiteItem = 1;
+            continue;
+        }
+    }
+    if($thissiteItem){
+        $fields = array(
+            "name" => "Наименование",
+            "art" => "Артикул",
+            "ves" => "Вес",
+            "capacity" => "Объем",
+            "size" => "Размеры",
+            "width" => "Ширина",
+            "height" => "Высота",
+            "depth" => "Глубина",
+			"var1" => $setting_texts['var1']['checked'] ? $setting_texts['var1']['name'] : "Параметр 1",
+			"var2" => $setting_texts['var2']['checked'] ? $setting_texts['var2']['name'] : "Параметр 2",
+			"var3" => $setting_texts['var3']['checked'] ? $setting_texts['var3']['name'] : "Параметр 3",
+			"var4" => $setting_texts['var4']['checked'] ? $setting_texts['var4']['name'] : "Параметр 4",
+			"var5" => $setting_texts['var5']['checked'] ? $setting_texts['var5']['name'] : "Параметр 5",
+			"var6" => $setting_texts['var6']['checked'] ? $setting_texts['var6']['name'] : "Параметр 6",
+			"var7" => $setting_texts['var7']['checked'] ? $setting_texts['var7']['name'] : "Параметр 7",
+			"var8" => $setting_texts['var8']['checked'] ? $setting_texts['var8']['name'] : "Параметр 8",
+			"var9" => $setting_texts['var9']['checked'] ? $setting_texts['var9']['name'] : "Параметр 9",
+			"var10" => $setting_texts['var10']['checked'] ? $setting_texts['var10']['name'] : "Параметр 10",
+			"var11" => $setting_texts['var11']['checked'] ? $setting_texts['var11']['name'] : "Параметр 11",
+			"var12" => $setting_texts['var12']['checked'] ? $setting_texts['var12']['name'] : "Параметр 12",
+			"var13" => $setting_texts['var13']['checked'] ? $setting_texts['var13']['name'] : "Параметр 13",
+			"var14" => $setting_texts['var14']['checked'] ? $setting_texts['var14']['name'] : "Параметр 14",
+			"var15" => $setting_texts['var15']['checked'] ? $setting_texts['var15']['name'] : "Параметр 15",
+        );
+        # Массив с параметрами товаров
+        foreach ($_SESSION['comparison'] as $id => $e){
+            $itemObject = $catalogue == $e ? Class2001::getItemById($id) : "";
+			if(!$itemObject) continue;
+
+            $items['photo'][$id] = $itemObject->photoMain;
+            foreach ($fields as $name => $filed) {
+                if($itemObject->$name) $items[$name][$id] = $itemObject->$name;
+            }
+        }
+
+        foreach ($items as $key => $v){
+            if(in_array($key, array('name', 'photo'))) continue;
+            $filedsName .= "<li>{$fields[$key]}</li>";
+        }
+        # Сборка параметров в html
+        foreach ($items[photo] as $i => $photo) {
+
+            $fileds .= "<li class='comparison-product' data-id='{$i}'>
+                            <div class='comparison-namefull'>
+                                <div class='comparison-close'></div>
+                                {$photo}
+                                <h3>{$items[name][$i]}</h3>
+                            </div>
+                            <ul class='comparison-list'>";
+            foreach ($items as $key => $v){
+                if(in_array($key, array('name', 'photo'))) continue;
+                $fileds .= "<li>".($v[$i] ? $v[$i] : "-")."</li>";
+            }
+            $fileds .= "</ul></li>";
+        }
+        $html = "<section class='comparison-full'>
+                    <div class='comparison-table'>
+                        <div class='comparison-left'>
+                            <div class='comparison-info-first'>Товары</div>
+                            <ul class='comparison-param-name'>{$filedsName}</ul>
+                        </div>
+                        <div class='comparison-right'>
+                            <ul class='comparison-param-value owl-carousel cb' data-margin='0' data-owl-loop='false' data-owl-nav='true' data-sizeitem='1279:4.780:3.650:2.550:1'>
+                                {$fileds}
+                            </ul>
+                        </div>
+                    </div>
+                </section>";
+    }else{
+        $html = "<p class='no-obj'>Добавте товары для сравнения.<br><a href='/catalog/'>Перейти в каталог</a></p>";
+    }
+
+    echo $html;
+?>
+<!-- /FormPrefix -->
+
+<!-- RecordTemplate --><!-- /RecordTemplate -->
+
+<!-- FormSuffix --><!-- /FormSuffix -->

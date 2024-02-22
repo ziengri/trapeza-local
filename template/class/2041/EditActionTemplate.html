@@ -1,0 +1,15 @@
+<?php 
+if($inside_admin) {
+    ob_end_clean();
+    header('Location: '.$goBackLink.'&inside_admin=1');
+    exit;
+} else { 
+    echo json_encode(ARRAY(
+        "title" => "ОК",
+        "succes" =>  "Фильтр удален",
+        "reloadtab" => 1,
+        "modal" => "close",
+        "reload" => !$panel ? 1 : 0
+    ));
+}
+?>

@@ -1,0 +1,14 @@
+</div>
+<?php
+global $pathInc2;
+$recordCustomPath = $DOCUMENT_ROOT . $pathInc2 . "/template/class/{$classID}/2048/FormSuffix.html";
+$isIncludeRecordCustom = !empty($current_catalogue['customCode']) && file_exists($recordCustomPath);
+if ($isIncludeRecordCustom) {
+    include $recordCustomPath;
+} else {
+    ?>
+    <?php if ($totRows > $recNum) { ?>
+        <a href="<?= $cc_env[Hidden_URL] ?>" class="otz_all">Читать все отзывы »</a>
+    <?php } ?>
+
+<? } ?>

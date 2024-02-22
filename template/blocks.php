@@ -1,0 +1,1 @@
+<?php global $zoneall, $jsonparam;# Достаем все блоки$zoneblocks = getblocksarr();# Засовываем блоки в зоныif ($zoneblocks) $zoneall = getzonearr($zoneblocks);?>

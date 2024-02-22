@@ -1,0 +1,12 @@
+<?php 
+$stars = round05($totRate/$totCount,1);
+$starsClass = str_replace(".","_",$stars);
+?>
+<div class="kz_otzyvy">
+	<div class="kz_raiting <?=(!$totRows ? "norate" : NULL)?>">
+        <?=(!$totRows ? "<div class='kz_nootz'>".getLangWord('comment_first','Здесь еще никто не оставлял отзывы. Вы можете быть первым')."</div>" : NULL)?>
+		<div class="kz_napisat"><a href="" data-scrollto='.kz_form'><?=getLangWord('comment_write_btn_scroll','Написать отзыв')?></a></div>
+	</div>
+	<?=$otzyvy?>
+</div>
+<div class='kz_form' data-load='/index/otzyvtovar/add_otzyvtovar.html&f_tovar=<?=$tovar?>'></div>

@@ -1,0 +1,28 @@
+<?php
+    # Отделение [START]
+    $seporateFile = $DOCUMENT_ROOT.$pathInc2."/template/class/{$classID}/FormSuffix.html";
+    if ($current_catalogue['customCode'] && file_exists($seporateFile)) : 
+        include $seporateFile;
+    else : 
+        unset($seporateFile);
+?>
+    <?php  if($totRows){ ?>
+        </ul>
+    <?php  } ?>
+    <?=getPagination(array(
+        'isTitle' => $isTitle,
+        'cc_env' => $cc_env,
+        'prevLink' => $prevLink,
+        'nextLink' => $nextLink,
+        'totRows' => $totRows,
+        'recNum' => $recNum,
+        'vars_str2' => $vars_str2,
+        'sub' => $sub,
+        'cc' => $cc,
+        'inside_admin' => $inside_admin
+    ))?>
+<?php 
+    endif; 
+    unset($seporateFile);
+    # Отделение [END]
+?>

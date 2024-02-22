@@ -1,0 +1,977 @@
+<?php 
+if ($current_catalogue['customCode']) {
+  GLOBAL $pathInc2, $DOCUMENT_ROOT;
+    $includeClass = NULL;
+  $thisFile = $DOCUMENT_ROOT.$pathInc2."/template/class/210/2078/FormPrefix.html";
+  if (file_exists($thisFile)) $includeClass = 1;
+}
+
+if ($includeClass==1) { include($thisFile); } else { # ############ START ##########
+
+if ($setting['acatToken']!=''){
+	$link_acatv2 = $db->get_var("SELECT Subdivision_ID FROM Sub_Class WHERE Class_ID=210 AND Class_Template_ID=2078 AND Catalogue_ID=".$catalogue);
+	$link_acatv2 = $db->get_var("SELECT Hidden_URL FROM Subdivision WHERE Subdivision_ID=".$link_acatv2);
+	$id = 0;
+	$s = 0;
+	if (isset($_GET['id']) && strlen($_GET['id'])>2){
+		preg_match('/([0-9A-Z\/_\\|-]{3,})/i', trim($_GET['id'], '/'), $e);
+		if (count($e))
+			$id = $e[0];
+	}
+	if (isset($_GET['s']) && strlen($_GET['s'])>2){
+		preg_match('/([0-9A-Z\\-_]{3,})/i', trim($_GET['s'], '/'), $e);
+		if (count($e))
+			$s = $e[0];
+	}
+	$ACAT = new ACAT($setting['acatToken'], $link_acatv2);
+	if (!strstr($_GET['id'],'\/')) $html .= $ACAT->getTypes();
+	if ($html){
+		$html = '<div id="AutoDealer"><!--breadcrumbs--><!--search-->'.$html;
+		if ($id){
+			$cnt = substr_count($id, '/');
+			$link = trim($id, '/').'/';
+			$tt = explode('/', $id);
+			if (isset($tt[1]))
+				$tt = $tt[1];
+			else
+				$tt = '';
+			if ($cnt == 10){
+				$inf = $ACAT->get($id);
+				if ($inf){
+					$ACAT->bread = $inf['breadcrumbs'];
+					if ($tt=='AUDI' || $tt=='SEAT' || $tt=='SKODA' || $tt=='VOLKSWAGEN'){
+						if ($img = $inf['image']){
+							$html .= $ACAT->getImageHTML($img);
+						}
+						$html .= '<div class="clear"></div>';
+						$html .= $ACAT->getTableHTML($inf['numbers'], $link, $inf['subgroup']['mark'], 'label');
+					}
+					else
+						$html .= 'none';
+				}
+				else {
+					$ACAT->typeID = $ACAT->types[0]['value'];
+					$html .= $ACAT->getMarks();
+				}
+			}
+			elseif ($cnt == 9){
+				$inf = $ACAT->get($id);
+				if ($inf){
+					$ACAT->bread = $inf['breadcrumbs'];
+					if ($tt=='AUDI' || $tt=='SEAT' || $tt=='SKODA' || $tt=='VOLKSWAGEN'){
+						if ($inf['subservice'])
+							$html .= $ACAT->getTableHTML($inf['numbers'], $link, $inf['subservice']['mark'], 'label');
+						else
+							$html .= 'none';
+						#$html .= ot($inf);
+					}
+					else
+						$html .= 'none';
+				}
+				else {
+					$ACAT->typeID = $ACAT->types[0]['value'];
+					$html .= $ACAT->getMarks();
+				}
+			}
+			elseif ($cnt == 8){
+				$inf = $ACAT->get($id);
+				if ($inf){
+					$ACAT->bread = $inf['breadcrumbs'];
+					if ($tt=='MERCEDES_BENZ' || $tt=='SMART'){
+						$html .= 'none';
+					}
+					elseif ($tt=='TOYOTA' || $tt=='LEXUS'){
+						$html .= '<div class="silkes">';
+						$ll = explode('/', trim($link,'/'));
+						$_link = '';
+						for($i=0;$i<count($ll)-1;$i++){
+							$_link .= $ll[$i].'/';
+						}
+						foreach($inf['images'] as $img){
+							$html .= '<a href="?id='.$_link.$img['illustration_short_name'].'">'.$img['illustration_short_name'].'</a>';
+						}
+						$html .= '</div>';
+						if ($img = $inf['image']){
+							$html .= $ACAT->getImageHTML($img);
+						}
+						$html .= '<div class="clear"></div>';
+						$html .= $ACAT->getTableHTML($inf['numbers'], $link, $inf['country']['mark'], 'catalog_code');
+					}
+					elseif ($tt=='AUDI' || $tt=='SEAT' || $tt=='SKODA' || $tt=='VOLKSWAGEN'){
+						if (isset($inf['group'])){
+							$html .= $ACAT->getList($inf['subgroups'], $link, 'name', 'detail', 'subgroup');
+						}
+						else{
+							$html .= $ACAT->getList($inf['subservices'], $link, 'name', 'subservice');
+						}
+					}
+					else
+						$html .= 'none';
+				}
+				else {
+					$ACAT->typeID = $ACAT->types[0]['value'];
+					$html .= $ACAT->getMarks();
+				}
+			}
+			elseif ($cnt == 7){
+				$inf = $ACAT->get($id);
+				if ($inf){
+					$ACAT->bread = $inf['breadcrumbs'];
+					if ($tt=='KIA' || $tt=='HYUNDAI'){
+						if ($img = $inf['image']){
+							$html .= $ACAT->getImageHTML($img);
+						}
+						$html .= '<div class="clear"></div>';
+						$html .= $ACAT->getTableHTML($inf['numbers'], $link, $inf['subgroup']['mark'], 'label');
+					}
+					elseif ($tt=='MERCEDES_BENZ' || $tt=='SMART'){
+						if ($img = $inf['image']){
+							$html .= $ACAT->getImageHTML($img);
+						}
+						$html .= '<div class="clear"></div>';
+						$html .= $ACAT->getTableHTML($inf['numbers'], $link, $inf['breadcrumbs'][2]['name'], 'label');
+					}
+					elseif ($tt=='TOYOTA' || $tt=='LEXUS'){
+						$html .= "<script>location.replace('?id=".$link.$inf['figure']."')</script>";
+					}
+					elseif ($tt=='ROLLS-ROYCE' || $tt=='BMW' || $tt=='MINI'){
+						if ($img = $inf['subgroup']['image']){
+							$html .= $ACAT->getImageHTML($img);
+						}
+						$html .= '<div class="clear"></div>';
+						$html .= $ACAT->getTableHTML($inf['numbers'], $link, $inf['breadcrumbs'][2]['name'], 'group_number');
+					}
+					elseif ($tt=='ALFA-ROMEO' || $tt=='ABARTH' || $tt=='FIAT' || $tt=='LANCIA'){
+						#$html .= ot($inf);
+					}
+					else
+						$html .= 'none';
+				}
+				else {
+					$ACAT->typeID = $ACAT->types[0]['value'];
+					$html .= $ACAT->getMarks();
+				}
+			}
+			elseif ($cnt == 6){
+				$inf = $ACAT->get($id);
+				if ($inf){
+					$ACAT->bread = $inf['breadcrumbs'];
+					if ($tt=='KIA' || $tt=='HYUNDAI'){
+						$html .= $ACAT->getList($inf['subgroups'], $link, 'name', 'subgroup');
+					}
+					elseif ($tt=='MERCEDES_BENZ' || $tt=='SMART'){
+						$html .= 'none';
+					}
+					elseif ($tt=='NISSAN' || $tt=='INFINITI'){
+						if ($img = $inf['image']){
+							$html .= $ACAT->getImageHTML($img);
+						}
+						$html .= '<table id="detailsList" class="table_main">';
+							$html .= '<thead>';
+								$html .= '<tr>';
+									$html .= '<th>№</th>';
+									$html .= '<th>Наименование</th>';
+									$html .= '<th>Цена</th>';
+									$html .= '<th>Купить</th>';
+								$html .= '</tr>';
+							$html .= '</thead>';
+							$html .= '<tbody>';
+							foreach($inf['numbers'] as $obj){
+							foreach($obj['items'] as $detail){
+								$index = $detail['number_group'];
+								$_exst = '';
+								$_id = preg_replace("/\D/","",$detail['number']);
+								$_exst = $db->get_results("SELECT * FROM Message2001 as a WHERE ".findTovarSql($_id)." AND a.Catalogue_ID=".$catalogue." LIMIT 0,1", ARRAY_A);
+								$_price = 0;
+								$attrItem = '';
+								if ($_exst){
+									$_price = $_exst[0]['price'];
+									$_id = $_exst[0]['Message_ID'];
+									$attrItem .= " data-typecount='1'";
+									$attrItem .= " data-id='{$_id}'";
+									$attrItem .= " data-origname=\"".$_exst[0]['name']."\"";
+									$attrItem .= " data-name=\"".$_exst[0]['name']."\"";
+									$attrItem .= " data-sub='".$_exst[0]['Subdivision_ID']."'";
+									$attrItem .= " data-origprice='".$_exst[0]['price']."'";
+									$attrItem .= " data-price='".$_exst[0]['price']."'";
+									$attrItem .= " data-count='1'";
+									$attrItem .= " data-origstock='".$_exst[0]['stock']."'";
+									$attrItem .= " data-stock='".$_exst[0]['stock']."'";
+									$attrItem .= " data-hex='".hexprice($_exst[0]['price'])."'";
+									$attrItem .= " data-orighex='".hexprice($_exst[0]['price'])."'";
+								}
+								else {
+									$name = $detail['name'];
+									if (!$name)
+										$name = $detail['number'];
+									$name .= ' ('.$obj['mark'].')';
+
+									$attrItem .= " data-id='{$_id}'";
+									$attrItem .= " data-origname=\"".$name."\"";
+									$attrItem .= " data-name=\"".$name."\"";
+									$attrItem .= " data-origprice='0'";
+									$attrItem .= " data-typecount='1'";
+									$attrItem .= " data-price='0'";
+									$attrItem .= " data-count='1'";
+									$attrItem .= " data-sub='1'";
+									$attrItem .= " data-origstock='0'";
+									$attrItem .= " data-stock='0'";
+									$attrItem .= " data-hex='".hexprice(0)."'";
+									$attrItem .= " data-orighex='".hexprice(0)."'";
+									$attrItem .= " data-l='".$link."'";
+								}
+								$html .= '<tr id="tr'.$_id.'" data-position="'.$index.'">';
+									$html .= '<td align="right" id="detailInfo">'.$index.'</td>';
+									$html .= '<td>';
+										if ($_exst)
+											$html .= '<a target=_blank href="'.nc_message_link($_exst[0]['Message_ID'],2001).'">';
+										else
+											$html .= '<span>'.$name.'</span>';
+									$html .= '</td>';
+									$html .= '<td align=center>';
+										$html .= '<div>под заказ</div>';
+									$html .= '</td>';
+									$html .= '<td data-id="'.$_id.'" class="product-item" '.$attrItem.'>';
+										$html .= '<div class="cart-btn incart-type1 mainmenubg ">
+										<div class="incart-num">
+											<input name="count" value="1" type="number">
+											<span class="icons i_plus incart_up"></span>
+											<span class="icons i_minus incart_down"></span>
+										</div><a class="incart-js icons i_cart"><span>В корзину</span></a></div>';
+									$html .= '</td>';
+								$html .= '</tr>';
+							}}
+							$html .= '</tbody>';
+						$html .= '</table>';
+					}
+					elseif ($tt=='TOYOTA' || $tt=='LEXUS'){
+						$html .= '<h3>Информация об автомобиле</h3>';
+						$html .= '<p class="hh">';
+							$comp = $inf['complectation'];
+							$ot = ($comp['prod_start']?date('d.m.Y',strtotime($comp['prod_start'])):'...');
+							$do = ($comp['prod_end']?date('d.m.Y',strtotime($comp['prod_end'])):'по н.в.');
+							$date = $ot.'-'.$do;
+							$html .= 'Модель: <b>'.$comp['model_name'].' '.$comp['modifications'].'</b><br>';
+							$html .= 'Код модели: <b>'.$comp['model_code'].'</b><br>';
+							$html .= 'Двигатель: <b>'.$comp['engine_name'].'</b><br>';
+							$html .= 'КПП: <b>'.$comp['kpp_name'].'</b><br>';
+							$html .= 'Кузов: <b>'.$comp['body_name'].'</b><br>';
+							$html .= 'Класс: <b>'.$comp['grade_name'].'</b><br>';
+							$html .= 'Период выпуска: <b>'.$date.'</b><br>';
+							$html .= 'Другое: <b>'.$comp['other_name'].'</b>';
+						$html .= '</p>';
+						foreach($inf['groups'] as $group){
+							$html .= '<h3>'.$group['name'].'</h3>';
+							$html .= $ACAT->getList($group['subgroups'], $link, 'name', 'short_name');
+							$html .= '<div class="clear"></div>';
+						}
+					}
+					elseif ($tt=='ROLLS-ROYCE' || $tt=='BMW' || $tt=='MINI'){
+						$html .= $ACAT->getList($inf['subgroups'], $link, 'name', 'short_name');
+					}
+					elseif ($tt=='AUDI' || $tt=='SEAT' || $tt=='SKODA' || $tt=='VOLKSWAGEN'){
+						$html .= '<h3>ОСНОВНЫЕ ГРУППЫ ДЕТАЛЕЙ ДЛЯ '.$inf['model']['name'].'</h3>';
+						$html .= $ACAT->getList($inf['groups'], $link.'group/', 'name', 'group');
+						$html .= '<h3>РАСХОДНЫЕ МАТЕРИАЛЫ</h3>';
+						$html .= $ACAT->getList($inf['services'], $link.'service/', 'name', 'service');
+						#$html .= ot($inf);
+					}
+					elseif ($tt=='ALFA-ROMEO' || $tt=='ABARTH' || $tt=='FIAT' || $tt=='LANCIA'){
+						if ($img = $inf['image']){
+							$html .= $ACAT->getImageHTML($img);
+						}
+						$html .= '<div class="clear"></div>';
+						$html .= $ACAT->getTableHTML($inf['numbers'], $link, $inf['numbers'][0]['mark_short_name']);
+					}
+					else
+						$html .= 'none';
+				}
+				else {
+					$ACAT->typeID = $ACAT->types[0]['value'];
+					$html .= $ACAT->getMarks();
+				}
+			}
+			elseif ($cnt == 5){
+				$inf = $ACAT->get($id);
+				if ($inf){
+					$ACAT->bread = $inf['breadcrumbs'];
+					if ($tt=='RENAULT' || $tt=='DACIA'){
+						if ($img = $inf['image']){
+							$html .= $ACAT->getImageHTML($img);
+						}
+						$html .= '<div class="clear"></div>';
+						$html .= $ACAT->getTableHTML($inf['positions'], $link, $inf['mark_short_name']);
+					}
+					elseif ($tt=='KIA' || $tt=='HYUNDAI'){
+						$html .= $ACAT->getList($inf['groups'], $link, 'name', 'group');
+					}
+					elseif ($tt=='MERCEDES_BENZ' || $tt=='SMART'){
+						$html .= '<div><ul class="my_tree" id="l1"><li class="close">';
+							$html .= '<a title="Раскрыть/Закрыть ветку" href="javascript:;"><b>'.$inf['groups'][0]['name'].'</b></a>';
+							$html .= '<ul class="close">';
+								foreach($inf['groups'][0]['subgroups'] as $gr){
+									$html .= '<li class="leaf">';
+										$html .= '<a title="'.$gr['name'].'" href="?id='.$link.$inf['groups'][0]['short'].'/'.$gr['short'].'">'.$gr['name'].'</a>';
+									$html .= '</li>';
+								}
+							$html .= '</ul>';
+						$html .= '</li></ul></div>';
+					}
+					elseif ($tt=='NISSAN' || $tt=='INFINITI'){
+						if ($img = $inf['subgroups'][0]['image']){
+							$html .= $ACAT->getImageHTML($img);
+						}
+						$html .= '<table class="table_main">';
+							$html .= '<thead>';
+								$html .= '<tr>';
+									$html .= '<th>ФИГУРА</th>';
+									$html .= '<th>НАИМЕНОВАНИЕ</th>';
+								$html .= '</tr>';
+							$html .= '</thead>';
+							$html .= '<tbody>';
+							foreach($inf['subgroups'][0]['items'] as $mod){
+								$html .= '<tr>';
+									$html .= '<td>'.$mod['figure'].'</td>';
+									$html .= '<td><a href="?id='.$link.$mod['figure'].'">'.$mod['group_name'].'</a></td>';
+								$html .= '</tr>';
+							}
+							$html .= '</tbody>';
+						$html .= '</table>';
+					}
+					elseif ($tt=='TOYOTA' || $tt=='LEXUS'){
+						$html .= 'none';
+					}
+					elseif ($tt=='ROLLS-ROYCE' || $tt=='BMW' || $tt=='MINI'){
+						$html .= $ACAT->getList($inf['groups'], $link, 'name', 'number');
+					}
+					elseif ($tt=='AUDI' || $tt=='SEAT' || $tt=='SKODA' || $tt=='VOLKSWAGEN'){
+						$html .= 'none';
+					}
+					elseif ($tt=='ALFA-ROMEO' || $tt=='ABARTH' || $tt=='FIAT' || $tt=='LANCIA'){
+						$html .= 'none';
+					}
+					else
+						$html .= 'none';
+				}
+				else {
+					$ACAT->typeID = $ACAT->types[0]['value'];
+					$html .= $ACAT->getMarks();
+				}
+			}
+			elseif ($cnt == 4){
+				$inf = $ACAT->get($id);
+				if ($inf){
+					$ACAT->bread = $inf['breadcrumbs'];
+					if ($tt=='RENAULT' || $tt=='DACIA'){
+						$groups = $inf['unit']['groups'];
+						if ($img = $inf['unit']['image']){
+							$html .= $ACAT->getImageHTML($img);
+						}
+						$html .= '<div class="clear"></div>';
+						$html .= '<table id="detailsList" class="table_main">';
+							$html .= '<thead>';
+								$html .= '<tr>';
+									$html .= '<th>Группа</th>';
+									$html .= '<th>Деталь</th>';
+								$html .= '</tr>';
+							$html .= '</thead>';
+							$html .= '<tbody>';
+							foreach($groups as $group){
+								$html .= '<tr>';
+									$html .= '<td style="width:30%;">'.$group['name'].'</td>';
+									$html .= '<td>';
+										$html .= '<table class="table_main">';
+										foreach($group['subgroups'] as $subgroup){
+											$html .= '<tr>';
+												$html .= '<td><a href="?id='.$link.$subgroup['short_name'].'">'.$subgroup['name'].'</a></td>';
+											$html .= '</tr>';
+										}
+										$html .= '</table>';
+									$html .= '</td>';
+								$html .= '</tr>';
+							}
+							$html .= '</tbody>';
+						$html .= '</table>';
+					}
+					elseif ($tt=='KIA' || $tt=='HYUNDAI'){
+						$html .= '<table class="table_main">';
+							$html .= '<thead>';
+								$html .= '<tr>';
+									$html .= '<th>Модификация</th>';
+									$html .= '<th>Период пр-ва</th>';
+									$html .= '<th>Кузов</th>';
+									$html .= '<th>Класс</th>';
+									$html .= '<th>Рабочий объем двигателя</th>';
+									$html .= '<th>Топливо</th>';
+									$html .= '<th>Трансмиссия</th>';
+									$html .= '<th>Двигатель</th>';
+								$html .= '</tr>';
+							$html .= '</thead>';
+							$html .= '<tbody>';
+							foreach($inf['modifications'] as $mod){
+								$html .= '<tr>';
+									$ot = ($mod['from_date']?date('d.m.Y',strtotime($mod['from_date'])):'...');
+									$do = ($mod['to_date']?date('d.m.Y',strtotime($mod['to_date'])):'по н.в.');
+									$date = $ot.'-'.$do;
+									$html .= '<td><a href="?id='.$link.$mod['modification'].'">'.p($mod['modification']).'</a></td>';
+									$html .= '<td>'.$date.'</td>';
+									$html .= '<td>'.p($mod['body']).'</td>';
+									$html .= '<td>'.'-'.'</td>';
+									$html .= '<td>'.p($mod['engine_displacement']).'</td>';
+									$html .= '<td>'.p($mod['fuel']).'</td>';
+									$html .= '<td>'.p($mod['transmission']).'</td>';
+									$html .= '<td>'.p($mod['engine']).'</td>';
+								$html .= '</tr>';
+							}
+							$html .= '</tbody>';
+						$html .= '</table>';
+					}
+					elseif ($tt=='MERCEDES_BENZ' || $tt=='SMART'){
+						$html .= 'none';
+					}
+					elseif ($tt=='NISSAN' || $tt=='INFINITI'){
+						if ($img = $inf['image']){
+							$html .= $ACAT->getImageHTML($img);
+						}
+						$html .= '<table class="table_main">';
+							$html .= '<thead>';
+								$html .= '<tr>';
+									$html .= '<th>ГРУППА</th>';
+									$html .= '<th>НАИМЕНОВАНИЕ</th>';
+								$html .= '</tr>';
+							$html .= '</thead>';
+							$html .= '<tbody>';
+							foreach($inf['groups'] as $mod){
+								$html .= '<tr>';
+									$html .= '<td>'.$mod['group_short'].'</td>';
+									$html .= '<td><a href="?id='.$link.$mod['group_short'].'">'.$mod['group_name'].'</a></td>';
+								$html .= '</tr>';
+							}
+							$html .= '</tbody>';
+						$html .= '</table>';
+					}
+					elseif ($tt=='TOYOTA' || $tt=='LEXUS'){
+						$html .= 'none';
+					}
+					elseif ($tt=='ROLLS-ROYCE' || $tt=='BMW' || $tt=='MINI'){
+						$html .= 'none';
+					}
+					elseif ($tt=='AUDI' || $tt=='SEAT' || $tt=='SKODA' || $tt=='VOLKSWAGEN'){
+						$html .= 'none';
+					}
+					elseif ($tt=='ALFA-ROMEO' || $tt=='ABARTH' || $tt=='FIAT' || $tt=='LANCIA'){
+						$html .= '<table class="table_main">';
+							$html .= '<thead>';
+								$html .= '<tr>';
+									$html .= '<th>ГРУППА</th>';
+									$html .= '<th>';
+										$html .= '<table class="table_main"><thead><tr>';
+											$html .= '<th>ПОДГРУППА</th>';
+											$html .= '<th>ПРИМЕЧАНИЕ</th>';
+										$html .= '</tr></thead></table>';
+									$html .= '</th>';
+								$html .= '</tr>';
+							$html .= '</thead>';
+							$html .= '<tbody>';
+								foreach($inf['groups'] as $a){
+									$html .= '<tr>';
+										$html .= '<td>'.$a['full_name'].'</td>';
+										$html .= '<td>';
+											$html .= '<table class="table_main">';
+												foreach($a['subgroups'] as $b){
+													$html .= '<tr>';
+														$html .= '<td width=50% style="text-align:center;"><a href="?id='.$link.str_replace('%2F','|||',$b['id']).'/'.$b['variant'].'">'.$b['description'].'</a></td>';
+														$html .= '<td style="text-align:center;">'.$b['applicability'].'</td>';
+													$html .= '</tr>';
+												}
+											$html .= '</table>';
+										$html .= '</td>';
+									$html .= '</tr>';
+								}
+							$html .= '</tbody>';
+						$html .= '</table>';
+						$html .= '<table class="table_main">';
+							$html .= '<thead>';
+								$html .= '<tr>';
+									$html .= '<th>СОКРАЩЕНИЕ</th>';
+									$html .= '<th>РАСШИФРОВКА</th>';
+								$html .= '</tr>';
+							$html .= '</thead>';
+							$html .= '<tbody>';
+								foreach($inf['abbreviations'] as $ab){
+									$html .= '<tr>';
+										$html .= '<td>'.$ab['abbreviation'].'</td>';
+										$html .= '<td>'.$ab['description'].'</td>';
+									$html .= '</tr>';
+								}
+							$html .= '</tbody>';
+						$html .= '</table>';
+					}
+					else {
+						$html .= 'none';
+					}
+				}
+				else {
+					$ACAT->typeID = $ACAT->types[0]['value'];
+					$html .= $ACAT->getMarks();
+				}
+			}
+			elseif ($cnt == 3){
+				$group = $ACAT->get($id);
+				if ($group){
+					if ($tt=='RENAULT' || $tt=='DACIA'){
+						$ACAT->bread = $group['breadcrumbs'];
+						foreach($group['categories'] as $temp){
+							$html .= '<div class="catalog-item obj obj'.$temp['short_name'].' item-obj type1">';
+								if ($temp['image']){
+									$html .= '<div class="image-default">';
+											$html .= '<a href="?id='.$link.$temp['short_name'].'">';
+												$html .= '<img src="'.$temp['image'].'" alt="">';
+											$html .= '</a>';
+									$html .= '</div>';
+								}
+								$html .= '<div class="blk_info">';
+									$html .= '<div class="blk_first">';
+										$html .= '<div class="blk_bt_sec">';
+											$html .= '<div class="blk_name">';
+												$html .= '<a href="?id='.$link.$temp['short_name'].'">'.$temp['name'].'</a>';
+											$html .= '</div>';
+										$html .= '</div>';
+									$html .= '</div>';
+								$html .= '</div>';
+							$html .= '</div>';
+						}
+					}
+					elseif ($tt=='KIA' || $tt=='HYUNDAI'){
+						$html .= $ACAT->getList($group['models'], $link, 'model_name', 'model');
+					}
+					elseif ($tt=='MERCEDES_BENZ' || $tt=='SMART'){
+						$html .= '<table class="table_main">';
+							$html .= '<thead>';
+								$html .= '<tr>';
+									$html .= '<th>МОДЕЛЬ (КОД МОДЕЛИ)</th>';
+									$html .= '<th>ОПИСАНИЕ</th>';
+									$html .= '<th>ПЕРИОД ПР-ВА</th>';
+								$html .= '</tr>';
+							$html .= '</thead>';
+							$html .= '<tbody>';
+							foreach($group['models'] as $mod){
+								$html .= '<tr>';
+									$ot = ($mod['from_date']?date('d.m.Y',strtotime($mod['from_date'])):'...');
+									$do = ($mod['to_date']?date('d.m.Y',strtotime($mod['to_date'])):'по н.в.');
+									$date = $ot.'-'.$do;
+
+									$html .= '<td><a href="?id='.$link.$mod['model'].'/'.$mod['catalog'].'">'.$mod['modification'].' ('.$mod['model_formatted'].')</a></td>';
+									$html .= '<td>'.$mod['name'].'</td>';
+									$html .= '<td>'.$date.'</td>';
+								$html .= '</tr>';
+							}
+							$html .= '</tbody>';
+						$html .= '</table>';
+					}
+					elseif ($tt=='NISSAN' || $tt=='INFINITI'){
+						$html .= '<table class="table_main">';
+							$html .= '<thead>';
+								$html .= '<tr>';
+									$html .= '<th>ДВИГАТЕЛЬ</th>';
+									$html .= '<th>ПРОИЗВОДСТВО</th>';
+									$html .= '<th>КУЗОВ</th>';
+									$html .= '<th>ПРИВОД</th>';
+									$html .= '<th>ТРАНСМИССИЯ</th>';
+									$html .= '<th>ДРУГОЕ</th>';
+								$html .= '</tr>';
+							$html .= '</thead>';
+							$html .= '<tbody>';
+							foreach($group['modifications'] as $mod){
+								$html .= '<tr>';
+									$ot = ($mod['from_date']?date('d.m.Y',strtotime($mod['from_date'])):'...');
+									$do = ($mod['to_date']?date('d.m.Y',strtotime($mod['to_date'])):'по н.в.');
+									$date = $ot.'-'.$do;
+
+									$html .= '<td><a href="?id='.$link.$mod['modification'].'">'.$mod['engine'].'</a></td>';
+									$html .= '<td>'.$date.'</td>';
+									$html .= '<td>'.$mod['body'].'</td>';
+									$html .= '<td>'.p($mod['drive']).'</td>';
+									$html .= '<td>'.$mod['transmission'].'</td>';
+									$temp = '';
+									foreach($mod['other'] as $t){
+										$temp .= $t['name'].':'.$t['value'].'<br>';
+									}
+									$temp = trim($temp,'<br>');
+									$html .= '<td>'.$temp.'</td>';
+								$html .= '</tr>';
+							}
+							$html .= '</tbody>';
+						$html .= '</table>';
+					}
+					elseif ($tt == 'SSANGYONG'){
+						if ($img = $group['image']){
+							$html .= $ACAT->getImageHTML($img);
+						}
+						$html .= '<div class="clear"></div>';
+						$html .= $ACAT->getTableHTML($group['numbers'], $link, $group['breadcrumbs'][2]['name'], 'code');
+					}
+					elseif ($tt=='TOYOTA' || $tt=='LEXUS'){
+						$html .= '<table class="table_main">';
+							$html .= '<thead>';
+								$html .= '<tr>';
+									$html .= '<th>КОМПЛЕКТАЦИЯ</th>';
+									$html .= '<th>ПРОИЗВОДСТВО</th>';
+									$html .= '<th>ДВИГАТЕЛЬ</th>';
+									$html .= '<th>КУЗОВ</th>';
+									$html .= '<th>КЛАСС</th>';
+									$html .= '<th>КПП</th>';
+									$html .= '<th>ДРУГОЕ</th>';
+								$html .= '</tr>';
+							$html .= '</thead>';
+							$html .= '<tbody>';
+							foreach($group['complectations'] as $mod){
+								$html .= '<tr>';
+									$ot = ($mod['prod_start']?date('d.m.Y',strtotime($mod['prod_start'])):'...');
+									$do = ($mod['prod_end']?date('d.m.Y',strtotime($mod['prod_end'])):'по н.в.');
+									$date = $ot.'-'.$do;
+
+									$html .= '<td><a href="?id='.$link.$mod['model_code'].'/sysopt/'.$mod['complectation_code'].'">'.$mod['model_code'].'</a></td>';
+									$html .= '<td>'.$date.'</td>';
+									$html .= '<td>'.$mod['engine_short_name'].'</td>';
+									$html .= '<td>'.$mod['body_short_name'].'</td>';
+									$html .= '<td>'.$mod['grade_short_name'].'</td>';
+									$html .= '<td>'.$mod['kpp_short_name'].'</td>';
+									$html .= '<td>'.$mod['other_short_name'].'</td>';
+								$html .= '</tr>';
+							}
+							$html .= '</tbody>';
+						$html .= '</table>';
+						$html .= '<div class="clear"></div>';
+						$html .= '<table class="table_main">';
+							$html .= '<thead>';
+								$html .= '<tr>';
+									$html .= '<th>&nbsp;</th>';
+									$html .= '<th>';
+										$html .= '<table class="table_main"><thead><tr>';
+											$html .= '<th>СОКРАЩЕНИЕ</th>';
+											$html .= '<th>РАСШИФРОВКА</th>';
+										$html .= '</tr></thead></table>';
+									$html .= '</th>';
+								$html .= '</tr>';
+							$html .= '</thead>';
+							$html .= '<tbody>';
+								foreach($group['abbreviations'] as $a){
+									$html .= '<tr>';
+										$html .= '<td>'.$a['type_name'].'</td>';
+										$html .= '<td>';
+											$html .= '<table class="table_main">';
+												foreach($a['items'] as $b){
+													$html .= '<tr>';
+														$html .= '<td width=50% style="text-align:center;">'.$b['sign'].'</td>';
+														$html .= '<td style="text-align:center;">'.$b['description'].'</td>';
+													$html .= '</tr>';
+												}
+											$html .= '</table>';
+										$html .= '</td>';
+									$html .= '</tr>';
+								}
+							$html .= '</tbody>';
+						$html .= '</table>';
+					}
+					elseif ($tt=='ROLLS-ROYCE' || $tt=='BMW' || $tt=='MINI'){
+						$html .= 'none';
+					}
+					elseif ($tt=='AUDI' || $tt=='SEAT' || $tt=='SKODA' || $tt=='VOLKSWAGEN'){
+						$html .= 'none';
+					}
+					elseif ($tt=='ALFA-ROMEO' || $tt=='ABARTH' || $tt=='FIAT' || $tt=='LANCIA'){
+						$html .= $ACAT->getList($group['units'], $link, 'full_name', 'short_name');
+						#$html .= ot($group);
+					}
+					else
+						$html .= $ACAT->getDetailsHTML($group, $id); #Rus
+				}
+				else {
+					$ACAT->typeID = $ACAT->types[0]['value'];
+					$html .= $ACAT->getMarks();
+				}
+			}
+			elseif ($cnt == 2){
+				$model = $ACAT->get($id);
+				if ($model){
+					$ACAT->bread = $model['breadcrumbs'];
+					if ($tt=='RENAULT' || $tt=='DACIA'){
+						foreach($model['modifications'] as $temp){
+							$html .= '<div class="catalog-item obj obj'.$temp['short_name'].' item-obj type1">';
+								$html .= '<div class="blk_info">';
+									$html .= '<div class="blk_first">';
+										$html .= '<div class="blk_bt_sec">';
+											$html .= '<div class="blk_name">';
+												$html .= '<a href="?id='.$link.$temp['short_name'].'">'.$temp['name'].'</a>';
+											$html .= '</div>';
+										$html .= '</div>';
+									$html .= '</div>';
+								$html .= '</div>';
+							$html .= '</div>';
+						}
+					}
+					elseif ($tt=='KIA' || $tt=='HYUNDAI'){
+						$html .= $ACAT->getList($model['families'], $link, 'family', 'family');
+					}
+					elseif ($tt=='MERCEDES_BENZ' || $tt=='SMART'){
+						$html .= 'none';
+					}
+					elseif ($tt=='NISSAN' || $tt=='INFINITI'){
+						$html .= '<table class="table_main">';
+							$html .= '<thead>';
+								$html .= '<tr>';
+									$html .= '<th>МОДЕЛЬ</th>';
+									$html .= '<th>СЕРИЯ</th>';
+									$html .= '<th>ПЕРИОД ПР-ВА</th>';
+								$html .= '</tr>';
+							$html .= '</thead>';
+							$html .= '<tbody>';
+							foreach($model['models'] as $mod){
+								$html .= '<tr>';
+									$ot = ($mod['from_date']?date('d.m.Y',strtotime($mod['from_date'])):'...');
+									$do = ($mod['to_date']?date('d.m.Y',strtotime($mod['to_date'])):'по н.в.');
+									$date = $ot.'-'.$do;
+
+									$html .= '<td><a href="?id='.$link.$mod['directory'].'">'.$mod['model'].'</a></td>';
+									$html .= '<td>'.$mod['serial'].'</td>';
+									$html .= '<td>'.$date.'</td>';
+								$html .= '</tr>';
+							}
+							$html .= '</tbody>';
+						$html .= '</table>';
+					}
+					elseif ($tt == 'SSANGYONG'){
+						$html .= '<div><ul class="my_tree" id="l1">';
+						foreach($model['groups'] as $group){
+							$html .= '<li class="close">';
+								$html .= '<a title="Раскрыть/Закрыть ветку" href="javascript:;"><b>'.$group['name'].'</b></a>';
+								$html .= '<ul class="close">';
+									foreach($group['subgroups'] as $gr){
+										$html .= '<li class="leaf">';
+											$html .= '<a title="'.$gr['name'].'" href="?id='.$link.$gr['short_name'].'">'.$gr['name'].'</a>';
+										$html .= '</li>';
+									}
+								$html .= '</ul>';
+							$html .= '</li>';
+						}
+						$html .= '</ul></div>';
+					}
+					elseif ($tt=='TOYOTA' || $tt=='LEXUS'){
+						$html .= '<table class="table_main">';
+							$html .= '<thead>';
+								$html .= '<tr>';
+									$html .= '<th>МОДЕЛЬ</th>';
+									$html .= '<th>МОДИФИКАЦИЯ</th>';
+									$html .= '<th>ПЕРИОД ПР-ВА</th>';
+								$html .= '</tr>';
+							$html .= '</thead>';
+							$html .= '<tbody>';
+							foreach($model['models'] as $mod){
+								$html .= '<tr>';
+									$ot = ($mod['from_date']?date('d.m.Y',strtotime($mod['from_date'])):'...');
+									$do = ($mod['to_date']?date('d.m.Y',strtotime($mod['to_date'])):'по н.в.');
+									$date = $ot.'-'.$do;
+
+									$html .= '<td><a href="?id='.$link.$mod['catalog_code'].'">'.$mod['model'].'</a></td>';
+									$html .= '<td>'.$mod['modifications'].'</td>';
+									$html .= '<td>'.$date.'</td>';
+								$html .= '</tr>';
+							}
+							$html .= '</tbody>';
+						$html .= '</table>';
+					}
+					elseif ($tt=='ROLLS-ROYCE' || $tt=='BMW' || $tt=='MINI'){
+						foreach($model['categories'] as $cat){
+							$html .= '<div class="markets">';
+								$html .= '<div class="left">';
+									if ($cat['image'])
+										$html .= '<img src="'.$cat['image'].'">';
+									$html .= '<div class="ht">'.$cat['name'].'</div>';
+								$html .= '</div>';
+								$html .= '<div class="right">';
+								foreach($cat['markets'] as $mark){
+									$html .= '<div class="mark">';
+										$html .= '<h4>'.$mark['models'][0]['market_name'].'</h4>';
+										$mods = '';
+										foreach($mark['models'] as $mod){
+											$mods .= '<a href="#_'.$mod['short_name'].'" class="model_modal">'.$mod['name'].'</a> | ';
+											$html .= '<div class="model_modal_hide" id="_'.$mod['short_name'].'">';
+											foreach($mod['options'] as $opt){
+												$_name = 'Левый руль / ';
+												$_link = $link.$mod['short_name'].'/'.$opt['rule_position'];
+												if ($opt['rule_position']=='RIGHT')
+													$_name = 'Правый руль / ';
+												foreach($opt['transmissions'] as $tr){
+													$_name .= ($tr=='AUTO'?'АКПП':'МКПП');
+													$_link .= '/'.$tr;
+												}
+												$html .= '<a href="?id='.$_link.'">'.$_name.'</a><br>';
+											}
+											$html .= '</div>';
+										}
+										$mods = trim($mods, ' | ');
+										$html .= $mods;
+									$html .= '</div>';
+								}
+								$html .= '</div>';
+							$html .= '</div>';
+						}
+						#$html .= ot($model);
+					}
+					elseif ($tt=='AUDI' || $tt=='SEAT' || $tt=='SKODA' || $tt=='VOLKSWAGEN'){
+						$html .= '<table class="table_main">';
+							$html .= '<thead>';
+								$html .= '<tr>';
+									$html .= '<th>МОДЕЛЬ</th>';
+									$html .= '<th>КОД МОДЕЛИ</th>';
+									$html .= '<th>ПЕРИОД</th>';
+									$html .= '<th>ПРОИЗВОДСТВО</th>';
+								$html .= '</tr>';
+							$html .= '</thead>';
+							$html .= '<tbody>';
+							$temp = '';
+							$_links = '';
+							$divs = '';
+							for($i=0;$i<count($model['models']);$i++){
+								$mod = $model['models'][$i];
+								if ($temp==''){
+									$temp = $mod['full_name'];
+									$_links = '<a href="?id='.$link.$mod['name'].'/'.$mod['year'].'/'.$mod['catalog_code'].'/'.$mod['dir'].'">'.$mod['year'].'</a> | ';
+									$html .= '<tr>';
+										$ot = ($mod['date_start']?date('Y',strtotime($mod['date_start'])):'...');
+										$do = ($mod['date_end']?date('Y',strtotime($mod['date_end'])):'по н.в.');
+										$date = $ot.'-'.$do;
+
+										$html .= '<td><a href="#_'.str_replace(array('/',' ','.','-'),array('','_','_','_'),$mod['full_name']).'" class="model_modal">'.$mod['full_name'].'</a></td>';
+										$html .= '<td>'.$mod['name'].'</td>';
+										$html .= '<td>'.$date.'</td>';
+										$html .= '<td>'.$mod['production'].'</td>';
+									$html .= '</tr>';
+									$old_temp = $temp;
+								}
+								elseif ($mod['full_name']!=$temp){
+									$divs .= '<div class="model_modal_hide" id="_'.str_replace(array('/',' ','.','-'),array('','_','_','_'),$old_temp).'">'.trim($_links,' | ').'</div>';
+									$_links = '<a href="?id='.$link.$mod['name'].'/'.$mod['year'].'/'.$mod['catalog_code'].'/'.$mod['dir'].'">'.$mod['year'].'</a> | ';
+									$temp = $mod['full_name'];
+									$html .= '<tr>';
+										$ot = ($mod['date_start']?date('Y',strtotime($mod['date_start'])):'...');
+										$do = ($mod['date_end']?date('Y',strtotime($mod['date_end'])):'по н.в.');
+										$date = $ot.'-'.$do;
+
+										$html .= '<td><a href="#_'.str_replace(array('/',' ','.','-'),array('','_','_','_'),$mod['full_name']).'" class="model_modal">'.$mod['full_name'].'</a></td>';
+										$html .= '<td>'.$mod['name'].'</td>';
+										$html .= '<td>'.$date.'</td>';
+										$html .= '<td>'.$mod['production'].'</td>';
+									$html .= '</tr>';
+									$old_temp = $mod['full_name'];
+								}
+								else {
+									$_links .= '<a href="?id='.$link.$mod['name'].'/'.$mod['year'].'/'.$mod['catalog_code'].'/'.$mod['dir'].'">'.$mod['year'].'</a> | ';
+									$old_temp = $mod['full_name'];
+									if ($i==count($model['models'])-2)
+										$divs .= '<div class="model_modal_hide" id="_'.str_replace(array('/',' ','.','-'),array('','_','_','_'),$old_temp).'">'.trim($_links,' | ').'</div>';
+								}
+							}
+							$html .= '</tbody>';
+						$html .= '</table>';
+						$html .= $divs;
+						#$html .= ot($model);
+					}
+					elseif ($tt=='ALFA-ROMEO' || $tt=='ABARTH' || $tt=='FIAT' || $tt=='LANCIA'){
+						$html .= $ACAT->getList($model['modifications'], $link, 'full_name', 'short_name');
+					}
+					else {
+						$html .= '<div><ul class="my_tree" id="l1">';
+							$html .= $ACAT->getGroupsHTML($model['groups'], $id);
+						$html .= '</ul></div>';
+					}
+				}
+				else {
+					$ACAT->typeID = $ACAT->types[0]['value'];
+					$html .= $ACAT->getMarks();
+				}
+			}
+			elseif ($cnt == 1){
+				$mark = $ACAT->get($id);
+				if ($mark){
+					$ACAT->bread = $mark['breadcrumbs'];
+					if ($tt=='KIA' || $tt=='HYUNDAI'){
+						$html .= $ACAT->getList($mark['countries'], $link, 'full_name', 'country_short');
+					}
+					elseif ($tt=='MERCEDES_BENZ' || $tt=='SMART'){
+						$html .= $ACAT->getMenu($mark, $link);
+					}
+					elseif ($tt=='NISSAN' || $tt=='INFINITI'){
+						$html .= $ACAT->getList($mark['countries'], $link, 'full_name', 'country_short_name');
+					}
+					elseif ($tt=='TOYOTA' || $tt=='LEXUS'){
+						$html .= $ACAT->getList($mark['countries'], $link, 'full_name', 'country_short_name');
+					}
+					elseif ($tt=='ROLLS-ROYCE' || $tt=='BMW' || $tt=='MINI'){
+						$html .= $ACAT->getList($mark['series'], $link, 'name', 'short_name');
+					}
+					elseif ($tt=='AUDI' || $tt=='SEAT' || $tt=='SKODA' || $tt=='VOLKSWAGEN'){
+						$html .= $ACAT->getList($mark['countries'], $link, 'full_name', 'country_short_name');
+					}
+					elseif ($tt=='ALFA-ROMEO' || $tt=='ABARTH' || $tt=='FIAT' || $tt=='LANCIA'){
+						$html .= $ACAT->getList($mark['models'], $link, 'full_name', 'short_name');
+					}
+					else
+						$html .= $ACAT->getModelsHTML($mark, $id);
+				}
+				else {
+					$ACAT->typeID = $ACAT->types[0]['value'];
+					$html .= $ACAT->getMarks();
+				}
+			}
+			else{
+				$tmp = false;
+				foreach($ACAT->types as $type){
+					if ($type['value'] == $id){
+						$ACAT->typeID = $type['value'];
+						$ACAT->marks = $type['marks'];
+						$tmp = true;
+						break;
+					}
+				}
+				if (!$tmp){
+					$ACAT->typeID = $ACAT->types[0]['value'];
+					$ACAT->marks = $ACAT->types[0]['marks'];
+				}
+				$html .= $ACAT->getMarksHTML();
+			}
+		}
+		elseif ($s){
+			$html .= $ACAT->search($s);
+		}
+		else{
+			$ACAT->typeID = $ACAT->types[0]['value'];
+			$html .= $ACAT->getMarks();
+		}
+		$html .= '</div>';
+		$html = $ACAT->getBread($html);
+		$html = str_replace('<!--search-->', '<section id="searchForm"><div class="searchForm" id="A2DSearch"><div class="tabkont_active" id="tabkont1"><form id="searchForm1" class="searchform-inp searchform" name="searchForm1" method="GET"><input type="text" name="s" class="spare_parts inp" placeholder="Укажите марку, модель" value=""><span class="btn-strt"><input type="submit" class="searchBttn uppercase" value="Найти"></span></form></div></div></section>', $html);
+		echo $html;
+	}
+	?>
+
+	<script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+	<script src="/template/class/210/2078/_acat.js"></script>
+	<script src="/template/class/210/2078/acat.js"></script>
+	<link href="/template/class/210/2078/_acat.css" media="all" rel="stylesheet" type="text/css">
+	<link href="/template/class/210/2078/acat.css" rel="stylesheet" />
+<?php  } ?>
+
+<?php 
+function ot($s){
+	return '<pre>'.print_r($s,1).'</pre>';
+}
+function p($s){
+	if ($s)
+		return $s;
+	return '-';
+}
+?>
+
+<?php  } # ############ END ########## ?>

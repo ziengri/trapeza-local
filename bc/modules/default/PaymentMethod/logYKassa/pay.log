@@ -1,0 +1,132 @@
+1Array
+(
+    [result] => Array
+        (
+            [status] => 1
+            [payUrl] => https://yoomoney.ru/checkout/payments/v2/contract?orderId=298c74a0-000f-5000-a000-18684c104ff4
+        )
+
+    [time] => 20220202
+)
+Array
+(
+    [result] => Array
+        (
+            [status] => 1
+            [payUrl] => https://yoomoney.ru/checkout/payments/v2/contract?orderId=298c7641-000f-5000-9000-172163291cbe
+        )
+
+    [time] => 20220202 13:52:49
+)
+Array
+(
+    [result] => Array
+        (
+            [status] => 1
+            [payUrl] => https://yoomoney.ru/checkout/payments/v2/contract?orderId=298c7825-000f-5000-9000-1775a62cc4fe
+        )
+
+    [time] => 20220202 14:00:53
+)
+Array
+(
+    [result] => Array
+        (
+            [status] => 1
+            [payUrl] => https://yoomoney.ru/checkout/payments/v2/contract?orderId=298c7a4a-000f-5000-9000-16f84d75f3c0
+        )
+
+    [time] => 20220202 14:10:02
+)
+Array
+(
+    [result] => Array
+        (
+            [status] => 1
+            [payUrl] => https://yoomoney.ru/checkout/payments/v2/contract?orderId=298c7a9f-000f-5000-8000-19426f5a531e
+        )
+
+    [time] => 20220202 14:11:28
+)
+Array
+(
+    [result] => Array
+        (
+            [status] => 1
+            [payUrl] => https://yoomoney.ru/checkout/payments/v2/contract?orderId=298c81a8-000f-5000-a000-17125e4e9bab
+        )
+
+    [time] => 20220202 14:41:28
+)
+Array
+(
+    [result] => Array
+        (
+            [status] => 1
+            [payUrl] => https://yoomoney.ru/checkout/payments/v2/contract?orderId=298c8cf6-000f-5000-8000-12380725ee5f
+        )
+
+    [time] => 20220202 15:29:42
+)
+Array
+(
+    [result] => Array
+        (
+            [status] => 1
+            [payUrl] => https://yoomoney.ru/checkout/payments/v2/contract?orderId=299dec24-000f-5000-a000-19e0e68a6236
+        )
+
+    [time] => 20220215 19:44:20
+)
+Array
+(
+    [result] => Array
+        (
+            [status] => 1
+            [payUrl] => https://yoomoney.ru/checkout/payments/v2/contract?orderId=299f2bc5-000f-5000-8000-15d1f5b13c6e
+        )
+
+    [time] => 20220216 18:28:05
+)
+Array
+(
+    [result] => Array
+        (
+            [status] => 1
+            [payUrl] => https://yoomoney.ru/checkout/payments/v2/contract?orderId=29aef36f-000f-5000-9000-1b728cef5d46
+        )
+
+    [time] => 20220228 17:43:59
+)
+Array
+(
+    [result] => Array
+        (
+            [status] => 1
+            [payUrl] => https://yoomoney.ru/checkout/payments/v2/contract?orderId=29b852d9-000f-5000-9000-1cca17f0909f
+        )
+
+    [time] => 20220307 20:21:29
+)
+Array
+(
+    [result] => Array
+        (
+            [status] => 1
+            [payUrl] => https://yoomoney.ru/checkout/payments/v2/contract?orderId=29bac23d-000f-5000-9000-141347806324
+        )
+
+    [time] => 20220309 16:41:18
+)
+Array
+(
+    [result] => Array
+        (
+            [status] => 0
+            [payUrl] => 
+            [payButton] => 
+            [message] => Incorrect password format in the Authorization header. Use Secret key issued in Merchant Profile as the password1
+        )
+
+    [time] => 20220317 13:29:00
+)

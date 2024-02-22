@@ -1,0 +1,41 @@
+<?php
+if (!$f_cities && !$f_phones && !$f_email && !$f_site) {
+    $postion = 0;
+    $warnText = "Вы ничего не заполнили";
+}
+
+$f_citytarget = ",".implode(",",$f_citytarget).",";
+if ($f_citytarget==',,') $f_citytarget='';
+
+$f_lang = json_encode($f_lang);
+
+$f_Catalogue_ID = $catalogue;
+
+/* телефоны */
+$phones = [];
+if (!empty($f_phones) && is_array($f_phones)) {
+    $phones = clearMultilinesData($f_phones, ['phone']) ?: null;
+}
+$f_phones = !empty($phones) ? json_encode($phones) : null;
+unset($phones);
+/* телефоны */
+
+/* почта */
+$emails = [];
+if (!empty($f_emails) && is_array($f_emails)) {
+    $emails = clearMultilinesData($f_emails, ['email']) ?: null;
+}
+$f_emails = !empty($emails) ? json_encode($emails) : null;
+unset($emails);
+/* почта */
+
+/* ссылки */
+$links = [];
+if (!empty($f_links) && is_array($f_links)) {
+    $links = clearMultilinesData($f_links, ['link']) ?: null;
+}
+$f_links = !empty($links) ? json_encode($links) : null;
+unset($links);
+/* ссылки */
+
+?>

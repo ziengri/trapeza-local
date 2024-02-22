@@ -1,0 +1,56 @@
+<?php 
+unset($_SESSION['cart']);
+$order = json_decode($f_orderlist,true);
+
+// html корзины
+if ($order) {
+    $cart = "<p><b>Содержимое заказа №{$msgID}:</b></p><table border=1 cellpadding='2' cellspacing='0'><thead><tr>
+    <th>№ п/п</th>
+    <th>Товар</th>
+    <th>Артикул</th>
+    <th>Цена, руб</th>
+    <th>Кол-во</th>
+    <th>Сумма, руб</th>
+    </tr></thead><tbody>";
+    foreach($order as $itemid => $item) {
+        $ii++;
+        $param = $db->get_row("select * from Message2001 where Message_ID = '$itemid'", ARRAY_A);
+        $cart .= "<tr>
+        <td>{$ii}</td>
+        <td><a href='http://{$_SERVER[HTTP_HOST]}".nc_message_link($itemid,2001)."'>{$param[name]}</a></td>
+        <td>{$param[ItemID]}</td>
+        <td>{$item[price]}</td>
+        <td>{$item[count]}</td>
+        <td>{$item[sum]}</td>
+        </tr>";
+        $totalSum = $totalSum + $item[sum];
+    }
+    $cart .= "</tbody>
+    <tfoot><tr><td colspan=5><b>Итого:</b></td><td>{$totalSum}</td></tr></tfoot>
+    </table>
+    <p><b>Данные заказчика:</b></p>
+    <p>ФИО: $f_fio</p>
+    <p>Телефон: $f_phone</p>
+    <p>Эл. почта: $f_email</p>
+    <p>Город: $f_city</p>
+    <p>Адрес: $f_adres</p>";
+
+
+# письмо покупателю
+$mailer = new CMIMEMail();
+$mailer->mailbody(strip_tags($cart),$cart);
+$mailer->send($f_email, $system_env[SpamFromEmail], $system_env[SpamFromEmail], "Ваш заказ № {$msgID}", $system_env[SpamFromName]);
+
+# письмо магазину
+$mailer2 = new CMIMEMail();
+$mailer2->mailbody(strip_tags($cart),$cart);
+$frommail = getDomenMail();
+$mailer2->send(($cc_settings[EmailTo] ? $cc_settings[EmailTo] : $system_env[SpamFromEmail]), $frommail, $frommail, "В вашем магазине новый заказ № {$msgID}", $system_env[SpamFromName]);
+
+}
+
+echo json_encode(ARRAY("title" => "Спасибо!",
+                       "succes" => "Спасибо, {$f_fio}, Ваш заказ оформлен. Менеджер свяжется с Вами в ближайшее время.",
+                       "redirect" => "/"
+                 ));
+?>

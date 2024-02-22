@@ -1,0 +1,522 @@
+<?php 
+if ($_POST['id'] && !$block_id) $id = securityForm($_POST['id']);
+if ($_POST['sub']) $sub = securityForm($_POST['sub']);
+if ($_POST['count']) $count = securityForm($_POST['count']);
+
+if ($_POST['price']) $price = securityForm($_POST['price']);
+if (!$price) $price = 0;
+if ($_POST['origprice']) $origprice = securityForm($_POST['origprice']);
+
+if ($_POST['name']) $name = securityForm($_POST['name']);
+if ($_POST['origname']) $origname = securityForm($_POST['origname']);
+
+if ($_POST['hex']) $hex = securityForm($_POST['hex']);
+if ($_POST['orighex']) $orighex = securityForm($_POST['orighex']);
+
+if ($_POST['stock']) $stock = securityForm($_POST['stock']);
+if ($_POST['origstock']) $origstock = securityForm($_POST['origstock']);
+
+if ($_POST['colorname']) $colorname = securityForm($_POST['colorname']);
+if ($_POST['colornum']) $colornum = securityForm($_POST['colornum']);
+if ($_POST['colorcode']) $colorcode = securityForm($_POST['colorcode']);
+
+if ($_POST['typecount']) $typecount = securityForm($_POST['typecount']);
+
+if ($_POST['minicart']) $minicarttype = securityForm($_POST['minicart']);
+if($minicart) $minicarttype = $minicart;
+
+if ($_POST['smallcart1']) $smallcartopen = securityForm($_POST['smallcart1']);
+if($smallcart1) $smallcartopen = $smallcart1;
+
+if($id) $art = $db->get_var("select art from Message2001 where Message_ID = '$id'");
+
+global $setting_texts;
+
+if ($current_catalogue['customCode']) {
+	GLOBAL $pathInc2;
+    $includeClass = NULL;
+	$thisFile = $DOCUMENT_ROOT.$pathInc2."/template/class/{$classID}/2006/FormPrefix.html";
+	if (file_exists($thisFile)) $includeClass = 1;
+}
+if ($includeClass) { include($thisFile); } else { # ############ START ##########
+#Ключевые слова
+
+$cart_name = $setting_texts['cart_name']['checked'] ? $setting_texts['cart_name']['name'] : "Корзина";
+$cart_total = $setting_texts['cart_total']['checked'] ? $setting_texts['cart_total']['name'] : "Итого";
+$cart_clear = $setting_texts['cart_clear']['checked'] ? $setting_texts['cart_clear']['name'] : "Очистить";
+$cart_gotocart = $setting_texts['btn_gotocart']['checked'] ? $setting_texts['btn_gotocart']['name'] : "Оформить заказ";
+$cart_noProducts = $setting_texts['cart_noProducts']['checked'] ? $setting_texts['cart_noProducts']['name'] : "нет товаров";
+$cart_putProducts = $setting_texts['cart_putProducts']['checked'] ? $setting_texts['cart_putProducts']['name'] : "Вы можете положить сюда<br>товары из";
+$cart_empty = $setting_texts['cart_empty']['checked'] ? $setting_texts['cart_empty']['name'] : "Ваша корзина пуста";
+$incart_info1 = $setting_texts['btn_incart']['checked'] ? $setting_texts['btn_incart']['name'] : "В корзину";
+
+
+// проверка с какого URL
+if (($delitem || $id) && !stristr($_SERVER['HTTP_REFERER'], nc_get_scheme() . '://' .$_SERVER['HTTP_HOST'])) die;
+
+// очистка корзины
+if (is_numeric($clear)) {
+	unset($_SESSION['cart']);
+}
+
+global $AUTH_USER_ID;
+
+// доставка
+if (is_numeric($delivery)) {
+	$deliveryArr = Class2005::getListName('delivery', $delivery);
+
+	if ($deliveryArr['type'] == 'PR' && $AUTH_USER_ID == 154) {
+		if ($_SESSION['cart']['delivery']['assist']['type'] == 'pochta_russia') {
+			$PR = new PochtaRussia();
+			$PR->recalcDelivery();
+		} else {
+			unset($_SESSION['cart']['delivery']['assist']);
+		}
+	} else {
+		unset($_SESSION['cart']['delivery']['assist']);
+		if ($deliveryArr['name']) {
+			if ($assistDelivery && $assistDelivery['value']) {
+				$deliveryArr['sum'] = $_SESSION['cart']['delivery'][$assistDelivery['type']]['list'][$assistDelivery['value']]['price'];
+				$_SESSION['cart']['delivery']['assist'] = array('type' => $assistDelivery['type'], 'key' => $assistDelivery['value']);
+			}
+			$_SESSION['cart']['delivery']['id'] = $delivery;
+			$_SESSION['cart']['delivery']['name'] = str_replace("\"","",$deliveryArr['name']).($deliveryArr['text'] ? " - ".str_replace("\"","",$deliveryArr['text']) : "");
+			$_SESSION['cart']['delivery']['sum'] = ($deliveryArr['sum'] > 0 ? $deliveryArr['sum'] : "0");
+			$_SESSION['cart']['delivery']['totsumfree'] = $deliveryArr['totsumfree'];
+		} else {
+			  unset($_SESSION['cart']['delivery']);
+		}
+	}
+    
+}
+if (!$deliv['sum']) $deliv['sum'] = 0;
+
+
+// удаление позиции
+if (is_numeric($delitem)) {
+	unset($_SESSION['cart']['items'][$delitem]);
+	unset($_SESSION['cart']['totalSumDiscont']);
+}
+
+// пересчитывание при изменении кол-ва
+
+if ($count && $id && !$name && !$price && !$hex) {
+	if ($count>$stock && $setting['stockbuy'] && $stock) {
+		$error = "В наличии имеется только $stock шт. товара.";
+	} else {
+		// добавлено для пересчета количества в корзине
+		$idincart = $id;
+        $cartItem = &$_SESSION['cart']['items'][$idincart];
+
+        $changeItem = [
+            'id' => $cartItem['id'],
+            'name' => $cartItem['name'],
+            'price' => $cartItem['price'],
+            'count' => $count - $cartItem['count'],
+        ];
+
+        $productObj = Class2001::getItemById($cartItem['id']);
+        $cartItem['count'] = abs($count);
+        $cartItem['price'] = $productObj->getPriceByCountInBasket($cartItem['count']);
+        $cartItem['sum'] = round($cartItem['count'] * $cartItem['price'], 2);
+        unset($cartItem);
+
+		// закомментировано для пересчета количества в корзине
+		// if ($name && $origname && ($name!=$origname || ($colorname && $colornum))) { # если это вариант
+		// 	/*$varcol = $db->get_row("select variable, colors from Message2001 where Message_ID = '$id'",ARRAY_A);
+		// 	$variants = orderArray($varcol[variable]);
+		// 	$colors = orderArray($varcol[colors]);
+
+		// 	foreach ($variants as $key => $val) { # получить № варианта
+		// 		if ($setting['selfvariablename']) { # если самостоятельное имя товара только из имени варианта
+		// 			if (strcmp($val['name'],$name)==0) { (string)$variantKey = $key; break; }
+		// 		} else {
+		// 			if (strcmp($origname." ".$val['name'],$name)==0) { (string)$variantKey = $key; break; }
+		// 		}
+		// 	}
+		// 	$idincart = $id."_vr".$variantKey;
+
+		// 	if ($colorname && $colornum) { # если есть цвета
+		// 		$idincart = $idincart."_clr".$colornum;
+		// 	}*/
+		// } else {
+		// 	$idincart = $id;
+		// }
+
+		// $_SESSION['cart']['items'][$idincart]['count'] = $count;
+		// $_SESSION['cart']['items'][$idincart]['sum'] = round($_SESSION['cart']['items'][$idincart]['count']*$_SESSION['cart']['items'][$idincart]['price'],2);
+	}
+}
+
+
+// записать корзину в сессию
+if (is_numeric($id) && (is_numeric($price) || !$price || $price=='0') && is_numeric($count) && is_numeric($sub) && (hexprice($price)==$hex || $colorname)) {
+	// добавлено для пересчета количества в корзине
+	$productObj = Class2001::getItemById($id);
+	if ($name!=$origname) { # если это вариант
+		$varcol = $db->get_row("select variable,colors,edizm from Message2001 where Message_ID = '$id'",ARRAY_A);
+		$variants = orderArray($varcol[variable]);
+		$colors = orderArray($varcol[colors]);
+
+		foreach ($variants as $key => $val) {
+			if (!$setting['selfvariablename']) { # разве варианты не хранятся всегда без оригинального имени????
+				if (strcmp($origname." ".$val['name'],$name)==0) { (string)$variantKey = $key; break; }
+			} else {
+				if (strcmp($val['name'],$name)==0) { (string)$variantKey = $key; break; }
+			}
+		}
+		$idincart = $id."_vr".$variantKey;
+	} else { # не вариант товара, сам товар
+		$idincart = $id;
+	}
+
+
+	if ($colorname && $colornum) { # id если есть цвета
+		$idincart = $idincart."_clr".$colornum;
+	}
+
+
+	if ($idincart) { # не добавлять без id
+		if (!$_SESSION['cart']['items'][$idincart]['name']) { // товара нет в корзине
+			$crt['id'] = $id;
+			$crt['name'] = $name;
+			if ($price) $crt['price'] = $price;
+			$crt['sub'] = $sub;
+			$crt['count'] = 0;
+			$crt['art'] = $art;
+			$crt['variablename'] = $productObj->f['variablename'] ?? NULL;
+			#Mir доп параметры для формирования ссылки на каталог ACAT
+			if (!empty($_POST['l']) and (strpos($_POST['l'],':')!==false || substr_count($_POST['l'],'/')>3)){
+				$crt['l'] = $_POST['l'];
+				#если ACAT то имя будет братся из data-name по этому чистим его
+				$crt['name'] = str_replace(array('&','#','%',"\n","\t","\r", '"', "'", ';'), '', trim(htmlspecialchars(strip_tags($name)))); #максимум защитыыыыыыыыыыыыыы
+			}
+		} else {
+			$crt = $_SESSION['cart']['items'][$idincart];
+		}
+
+		$newcount = ($typecount==1 ? ($crt['count']+$count) : $count);
+		if ($newcount>$stock && $setting['stockbuy'] && $stock>0) { // нельзя покупать больше чем есть вналичии
+			$crt['count'] = $stock;
+			if ($price) $crt['sum'] = round($stock*$price,2);
+			$error = "В наличии имеется только $stock единиц товара.";
+		} else { // можно
+			$crt['count'] = $newcount;
+			if ($price) $crt['sum'] = round($crt['count']*$price,2);
+		}
+		if ($colorname && $colorcode) {
+			$crt['colorname'] = $colorname;
+			$crt['colorcode'] = $colorcode;
+			$crt['colornum'] = $colornum;
+		}
+		// добавлено для пересчета количества в корзине
+		if ($price) {
+            $crt['price'] = $productObj->getPriceByCountInBasket($crt['count']);
+            $crt['sum'] = round($crt['count'] * $crt['price'], 2);
+        }
+	} else {
+		$error = "Ошибка добавления в корзину";
+	}
+
+	$crt['edizm'] = $productObj->edizm; // шт
+	$_SESSION['cart']['items'][$idincart] = $crt;
+
+}
+if ($AUTH_USER_ID == 154) {
+	if (!$delivery && $_SESSION['cart']['delivery']['assist']['type'] == 'pochta_russia') {
+		$PR = new PochtaRussia();
+		$PR->recalcDelivery();
+	}
+}
+
+
+// html мини-корзины
+if ($_SESSION['cart']['items']) {
+    foreach($_SESSION['cart']['items'] as $itemid => $item) { $counti++;
+		$param = $db->get_row("select Subdivision_ID,art,code,stock,variable,colors from Message2001 where Message_ID = '$itemid'", ARRAY_A);
+		$sub_name = $db->get_var("SELECT EnglishName FROM Subdivision WHERE Subdivision_ID=".$param['Subdivision_ID']);
+
+		$itemObject = Class2001::getItemById($item['id']);
+		if(!$itemObject) continue;
+
+		if (strstr($itemid,"_vr") || strstr($itemid,"_clr")) { # если есть варианты или цвета, получить id
+		   $vrIDarr = explode("_", $itemid);
+		   if (strstr($vrIDarr[1],"vr")) $vrID = str_replace("vr", "", $vrIDarr[1]);
+		   if (strstr($vrIDarr[1],"clr")) $clrID = str_replace("clr", "", $vrIDarr[1]);
+		   if (strstr($vrIDarr[2],"clr")) $clrID = str_replace("clr", "", $vrIDarr[2]);
+		}
+		
+		if ($vrID && $itemObject->variable) { # узнать количество, если есть вариант товара
+			$vrIDarr = explode("_vr", $itemid);
+			$vrID = $vrIDarr[1];
+			$variableArr = orderArray($itemObject->variable);
+			$vrStock = $variableArr[$vrID]['stock'];
+		}
+		if ($clrID && !$vrID && $itemObject->colors) { # узнать количество, если есть цвета и нет вариантов (варианты в приоритете)
+			$colorsArr = orderArray($itemObject->colors);
+			$vrStock = $colorsArr[$clrID]['stock'];
+		}
+
+		if ($itemid==$id || $itemid==$idincart) {
+			$curName = str_replace("\\","",$item[name]);
+			$curLink = $itemObject->fullLink;
+		}
+		#Mir
+		#Не допустить переход в раздел partcomsys
+		if (mb_strpos($itemObject->fullLink, 'partcomsys')!==false) $itemObject->fullLink = '#';
+		#End Mir
+
+		$name = str_replace("\\","",$item[name]);
+		#Mir ACAT (товара в базе не существует)
+		if (intval($item['sub'])!=1) #не ACAT
+			$link = nc_message_link($itemid,2001).($vrID ? "#v_{$vrID}" : NULL);
+		else { #ACAT
+			#определение страницы каталога ACAT и формирование ссылки на деталь
+			if (strpos($item['l'],'/')!==false){
+				#Версия 2
+				if ($acat = $db->get_var("SELECT Subdivision_ID FROM Sub_Class WHERE Class_ID=210 AND Class_Template_ID=2078 AND Catalogue_ID=".$catalogue)){
+					$acat = $db->get_var("SELECT Hidden_URL FROM Subdivision WHERE Subdivision_ID=".$acat);
+					$link = $acat.'?id='.$item['l'];
+				}
+				else
+					$link = '';
+			}
+			elseif ($acat = $db->get_var("SELECT Subdivision_ID FROM Sub_Class WHERE Class_ID=210 AND Catalogue_ID=".$catalogue)){
+                $acat = $db->get_var("SELECT Hidden_URL FROM Subdivision WHERE Subdivision_ID=".$acat);
+				$link = explode(':', $item['l']);
+				$link = $acat.'?modelID='.intval($link[0]).'&treeID='.intval($link[1]).'#l'.$itemid;
+			}
+			else
+				$link = '';
+		}
+		if ($itemid==$id || $itemid==$idincart) {
+			$curName = $name;
+			$curLink = $link;
+		}
+		#$itemObject->fullLink
+		$itemVariableNameHtml = $item['variablename'] ? ("
+				<div>{$item['variablename']}</div>
+			") : "";
+		$smallcartLi .= "<div class='basket_m_item' data-id='{$itemid}' data-count='{$item['count']}' data-stock='".($vrStock ? $vrStock : $param[stock])."'>
+			            	<div class='basket_m_item_sec cb'>
+								".($minicarttype==1 || !$minicarttype ? $itemObject->photoMain : "")."
+								<div class='basket_m_text'>
+									<a href='{$link}' class='basket_m_link'>".str_replace("\\", "", $item['name'])."</a>
+									".($param['art'] && $setting['minicart']==2 ? "<div class='basket_m_article'>Артикул: <span>{$param['art']}</span></div>" : NULL)."
+									".($item['colorname'] ? "<div class='item-color-cart'><span class=color style='background:#{$item['colorcode']}' title='Цвет: {$item['colorname']}'></span></div>" : "")."
+									{$itemVariableNameHtml}
+								</div>
+								<div class='basket_m_all'>
+									<div class='basket_m_price_close'>
+										<div class='basket_m_price'>".($item['sum'] ? price($item['sum'])." {$currency['html']}" : NULL)."</div>
+										<div class='basket_m_close'><a href='' class='delitem'></a></div>
+									</div>
+									<div class='basket_m_num'>
+										<input value='{$item['count']}' name='count' type='number' readonly>
+										<span class='b_m_c basket_m_up'></span>
+										<span class='b_m_c basket_m_down'></span>
+									</div>
+								</div>
+							</div>
+						</div>";
+
+		# ИТОГО
+        $totalsum = $totalsum + $item['sum'];
+    }
+
+
+	# CКИДКИ
+	$discont=0;
+	$totalSumDiscont = $totalsum-$discont;
+
+	# ДОСТАВКА
+
+	$delivery_price = $_SESSION['cart']['delivery']['sum'];
+	$delivery_free = false;
+	$delivery_freevisible = false;
+	# нету суммы
+	if (!$delivery_price) $delivery_price = 0;
+	# добрал до нужной суммы
+	if($setting['freedelivery'] && $_SESSION['cart']['delivery']['totsumfree'] > 0){
+		if($_SESSION['cart']['delivery']['totsumfree'] <= $totalsum){
+			 $delivery_price = 0;
+			 $delivery_free = true;
+		}
+		$_SESSION['cart']['delivery']['sum_nothave'] = $_SESSION['cart']['delivery']['totsumfree'] - $totalsum;
+		$delivery_freevisible = true;
+	}
+	$_SESSION['cart']['delivery']['sum_free'] = $delivery_free;
+	$_SESSION['cart']['delivery']['sum_freevisible'] = $delivery_freevisible;
+	$_SESSION['cart']['delivery']['sum_result'] = $delivery_price;
+
+	$totaldelsum = $totalSumDiscont + $_SESSION['cart']['delivery']['sum_result'];
+
+
+	 # вариант миникорзины кнопка-выпадашка
+	if ($minicarttype==1 || $minicarttype==2 || !$minicarttype) {
+		$smallcart = "<div class='smallcart2 basket_mini cb' data-minicart='{$minicarttype}'>
+		<div class='basket_mini_rel'>
+            <a href='/cart/' class='basket_mini_open ".($minicarttype==2 ? "basket_mini_gotolink" : "")."'>
+			    <div class='basket_mini_a'>
+                    <span class='icons iconsCol i_cart1 basket_m_button'>{$cart_name}</span>
+                    <span class='none minicartCount2'>".count($_SESSION['cart']['items'])."</span>
+                </div>
+			    <div class='basket_m_p'><span class='basket_m_price'>".price($totalsum)." {$currency['html']}</span></div>
+            </a>
+			<div class='basket_m_spisok'>
+			<div class='basket_m_spisok2'>
+				<div class='basket_m_items'>{$smallcartLi}<div class='basket_buy cb'>
+						<a href='/cart/' class='basket_b_oform btn-strt-a'>
+							<span class='basket_b_good icons i_check'></span>
+							<span class='basket_b_o'>{$cart_gotocart}</span>
+						</a>
+						<span class='b_b_itogo'>
+                            <span class='b_b_itogo_sum'>{$cart_total}: <span class='b_b_price'>".price($totalsum)."</span> {$currency['html']}</span>
+                            <span class='b_b_itogo_clear'><a href='#' class='cartclear'><span>{$cart_clear}</span></a></span>
+                        </span>
+				</div>
+               </div>
+			</div>
+            </div></div></div>";
+	}
+
+
+	# вариант миникорзины слева
+	if ($minicarttype==3) {
+		$smallcart = "<div class='smallcart0 smallcart_info mini_card card_left' data-minicart='{$minicarttype}'>
+        <div class='basket_m_items scrollbar-card'>{$smallcartLi}</div>
+		<div class='basket_buy'>
+          <div class='basket_b_line'>
+            <div class='basket_b_l_text fl'>Всего к оплате:</div>
+            <div class='bor_line_krn'></div>
+            <div class='basket_b_l_sum fr'><b>".price($totalsum)." {$currency['html']}</b></div>
+            <div class='clear'></div>
+          </div>
+          <div class='basket_b_clck'>
+            <a href='#' class='cartclear basket_b_clear fl'>Очистить</a>
+            <a href='/cart/' class='btn-strt-a card-left-bt fr'><span>".($setting['lists_texts']['btn_gotocart']['checked'] ? $setting['lists_texts']['btn_gotocart']['name'] : "Оформить заказ")."</span></a>
+            <div class='clear'></div>
+          </div>
+		</div><div class='clear'></div>
+		</div>";
+	}
+	# вариант миникорзины слева с раскрыванием
+	if ($minicarttype==4) {
+		$smallcart = "<div class='smallcart1 smallcart_info mini_card card_left card_left_open' data-minicart='{$minicarttype}'>
+		<div class='basket_m_toptext icons i_cart1 mainmenubg-font-bf'>
+			<div class='basket_m_tt'>
+				Вы выбрали <a href='/cart/'>".count($_SESSION['cart']['items'])." товара</a><br>
+				на сумму: <b>".price($totalsum)." {$currency['html']}</b>
+			</div>
+			<div class='basket_m_open ".($smallcartopen ? "open" : "")."'>
+				<a href='' class='open-card-1'>Раскрыть</a>
+				<a href='' class='open-card-2'>Скрыть</a>
+			</div>
+		</div>
+
+		<div class='basket_m_items ".($smallcartopen ? "" : "none")."'>{$smallcartLi}</div>
+		<div class='basket_buy'>
+							<div class='basket_b_clck'>
+								<a href='/cart/' class='btn-strt-a card-left-bt fl'><span>".($setting['lists_texts']['btn_gotocart']['checked'] ? $setting['lists_texts']['btn_gotocart']['name'] : "Оформить заказ")."</span></a>
+								<a href='#' class='cartclear basket_b_clear fr'>Очистить</a>
+								<div class='clear'></div>
+							</div>
+		</div><div class='clear'></div>
+		</div>";
+	}
+
+} else {
+# пустая корзина
+	if ($minicarttype==1 || $minicarttype==2) {
+		$smallcart = "<div class='basket_mini' data-minicart='{$minicarttype}'>
+			<div class='basket_mini_rel'>
+                <a href='/cart/' class='basket_mini_open ".($minicarttype==2 ? "basket_mini_gotolink" : "")." {$dopclass}'>
+				    <div class='basket_mini_a'>
+                        <span class='icons iconsCol i_cart1 basket_m_button'>{$cart_name}</span>
+                        <span class='none minicartCount2'>0</span>
+                    </div>
+				    <span class='basket_m_price'>{$cart_noProducts}</span>
+                </a>
+				<div class='basket_m_spisok' style='white-space:nowrap;'><div class='basket_m_spisok2'>
+					{$cart_putProducts} <a href='/catalog/'>".getLangWord('lang_sub_catalog','каталога')."</a>
+				</div></div>
+			</div>
+		</div>";
+	}
+
+	if ($minicarttype>2) {
+		$smallcart = "<div class='smallcart1 smallcart_info mini_card card_left' data-minicart='{$minicarttype}'>
+							<div class='basket_buy'>
+								<div class='basket_b_line'>
+									<div class='basket_b_l_text fl'>Корзина пуста</div>
+								</div>
+						</div>
+							<div class='clear'></div>
+						</div>";
+	}
+
+}
+
+if(!permission("cart")) $smallcart = "<p class='nocart-in-setting'>Корзина отключена</p>";
+
+// ответ после добавления в корзину
+if (( $idincart && is_numeric($count) && (is_numeric($price) || !$price) && is_numeric($sub) ) || is_numeric($clear) || $delitem || $delitem==='0' || $itemcount || $delivery || (is_numeric($id) && is_numeric($stock))) {
+
+	if ($_SESSION['cart']['items']) { // info in tovar
+		if ($_SESSION['cart']['items'][$idincart]['count']>0) {
+			$incart_info = "в <a href='/cart/'>корзине</a> уже ".$_SESSION['cart']['items'][$idincart]['count'];
+			$incart_info .= " ".($_SESSION['cart']['items'][$idincart]['edizm'] ? $_SESSION['cart']['items'][$idincart]['edizm'] : pluralForm($_SESSION['cart']['items'][$idincart]['count'],"едниница","единицы","единиц"));
+		}
+	} else {
+		$incart_info = $cart_empty;
+	}
+
+
+	$_SESSION['cart']['totalsum'] = $totalsum;
+
+	$_SESSION['cart']['discont']=($discont>0 ? $discont : 0);
+	$_SESSION['cart']['totalSumDiscont']= $totalSumDiscont;
+
+
+	$_SESSION['cart']['totaldelsum'] = $totaldelsum;
+	$incart_info4 = ($setting_texts['incart_info41']['checked'] ? $setting_texts['incart_info41']['name'] : "Товар").
+					" <a href='{$curLink}'>{$curName}</a> "
+					.($setting_texts['incart_info42']['checked'] ? $setting_texts['incart_info42']['name'] : "добавлен в").
+					" <a href='/cart/'>".($setting_texts['incart_info43']['checked'] ? $setting_texts['incart_info43']['name'] : "корзину покупок")."</a>!";
+	echo json_encode(ARRAY(
+		"smallcart" => $smallcart,
+		"error" => $error,
+		"totcount" => count($_SESSION['cart']['items']),
+		"totsum" => $totalsum,
+		"discont" => $discont,
+		"totsumdiscont" => $totalSumDiscont,
+		"deliversum" => $_SESSION['cart']['delivery']['sum_result'],
+		"totdelsum" => $totaldelsum,
+		"delivery_freevisible" => $_SESSION['cart']['delivery']['sum_freevisible'],
+		"delivery_free" => $_SESSION['cart']['delivery']['sum_free'],
+		"delivery_nothave" => $_SESSION['cart']['delivery']['sum_nothave'],
+        "my_price" => $price,
+        "my_count" => $count,
+        "my_hexprice" => hexprice($price),
+        "my_hex" => $hex,
+        "my_id" => $id,
+        "my_sub" => $sub,
+        "all"  => $_SESSION['cart'],
+		"itemid"=> $idincart,
+		"itemsum" => $_SESSION['cart']['items'][$idincart]['sum'],
+		"itemcount" => $_SESSION['cart']['items'][$idincart]['count'],
+		"incart_info" => $incart_info,
+		"incart_info1" => $incart_info1,
+		"incart_info2" => ($setting_texts['btn_incart2']['checked'] ? $setting_texts['btn_incart2']['name'] : "В корзине"),
+		"incart_info3" => "<a class='incartlnk' href='/cart/'>".($setting_texts['btn_incart2']['checked'] ? $setting_texts['btn_incart2']['name'] : "В корзине")."</a>",
+		"incart_info4" => $incart_info4,
+		"kvkOrderBase64" => $kvkOrderBase64,
+		"kvkSig" => $kvkSig
+	));
+} else {
+	echo $smallcart;
+}
+
+?>
+
+<?php  } # ################# END ############ ?>

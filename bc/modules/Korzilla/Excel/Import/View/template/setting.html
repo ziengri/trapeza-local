@@ -1,0 +1,203 @@
+<div class="view-body-inline">
+    <div class="v-body">
+        <div class="v-line">
+            <div class="v-inline v-name1c"><b><a target=_blank href="https://docs.google.com/document/d/1k9sqZqGpes5GnBa9yyXJu-aEEw19JffM/edit?usp=sharing&ouid=106573663312148450021&rtpof=true&sd=true">Инструкция</a></b></div></div>
+    </div>
+</div>
+<div class="view-body-inline import-excel">
+    <div class="v-title">
+        <div class="v-title-text"><b>Скачать файл</b> каталога в формате csv</div>
+    </div>
+    <div class="v-body">
+        <form action="/bc/modules/bitcat/index.php?bc_action=import_excel&params_e=get_catalog">
+            <div id="gr_import_catalog">
+                <div class="colblock-body">
+                    <div class="colline colline-1 colline-height">
+                        <ul class="tabs tabs-border">
+                            <li class="tab">
+                                <a href="#fields-sub" class="active">Выбрать поля разделов</a>
+                            </li>
+                            <li class="tab">
+                                <a href="#fields-item">Выбрать поля товаров</a>
+                            </li>
+                            <div class="t-border" style="left: 0px; width: 176px;"></div>
+                        </ul>
+                        <div class="tabs-body">
+                            <div id="fields-sub">
+                                <details class="fields">
+                                    <summary>
+                                        <b>Основные поля разделов</b>
+                                    </summary>
+                                    <?php foreach ($params['gruop']['basic'] as $field => $param) : ?>
+                                        <?= bc_checkbox("field[gruop][{$field}]", 1, $param['name'], $param['value']) ?>
+                                    <?php endforeach; ?>
+                                </details>
+                                <?php if ($params['powerseo']): ?>
+                                    <details class="fields">
+                                        <summary>
+                                            <b>SEO поля разделов</b>
+                                        </summary>
+                                        <?php foreach ($params['gruop']['seo'] as $field => $param) : ?>
+                                            <?= bc_checkbox("field[gruop][{$field}]", 1, $param['name'], $param['value']) ?>
+                                        <?php endforeach; ?>
+                                </details>
+                                <?php endif; ?>
+                                <details class="fields">
+                                    <summary>
+                                        <b>Дополнительные поля разделов</b>
+                                    </summary>
+                                    <?php foreach ($params['gruop']['more'] as $field => $param) : ?>
+                                        <?= bc_checkbox("field[gruop][{$field}]", 1, $param['name'], $param['value']) ?>
+                                    <?php endforeach; ?>
+                                </details>
+                                <details class="fields">
+                                    <summary>
+                                        <b>Поля разделов со сложным заполнением</b>
+                                    </summary>
+                                    <?php foreach ($params['gruop']['hard'] as $field => $param) : ?>
+                                        <?= bc_checkbox("field[gruop][{$field}]", 1, $param['name'], $param['value']) ?>
+                                    <?php endforeach; ?>
+                                </details>
+                            </div>
+                            <div id="fields-item" class="none">
+                                <details class="fields">
+                                    <summary>
+                                        <b>Основные поля товаров</b>
+                                    </summary>
+                                    <?php foreach ($params['item']['basic'] as $field => $param) : ?>
+                                        <?= bc_checkbox("field[item][{$field}]", 1, $param['name'], $param['value']) ?>
+                                    <?php endforeach; ?>
+                                </details>
+                                <?php if ($params['powerseo']): ?>
+                                    <details class="fields">
+                                        <summary>
+                                            <b>SEO поля товаров</b>
+                                        </summary>
+                                        <?php foreach ($params['item']['seo'] as $field => $param) : ?>
+                                            <?= bc_checkbox("field[item][{$field}]", 1, $param['name'], $param['value']) ?>
+                                        <?php endforeach; ?>
+                                    </details>
+                                <?php endif; ?>
+                                <details class="fields">
+                                    <summary>
+                                        <b>Дополнительные поля товаров</b>
+                                    </summary>
+                                    <?php foreach ($params['item']['more'] as $field => $param) : ?>
+                                        <?= bc_checkbox("field[item][{$field}]", 1, $param['name'], $param['value']) ?>
+                                    <?php endforeach; ?>
+                                </details>
+                                <details class="fields">
+                                    <summary>
+                                        <b>Поля товаров со сложным заполнением</b>
+                                    </summary>
+                                    <?php foreach ($params['item']['hard'] as $field => $param) : ?>
+                                        <?= bc_checkbox("field[item][{$field}]", 1, $param['name'], $param['value']) ?>
+                                    <?php endforeach; ?>
+                                </details>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="colline colline-2 type-checkbox name-get_photo_zip">
+                        <div class="switch">
+                            <label>
+                                <input type="checkbox" value="1" name="get_photo_zip">
+                                <span class="lever"></span>
+                                <span class="sw-text">Сформировать архив с фото (увеличит время формирования файла)</span>
+                            </label>
+                        </div>
+                    </div>
+                    <div class="colline colline-2 type-link name-get_catalog">
+                        <span class="bc-btn">
+                            <input type="submit" value="Сформировать файл каталога" disabled="disabled" class="disabled">
+                        </span>
+                    </div>
+                    <div class="colline colline-1 none colline-process">
+                        <div class="process">
+                            <span class="name"></span>
+                            <span class="value"></span>
+                        </div>
+                    </div>
+                    <div class="colline colline-2 link_file">
+                            <div class="name">Файл каталога</div>
+                            <div class="value loading"></div>
+                    </div>
+                    <div class="colline colline-2 photo_file">
+                            <div class="name">Архив с фото</div>
+                            <div class="value loading"></div>
+                    </div>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+<script>
+    getProcessImportExcel();
+
+    $('.name-get_catalog input').on('click', function(e) {
+        e.preventDefault();
+        $(this).addClass('disabled').prop('disabled', true);
+        const form = $(this).parents('form');
+        const data = {};
+        $.each(form.serializeArray(), function() {
+            if (data[this.name]) {
+                if (!data[this.name].push) {
+                    data[this.name] = [data[this.name]];
+                }
+                data[this.name].push(this.value || '');
+            } else {
+                data[this.name] = this.value || '';
+            }
+        });
+        $.post(form.attr('action'), data, function(res, req) {
+            console.log(req);
+            getProcessImportExcel();
+        }, "json");
+    })
+
+    function getProcessImportExcel() {
+        $.get('/bc/modules/bitcat/index.php?bc_action=import_excel&params_e=get_process', function(res, req) {
+            const body = $('.import-excel');
+            if (res) {
+                const process_message = body.find('.process span.name');
+                const process_value = body.find('.process span.value');
+                const link = body.find('.link_file .value');
+                const link_photo = body.find('.photo_file .value');
+                let time = new Date().getTime();
+
+                if (res?.status == 1 || (res?.status == 0 && res?.message == '')) {
+                    body.find('.name-get_catalog input').removeClass('disabled').prop('disabled', false);
+                }
+
+                if (res?.message && res?.status != 1) {
+                    $('.colline-process').removeClass('none');
+                    process_message.text(res.message);
+                    if (res?.procent && res.procent !== 100) {
+                        process_value.text(res.procent + '%');
+                    } else process_value.text('');
+                } else  {
+                    $('.colline-process').addClass('none');
+                    process_message.text('');
+                }
+               
+
+                if (res?.link) {
+                    link.html(`<a class="link" href="${res.link}?t=${time}" target="_blank">Скачать ${res?.link_date}</a>`);
+                } else {
+                    link.html(`<span class="link_dowload_none">Не создан</span>`);
+                }
+                link.removeClass('loading')
+
+                if (res?.link_photo) {
+                    link_photo.html(`<a class="link_photo_dowload" href="${res.link_photo}?t=${time}" target="_blank">Скачать ${res?.link_photo_date}</a>`);
+                } else {
+                    link_photo.html(`<span class="link_photo_dowload_none">Не создан</span>`);
+                }
+                link_photo.removeClass('loading')
+            }
+            console.log(res);
+            if (!res || res.status == 0) {
+                setTimeout(getProcessImportExcel, 3000);
+            }
+        }, "json");
+    }
+</script>

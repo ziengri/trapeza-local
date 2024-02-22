@@ -1,0 +1,148 @@
+<!-- FormPrefix --><?php
+global $pathInc2;
+$connectTemplate = $DOCUMENT_ROOT.$pathInc2."/template/2005/2015/templateEdit/FormPrefix.html";
+if ($current_catalogue['customCode'] && file_exists($connectTemplate)) {
+    include($connectTemplate);
+} else {
+?>
+<?
+  $class2005 = new Class2005();
+  $status = $class2005->getOrderStatusList();
+  $statusOplaty = $db->get_results("SELECT statusOplaty_ID as id, statusOplaty_Name as name from Classificator_statusOplaty where Checked = 1 ORDER BY statusOplaty_Priority", ARRAY_A);
+?>
+
+<table class='nc-table table-order'>
+  <thead>
+    <tr>
+      <? /*<th class="t-check none">
+          <div class="chk-order t-check-main"></div>
+      </th>*/ ?>
+      <th class="t-num">№</th>
+      <th class="t-date">Дата</th>
+      <th class="t-client">Заказчик</th>
+      <th class="t-sum">Сумма</th>
+      <th class="t-status">Статус</th>
+      <th class="t-pay">Оплата</th>
+      <? if ($setting['payWithConfirm']) : ?>
+        <th class="t-confirm"></th>
+      <? endif; ?>
+      <th class="t-delete"></th>
+    </tr>
+  </thead>
+  <tbody>
+<?php } ?><!-- /FormPrefix -->
+
+<!-- RecordTemplate --><?php /* Служебная часть */for ($f_RowNum = 0; $f_RowNum < $rowCount; $f_RowNum++) {    if($fetch_row[$f_RowNum] instanceof Iterator) {        extract($fetch_row[$f_RowNum]->to_array(), EXTR_PREFIX_ALL, "f");    } else {        extract($fetch_row[$f_RowNum], EXTR_PREFIX_ALL, "f");    }    foreach($iteration_RecordTemplate[$f_RowNum] as $value) {        extract($value);    }    eval($cc_env["convert2txt"]);    ob_start();/* Конец служебной части */?>
+<?php /* Служебная часть */
+global $pathInc2;
+$connectTemplate = $DOCUMENT_ROOT . $pathInc2 . "/template/class/2015/RecordTemplate.html";
+
+if ($current_catalogue['customCode'] && file_exists($connectTemplate)) {
+    include($connectTemplate);
+} else {
+for ($f_RowNum = 0; $f_RowNum < $rowCount; $f_RowNum++) {
+    if($fetch_row[$f_RowNum] instanceof Iterator) {
+        extract($fetch_row[$f_RowNum]->to_array(), EXTR_PREFIX_ALL, "f");
+    } else {
+        extract($fetch_row[$f_RowNum], EXTR_PREFIX_ALL, "f");
+    }
+    foreach($iteration_RecordTemplate[$f_RowNum] as $value) {
+        extract($value);
+    }
+    eval($cc_env["convert2txt"]);
+    ob_start();
+/* Конец служебной части */?>
+
+<?php 
+    $customf = orderArray($f_customf);
+    $phone = $customf[phone][value] ? $customf[phone][value] : ($f_phone ? $f_phone : "");
+    $email = $customf[email][value] ? $customf[email][value] : ($f_email ? $f_email : "");
+?>
+<tr data-orderid="<?=$f_RowID?>">
+    <?php  /*<td class="t-check none">
+          <div class="chk-order"></div>
+    </td>*/ ?>
+    <td class="t-num"><a title="Заказ #<?=$f_RowID?>" data-rel="lightcase" data-lc-options='{"maxWidth":950,"groupClass":"modal-admin-order"}' href="<?=$editLink?>?nc_ctpl=2015&isNaked=1">#<?=$f_RowID?></td>
+    <td class="t-date"><?="{$f_Created_day}.{$f_Created_month}.{$f_Created_year}"?><br><?="{$f_Created_hours}:{$f_Created_minutes}"?></td>
+    <td class="t-client">
+	<div class="t-first">
+        <?php  if (permission('admin')) { ?>
+            <span><?=$f_fio?></span>
+            <?=($phone ? "<span>{$phone}</span>" : null)?>
+            <?=($email ? "<a href='tomail:{$email}'>{$email}</a>" : null)?>
+
+<?php  } else { ?>
+            <div>Контакты скрыты</div>
+        <?php  } ?>
+        </div>
+        <div class="t-second t-link">
+            <a href="<?=$editLink?>?nc_ctpl=2015&isNaked=1" data-lc-options='{"maxWidth":950,"maxHeight":1100,"groupClass":"modal-admin-order"}' title="Заказ #<?=$f_RowID?>" data-rel="lightcase">Детали заказа</a>
+            <!--<a href="" class="t-print none">Распечатать заказ</a>-->
+        </div>
+    </td>
+    <td class="t-sum">
+        <?php 
+            unset($totalsum); $items = orderArray($f_orderlist);
+            foreach($items['items'] as $item) $totalsum = $totalsum + $item[sum];
+        ?>
+        <?=number_format($f_totalSum ? $f_totalSum : $totalsum, 2, ',', ' ')?> <?=($setting['lists_texts']['rubl_char']['checked'] ?$setting['lists_texts']['rubl_char']['name'] : "р.")?>
+    </td>
+    <td class="t-status">
+        <select name='f_ShopOrderStatus' class='shopOrderStatus ns'>
+            <?php  foreach ($status as $item) echo "<option value='{$item[id]}'".($f_ShopOrderStatus==$item[id] ? "selected" : NULL).">{$item[name]}</option>"; ?>
+        </select>
+    </td>
+    <td class="t-pay">
+        <select name='f_statusOplaty' class='statusOplaty ns'>
+            <?php  foreach ($statusOplaty as $item) echo "<option value='{$item[id]}' class='statusOplaty-{$item[id]}' ".($f_statusOplaty_id==$item[id] ? "selected" : NULL).">{$item[name]}</option>"; ?>
+        </select>
+    </td>
+    <?php if ($setting['payWithConfirm']) : ?>
+      <td class="t-confirm">
+          <?php  if ($f_statusOplaty_id == 4) : ?>
+          <?php 
+            $paynemtName =  Class2005::getListName('payment', $f_payment, 'name');
+
+            $confirmHref .= "/bc/modules/default/index.php?order_id={$f_RowID}&user_action=";
+
+            if (mb_stristr($paynemtName, 'uniteller')) $confirmHref .= 'uniteller_confirm';
+          ?>
+            <a href="<?=$confirmHref?>" class="confirm-pay-btn">Подтвердить заказ</a>
+          <?php  endif; ?>
+      </td>
+    <?php  endif; ?>
+    <td class="t-delete">
+        <?php  $confirmtext = "<div class=''>{$f_fio}</div>".($f_phone ? "<div class=''>".$f_phone."</div>" : null).($f_email ? "<a href='tomail:{$f_email}'>".$f_email."</a>" : null); ?>
+        <a title="Удалить заказ #<?=$f_RowID?>?" data-rel="lightcase" data-confirm-href="/bc/modules/bitcat/index.php?bc_adminorders=deleteOrder&id[]=<?=$f_RowID?>" data-confirm-text="<?=$confirmtext?>" data-lc-options='{"maxWidth":500,"showTitle":false}' href="#сonfirm-actions" class="delete-order"></a>
+    </td>
+</tr>
+
+<?php /* Служебная часть */
+    echo nc_finishing_RecordTemplate(ob_get_clean(), $inside_admin, $classID, $f_RowID, $parent_message, $cc, $cc_env["Class_Name"], $no_cache_marks);
+}
+}
+/* Конец служебной части */?>
+
+<?php /* Служебная часть */    echo nc_finishing_RecordTemplate(ob_get_clean(), $inside_admin, $classID, $f_RowID, $parent_message, $cc, $cc_env["Class_Name"], $no_cache_marks);}/* Конец служебной части */?><!-- /RecordTemplate -->
+
+<!-- FormSuffix -->    </tbody>
+</table>
+<div class="bc_submitblock bc_paneltable">
+	<div class="bc_btnbody">
+		<div class="bc-submit-text">Действия с выделенными:</div>
+		<div class="bc-btn-green bc-btn-delete"></div>
+	</div>
+</div>
+    <?=getPagination(array(
+        'isTitle' => $isTitle,
+        'cc_env' => $cc_env,
+        'prevLink' => $prevLink,
+        'nextLink' => $nextLink,
+        'totRows' => $totRows,
+        'recNum' => $recNum,
+        'vars_str2' => $vars_str2,
+        'sub' => $sub,
+        'cc' => $cc,
+        'inside_admin' => 1,
+        'url' => '/cart/'
+    ))?><!-- /FormSuffix -->

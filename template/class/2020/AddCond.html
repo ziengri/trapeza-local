@@ -1,0 +1,32 @@
+<?php
+  $f_Catalogue_ID = $catalogue;
+
+  if (!$f_textt && !$f_text11 && !$f_text22) {
+      $posting = 0;
+      echo json_encode(ARRAY(
+        "title" => getLangWord('error',"Ошибка"),
+        "error" => getLangWord('review_error_empty',"Напишите сообщение")
+      ));
+      exit;
+  }
+  
+  if (!$f_name) {
+      $posting = 0;
+      echo json_encode(ARRAY(
+        "title" => getLangWord('error',"Ошибка"),
+        "error" => getLangWord('review_error_name',"Заполните поле Имя")
+      ));
+      exit;
+  }
+  
+// проверка на кол-во отправленных писем с одного ip в час
+$ipcount = $db->get_var("select count(Message_ID) as cnt from Message{$classID} where IP = '".getIP()."' AND Created >= now() - interval 30 minute");
+if ($ipcount>2 && !$AUTH_USER_ID) {
+    $posting = 0;
+    echo json_encode(ARRAY(
+        "title" => getLangWord('error',"Ошибка"),
+        "error" => getLangWord('er_txt_alradyWrite',"Вы нам уже писали, мы видели ваш запрос.")
+    ));
+    exit;
+}
+?>

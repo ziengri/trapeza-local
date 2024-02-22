@@ -1,0 +1,26 @@
+<!-- FormPrefix --><?=($inside_admin ? $f_AdminCommon : addObjBut($addLink,$isTitle,null,'логотип')).($totRows ? "<div class=txt>" : NULL)?><!-- /FormPrefix -->
+
+<!-- RecordTemplate --><?php /* Служебная часть */for ($f_RowNum = 0; $f_RowNum < $rowCount; $f_RowNum++) {    if($fetch_row[$f_RowNum] instanceof Iterator) {        extract($fetch_row[$f_RowNum]->to_array(), EXTR_PREFIX_ALL, "f");    } else {        extract($fetch_row[$f_RowNum], EXTR_PREFIX_ALL, "f");    }    foreach($iteration_RecordTemplate[$f_RowNum] as $value) {        extract($value);    }    eval($cc_env["convert2txt"]);    ob_start();/* Конец служебной части */?>
+<?=(($classID==2001 && $action=='full') || !$f_file ? "" : "<!--<meta property='og:image' content='".$f_file."' />-->")?>
+
+<div class="obj <?=objHidden($f_Checked,$f_citytarget,$cityid)?> obj<?=$f_RowID?>"><?=($bitcat ? editObjBut($editLink) : NULL)?>
+  <?=($f_text1 ? "<div class='logo-text-top'>{$f_text1}</div>" : NULL)?>
+  <a href='<?=($f_url ? $f_url : "/")?>' id='logo' class='<?=($f_name || $f_subname ? "mainlogo-name" : "")?>'>
+      <?php  if($f_file){ ?>
+        <div class='logo-img'>
+            <img src='<?=$f_file?>' alt='<?=\Korzilla\Replacer::replaceText(($f_altImg ?: $current_catalogue['Catalogue_Name']))?>'>
+        </div>
+      <?php  } ?>
+      <?php  if($f_name || $f_subname){ ?>
+          <div id="logo-name">
+              <?=($f_name ? "<span class='logo-name' ".($f_nameSize ? "style='font-size: {$f_nameSize}px'" : "").">{$f_name}</span>" : "")?>
+              <?=($f_subname ? "<span class='logo-subname' ".($f_subnameSize ? "style='font-size: {$f_subnameSize}px; line-height: ".($f_subnameSize+2)."px'" : "").">{$f_subname}</span>" : "")?>
+          </div>
+      <?php  } ?>
+  </a>
+  <?=($f_text2 ? "<div class='logo-text-bottom'>{$f_text2}</div>" : NULL)?>
+</div>
+<?php  echo $f_AdminButtons; ?>
+<?php /* Служебная часть */    echo nc_finishing_RecordTemplate(ob_get_clean(), $inside_admin, $classID, $f_RowID, $parent_message, $cc, $cc_env["Class_Name"], $no_cache_marks);}/* Конец служебной части */?><!-- /RecordTemplate -->
+
+<!-- FormSuffix --><?=($totRows ? "</div>" : NULL)?><!-- /FormSuffix -->

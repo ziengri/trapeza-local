@@ -1,0 +1,37 @@
+<?php  
+  $fields = array(
+    "full" => 1,
+    "isTitle" => $isTitle,
+    "sub" => $sub,
+    "cc" => $cc,
+    "classID" => $classID,
+    "nc_ctpl" => $nc_ctpl,
+    "fullLink" => $fullLink,
+    "editLink" => $editLink,
+    "image_default" => $image_default,
+    "fastprew" => $fastprew,
+    "current_sub" => $current_sub,
+    "current_cc" => $current_cc,
+    "current_catalogue" => $current_catalogue,
+    "RowID" => $f_RowID,
+    "Checked" => $f_Checked,
+    "recNum" => $f_recNum,
+    "name" => $f_name,
+    "city" => $f_city,
+    "phones" => $f_phones,
+    "fax" => $f_fax,
+    "time" => $time,
+    "email" => $f_email,
+    "site" => $f_site,
+    "skype" => $f_skype,
+    "icq" => $f_icq,
+    "address" => $f_address,
+    "coordinates" => $f_coordinates,
+    "description" => $f_description,
+    "citytarget" => $f_citytarget,
+    "targetcode" => $f_targetcode,
+    "targetphone" => $f_targetphone
+  );
+  $class2088 = new Class2088($fields);
+  echo $class2088->getContactFull();
+?>

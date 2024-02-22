@@ -1,0 +1,12 @@
+<?php  require $nc_parent_field_path; ?>
+
+<?php
+
+global $pathInc2;
+$recordCustomPath = $DOCUMENT_ROOT . $pathInc2 . "/template/class/{$classID}/2057/FormSuffix.html";
+$isIncludeRecordCustom = !empty($current_catalogue['customCode']) && file_exists($recordCustomPath);
+if ($isIncludeRecordCustom) {
+    include $recordCustomPath;
+} else { 
+    ?>
+<? } ?>

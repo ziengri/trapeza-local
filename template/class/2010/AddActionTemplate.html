@@ -1,0 +1,35 @@
+<?php 
+global $setting;
+
+if (!$inside_admin) objsys($bc_objsys,$classID,$message);
+$waterPosition = ($setting[waterPosition] ? ($setting[waterPosition]==5 ? "0" : $setting[waterPosition]) : 4);
+
+
+clearCache($classID,$sub);
+
+if ($pathInc && file_exists($DOCUMENT_ROOT.$pathInc.'/images/watermark.png')) {
+@require_once($INCLUDE_FOLDER."classes/nc_imagetransform.class.php");
+ 
+$photos = $db->get_results("select Path, ID from Multifield where Size != '1' AND Message_ID = '$message' AND Field_ID = '2388'", ARRAY_A);
+if ($photos) {
+  foreach($photos as $fot) {
+    if (!$notWater) nc_ImageTransform::putWatermark_file($fot[Path], $pathInc.'/images/watermark.png', $waterPosition);
+    $db->query("UPDATE Multifield set Size = '1' where ID = '$fot[ID]'");
+  }
+}
+}
+
+
+if($inside_admin) {
+    ob_end_clean();
+    header('Location: '.$goBackLink.'&inside_admin=1');
+    exit;
+} else { 
+    echo json_encode(ARRAY(
+        "title" => "ОК",
+        "succes" =>  NETCAT_MODERATION_MSG_OBJADD,
+        "reload" => 1,
+        "modal" => "close"
+    ));
+}
+?>

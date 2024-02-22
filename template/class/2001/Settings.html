@@ -1,0 +1,471 @@
+<?php
+
+global $MODULE_FOLDER, $action, $db, $setting, $setting_texts, $bitcat, $cityid, $cityname, $citylink, $find, $current_sub, $kurs, $AUTH_USER_ID, $pathInc2, $CLASS_TEMPLATE_FOLDER, $settingServiceSupplers;
+
+include_once $MODULE_FOLDER . "default/OnlineCatalogClasses/Omega.php";
+include_once $MODULE_FOLDER . "default/OnlineCatalogClasses/Armtek.php";
+
+# магазин отключен
+if (!permission("catalogue") && !$isTitle)
+    header("Location: /404/");
+
+if (!empty($find)) 
+    $find = strip_tags(html_entity_decode($find));
+if (!empty($_GET['r'])) 
+    $_GET['r'] = (int) $_GET['r'];
+
+# редирект по ключевому слову
+if ($action == 'full' && $classID == 2001 && !$vendor) {
+    global $f_Keyword, $message;
+    $keywordLink = nc_message_link($message, 2001);
+    $current_url = explode("?", $_SERVER['REQUEST_URI']);
+    if ($f_Keyword && $keywordLink && $current_url[0] != $keywordLink) {
+        $redirect = $keywordLink;
+        if (isset($current_url[1])) {
+            $redirect .= '?' . $current_url[1];
+        }
+        header("Location: " . $redirect);
+        exit;
+    }
+}
+
+if ($current_catalogue['customCode']) {
+    $includeClass = false;
+    $thisFile = $DOCUMENT_ROOT . $pathInc2 . "/template/class/{$classID}/Settings.html";
+    $thisFile2 = $DOCUMENT_ROOT . $pathInc2 . "/template/{$classID}/template/Settings.html";
+    if (file_exists($thisFile)) {
+        $includeClass = 1;
+    } elseif (file_exists($thisFile2)) {
+        $includeClass = 2;
+    }
+}
+
+if ($includeClass == 1) {
+    include $thisFile;
+} elseif ($includeClass == 2) {
+    include $thisFile2;
+} else { # ############ START ##########
+    # вы смотрели
+    if ($action == 'full' && !$fastprew) {
+        if ($_SESSION['itemsview'] && !in_array($message, $_SESSION['itemsview']) && $message > 0) {
+            $_SESSION['itemsview'][] = $message;
+        }
+        if (count($_SESSION['itemsview']) > 3) {
+            unset($_SESSION['itemsview'][0]);
+            $_SESSION['itemsview'] = array_values($_SESSION['itemsview']);
+        }
+    }
+
+    $favarits = get_favorites();
+
+    # object fit
+    if ($sizehave && $sizeitem_fit) {
+        $imagefit = $sizeitem_fit;
+    } elseif ($settingsSub && $settingsSub["sizehave"] && $settingsSub["sizeitem_fit"]) {
+        $imagefit = $settingsSub["sizeitem_fit"];
+    } else {
+        $imagefit = $setting["size" . $classID . "_fit"];
+    }
+    $image_default = image_fit($imagefit);
+
+    $specblock = 0;
+    // Количество выводимых товаров
+    if (!$recNum)
+        $recNum = $cc_env['RecordsPerPage'] ?: 24;
+    // EnglishName инфоблоков с уникальным выводом товаров
+    $ignoreNames = ['spec', 'hits', 'new', 'recommend', 'actions', 'search', 'vendors', 'favorites'];
+
+    # СОРТИРОВКА ТОВАРА
+    # [ORDER START]
+    # приоритет товаров выводимых в нескольких разделах
+    if ($setting['priorityInOtherSub'] && $setting['itemMoreSub']) {
+        $query_order = "(CASE
+            WHEN a.Subdivision_IDS LIKE '%,{$sub},%' THEN (SELECT Priority FROM Message2099 WHERE Subdivision_ID = {$sub} AND item_ID = a.Message_ID)
+            ELSE a.Priority
+                END)";
+    }
+
+    // сортировка при создании раздела
+    if ($current_cc['SortBy'] == 'a.`Priority` ASC, a.`Message_ID` ASC')
+        $current_cc['SortBy'] = '';
+
+    if ($sort) { // sort GET
+        $defaultOrder = array($sort, $desc);
+    } elseif ($current_cc['SortBy']) { //sort SUB
+        $defaultOrder = explode(' ', strtolower($current_cc['SortBy']));
+    } elseif ($setting['defaultSortSite']) { //sort Catalogue
+        $defaultOrder = explode(';', $setting['defaultSortSite']);
+    } else { // sort default where not params
+        $defaultOrder = array('Priority', false);
+    }
+    $sort2 = $sort = $desc = '';
+
+    switch ($defaultOrder[0]) {
+        case 'rate':
+            $sort = $defaultOrder[0];
+            $desc = $defaultOrder[1];
+            $sort2 = "a.view DESC,";
+            break;
+        case ($cityphone['sklad1c'] && in_array($defaultOrder[0], $arrStockName)):
+            $sort = "a." . trim($cityphone['sklad1c'], ',');
+            $desc = $defaultOrder[1];
+            break;
+        case 'price':
+            $query_select = "IF(a.currency = 2, a.price*'{$kurs['dollar']}', IF(a.currency = 3, a.price*'{$kurs['euro']}', a.price)) priceSort";
+            $sort = "priceSort";
+            $desc = $defaultOrder[1];
+            break;
+        default:
+            $sort = $defaultOrder[0];
+            $desc = $defaultOrder[1];
+            break;
+    }
+
+    $query_order = $sort2 . $sort . ($desc ? " DESC" : null);
+
+    # случайная сортировка
+    if ($rand) {
+        if (!$recNum)
+            $recNum = 4;
+
+        $sql3 = "SELECT 
+                    COUNT(Message_ID) as max 
+                FROM 
+                    Message{$classID} as a 
+                WHERE 
+                    a.Checked = 1 
+                    AND a.Catalogue_ID = {$catalogue}
+                    " . ($sqlsub ? " AND a.Subdivision_ID IN ({$sqlsub})" : (!strstr($otherItem, "all") ? " AND a.Subdivision_ID = '{$sub}'" : null));
+        $tot = $db->get_var($sql3);
+        if ($notobj && $tot > 1) {
+            $tot--;
+        }
+        $maxpage = ceil($tot / $recNum);
+        $pageArr = array();
+        for ($i = 0; $i < $maxpage; $i++) {
+            $pageArr[] = $i * $recNum;
+        }
+        $randpage = array_rand($pageArr, 1);
+        $ignore_limit = 1;
+        if (strstr($otherItem, "all")) {
+            $ignore_sub = $ignore_cc = 1;
+        }
+        $query_limit = ($pageArr[$randpage] ? $pageArr[$randpage] : "0") . ",{$recNum}";
+    }
+
+    if ($randomSort) {
+        $query_order = "RAND()";
+    }
+
+    # [ORDER END]
+
+    # вывод всех товаров с сайта
+    if ($current_sub['allGoods']) {
+        $ignore_sub = $ignore_cc = 1;
+    }
+
+    if ($setting['ignoresublink'] && !$notobj && !in_array($current_cc['EnglishName'], $ignoreNames) && !$filter && !$find) {
+        /*
+    // не работает
+    if ($action=='full') {
+    $ignore_sub = $ignore_cc = $ignore_link = 1;
+
+    } else {
+    $ignore_sub = $ignore_cc = $ignore_link = 1;
+    }
+     */
+    }
+
+
+    # определение зеркального инфоблока
+    if ($tsub != $cc_env['Subdivision_ID'] && $tcc != $cc_env['Sub_Class_ID']) {
+        $mirrorCC = 1;
+    }
+
+    # видимость скрытых для админа
+    if (!$isTitle && $bitcat) {
+        $ignore_check = 1;
+    }
+    # видимость выключенных для поисковых машин
+    if ($action == 'full' && !$getanalog && !$getOther && !$getanalogname) {
+        $ignore_check = 1;
+    }
+
+    # вложенные разделы массив вывода
+    $gg['unactive'] = "a.Subdivision_ID = '%SUB'";
+    $gg['divider'] = " OR ";
+
+    if ($action == 'index' || $block_id>0) {
+        switch ($cc_env['EnglishName']) {
+            case 'new': # новинки
+                $ignore_sub = $ignore_cc = $specblock = 1;
+                $query_where .= ($query_where ? " AND " : null) . "a.new = 1";
+                break;
+            case 'actions': # акции
+                $ignore_sub = $ignore_cc = $specblock = 1;
+                $query_where .= ($query_where ? " AND " : null) . "a.action = 1";
+                break;
+            case 'spec': # спецпредложения // || $nc_ctpl == 2027 || $nc_ctpl == 2043 эти шаблоны не нашел
+                $ignore_sub = $ignore_cc = $specblock = 1;
+                $query_where .= ($query_where ? " AND " : null) . "a.spec = 1";
+                break;
+            case 'favorites': # избранные
+                $ignore_sub = $ignore_cc = $specblock = 1;
+                $query_where .= ($query_where ? " AND " : null) . "a.`Message_ID` IN (" . (implode(',', get_favorites()) ?: 0) . ")";
+                break;
+        }
+    }
+
+
+
+    # производители
+    if ($vendor) {
+        $ignore_sub = $ignore_cc = $specblock = 1;
+        $query_where = "vendor LIKE '" . strip_tags($vendor) . "%' AND a.Checked = 1";
+    }
+    # по тэгу
+    if ($tag) {
+        $ignore_sub = $ignore_cc = 1;
+        $query_where = "tags LIKE '%" . strip_tags($tag) . "%'";
+    }
+    # по имени
+    if ($_GET['name']) {
+        $query_where .= ($query_where ? " AND " : null) . " a.name LIKE '" . addslashes(strip_tags($_GET['name'])) . "%' ";
+    }
+
+    /**
+     * ОБРАБОТКА УСЛОВИЙ ВЫОДА ИЗ РАЗДЕЛОВ
+     */
+
+    # [START]
+
+    $isAll = false;
+    $subdivisionID = (int) $sub;
+    # вывод товаров из подразделов
+    if ($current_sub['outallitem'] || $outallitem)
+        $isAll = true;
+    # вывод товара в филтре. Выводим все товары из подразделов
+    if ($filter == 1 && !$one_sub_mode && $current_cc['EnglishName'] != 'search') {
+        $subdivisionID = (int) ($subr ?: $sub);
+        $isAll = true;
+    }
+
+    if ($action == 'index' && $current_cc['EnglishName'] != 'search') {
+        $ignore_sub = $ignore_cc = 1;
+        $queryСombiner = ($specblock ? 'OR' : 'AND');
+        $query_where .= ($query_where ? " {$queryСombiner} " : null) . '(' . queryWhereSubdivision($subdivisionID, $isAll) . ')';
+    }
+    # [END]
+
+    # все на главной странице каталога И не спецблок
+    if ($isTitle && !$mirrorCC && !$specblock) {
+        $ignore_sub = $ignore_cc = $ignore_calc = 1;
+        $subs = $db->get_col("SELECT Subdivision_ID FROM Subdivision
+            WHERE Catalogue_ID = {$catalogue}
+            AND sub.Checked=1
+            AND ((Hidden_URL LIKE '{$cc_env['Hidden_URL']}%' AND Checked = 1)
+            OR (Hidden_URL = '{$cc_env['Hidden_URL']}' AND Checked = 0))
+            ORDER BY Priority");
+        if ($subs) {
+            $subsQuery = "a.Subdivision_ID IN (" . implode(',', $subs) . ")";
+            if ($setting['itemMoreSub']) {
+                foreach ($subs as $s) {
+                    $subsQuery .= " OR a.Subdivision_IDS LIKE '%,{$s},%'";
+                }
+            }
+            $query_where .= ($query_where ? " AND " : null) . "({$subsQuery})";
+        }
+    }
+
+
+    # аналогичные товары
+    if ($getanalog) {
+        $analogsql = array_reduce(explode(",", $getanalog), function ($carry, $item) {
+            $item = trim($item);
+            $item = str_replace(";-:'-;", ",", $item);
+            if ($item) {
+                $carry .= ($carry ? " OR " : null) . "a.art = '{$item}' OR a.code = '{$item}' OR a.art2 = '{$item}'";
+            }
+            return $carry;
+        }, '');
+
+        if (!empty($analogsql)) {
+            $ignore_sub = $ignore_cc = $ignore_calc = 1;
+            $query_where .= ($query_where ? " AND " : null) . "({$analogsql})";
+            $query_group = "a.art";
+        }
+    }
+
+    if ($getanalognew) {
+        $analognewsql = array_reduce(explode(",", $getanalognew), function ($carry, $item) {
+            $item = trim($item);
+            if ($item) {
+                $carry .= ($carry ? " OR " : null) . "a.`Message_ID`={$item}";
+            }
+            return $carry;
+        }, "");
+
+        if (!empty($analognewsql)) {
+            $ignore_sub = $ignore_cc = $ignore_calc = 1;
+            $query_where .= ($query_where ? " AND " : null) . "({$analognewsql})";
+        }
+    }
+
+    # аналогичные товары по наименаванию
+    if ($getanalogname) {
+        $analogNameSql = $orederByCase = '';
+
+        $query_order = '';
+        foreach (explode(" ", $getanalogname) as $word) {
+            $word = trim($word);
+            if (empty($word))
+                continue;
+            $analogNameSql .= ($analogNameSql ? ' OR ' : null) . "a.name LIKE '%{$word}%'";
+            $orederByCase = '';
+            $orederByCase .= " WHEN a.`name` = '{$word}' THEN 0";
+            $orederByCase .= " WHEN a.`name` LIKE '{$word} %' THEN 1";
+            $orederByCase .= " WHEN a.`name` LIKE '{$word}%' THEN 2";
+            $orederByCase .= " WHEN a.`name` LIKE '% {$word} %' THEN 3";
+            $orederByCase .= " WHEN a.`name` LIKE '%{$word}%' THEN 4";
+            $query_order .= ($query_order ? ', ' : null) . "(CASE {$orederByCase} ELSE 5 END)";
+        }
+
+        if ($analogNameSql) {
+            $ignore_sub = $ignore_cc = $ignore_calc = 1;
+            $query_where .= ($query_where ? " AND " : null) . "({$analogNameSql})";
+        }
+    }
+
+    # товары по ID
+    if ($getbyid) {
+        $ignore_sub = $ignore_cc = $ignore_calc = 1;
+        $query_where .= ($query_where ? " AND " : null) . "a.Message_ID IN ({$getbyid})";
+    }
+    # раздел товаров должен быть включенным
+    if ($subChecked) {
+        $query_where .= ($query_where ? " AND " : null) . "sub.Checked=1";
+    }
+    if (!$specblock) {
+        # поиск
+        if ($find2)
+            $find = $find2;
+
+        if ($current_sub['find'] == '*' || $vars == '*') {
+            $recNum = (intval($recNum) == 0) ? 24 : intval($recNum);
+            $curPos = (!isset($curPos)) ? 0 : intval($curPos);
+            $ignore_sub = $ignore_cc = $ignore_limit = 1;
+            $query_limit = $curPos . ',' . $recNum;
+        } elseif ($current_sub['find'] == 'stock') {
+            $ignore_sub = $ignore_cc = $ignore_link = 1;
+            $query_where .= ($query_where ? " AND " : null) . "stock > 0";
+        } elseif ($vars == 'stock') {
+            $ignore_sub = $ignore_cc = $ignore_link = 1;
+            $query_where = "stock > 0";
+        } elseif (($find && ($current_sub['Hidden_URL'] == '/search/' || $notobj) || $current_cc['EnglishName'] == 'find' || $current_sub['strictFind'])) {
+            global $queryOrder;
+            $ignore_sub = $ignore_cc = 1;
+            if ($current_sub['sub_find']) {
+                $sub_find = $current_sub['sub_find'];
+            }
+            if ($current_sub['strictFind']) {
+                $strictFind = $current_sub['strictFind'];
+            }
+            $query_where = getFindQuery($find, $r, $sub_find, 'a', $strictFind);
+            $query_order = implode(',', $queryOrder);
+
+            if ($_id = $db->get_var("SELECT Subdivision_ID FROM Subdivision WHERE Catalogue_ID = {$catalogue} AND EnglishName = 'partcomsys'")) {
+                $query_where .= ($query_where ? " AND " : null) . "a.Subdivision_ID != " . $_id;
+            }
+            if (!$rand) {
+                if (intval($recNum) == 0) {
+                    $recNum = 24;
+                } else {
+                    $recNum = intval($recNum); #48
+                }
+            }
+            if ($current_sub['Hidden_URL'] == '/search/' && $setting["omegaCheck"] && (!isset($_SESSION['omega']) || $_SESSION['omega']['find'] != $find || $_SESSION['omega']['lastFind'] != date('d'))) {
+                $_SESSION['omega']['find'] = $find;
+                $_SESSION['omega']['lastFind'] = date('d');
+                Omega::find($find);
+            }
+            if ($current_sub['Hidden_URL'] == '/search/' && $setting["armtekCheck"] && (!isset($_SESSION['armtek']) || $_SESSION['armtek']['find'] != $find || $_SESSION['armtek']['lastFind'] != date('d'))) {
+                $_SESSION['armtek']['find'] = $find;
+                $_SESSION['armtek']['lastFind'] = date('d');
+                Armtek::find($find);
+            }
+
+            $checkedServiceSupplers = getCheckedServiceSuppliers();
+            if (is_array($checkedServiceSupplers) && count($checkedServiceSupplers) > 0 && !$isNaked && !$curPos && !$_GET['nc_ctpl']) {
+                $query_where .= ($query_where ? ' AND ' : null) . 'a.Catalogue_ID = 0';
+                $settingServiceSupplers = $checkedServiceSupplers;
+            } elseif (is_array($checkedServiceSupplers) && count($checkedServiceSupplers)) {
+                $orederByCase = '';
+                $orederByCase .= " WHEN a.`art` = '{$find}' THEN 0";
+                $orederByCase .= " WHEN a.`art` LIKE '{$find} %' THEN 1";
+                $orederByCase .= " WHEN a.`art` LIKE '{$find}%' THEN 2";
+                $orederByCase .= " WHEN a.`art` LIKE '% {$find} %' THEN 3";
+                $orederByCase .= " WHEN a.`art` LIKE '%{$find}%' THEN 4";
+                $query_order = "(CASE {$orederByCase} ELSE 5 END), (CASE WHEN a.stock > 0 THEN 1 ELSE 0 END) DESC, a.price" . ($query_order ? ', ' . $query_order : null);
+            }
+        }
+    }
+
+    # группировака одинаковых названий
+    if ($setting['groupItem'] && !$isobj && ($action != 'full' || ($action == 'full' && $vendor))) {
+        if ($current_sub['find'] || $filter == 1) {
+            $query_group = "a.`name`, a.`Subdivision_ID`";
+        } else {
+            # в поиске тоже сейчас группируем, раньше не группировали
+            $query_variable = "(a.variablenameSide IS NULL OR a.variablenameSide = '' OR a.variablenameSide = 0)";
+            $query_group = "a.`name`, a.`Subdivision_ID`";
+            $query_where .= ($query_where ? " AND " : null) . $query_variable;
+        }
+    }
+
+
+
+    if ($filter == 1) {
+        $filtersql = getFilterQuery('a.');
+        if ($filtersql) {
+            $query_where = ($query_where ? "({$query_where}) AND " : null) . $filtersql;
+        }
+        unset($filtersql);
+    }
+
+    # targeting content
+    $query_where = ($query_where ? "({$query_where})" : null) . targeting($query_where);
+
+    #language
+    $query_where = getLangQuery($query_where);
+
+    # не показывать объект
+    if ($notobj) {
+        $query_where .= ($query_where ? " AND " : null) . "a.Message_ID != {$notobj}";
+    }
+
+    # Избранные товары
+    if ($get_fav) {
+        $ignore_sub = $ignore_cc = 1;
+        $query_where = "a.Message_ID IN (" . implode(',', $get_fav) . ")";
+    }
+
+    # Выбрать объект (должен быть последним!)
+    if ($isobj) {
+        $ignore_sub = $ignore_cc = 1;
+        $query_where = "a.Message_ID = '{$isobj}'";
+    }
+
+    # Выбрать групировку
+    if($groupBy){
+        $query_group = $groupBy;
+    }
+
+    setFillterForName($query_where, $ignore_sub);
+} # ################# END ############
+
+
+# debug
+/*if ($AUTH_USER_ID=='8') {
+ echo $query_where;
+ echo $action;
+}*/

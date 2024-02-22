@@ -1,0 +1,33 @@
+{
+    "card_full_setting": {
+        "name": "ПОЛНОЕ ОТОБРАЖЕНИЕ ТОВАРА",
+        "row": [
+            {
+                "name": "templateItemFull",
+                "label": "Дизайн внутреней страницы",
+                "type": "select",
+                "colline": 3,
+                "data": {
+                    "type1": "Дизайн #1",
+                    "type2": "Дизайн #2",
+                    "type3": "Дизайн #3"
+                }
+            }
+        ]
+    },
+    "cart_full_interaction_element": {
+        "name": "Элемент взаимодействия",
+        "row": [
+            {
+                "name": "variableNameInFullCart",
+                "label" : "Варианты товара",
+                "type" : "checkbox",
+                "colline" : 3
+            }
+        ]
+    },
+    "cart_full_tabs": {
+        "name": "Табы",
+        "path_view": "/bc/modules/Korzilla/CatalogItem/Tab/index.php"
+    }
+}

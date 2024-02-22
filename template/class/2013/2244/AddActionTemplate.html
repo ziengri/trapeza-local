@@ -1,0 +1,43 @@
+<?php 
+global $setting;
+if (!$setting) $setting = getSettings();
+//if (!$settingCont) $settingCont = $db->get_row("select a.*, a.Message_ID as mesid from Message2024 as a, Subdivision as b where b.Catalogue_ID = '$catalogue' AND a.Subdivision_ID=b.Subdivision_ID order by a.Created limit 0,1", ARRAY_A);
+
+
+$Text = "Посетитель сайта {$_SERVER[HTTP_HOST]} просит Вас перезвонить ему <b>$f_time</b>.<br><br>
+Имя: $f_Name<br>
+Телефон: $f_phone<br>
+Город: $f_city<br>
+".($f_subname ? "Запрос со страницы: {$f_subname}<br>" : "");
+
+$frommail = getDomenMail();
+$toemail = ($cc_settings['EmailTo'] ? $cc_settings['EmailTo'] : ($setting['email'] ? $setting['email'] : $system_env['SpamFromEmail']));
+
+$tema = "Заказ обратного звонка №{$message}";
+if ($formtype=='createsite') $tema = "Заказ сайта №{$message}";
+
+$mailer = new CMIMEMail();
+$mailer->mailbody(strip_tags($Text),$Text);
+$mailer->send($toemail, $frommail, $frommail, $tema, $f_Name);
+
+# Bitrix новый лид
+$data = array(
+    'TITLE'     	=> 'Заказ звонка на номер '.$f_phone,
+    'PHONE'     	=> $f_phone,
+    'NAME'      	=> $f_Name,
+    'ADDRESS_CITY'  => $f_city,
+    'COMMENTS'		=> 'Просьба перезвонить '.$f_time
+);
+bitrixNewLead($data);
+
+if ($setting['actoken'] && $setting['acsubdomen']) {
+    amoCrm($data, 'mail');
+}
+
+echo json_encode(ARRAY(
+    "title" => getLangWord('title_thank',"Спасибо!"),
+    "succes" => getLangWord('sucForm',"Спасибо, {$f_Name}. Сообщение отправлено. В ближайшее время с вами свяжутся по указанным контактам"),
+    "submodal" => 1
+));
+
+?>

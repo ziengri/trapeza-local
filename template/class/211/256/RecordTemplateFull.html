@@ -1,0 +1,22 @@
+<div class='nc_full nc_vacancies'>
+    
+<?php  
+if ($f_Post) { 
+    ?> <h3><?= $f_Post ?> </h3> <?php 
+}
+if ($f_City) { 
+    ?><p> <b>Город: </b> <?php  echo  $f_City; ?> </p> <?php 
+}
+if ($f_Pay) { 
+    ?><p> <b>Зарплата: </b><?php  echo $f_Pay." ".$pay; ?> </p> <?php 
+}
+if ($f_Obligation) {
+    ?><p> <b>Обязанности: </b> <?php  echo $f_Obligation; ?> </p> <?php 
+}
+if ($f_Demands) {
+    ?><p> <b>Требования: </b> <?php  echo $f_Demands; ?> </p> <?php 
+}
+if ($f_Conditions) { 
+    ?><p> <b>Условия: </b> <?php  echo $f_Conditions; ?> </p> <?php 
+} ?>
+</div>

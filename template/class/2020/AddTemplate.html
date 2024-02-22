@@ -1,0 +1,84 @@
+<?php
+    $connectTemplate = $DOCUMENT_ROOT.$pathInc2."/template/{$classID}/templateAdd/AddTemplate.html";
+    if($current_catalogue['customCode'] && file_exists($connectTemplate)) include($connectTemplate);
+    else{
+?>
+    <?php  if(!$inside_admin){ ?>
+        <?php  if ($warnText) { echo "{\"title\":\"Ошибка\",\"error\":\"$warnText\"}"; } else { 
+        global $setting_texts;
+
+        ?>
+        <div class="kz_form otz_form_main">
+        <form <?=($admin_mode ? "name='adminForm' id='adminForm'" : "name='reviewAdd' id='reviewAdd'")?> class='ajax2 form_otzyv hov' enctype='multipart/form-data' method='post' action='<?= $SUB_FOLDER ?><?= $HTTP_ROOT_PATH ?>add.php'>
+        <div id='nc_moderate_form'>
+        <div class='nc_clear'></div>
+        <?=($admin_mode ? "<input name='posting' type='hidden' value='1' />" : NULL)?>
+        <input name='admin_mode' type='hidden' value='<?= $admin_mode ?>' />
+        <?= $nc_core->token->get_input() ?>
+        <input name='catalogue' type='hidden' value='<?= $catalogue ?>' />
+        <input name='cc' type='hidden' value='<?= $cc ?>' />
+        <input name='sub' type='hidden' value='<?= $sub ?>' />
+        </div>
+        
+                <div class="fo_head"><?=($setting_texts['review_write']['checked'] ? $setting_texts['review_write']['name'] : "Написать отзыв")?></div>
+                <div class="fo_block">
+        
+                    <?php  /*if ($bitcat) {
+                    <div class="fo_line">
+                        <div class="fo_name">Дата:</div>
+                        <div class="fo_inp"><input style='width:58px' type=text size=2 name='admdate[0]'>-
+                        <input style='width:58px' type=text size=2 name='admdate[1]'>-
+                        <input style='width:58px' type=text size=4 name='admdate[2]'> 
+                        <input style='width:58px' type=text size=2 name='admdate[3]'>:<input style='width:58px' type=text size=2 name='admdate[4]'></div>
+                    </div>
+                    }*/ ?>
+        
+        
+                
+                    <div class="userline reviews-name"><?=bc_input_standart("f_name", $f_name, ($setting_texts['review_name']['checked'] ? $setting_texts['review_name']['name'] : "Ваше имя"), "maxlength='255' size='50'", 1)?></div>
+                    <?php  if ($cc_env[Class_Template_ID]==2057) { ?>
+                    <div class="userline reviews-text"><?=bc_textarea_standart("f_textt", $f_textt, "Общие выводы")?></div>
+                    <?php  } else { ?>
+                    <div class="userline reviews-text"><?=bc_textarea_standart("f_textt", $f_textt, ($setting_texts['review_text']['checked'] ? $setting_texts['review_text']['name'] : "Текст отзыва"), "", 1)?></div>
+                    <?php  } ?>
+                    
+                    
+                    <?php  if ($cc_env['Sub_Class_Settings']['with_photo'] === 'on') { ?>
+                    <div class="fo_line">
+                        <div class="fo_name">Фотографии:</div>
+                        <div class="fo_inp"><?= $f_photo->form() ?></div>
+                    </div>
+                    <?php  } ?>
+                    
+                    <div class="userline"><span class='btn-strt'><input type=submit value='<?=($setting_texts['review_btn']['checked'] ? $setting_texts['review_btn']['name'] : "Отправить")?>'></span></div>
+                    <div class='result'></div>
+                </div>
+            </form>
+        </div>
+        <?php  } ?>
+        
+    <?php  }else{ ?>
+
+        <?=( $warnText ? "<div class='warnText'>$warnText</div>" : NULL )?>
+        <form name='adminForm' id='adminForm' class='nc-form' enctype='multipart/form-data' method='post' action='<?= $SUB_FOLDER ?><?= $HTTP_ROOT_PATH ?>add.php'>
+        <div id='nc_moderate_form'>
+        <div class='nc_clear'></div>
+        <input name='admin_mode' type='hidden' value='<?= $admin_mode ?>' />
+        <?= $nc_core->token->get_input() ?>
+        <input name='catalogue' type='hidden' value='<?= $catalogue ?>' />
+        <input name='cc' type='hidden' value='<?= $cc ?>' />
+        <input name='sub' type='hidden' value='<?= $sub ?>' /><input name='posting' type='hidden' value='1' />
+        <input name='curPos' type='hidden' value='<?= $curPos ?>' />
+        <input name='f_Parent_Message_ID' type='hidden' value='<?= $f_Parent_Message_ID ?>' />
+        <?= nc_form_moderate('add', $admin_mode, 0, $systemTableID, $current_cc, (isset($f_Checked) ? $f_Checked  : null), $f_Priority , $f_Keyword, $f_ncTitle, $f_ncKeywords, $f_ncDescription ) ?>
+        </div>
+        <?= nc_string_field('name', "maxlength='255' size='50'", ($class_id ? $class_id : $classID), 1) ?><br />
+        <br />
+        <?= nc_text_field('textt', "", ($class_id ? $class_id : $classID), 1) ?><br />
+        <br />
+        <?php  if (!$AUTH_USER_ID && $current_cc['UseCaptcha'] && $MODULE_VARS['captcha']) { ?><?= nc_captcha_formfield() ?><br/><br/><?= NETCAT_MODERATION_CAPTCHA ?> (*):<br/><input type='text' name='nc_captcha_code' size='10'><br/><br/><?php  } ?>
+        <div><?= NETCAT_MODERATION_INFO_REQFIELDS ?></div><br/>
+        <?= nc_submit_button(NETCAT_MODERATION_BUTTON_ADD) ?>
+        </form>
+    <?php  } ?>
+<?php  } ?>

@@ -1,0 +1,51 @@
+<?=($inside_admin || $office ? $f_AdminCommon : addObjBut($addLink,$isTitle,null,' сотрудника'))?>
+
+<?php 
+if ($scrolling==1 && $scrollspeed>0) {
+	$scrollAttr = "data-scrollto='left' data-scrollspeed='{$scrollspeed}'";
+	$cssclass .= " block_scroll";
+}
+if ($scrolling==2) {
+
+	if (!$scrollspeed) $scrollspeed = 50;
+	$scrollAttr = "data-interval='".($scrollspeed*100)."'";
+	$cssclass .= " block_slide";
+	
+	if ($scrollbut) {
+		$scrollinfo = "<div class='blk_buttom'>
+						  <span class='block_slide_next icons i_right'></span><span class='block_slide_prev icons i_left'></span>
+					  </div>";
+	}
+	if ($scrollbut==2) {
+		$scrollbutClass = "blk_arrow2";
+	}
+}
+
+
+# PAGE
+if (browse_messages($cc_env, 15) && !$isTitle) {
+	$pagination = "<div class='pagination'><div class='pgn-line'>
+		".($prevLink ? "<a href='$prevLink' class='icons i_left pag_prev'></a>" : NULL)."
+		".browse_messages($cc_env, 15)."
+		<span class='pag_text'>из</span> <a href='?curPos=".(ceil($totRows/$recNum)*$recNum-$recNum)."{$vars_str2}'>".ceil($totRows/$recNum)."</a>
+		</div>".($nextLink ? "<div class='next_page'><a href='$nextLink' class=' icons i_right'>Следующая страница</a></div>" : NULL)."
+	</div>";
+}
+?>
+
+
+
+
+
+<?php  if ($totRows) { ?>
+ <?=($scrollinfo ? "<div class='block_slide_nav {$scrollbutClass}'>{$scrollinfo}</div>" : NULL)?>
+ <?=($scrolling ? "<div {$scrollAttr} class='{$cssclass}'>" : NULL)?>
+
+ <div class="contact_piople <?=($office>0 ? "contact_piople_office" : NULL)?>">
+<?php  } ?>
+
+<?php
+/** подключение отделенного вывода объекта */
+$includeFilePath = $DOCUMENT_ROOT . $pathInc2 . "/template/class/{$classID}/RecordTemplate.html";
+$isInclude = $current_catalogue['customCode'] && file_exists($includeFilePath);
+?>

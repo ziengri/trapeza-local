@@ -1,0 +1,76 @@
+{
+    "semantics_extension_sub": {
+        "name": "Разделы",
+        "row": [
+            {
+                "name": "fillterForNameOn",
+                "label": "Включить фильтр по алфавиту в каталоге",
+                "type": "checkbox",
+                "colline": 2
+            },
+            {
+                "name": "fillterForNameOnlyRu",
+                "label": "В фильтр по алфавиту только кириллица",
+                "type": "checkbox",
+                "colline": 2
+            },
+            {
+                "name": "metaTagRobotPagination",
+                "label": "Включить настройки метатега<br>робот для пагинации",
+                "type": "checkbox",
+                "colline": 2
+            }
+        ]
+    },
+    "semantics_extension_filter" : {
+        "name": "Фильтр",
+        "row" :[
+            {
+                "name":"filterCacheOn",
+                "label" : "Включить кеш фильтра",
+                "type": "checkbox",
+                "colline": 2
+            }
+        ]
+    },
+    "semantics_extension_item" : {
+        "name": "Товары",
+        "row": [
+            {
+                "name": "analogFormName",
+                "label": "Блок аналогичных товаров по имени",
+                "type": "checkbox",
+                "colline": 2
+            }
+        ]
+    },
+    "semantics_extension_item" : {
+        "name": "Смежные товары",
+        "row": [
+            {
+                "name": "showAdditionalItems",
+                "label": "Показывать смежные товары",
+                "type": "checkbox",
+                "colline": 2
+            },
+            {
+                "name": "shopParentCategoryKeyword",
+                "label": "Keyword корневой категории",
+                "type": "text",
+                "colline": 2
+            }
+        ]
+    },
+    "semantics_extension_item" : {
+        "name": "Фотографии",
+        "row": [
+            {
+                "name": "requirePhotoAlt",
+                "label": "Применять альтернативный ALT",
+                "type": "checkbox",
+                "colline": 2
+            }
+          
+        ]
+    }
+}

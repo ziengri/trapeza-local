@@ -1,0 +1,66 @@
+<?php /* Служебная часть */
+for ($f_RowNum = 0; $f_RowNum < $rowCount; $f_RowNum++) {
+    if($fetch_row[$f_RowNum] instanceof Iterator) {
+        extract($fetch_row[$f_RowNum]->to_array(), EXTR_PREFIX_ALL, "f");
+    } else {
+        extract($fetch_row[$f_RowNum], EXTR_PREFIX_ALL, "f");
+    }
+    foreach($iteration_RecordTemplate[$f_RowNum] as $value) {
+        extract($value);
+    }
+    eval($cc_env["convert2txt"]);
+    ob_start();
+/* Конец служебной части */?>
+
+<?php 
+if ($f_topmap || $f_showtimework) {
+    $contactid = $db->get_row("select a.Message_ID as id, a.time from Message2012 as a, Subdivision as b where a.Checked = 1 AND a.Subdivision_ID = b.Subdivision_ID AND b.Catalogue_ID = '$catalogue' ORDER BY a.Priority LIMIT 0,1");
+}
+
+?>
+<div <?=($isTitle ? "id=topcontact" : NULL)?> class='obj obj<?=$f_RowID?>'><ul class='left-bord-dot<?=($f_phone2 ? " doublephone" : "")?>'>
+	
+    <li class='phone phoneico phone1'><a href='tel:<?=($f_phonekod || $cityphone['targetcode'] ? ($cityphone['targetcode'] ? $cityphone['targetcode'] : $f_phonekod) : NULL)." ".($cityphone['targetphone'] ? $cityphone['targetphone'] : $f_phone)?>'>
+        <?=($f_phonekod || $cityphone['targetcode'] ? "<span>".($cityphone['targetcode'] ? $cityphone['targetcode'] : $f_phonekod)."</span> " : NULL)?>
+    <?=($cityphone['targetphone'] ? $cityphone['targetphone'] : $f_phone)?></a></li>
+    
+	<?php  if ($f_phone2) { ?>
+		<li class='phone phoneico phone2'><a href='tel:<?=($f_phonekod2 ? "{$f_phonekod2} " : NULL)?><?=$f_phone2?>'>
+		<?=($f_phonekod2 ? "<span>{$f_phonekod2}</span> " : NULL)?><?=$f_phone2?></a></li>
+	<?php  } ?>
+	
+    <?php  if ($f_showtimework) { ?>
+		<li class='timework'><span><?=$contactid->time?></span></li>
+	<?php  } ?>
+	
+	<?php  if ($f_targeting && $citylistselect) { ?>
+		<li class='targetingform'><a href='#nk-targeting' rel=pop data-metr='targtoplink' data-okno='targeting'><?=$wincityname?></a></li>
+	<?php  } ?>
+	
+	<?php  if ($f_mailform) { ?>
+		<li class='mailform'><a class=dotted href='#nk-feedback' rel=pop data-metr='mailtoplink' data-okno='feedback' data-loads='/feedback/add_feedback.html?isNaked=1'><?=($setting['lists_texts']['link_mail']['checked'] ? $setting['lists_texts']['link_mail']['name'] : "Напишите нам")?></a></li>
+	<?php  } ?>
+	
+	<?php  if ($f_callform) { ?>
+		<li class='callform'><a class=dotted href='#nk-callme' rel=pop data-metr='calltoplink' data-okno='callme' data-loads='/callme/add_callme.html?isNaked=1'><?=($setting['lists_texts']['link_call']['checked'] ? $setting['lists_texts']['link_call']['name'] : "Обратный звонок")?></a></li>
+	<?php  } ?>
+	
+	<?php  if ($f_topmap && $contactid) { ?>
+		<li class='locationlink'><i class='i icon-location'></i><a href='#nk-adresmap' rel=pop data-metr='maptoplink' data-okno='adresmap' data-iframe='<?=nc_message_link($contactid->id, "2012")?>?isNaked=1'><?=($setting['lists_texts']['proezd_map']['checked'] ? $setting['lists_texts']['proezd_map']['name'] : "Схема проезда")?></a></li>
+	<?php  } ?>
+
+	<?php  if ($setting[allowreg]) { ?>
+    	<li class='cablink'><i class='i icon-user'></i>
+		<?=($AUTH_USER_ID ? "<a href='/profile/'>Личный кабинет</a>" : "<a href='#nk-reg' rel=pop data-metr='lktoplink' data-okno='reg' data-loads='/profile/?isNaked=1'>Вход</a> | <a href='/registration/'>Регистрация</a>")?>
+		</li>
+	<?php  } ?>
+	
+	
+</ul>
+<?=($bitcat ? editObjBut($editLink,1) : "")?>
+</div>
+
+<?php /* Служебная часть */
+    echo nc_finishing_RecordTemplate(ob_get_clean(), $inside_admin, $classID, $f_RowID, $parent_message, $cc, $cc_env["Class_Name"], $no_cache_marks);
+}
+/* Конец служебной части */?>

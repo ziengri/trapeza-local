@@ -1,0 +1,278 @@
+{
+    "mikado": {
+        "name": "Микадо",
+        "permission": "$setting['mikado'] || (superadmin)",
+        "row": [
+            {
+                "name": "mikado",
+                "label": "Включить",
+                "type": "checkbox",
+                "colline": 1
+            },
+            {
+                "name": "mikado_login",
+                "label": "Логин",
+                "type": "text",
+                "colline": 2
+            },
+            {
+                "name": "mikado_passwor",
+                "label": "Пароль",
+                "type": "text",
+                "colline": 2
+            },
+            {
+                "name": "mikado_save_sub",
+                "label": "Сохранить товары в разделе",
+                "type": "sub_select",
+                "data": {
+                    "separator": "-",
+                    "class": 2001
+                },
+                "colline": 2
+            },
+            {
+                "name": "mikado_markup",
+                "label": "Наценка в %",
+                "type": "text",
+                "colline": 2
+            }
+        ]
+    },
+    "partcom": {
+        "name": "Партком",
+        "permission": "$setting['partcom'] || (superadmin)",
+        "row": [
+            {
+                "name": "partcom",
+                "label": "Включить",
+                "type": "checkbox",
+                "colline": 1
+            },
+            {
+                "name": "partcom_login",
+                "label": "Логин",
+                "type": "text",
+                "colline": 2
+            },
+            {
+                "name": "partcom_passwor",
+                "label": "Пароль",
+                "type": "text",
+                "colline": 2
+            },
+            {
+                "name": "partcom_save_sub",
+                "label": "Сохранить товары в разделе",
+                "type": "sub_select",
+                "data": {
+                    "separator": "-",
+                    "class": 2001
+                },
+                "colline": 2
+            },
+            {
+                "name": "partcom_markup",
+                "label": "Наценка в %",
+                "type": "text",
+                "colline": 2
+            },
+            {
+                "name": "partcom_analog",
+                "label": "Искать с заменами",
+                "type": "checkbox",
+                "colline": 2
+            },
+            {
+                "name": "partcom_only_stock",
+                "label": "Только наличии на складах «ПартКом»",
+                "type": "checkbox",
+                "colline": 2
+            }
+        ]
+    },
+    "rossko": {
+        "name": "Росско",
+        "permission": "$setting['rossko'] || (superadmin)",
+        "row": [
+            {
+                "name": "rossko",
+                "label": "Включить",
+                "type": "checkbox",
+                "colline": 1
+            },
+            {
+                "name": "rossko_key",
+                "label": "Ключ 1",
+                "type": "text",
+                "colline": 2
+            },
+            {
+                "name": "rossko_key2",
+                "label": "Ключ 2",
+                "type": "text",
+                "colline": 2
+            },
+            {
+                "name": "rossko_save_sub",
+                "label": "Сохранить товары в разделе",
+                "type": "sub_select",
+                "data": {
+                    "separator": "-",
+                    "class": 2001
+                },
+                "colline": 2
+            },
+            {
+                "name": "rossko_markup",
+                "label": "Наценка в %",
+                "type": "text",
+                "colline": 2
+            }
+        ]
+    },
+    "forum_auto": {
+        "name": "Forum-Auto",
+        "permission": "$setting['forum_auto'] || (superadmin)",
+        "row": [
+            {
+                "name": "forum_auto",
+                "label": "Включить",
+                "type": "checkbox",
+                "colline": 1
+            },
+            {
+                "name": "forum_auto_login",
+                "label": "Логин",
+                "type": "text",
+                "colline": 2
+            },
+            {
+                "name": "forum_auto_passwor",
+                "label": "Пароль",
+                "type": "text",
+                "colline": 2
+            },
+            {
+                "name": "forum_auto_save_sub",
+                "label": "Сохранить товары в разделе",
+                "type": "sub_select",
+                "data": {
+                    "separator": "-",
+                    "class": 2001
+                },
+                "colline": 2
+            },
+            {
+                "name": "forum_auto_markup",
+                "label": "Наценка в %",
+                "type": "text",
+                "colline": 2
+            },
+            {
+                "name": "forum_auto_analogs",
+                "label": "Искать аналоги",
+                "type": "checkbox",
+                "colline": 1
+            }
+        ]
+    },
+    "armtek" : {
+        "name" : "ArmTek",
+        "permission": "$setting['armtek'] || (superadmin)",
+        "row": [
+            {
+                "name": "armtek",
+                "label": "Включить",
+                "type": "checkbox",
+                "colline": 1
+            },
+            {
+                "name": "armtek_login",
+                "label": "Логин",
+                "type": "text",
+                "colline": 2
+            },
+            {
+                "name": "armtek_password",
+                "label": "Пароль",
+                "type": "text",
+                "colline": 2
+            },
+            {
+                "name": "armtek_vkorg",
+                "label": "Сбытовая организация",
+                "type": "text",
+                "colline": 2
+            },
+            {
+                "name": "armtek_kunnr_rg",
+                "label": "Покупатель",
+                "type": "text",
+                "colline": 2
+            },
+            {
+                "name": "armtek_LP",
+                "label": "Легковая программа",
+                "type": "checkbox",
+                "colline": 2
+            },
+            {
+                "name": "armtek_GP",
+                "label": "Грузовая программа",
+                "type": "checkbox",
+                "colline": 2
+            },
+            {
+                "name": "armtek_save_sub",
+                "label": "Сохранить товары в разделе",
+                "type": "sub_select",
+                "data": {
+                    "separator": "-",
+                    "class": 2001
+                },
+                "colline": 2
+            },
+            {
+                "name": "armtek_markup",
+                "label": "Наценка в %",
+                "type": "text",
+                "colline": 2
+            }
+        ]
+    },
+    "profitLeague" : {
+        "name" : "Профит Лига",
+        "permission": "$setting['profitLeague'] || (superadmin)",
+        "row": [
+            {
+                "name": "profitLeague",
+                "label": "Включить",
+                "type": "checkbox",
+                "colline": 1
+            },
+            {
+                "name": "profitLeague_secret_key",
+                "label": "API-ключ",
+                "type": "text",
+                "colline": 1
+            },
+            {
+                "name": "profitLeague_save_sub",
+                "label": "Сохранить товары в разделе",
+                "type": "sub_select",
+                "data": {
+                    "separator": "-",
+                    "class": 2001
+                },
+                "colline": 2
+            },
+            {
+                "name": "profitLeague_markup",
+                "label": "Наценка в %",
+                "type": "text",
+                "colline": 2
+            }
+        ]
+    }
+}

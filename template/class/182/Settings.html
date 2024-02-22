@@ -1,0 +1,30 @@
+<?php
+
+global $action, $bitcat, $citymainid, $citymain, $cityid, $cityname, $citylink, $is404, $DOCUMENT_ROOT, $pathInc2;
+
+if ($msg) $query_where = ($query_where ? " AND " : NULL)."a.Message_ID = '$msg'";
+
+if ($nc_ctpl==2006) $query_where = "Message_ID = ''";
+
+# видимость скрытых для админа
+if (!$isTitle && ($bitcat || $bitLoadMore)) {
+    $ignore_check = 1;
+}
+
+# targeting content
+$query_where .= targeting($query_where);
+#language
+$query_where = getLangQuery($query_where);
+
+# politika
+if ($current_sub['Hidden_URL'] == '/system/politika/') {
+    $have_message = $db->get_var("SELECT count(*) FROM Message182 WHERE Subdivision_ID = {$sub} LIMIT 1");
+    if (!$have_message) {
+        $ignore_catalogue = $ignore_sub = $ignore_cc = 1;
+        $query_where = "a.Message_ID = '3905'";
+        $bitcat = 0;
+    }
+}
+
+//if ($_SERVER[REMOTE_ADDR]=='31.13.133.138') echo $cityid."||".$cityname."|".targeting($query_where);
+?>

@@ -1,0 +1,18 @@
+<?php 
+if ($field) {
+    foreach($field[checked] as $f) {
+        $field[priority][$f] = $fieldTmp[priority][$f];
+    }
+    
+	foreach($field[name] as $k => $n) { // убрать пустые поля из  массива
+        if (!$field[checked][$k]) {
+			unset($field[name][$k]);
+			unset($field[view][$k]);
+		}
+    }
+    
+    $f_data = addslashes(json_encode($field));
+}
+
+$f_Catalogue_ID = $catalogue;
+?>

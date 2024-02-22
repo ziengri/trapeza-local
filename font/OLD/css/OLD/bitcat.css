@@ -1,0 +1,58 @@
+/* font icon */
+
+@font-face {
+    font-family: 'RublRegular';
+    src: url('/font/rouble.eot');
+    src: local('ALS Rubl'), local('ALSRubl'), url('/font/rouble.woff') format('woff'), url('/font/rouble.ttf') format('truetype'), url('/font/rouble.svg#ALSRubl') format('svg');
+}
+
+
+@font-face {
+  font-family: 'bitcat';
+  src: url('/font/icon.eot?8992952');
+  src: url('/font/icon.eot?8992952#iefix') format('embedded-opentype'),
+       url('/font/icon.woff?8992952') format('woff'),
+       url('/font/icon.ttf?8992952') format('truetype'),
+       url('/font/icon.svg?8992952#bitcat') format('svg');
+  font-weight: normal;
+  font-style: normal;
+}
+
+ 
+ [class^="icon-"]:before, [class*=" icon-"]:before {
+  font-family: "bitcat";
+  font-style: normal;
+  font-weight: normal;
+  speak: none;
+  display: inline-block;
+  text-decoration: inherit;
+  width: 1em;
+  margin-right: .2em;
+  text-align: center;
+  font-variant: normal;
+  text-transform: none;
+  line-height: 1em;
+  margin-left: .2em;
+
+}
+ 
+.icon-print:before { content: '\e803'; }
+.icon-doc-new:before { content: '\e808'; }
+.icon-phone:before { content: '\e801'; }
+.icon-globe:before { content: '\e806'; }
+.icon-chart-bar:before { content: '\e80e'; }
+.icon-skype:before { content: '\e805'; }
+.icon-user:before { content: '\e813'; }
+.icon-camera:before { content: '\e809'; }
+.icon-home:before { content: '\e811'; }
+.icon-clock:before { content: '\e804'; }
+.icon-location:before { content: '\e802'; }
+.icon-flow-branch:before { content: '\e812'; }
+.icon-mail-1:before { content: '\e800'; }
+.icon-cancel-circled:before { content: '\e80f'; }
+.icon-eye:before { content: '\e80b'; }
+.icon-wrench:before { content: '\e810'; }
+.icon-basket:before { content: '\e80a'; }
+.icon-icq:before { content: '\e807'; }
+.icon-picture:before { content: '\e80d'; }
+.icon-chart-bar-1:before { content: '\e80c'; }

@@ -1,0 +1,244 @@
+<!-- FormPrefix --><?=($inside_admin ? $f_AdminCommon : addObjBut($addLink,$isTitle,null,'фото/видео'))?>
+<?php
+   $f_photo_tpl = array(
+        'record' => "%Preview%"
+    );
+?>
+
+<?php
+    # ширина объекта
+    $sizeitemTotal = 0;
+    if($sizehave){
+        if($sizeitem_select=='count') $sizeitemTotal = $sizeitem_counts;
+        else if($sizeitem && is_numeric($sizeitem)) $sizeitemTotal = $sizeitem;
+    }
+    if(!$sizeitemTotal && $settingsSub["sizehave"]){
+        if($settingsSub["sizeitem_select"]=='count') $sizeitemTotal = $settingsSub["sizeitem_counts"];
+        else if(is_numeric($settingsSub["sizeitem"])) $sizeitemTotal = $settingsSub["sizeitem"];
+    }
+    if(!$sizeitemTotal){
+        if($setting["size".$classID."_select"]=='count') $sizeitemTotal = $setting["size".$classID."_counts"];
+        else $sizeitemTotal = $setting["size".$classID];
+    }
+    if(!$sizeitemTotal) $sizeitemTotal = 1;
+    # отступ
+    if($sizehave && is_numeric($sizeitem_margin))  $margin = $sizeitem_margin;
+    else if($settingsSub["sizehave"] && is_numeric($settingsSub["sizeitem_margin"])) $margin = $settingsSub["sizeitem_margin"];
+    else if(is_numeric($setting["size".$classID."_margin"])) $margin = $setting["size".$classID."_margin"];
+    else $margin = 15;
+    # masonry
+    if($masonry && $type_masonry){}
+    else if($settingsSub["masonry"] && $settingsSub["type_masonry"]){ $masonry = $settingsSub["masonry"]; $type_masonry = $settingsSub["type_masonry"]; }
+    # image procent
+    if($sizehave && is_numeric($sizeitem_image))  $sizeitem_image = $sizeitem_image;
+    else if($settingsSub["sizehave"] && $settingsSub["sizeitem_image"]) $sizeitem_image = $settingsSub["sizeitem_image"];
+    else $sizeitem_image = $setting["size".$classID."_image"];
+
+    $data = subdivisionData(array(
+        'type' => 'gallery',
+        'sizeitem' => $sizeitemTotal,
+        'margin' => $margin,
+        'sizeitem_image' => $sizeitem_image,
+        'scrolling' => $scrolling,
+        'scrollspeed' => $scrollspeed,
+        'scrollNav' => $scrollNav,
+        'scrollDots' => $scrollDots,
+        'autoplay' => $autoplay,
+        'masonry' => $masonry,
+        'type_masonry' => $type_masonry
+    ));
+    # animate
+    $animateKey = "";
+    $animateDelay = 0;
+    $animateDelayStep = 0.16;
+    if($animate){
+        if($animate_title && $animate_title != "_empty_") $animateDelay += $animateDelayStep;
+        if($animate_text && $animate_text != "_empty_") $animateDelay += $animateDelayStep;
+        if($animate_items && $animate_items != "_empty_") $animateKey = $animate_items;
+    }
+    if(!$animateKey && $settingsSub["animate"]){
+        if($settingsSub["animate_title"] && $settingsSub["animate_title"] != "_empty_") $animateDelay += $animateDelayStep;
+        if($settingsSub["animate_text"] && $settingsSub["animate_text"] != "_empty_") $animateDelay += $animateDelayStep;
+        if($settingsSub["animate_items"] && $settingsSub["animate_items"] != "_empty_") $animateKey = $settingsSub["animate_items"];
+    }
+    if(!$animateKey){
+        if($setting["size".$classID."_animate"] && $setting["size".$classID."_animate"] != "_empty_") $animateKey = $setting["size".$classID."_animate"];
+    }
+    if($animateKey) $animateKey = "wow {$animateKey}";
+?>
+
+<?php  if ($totRows) { ?>
+	<ul class='<?=$data['class']?>' <?=$data['attr']?>>
+<?php  } ?>
+<!-- /FormPrefix -->
+
+<!-- RecordTemplate --><?php /* Служебная часть */for ($f_RowNum = 0; $f_RowNum < $rowCount; $f_RowNum++) {    if($fetch_row[$f_RowNum] instanceof Iterator) {        extract($fetch_row[$f_RowNum]->to_array(), EXTR_PREFIX_ALL, "f");    } else {        extract($fetch_row[$f_RowNum], EXTR_PREFIX_ALL, "f");    }    foreach($iteration_RecordTemplate[$f_RowNum] as $value) {        extract($value);    }    eval($cc_env["convert2txt"]);    ob_start();/* Конец служебной части */?>
+<?php /* Служебная часть */
+for ($f_RowNum = 0; $f_RowNum < $rowCount; $f_RowNum++) {
+    if($fetch_row[$f_RowNum] instanceof Iterator) {
+        extract($fetch_row[$f_RowNum]->to_array(), EXTR_PREFIX_ALL, "f");
+    } else {
+        extract($fetch_row[$f_RowNum], EXTR_PREFIX_ALL, "f");
+    }
+    foreach($iteration_RecordTemplate[$f_RowNum] as $value) {
+        extract($value);
+    }
+    eval($cc_env["convert2txt"]);
+    ob_start();
+/* Конец служебной части */?>
+
+<?php  unset($li2); ?>
+<?if ($current_catalogue['customCode']) {
+  GLOBAL $pathInc2;
+  $includeClass = NULL;
+  $thisFile = $DOCUMENT_ROOT.$pathInc2."/template/{$classID}/RecordTemplate.html";
+}?>
+<?
+    if (file_exists($thisFile)) { include($thisFile); } else {
+?>
+<?php
+    
+    $records = [];    
+    global $AUTH_USER_ID;
+
+    if (count($f_photo->records) > 0) {
+        foreach ($f_photo->records as $record) {
+            $records[] = [
+                'type' => 'photo',
+                'path' => $record['Path'],
+                'name' => $record['Name'],
+                'preview' => $IMG_HOST.($record['Preview'] ?: $record['Path']),
+            ];
+        }
+    }
+
+    if (!empty($f_video_link)) {
+        if (
+            strpos($f_video_link, 'youtube.com') !== false
+            || strpos($f_video_link, 'youtu.be') !== false
+        ) {
+            $videoKey = null;
+            $parseUrl = parse_url($f_video_link);
+
+            if (!empty($parseUrl['query'])) {
+                parse_str($parseUrl['query'], $parseQuery);
+                $videoKey = $parseQuery['v'] ?? null;
+            }
+
+            if (!$videoKey) {
+                $videoKey = basename($parseUrl['path']);
+            }
+
+            if ($videoKey) {
+                $records[] = [
+                    'type' => 'videoLink',
+                    'path' => "//www.youtube.com/embed/".$videoKey,
+                    'name' => ($f_text ? strip_tags($f_text) : null),
+                    'preview' => "//img.youtube.com/vi/{$videoKey}/mqdefault.jpg",
+                ];
+            }
+        }
+    }
+
+    if (!empty($f_video)) {
+        $records[] = [
+            'type' => 'video',
+            'path' => $IMG_HOST.$f_video,
+            'name' => ($f_text ? strip_tags($f_text) : null),
+            'preview' => $IMG_HOST.($f_video_preview ?: $noimage),
+        ];
+    }
+?>
+<?php foreach ($records as $record) : ?>
+    <?php
+        if (300 <= $licount) {
+            break;
+        }
+
+        if (!empty($isTitle) && empty($record['preview'])) {
+            continue;
+        }
+
+        $objClass = $objAttr = '';
+
+        $objClass = "obj obj".$f_RowID;
+        $objClass .= ' '.objHidden($f_Checked, $f_citytarget, $cityid) ?: null;
+
+        if (!empty($animateKey)) {
+            $objClass .= !empty($objClass) ? ' ' : null;
+            $objClass .= $animateKey;
+
+            $objAttr .= !empty($objAttr) ? ' ' : null;
+            $objAttr .= "data-wow-delay='".str_replace(',', '.', ($animateDelay + ($licount * $animateDelayStep)))."s'";
+        }
+
+        $linkAttr = '';
+        if (!empty($f_name)) {
+            $link = $fullLink;
+            $title = $f_name;
+        } else {
+            $link = $record['path'];
+            $title = $record['name'];
+
+            $linkAttr .= !empty($linkAttr) ? ' ' : null;
+            $linkAttr .= "data-rel='lightcase:image-in-".($mesid ? "block".$mesid : "sub".$sub)."'";
+            if (in_array($record['type'], ['video', 'videoLink'])) {
+                $linkAttr .= "data-maxwidth='850'";
+            }
+        }
+
+        $isViewPlayBtn = empty($f_name) && in_array($record['type'], ['video', 'videoLink']);
+    ?>
+    <li class="<?= $objClass ?>" <?= $objAttr ?>>
+        <div class="<?= $image_default ?>">
+            <a href="<?= $link ?>" title="<?= $title ?>" <?= $linkAttr ?>>
+                <span class='img-preview'>
+                    <img src="<?= $record['preview'] ?>" alt="<?=$title?>">
+                </span>
+                <?php if (!empty($title)) : ?>
+                    <span class="photo-name"><?= $title ?></span>
+                <?php endif; ?>
+                <?php if ($isViewPlayBtn) : ?>
+                    <span class="play-btn"></span>
+                <?php endif; ?>
+            </a>
+        </div>
+        <?= $bitcat || $bitLoadMore ? editObjBut($editLink) : $f_AdminButtons; ?>
+    </li>
+    <?php
+        $licount++; 
+        unset($objClass, $objAttr, $linkAttr, $link, $title, $isViewPlayBtn);
+        if (!empty($f_name)) break;
+    ?>
+<?php endforeach; ?>
+
+<?php unset($records, $record); ?>
+
+<?}?>
+<?php /* Служебная часть */
+    echo nc_finishing_RecordTemplate(ob_get_clean(), $inside_admin, $classID, $f_RowID, $parent_message, $cc, $cc_env["Class_Name"], $no_cache_marks);
+}
+/* Конец служебной части */?>
+
+<?php /* Служебная часть */    echo nc_finishing_RecordTemplate(ob_get_clean(), $inside_admin, $classID, $f_RowID, $parent_message, $cc, $cc_env["Class_Name"], $no_cache_marks);}/* Конец служебной части */?><!-- /RecordTemplate -->
+
+<!-- FormSuffix --><?php  if ($totRows) { ?>
+	</ul>
+<?php  } ?>
+<?
+    if (getIP('office')) {
+        var_dump($totRows, $rowCount, $recNum);
+    } 
+?>
+<?=getPagination(array(
+    'isTitle' => $isTitle,
+    'cc_env' => $cc_env,
+    'prevLink' => $prevLink,
+    'nextLink' => $nextLink,
+    'totRows' => $totRows,
+    'recNum' => $recNum,
+    'vars_str2' => $vars_str2,
+    'sub' => $sub,
+    'cc' => $cc,
+    'inside_admin' => $inside_admin
+))?><!-- /FormSuffix -->

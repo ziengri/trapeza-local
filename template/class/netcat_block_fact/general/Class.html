@@ -1,0 +1,27 @@
+<!-- FormPrefix --><?= $f_AdminCommon; ?><!-- /FormPrefix -->
+
+<!-- RecordTemplate --><div
+    class="object-item align-items-center tpl-text-default text-center <?= $cc_settings['roundedPhoto'] == 'on' ? " rounded " : null; ?>">
+    <?= $f_AdminButtons; ?>
+    <?php if ($admin_mode || $f_Image): ?>
+        <div class="object-item-image">
+            <?= nc_image_edit_inline('Image', $f_RowID, $cc_env['Sub_Class_ID']); ?>
+        </div>
+    <?php endif; ?>
+    <?php if ($admin_mode || $f_Title || $f_SubTitle): ?>
+        <div class="object-item-info text-center">
+            <?php if ($admin_mode || $f_Title): ?>
+                <div class="info-title <?= $cc_settings['TitleClass']; ?>">
+                    <?= nc_edit_inline('Title', $f_RowID, $cc_env['Sub_Class_ID']); ?>
+                </div>
+            <?php endif; ?>
+            <?php if ($admin_mode || $f_SubTitle): ?>
+                <div class="info-subtitle <?= $cc_settings['SubTitleClass']; ?>">
+                    <?= nc_edit_inline('SubTitle', $f_RowID, $cc_env['Sub_Class_ID']); ?>
+                </div>
+            <?php endif; ?>
+        </div>
+    <?php endif; ?>
+</div><!-- /RecordTemplate -->
+
+<!-- FormSuffix --><!-- /FormSuffix -->

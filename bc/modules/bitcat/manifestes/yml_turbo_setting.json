@@ -1,0 +1,80 @@
+{
+    "yml_turbo": {
+        "name": "YML TURBO",
+        "row": [
+            {
+                "name": "all_turbo",
+                "label": "Брать все товары",
+                "type": "checkbox",
+                "colline": 2
+            },
+            {
+                "name": "picup_turbo",
+                "label": "Возможность самовывоза",
+                "type": "select",
+                "data": {
+                    "1": "Да",
+                    "0": "Нет"
+                },
+                "colline": 2
+            },
+            {
+                "name": "store_turbo",
+                "label": "Наличие розничного магазина",
+                "type": "select",
+                "data": {
+                    "1": "Да",
+                    "0": "Нет"
+                },
+                "colline": 2
+            },
+            {
+                "name": "delivery_turbo",
+                "label": "Возможность доставки",
+                "type": "select",
+                "data": {
+                    "1": "Да",
+                    "0": "Нет"
+                },
+                "colline": 2
+            },
+            {
+                "name": "sales_notes_on_turbo",
+                "label": "Включить примечания",
+                "type": "checkbox",
+                "colline": 1
+            },
+            {
+                "name": "sales_notes_turbo",
+                "label": "Примечание, например о минимальной сумме для бесплатной доставки",
+                "type": "text",
+                "colline": 1
+            },
+            {
+                "name": "allnalich_turbo",
+                "label": "Все товары в наличие",
+                "type": "checkbox",
+                "colline": 2
+            }
+        ]
+    },
+    "turboApi": {
+        "name": "Turbo API",
+        "row": [
+            {
+                "name": "link",
+                "label": "Ссылка для подключения",
+                "text": "https://DOMEN/bc/modules/default/yandex.market/turbo/",
+                "type": "notes",
+                "colline": 1
+            },
+            {
+                "name": "turbo_tokens",
+                "label": "Tokens API",
+                "type": "multi_line",
+                "type_old": "11",
+                "colline": "height"
+            }
+        ]
+    }
+}

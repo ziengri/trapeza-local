@@ -1,0 +1,21 @@
+<?=($bitcat ? editObjBut($editLink, null, 'объект') : NULL)?>
+<?
+
+?>
+<div class='vendorInfo'>
+<?=($f_logo ? "<img src='$f_logo' class='vendorLogo'>" : NULL)?>
+
+<div class='txt'><?=$f_text?></div>
+
+<?=($f_link ? "<div class='vendorLink'>Сайт: <a href='$f_link' title='Перейти на сайт компании $f_name' rel='nofollow' target='_blank'>".str_replace("http://","",$f_link)."</a></div>" : NULL)?>
+
+</div>
+
+<?php 
+  if(permission('catalogue')){
+      $subcc = $db->get_row("select a.Subdivision_ID as sub, a.Sub_Class_ID as cc, a.Class_Template_ID as cct from Sub_Class as a, Subdivision as b where a.Subdivision_ID=b.Subdivision_ID AND b.Catalogue_ID = '$catalogue' AND b.Hidden_URL = '/search/' AND a.Class_ID = '2001'",ARRAY_A);
+      if ($subcc[sub] && $subcc[cc]) echo nc_objects_list($subcc[sub],$subcc[cc],"recNum=50&vendor=" . urlencode(htmlspecialchars_decode($f_name)) . "&curPos=$curPos");
+  }
+?>
+
+<div class='txt'><?=$f_text2?></div>

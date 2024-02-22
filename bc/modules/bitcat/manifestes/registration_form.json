@@ -1,0 +1,20 @@
+{
+    "registration_form": {
+        "name": "Настройки формы регистрации",
+        "row": [
+            {
+                "name": "registration_user_type",
+                "label": "Тип пользователя<br>(физ. и юр. лицо)",
+                "type": "checkbox",
+                "colline": 3
+            },
+            {
+                "name": "registration_form",
+                "label": "Поля корзины",
+                "type": "registration",
+                "colline": "height",
+                "type_old": "15"
+            }
+        ]
+    }
+}

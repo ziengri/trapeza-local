@@ -1,0 +1,71 @@
+<?php
+global $time_days, $time_days_en;
+
+if (!$f_adres && !$f_phones && !$f_email && !$f_site) {
+    $postion = 0;
+    $warnText = "Вы ничего не заполнили";
+}
+if(!$f_time['type']) {
+    echo json_encode(ARRAY(
+        "title" => getLangWord('error',"Ошибка"),
+        "error" => getLangWord('er_txt_time',"Вы не указали время."),
+    ));
+    exit;
+} else {
+    if ($f_time['type'] == 'days') {
+
+        foreach ($f_time['day']['checked'] as $key) {
+            if( !$f_time['day']['value']["$key"] ) {
+                echo json_encode(ARRAY(
+                    "title" => getLangWord('error',"Ошибка"),
+                    "error" => getLangWord('er_txt_time_day',"Укажите время у всех включеных дней"),
+                ));
+                exit;
+            } else {
+                $timeArr = explode('-', $f_time['day']['value']["$key"]);
+                $text .= $time_days["$key"]." c ".$timeArr[0]." до ".$timeArr[1]." \\n";
+                $met_text .= $time_days_en["$key"]." ".$f_time['day']['value']["$key"].",";
+            }
+        }
+
+    } elseif ($f_time['type'] == 'All') {
+
+        if (!$f_time['All']['value']) {
+            echo json_encode(ARRAY(
+                "title" => getLangWord('error',"Ошибка"),
+                "error" => getLangWord('er_txt_time',"Вы не указали время."),
+            ));
+            exit;
+        } else {
+            $timeArr = explode('-', $f_time['All']['value']);
+            $text = "С ".$time_days[0]." по ".$time_days[6]." c ".$timeArr[0]." до ".$timeArr[1]." \\n";
+            $met_text = "Mo-Su {$f_time['All']['value']},";
+        }
+
+    } else {
+        $text = '';
+        $met_text = '';
+        $f_time['text'] = '';
+    }
+
+
+    if(isset($f_time['text'])) $f_time['text'] = str_replace(["\n", "\r"], ['\\n', ''],$f_time['text']);
+
+    if(!$f_time['text'] ) $f_time['text'] = $text;
+
+    $f_time['met_text'] = trim($met_text,',');
+
+    $f_time = json_encode($f_time,JSON_UNESCAPED_UNICODE);
+}
+
+
+$f_citytarget = ",".implode(",",$f_citytarget).",";
+if ($f_citytarget==',,') $f_citytarget='';
+
+$f_sklad1c = ",".implode(",",$f_sklad1c).",";
+if ($f_sklad1c==',,') $f_sklad1c='';
+
+$f_lang = json_encode($f_lang);
+
+$f_Catalogue_ID = $catalogue;
+?>

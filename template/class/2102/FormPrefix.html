@@ -1,0 +1,38 @@
+<?
+	global $current_user, $db, $catalogue, $AUTH_USER_ID;
+
+    $getID = '';
+    $count = 0;
+
+    if ($current_user) {
+        if ($current_user['favarits']) {
+            foreach (explode(';', $current_user['favarits']) as $id) {
+                if ($id) {
+                    $getID .= "&get_fav[]={$id}";
+                    $count++;
+                }
+            }
+        }
+    } else {
+        if ($_SESSION['favarits']) {
+            foreach ($_SESSION['favarits'] as $id) {
+                $getID .= "&get_fav[]={$id}";
+                $count++;
+            }
+        }
+    }
+
+    // if (!$count) $count = count($_SESSION['favarits']) ? count($_SESSION['favarits']) : $current_user['favarits'];
+
+    $count = str_replace(";", "0", $count);
+    # если не блок
+    if (!$isTitle) {
+        $razdel = $db->get_results("SELECT Subdivision_ID AS sub, Sub_Class_ID AS cc FROM Sub_Class WHERE (EnglishName = 'catalog' OR EnglishName = 'catalogtovarov') AND Catalogue_ID = '$catalogue'",ARRAY_A);
+        $razdel = $razdel[0];
+    	echo ($getID ? nc_objects_list($razdel[sub], $razdel[cc], $getID) : "<p class='txt'>У вас нет избранных товаров!</p>");
+    }
+    else {
+        echo "<div class='fav'><a href='/favorites' class='fav-link'>Избранное</a><span class='fav-count'> {$count}</span></div>";
+        // echo ($count ? "<a href='/favorites' class='fav'>Избранное</a>": "<a href='/favorites' class='fav'>Избранное</a>");
+    }
+?>

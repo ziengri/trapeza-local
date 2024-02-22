@@ -1,0 +1,41 @@
+<?php
+
+/** @var string $selector */
+/** @var array $settings */
+
+$nc_core = nc_core::get_object();
+$css = '';
+
+foreach (array('default_font_asset', 'main_font_asset') as $asset) {
+    if (!empty($settings[$asset])) {
+        $nc_core->page->require_asset($asset);
+    }
+}
+
+$selectors = array(
+    'default' =>
+        "$selector button, $selector input[type='button'], $selector input[type='reset'], " .
+        "$selector .tpl-button, $selector .tpl-button-primary, $selector button.tpl-block-button",
+        //                                                     «старый» шаблон заявок ↑
+    'main' =>
+        "$selector button[type='submit'], $selector input[type='submit'], " .
+        "$selector .tpl-button-primary, $selector button.tpl-block-button",
+);
+
+foreach ($selectors as $type => $button_selector) {
+    $selectors[$type . '_hover'] = str_replace(',', ':hover,', $button_selector) . ':hover';
+}
+
+foreach ($selectors as $type => $button_selector) {
+    $type_css = '';
+    foreach ($settings[$type] as $property => $value) {
+        if (strlen($value) && !preg_match('/_unit$/', $property)) {
+            $css_property = strtr($property, '_', '-');
+            $unit = isset($settings[$type][$property . '_unit']) ? $settings[$type][$property . '_unit'] : '';
+            $type_css .= "$css_property:$value$unit;";
+        }
+    }
+    $css .= "$button_selector { $type_css }\n";
+}
+
+return $css;

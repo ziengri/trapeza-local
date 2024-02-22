@@ -1,0 +1,108 @@
+<?php
+$connectTemplate = $DOCUMENT_ROOT.$pathInc2."/template/class/{$classID}/AddActionTemplate.html";
+if($current_catalogue['customCode'] && file_exists($connectTemplate)){
+  include($connectTemplate);
+}else{
+    global $setting, $catalogue;
+    if (!$setting) $setting = getSettings();
+
+    $frommail = getDomenMail();
+
+    $f_mailtext = str_replace("\n","\n<br>", strip_tags($f_mailtext));
+
+    $name = $customf[name][value] ? $customf[name][value] : "Имя";
+
+    if($f_itemID){
+        $item = Class2001::getItemById($f_itemID);
+        if($item) $itemLink = "<a href='//{$_SERVER['HTTP_HOST']}/{$item->fullLink}' target='_blank'>{$item->name}</a><br>";
+    }
+
+    // ТЕКСТ
+    $text = "{$name}: {$f_Name}<br>
+    ".($f_phone ? "Телефон: {$f_phone}<br>" : NULL)."
+    Контакты: {$f_Subject} ".(!stristr($f_Email, 'nomail@') ? $f_Email : "")."<br>
+    ".($f_subname ? "Запрос со страницы: {$f_subname}<br>" : "")."
+    {$itemLink}
+    ____________________<br>
+    <br>
+    {$f_mailtext}";
+
+    // email формы
+    if (is_numeric($formmes)) $tomail = $db->get_var("select email from Message2059 where Message_ID = '$formmes' AND Catalogue_ID = '$catalogue'");
+    // email менеджера
+    if (is_numeric($mgr)) $tomail = $db->get_var("select email from Message201 where Message_ID = '$mgr' AND Catalogue_ID = '$catalogue'");
+    // email из настроек сайта
+    if (!$tomail) $tomail = ($cc_settings['EmailTo'] ? $cc_settings['EmailTo'] : ($setting['email'] ? $setting['email'] : $system_env['SpamFromEmail']));
+
+    // Тема письма
+    $tema = $titleformail ? $titleformail." №{$message}" : "Письмо через форму ".($nameform ? "{$nameform} " : "")."№{$message}";
+
+    // отправка письма на почту
+    if ($setting['emailsend'] && $setting['emailpass'] && $setting['emailsmtp'] && $setting['emailport']) { // отправка через SMTP
+        require_once $DOCUMENT_ROOT.'/bc/modules/default/SendMailSmtpClass.php';
+        $mailSMTP = new SendMailSmtpClass($setting['emailsend'] , $setting['emailpass'], $setting['emailsmtp'], $setting['emailport'], "UTF-8");
+
+        $from = array(
+            $tema, // Имя отправителя
+            $setting['emailsend'] // почта отправителя
+        );
+        if ($_FILES) {
+            foreach ($_FILES as $file) {
+                if (fileForm($file)) {
+                    $mailSMTP->addFile($file['tmp_name'], $file['name']);
+                }
+            }
+        }
+        foreach(explode(",",$tomail) as $tomail1) {
+            $ressend =  $mailSMTP->send(trim($tomail1), $tema, $text, $from);
+		}
+
+        // var_dump($ressend);
+    } else {
+        // отправка письма на почту стандарт
+        $mailer = new CMIMEMail();
+        $mailer->mailbody(strip_tags($text), $text);
+        if($_FILES) {
+            foreach($_FILES as $file) {
+                if (fileForm($file)) $mailer->attachFile($file['tmp_name'], $file['name'], mime_content_type($file['tmp_name']));
+            }
+        }
+        foreach(explode(",",$tomail) as $tomail1) {
+			$mailer->send(trim($tomail1), $frommail, $frommail, $tema, $f_Name);
+		}
+
+
+    }
+
+
+	# Bitrix новый лид
+	$data = array(
+		'TITLE'     => 'Письмо с сайта №'.$message,
+		'EMAIL'     => $f_Email,
+		'NAME'      => $f_Name,
+		'COMMENTS'  => $f_mailtext,
+        'PHONE'     => ($f_phone ? $f_phone : $f_Subject)
+	);
+	bitrixNewLead($data);
+    if($succestext && $f_Name){
+        $succestext = str_replace('%name%', $f_Name, $succestext);
+    }
+
+    if ($setting['actoken'] && $setting['acsubdomen']) {
+        amoCrm($data, 'mail');
+    }
+    // ответ успешно отправленой формы
+    $succestext = $succestext ? $succestext : getLangWord('sucForm',"Спасибо, {$f_Name}. Сообщение отправлено. В ближайшее время с вами свяжутся по указанным контактам");
+
+    if (!$from_mail) {
+        echo json_encode(ARRAY(
+            "title" => getLangWord('title_thank',"Спасибо!"),
+            "succes" => $succestext,
+            "submodal" => 1,
+            "field" => "clear"
+        ));
+    } else {
+        echo $succestext;
+    }
+} # ################# END ############
+?>

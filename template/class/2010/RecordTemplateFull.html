@@ -1,0 +1,118 @@
+<?=($bitcat ? editObjBut($editLink, null, 'объект') : NULL)?>
+<?php 
+   $f_photo_tpl = array(
+        'record' => "%Preview%"
+    );
+?>
+
+<?php   
+    # ширина объекта
+    if($sizehave && is_numeric($sizeitem))  $sizeitem = $sizeitem;
+    else if($settingsSub["sizehave"] && is_numeric($settingsSub["sizeitem"])) $sizeitem = $settingsSub["sizeitem"];
+    else $sizeitem = $setting["size".$classID];
+    # отступ
+    if($sizehave && is_numeric($sizeitem_margin))  $margin = $sizeitem_margin;
+    else if($settingsSub["sizehave"] && is_numeric($settingsSub["sizeitem_margin"])) $margin = $settingsSub["sizeitem_margin"];
+    else if(is_numeric($setting["size".$classID."_margin"])) $margin = $setting["size".$classID."_margin"];
+    else $margin = 15;
+    # masonry
+    if($masonry && $type_masonry){}
+    else if($settingsSub["masonry"] && $settingsSub["type_masonry"]){ $masonry = $settingsSub["masonry"]; $type_masonry = $settingsSub["type_masonry"]; }
+    
+    $data = subdivisionData(array(
+        'type' => 'gallery',
+        'sizeitem' => $sizeitem,
+        'margin' => $margin,
+        'scrolling' => $scrolling,
+        'scrollspeed' => $scrollspeed,
+        'scrollNav' => $scrollNav,
+        'scrollDots' => $scrollDots,
+        'masonry' => $masonry,
+        'type_masonry' => $type_masonry
+    ));
+?>
+
+<?=($f_text ? "<span class='textsub_top'>$f_text</span>" : NULL)?>
+<ul class='<?=$data['class']?>' <?=$data['attr']?>>
+<?php
+    $records = [];
+    if (!empty($f_photo->records)) {
+        foreach ($f_photo->records as $record) {
+            $records[] = [
+                'type' => 'photo',
+                'path' => $record['Path'],
+                'name' => $record['Name'],
+                'preview' => $IMG_HOST.($record['Preview'] ?: $record['Path']),
+            ];
+        }
+    }
+
+    if (!empty($f_video_link)) {
+        $parseUrl = parse_url($f_video_link);
+        $videoKey = null;
+        if (!empty($parseUrl['query'])) {
+            parse_str($parseUrl['query'], $parseQuery);
+            if (isset($parseQuery['v'])) {
+                $videoKey = $parseQuery['v'];
+            }
+        } else {
+            $videoKey = basename($parseUrl['path']);
+        }
+        $records[] = [
+            'type' => 'videoLink',
+            'path' => "//www.youtube.com/embed/".$videoKey,
+            'name' => null,
+            'preview' => "//img.youtube.com/vi/{$videoKey}/mqdefault.jpg",
+        ];
+    }
+
+    if (!empty($f_video)) {
+        $records[] = [
+            'type' => 'video',
+            'path' => $IMG_HOST.$f_video,
+            'name' => null,
+            'preview' => $IMG_HOST.($f_video_preview ?: $noimage),
+        ];
+    }
+?>
+<?php foreach ($records as $record) : ?>
+    <?php
+        $objClass = $objAttr = '';
+
+        $objClass = "obj obj".$f_RowID;
+        $objClass .= ' '.objHidden($f_Checked, $f_citytarget, $cityid) ?: null;
+
+        $linkAttr = '';
+        $link = $record['path'];
+        $title = $record['name'];
+
+        $linkAttr .= !empty($linkAttr) ? ' ' : null;
+        $linkAttr .= "data-rel='lightcase:image-in-".($mesid ? "block".$mesid : "sub".$sub)."'";
+
+        $isViewPlayBtn = in_array($record['type'], ['video', 'videoLink']);
+    ?>
+    <li class="<?= $objClass ?>" <?= $objAttr ?>>
+        <div class="<?= $image_default ?>">
+            <a href="<?= $link ?>" title="<?= $title ?>" <?= $linkAttr ?>>
+                <span class='img-preview'>
+                    <img src="<?= $record['preview'] ?>">
+                </span>
+                <?php if (!empty($title)) : ?>
+                    <span class="photo-name"><?= $title ?></span>
+                <?php endif; ?>
+                <?php if ($isViewPlayBtn) : ?>
+                    <span class="play-btn"></span>
+                <?php endif; ?>
+            </a>
+        </div>
+        <?= $bitcat ? editObjBut($editLink) : null; ?>
+    </li>
+    <?php
+        $licount++; 
+        unset($objClass, $objAttr, $linkAttr, $link, $title, $isViewPlayBtn);
+        if (!empty($f_name)) break;
+    ?>
+<?php endforeach; ?>
+<?php unset($records, $record); ?>
+</ul>
+<?=($f_text2 ? "<span class='textsub_bottom'>$f_text2</span>" : NULL)?>

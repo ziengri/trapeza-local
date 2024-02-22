@@ -1,0 +1,66 @@
+<?php
+$MaxRecordsInInfoblock = 1;
+if (!function_exists('nc_process_phone')) {
+    function nc_process_phone($phone) {
+        return str_replace(array(' ','-','(',')'), '', $phone);
+    }
+}
+if (!function_exists('nc_social_icons')) {
+    function nc_social_icons($text, $template)
+    {
+
+        /** @var иконки Fontawesome $social */
+        $social = array(
+            /* domain => (icon, name) */
+            "vk.com" => array('vk', 'Вконтакте'),
+            "facebook.com" => array('facebook', 'Facebook'),
+            "ok.ru" => array('odnoklassniki', 'Одноклассники'),
+            "plus.google.com" => array('google-plus', 'Google+'),
+            "pinterest.com" => array('pinterest', 'Pinterest'),
+            "twitter.com" => array('twitter', 'Twitter'),
+            "del.icio.us" => array('vk', 'Delicious'),
+            "digg.com" => array('digg', 'Digg'),
+            "reddit.com" => array('reddit', 'Reddit'),
+            "linkedin.com" => array('linkedin', 'LinkedIn'),
+            "renren-inc.com" => array('renren', 'Renren'),
+            "tumblr.com" => array('tumblr', 'Tumblr'),
+            "whatsapp.com" => array('whatsapp', 'WhatsApp'),
+            "skype.com" => array('skype', 'Skype'),
+            "telegram.org" => array('telegram', 'Telegram'),
+            "instagram.com" => array('instagram', 'Instagram'),
+            "instagr.am" => array('instagram', 'Instagram'),
+        );
+
+        $urls = explode("\r\n", $text);
+
+        $return = "";
+        foreach ($urls as $url) {
+            preg_match_all(
+                '/^
+	                [a-z][a-z0-9+\-.]*:\/\/              # Scheme
+	                ([a-z0-9\-._~%!$&\'()*+,;=]+@)?      # User
+	                (?P<host>[a-z0-9\-._~%]+             # Named or IPv4 host
+	                |\[[a-z0-9\-._~%!$&\'()*+,;=:]+\])   # IPv6+ host
+	                /ix',
+                $url, $result, PREG_PATTERN_ORDER);
+            $host = str_replace("www.", "", $result['host'][0]);
+            if ($social[$host][0]) {
+                $arrSearch = array(
+                    '%URL',
+                    '%ICON',
+                    '%NAME'
+                );
+                $arrReplace = array(
+                    $url,
+                    nc_get_svg_for_embedding(nc_core()->DOCUMENT_ROOT . nc_core()->HTTP_TEMPLATE_PATH . 'icon/font_awesome/' . $social[$host][0] . ".svg"),
+                    $social[$host][1]
+                );
+                $return .= str_replace($arrSearch, $arrReplace, $template);
+            }
+        }
+        return $return;
+    }
+}
+
+
+?>

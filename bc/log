@@ -1,0 +1,1 @@
+{"status":400,"requestId":"124b5885c4524a0e97967188086399e0","error":"INVALID_MESSAGE_DATA","description":"Message data is invalid","data":{"fields":["channelId","chatId","chatType","text","contentUri"]}}

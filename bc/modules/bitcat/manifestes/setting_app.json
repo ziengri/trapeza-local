@@ -1,0 +1,12 @@
+{
+    "setting_app": {
+        "name": "Основные настройки",
+        "row": [{
+                "name": "company_id",
+                "label": "Token приложения",
+                "type": "text",
+                "colline": 1
+            }
+        ]
+    }
+}

@@ -1,0 +1,25 @@
+<?php
+
+try {
+
+    $respons = [
+        "title" => "ОК",
+        "succes" => "PopUp удален",
+        "modal" => "close",
+        "reloadtab" => "1",
+    ];
+
+} catch (\Exception $e) {
+    $respons = [
+        "title" => "Ошибка",
+        "error" => $e->getMessage()
+    ];
+}
+
+if($inside_admin) {
+    ob_end_clean();
+    header('Location: '.$goBackLink.'&inside_admin=1');
+    exit;
+} else { 
+    echo json_encode($respons);
+}

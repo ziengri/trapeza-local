@@ -1,0 +1,258 @@
+<?= ($inside_admin ? $f_AdminCommon : addObjBut($addLink, $isTitle, null, 'контакт')) ?>
+
+<?php
+# json раздела
+if (isJson($settingsSub)) $settingsSub = orderArray($current_sub['settingsSub']);
+# Шаблон вывода
+if ($template_block) $template = $template_block;
+else if ($settingsSub["template"]) $template = $settingsSub["template"];
+else if ($setting["size" . $classID . "_template"]) $template = $setting["size" . $classID . "_template"];
+
+$data = subdivisionData(array(
+    'type' => 'contacts',
+    'template' => $template
+));
+?>
+<?php
+global $db, $catalogue, $pathInc;
+## api ключ
+$apikey = $cc_settings['apikey'] ? $cc_settings['apikey'] : "40ccb50f-1978-4218-a10f-1749b439a583";
+$points = $citiesList = $structure = [];
+$objects = $db->get_results("SELECT * FROM Message2088 WHERE Catalogue_ID = {$catalogue} AND Subdivision_ID = {$sub} AND Checked = 1 ORDER BY city", ARRAY_A) ?: [];
+
+foreach ($objects as $key => $obj) {
+    $coords = str_replace(['[', ']'], '', $obj['coordinates']);
+    $coords = explode(',', $coords);
+    $point = [
+        'id' => $obj['Message_ID'],
+        'coord' => $coords,
+        'name' => $obj['name'],
+        'description' => $obj['description'],
+        'address' => $obj['address'],
+        'site' => $obj['site'],
+        'time' => $obj['time'],
+        'city' => $obj['city'],
+        'photo' => $obj['photo'] ? explode(':', $obj['photo'])[3] : null,
+        'phones' => orderArray($obj['phones']) ?: [],
+        'emails' => orderArray($obj['emails']) ?: [],
+        'links' => orderArray($obj['links']) ?: [],
+    ];
+    $points[$point['id']] = $point;
+    if (!empty($point['city'])) {
+        $citiesList[$point['city']] = true;
+        $structure[$obj['city_group']][$point['city']][] = $point['id'];
+    }
+}
+
+$citiesList = array_keys($citiesList);
+?>
+<div class='dealer-wrapper'>
+    <div class="dealer-left">
+        <?php if (!empty($structure)) : ?>
+            <?php
+            uksort($structure, function ($a, $b) {
+                if (empty($a)) return 1;
+                if (empty($b)) return 0;
+                return (int) ($a < $b);
+            });
+            ksort($structure);
+            ?>
+            <input type='text' class='dealer-search' placeholder='Ваш город'>
+            <div class='locality'>
+                <?php foreach ($structure as $cityGroupName => $cityes) : ?>
+                    <?php if (!empty($cityGroupName)) : ?>
+                        <div class="dealer-city-group">
+                            <details>
+                                <summary><?= $cityGroupName ?></summary>
+                                <div class="dealer-city-group-body">
+                                <?php endif; ?>
+                                <?php ksort($cityes); ?>
+                                <?php foreach ($cityes as $cityName => $pointsKeys) : ?>
+                                    <div class='dealer-city' data-city="<?= mb_strtolower($cityName) ?>">
+                                        <details>
+                                            <summary><?= $cityName ?></summary>
+                                            <span class='onmap'>на карте</span>
+                                            <ul class='dealers-list'>
+                                                <?php foreach ($pointsKeys as $pointKey) : ?>
+                                                    <?php $point = $points[$pointKey]; ?>
+                                                    <li data-id="<?= $point['id'] ?>">
+                                                        <p class='dealer-name'><?= $point['name'] ?></p>
+                                                        <p class='dealer-desc'><?= $point['description'] ?></p>
+                                                        <p class='dealer-other'>
+                                                            <?php if (!empty($point['address'])) : ?>
+                                                                <span class="address icons i_city"><?= $point['address'] ?></span>
+                                                            <?php endif; ?>
+                                                            <?php if (!empty($point['time'])) : ?>
+                                                                <span class="time icons i_time"><?= $point['time'] ?></span>
+                                                            <?php endif; ?>
+                                                            <?php if (!empty($point['phones'])) : ?>
+                                                                <?php foreach ($point['phones'] as $phone) : ?>
+                                                                    <span class="phones icons i_tel">
+                                                                        <a class="phone icon-phone" href="tel:<?= clearPhone($phone['phone']) ?>"><?= $phone['phone'] ?></a>
+                                                                    </span>
+                                                                <?php endforeach; ?>
+                                                            <?php endif; ?>
+                                                            <?php if (!empty($point['emails'])) : ?>
+                                                                <?php foreach ($point['emails'] as $email) : ?>
+                                                                    <span class="emails icons i_email">
+                                                                        <a class="email icon-email" href="mailto:<?= $email['email'] ?>"><?= $email['email'] ?></a>
+                                                                    </span>
+                                                                <?php endforeach; ?>
+                                                            <?php endif; ?>
+                                                            <?php if (!empty($point['site'])) : ?>
+                                                                <span class="emails icons i_site">
+                                                                    <a target='_blank' href='<?= $point['site'] ?>'><?= $point['site'] ?></a>
+                                                                </span>
+                                                            <?php endif; ?>
+                                                            <?php if (!empty($point['links'])) : ?>
+                                                        <div class="links">
+                                                            <?php foreach ($point['links'] as $link) : ?>
+                                                                <?php
+                                                                    $class = 'link';
+                                                                    $class .= !empty($link['type']) ? " type-{$link['type']} icon-{$link['type']}" : null;
+                                                                ?>
+                                                                <a target='_blank' class="<?= $class ?>" href="<?= $link['link'] ?>"><?= $link['title'] ?: $link['link'] ?></a>
+                                                            <?php endforeach; ?>
+                                                        </div>
+                                                    <?php endif; ?>
+                                                    </p>
+                                                    </li>
+                                                <?php endforeach; ?>
+                                            </ul>
+                                        </details>
+                                    </div>
+                                <?php endforeach; ?>
+                                <?php if (!empty($cityGroupName)) : ?>
+                                </div>
+                            </details>
+                        </div>
+                    <?php endif; ?>
+                <?php endforeach; ?>
+            </div>
+        <?php endif; ?>
+    </div>
+    <div class='dealer-map dealer-right' id='map'></div>
+</div>
+<script src='https://api-maps.yandex.ru/2.1/?lang=ru-RU&apikey=<?php echo $apikey; ?>' type='text/javascript'></script>
+<script type='text/javascript'>
+    ymaps.ready(function() {
+        var searchInput = $('.dealer-search');
+        if (searchInput.length) {
+            var find = function(arr, find) {
+                return arr.filter(function(value) {
+                    return (value + "").toLowerCase().indexOf(find.toLowerCase()) != -1;
+                });
+            };
+            var suggest = new ymaps.SuggestView(searchInput.get(0), {
+                results: 10,
+                provider: {
+                    suggest: function(request, options) {
+                        var res = find(<?= json_encode($citiesList) ?>, request),
+                            arrayResult = [],
+                            results = Math.min(options.results, res.length);
+                        for (var i = 0; i < results; i++) {
+                            arrayResult.push({
+                                displayName: res[i],
+                                value: res[i]
+                            })
+                        }
+                        return ymaps.vow.resolve(arrayResult);
+                    }
+                }
+            });
+            suggest.events.add('select', function(e) {
+                searchInput.change();
+            });
+            searchInput.on('change', function() {
+                var search = $(this).val().toLowerCase();
+                if (search.length) {
+                    var city = $('.locality .dealer-city[data-city="' + search + '"]');
+                    if (city.length) {
+                        $('.dealer-wrapper .locality details').removeAttr('open');
+                        city.find('details').attr('open', '');
+                        city.parents('details').attr('open', '');
+                        city.find('.onmap').click();
+                    }
+                }
+            });
+        }
+
+        var myMap = new ymaps.Map('map', {
+            center: [64.31593584, 76.29396800],
+            zoom: 3,
+            controls: [
+                'zoomControl'
+            ]
+        }, {
+            suppressMapOpenBlock: true
+        });
+        myMap.behaviors.disable('scrollZoom');
+        myMap.behaviors.disable('drag');
+        var isclientmap = <?= ($cc_settings[clientmap] == 'on' ? 1 : 0) ?>;
+        var clusterer = new ymaps.Clusterer({
+            preset: isclientmap != 1 ? 'islands#invertedRedClusterIcons' : 'islands',
+            groupByCoordinates: false,
+            clusterHideIconOnBalloonOpen: false,
+            geoObjectHideIconOnBalloonOpen: false
+        });
+        var points = <?= json_encode($points); ?>;
+        var getPointOptions = (function() {
+            var isclientmap = <?= ($cc_settings['clientmap'] == 'on' ? 1 : 0) ?>;
+            return {
+                preset: isclientmap != 1 ? 'islands#redIcon' : 'islands'
+            };
+        });
+        var activePoint = null;
+        $.each(points, function(key, point) {
+            if (this.coord.length < 2) {
+                console.error('Ошибка заполнения кординат', point.name);
+                return true;
+            }
+            point.geoObj = new ymaps.Placemark(this.coord, {}, getPointOptions());
+            point.geoObj.events.add('click', function() {
+                pointClick(point);
+            });
+            clusterer.add(this.geoObj);
+        });
+        myMap.geoObjects.add(clusterer);
+
+        function pointClick(point) {
+            if (activePoint !== null) {
+                activePoint.geoObj.options.set({
+                    preset: 'islands'
+                });
+            }
+            point.geoObj.options.set({
+                preset: 'islands#darkGreenIcon'
+            });
+            myMap.setCenter(point.coord, 13);
+            activePoint = point;
+        }
+
+        $('body').on('click', '.onmap', function() {
+            var city = $(this).parent().find('summary').text();
+            var cityObj = ymaps.geocode(city);
+            cityObj.then(function(res) {
+                var coordsArr = res.geoObjects.get(0).geometry._coordinates;
+                myMap.setCenter(coordsArr, 10);
+                if ($(window).width() < 780) scrollToMap();
+            })
+        });
+
+        $('.dealers-list').on('click', 'li', function() {
+            var id = $(this).data('id');
+            pointClick(points[id]);
+            if ($(window).width() < 780) scrollToMap();
+        });
+    });
+
+    function scrollToMap() {
+        $('html, body').animate({
+            scrollTop: $('.dealer-map').offset().top - 70
+        }, 500);
+    }
+</script>
+
+<?php if ($totRows) { ?>
+    <ul class='<?= $data["class"] ?>'>
+    <?php  } ?>

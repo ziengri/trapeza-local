@@ -1,0 +1,16 @@
+<?php
+global $action, $mainpage, $setting, $bitcat, $cityid, $cityname, $citylink;
+if ($action=='add' && !$isTitle) exit;
+
+if ($rand) $query_order = "RAND()";
+if ($msg) $query_where = ($query_where ? " AND " : NULL)."Message_ID = '$msg'";
+
+# видимость скрытых для админа
+if (!$isTitle && $bitcat) {
+    $ignore_check = 1;
+}
+
+#language
+$query_where = getLangQuery($query_where);
+
+?>

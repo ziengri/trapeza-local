@@ -1,0 +1,15 @@
+.mceTmpl-f-center {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    align-items: center;
+    align-content: center;
+    justify-content: space-around;
+}
+
+.mce-content-body .mceTmpl {
+    border: 1px solid green;
+}
+p.service-blocks  {
+    display: none;
+}

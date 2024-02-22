@@ -1,0 +1,222 @@
+<?php
+if ($warnText) {
+    echo json_encode([
+        "title" => getLangWord('error', "Ошибка"),
+        "error" => $warnText
+    ]);
+
+    exit;
+}
+?>
+
+<?php
+$ROOTDIR = $_SERVER['DOCUMENT_ROOT'];
+require_once $ROOTDIR."/vars.inc.php";
+require_once $ROOTDIR."/bc/connect_io.php";
+require_once $ROOTDIR."/bc/modules/default/function.inc.php";
+
+global $cityname, $db, $catalogue, $setting, $currency, $nc_core, $SUB_FOLDER, $HTTP_ROOT_PATH, $current_user, $cc, $sub;
+
+$cartSub = $db->get_row(
+    "SELECT
+        cc.Sub_Class_ID as cc,
+        sub.Subdivision_ID as sub
+    FROM
+        Sub_Class as cc,
+        Subdivision as sub
+    WHERE
+        sub.Catalogue_ID = {$catalogue}
+        AND sub.Hidden_URL= '/cart/'
+        AND sub.Subdivision_ID = cc.Subdivision_ID 
+    LIMIT 0,1",
+    ARRAY_A
+);
+$item = current($order['items']);
+
+foreach ($data as $name => $param) {
+    $name = explode("|", $name);
+    $key = $name[0];
+    $title = $param['label']['value'];
+    $hiddenNames .= "<input name='customf[{$param['name']['value']}][name]' type='hidden' value='{$param['label']['value']}'>";
+    if ($param['required']['value']) $hiddenRequired .= "<input name='req_customf[]' type='hidden' value='{$param['name']['value']}'>";
+    $customName = $key == 'file' ? "customfile_{$param['name']['value']}" : "customf[{$param['name']['value']}][value]";
+    $placeholder = $param['placeholder']['value'] ? "placeholder='{$param['placeholder']['value']}'" : "";
+    // данные пользователя (если есть)
+    if ($param['name']['value'] == "name" && $current_user['ForumName']) $param['value']['value'] = $current_user['ForumName'];
+    if ($param['name']['value'] == "phone" && $current_user['phone']) $param['value']['value'] = $current_user['phone'];
+    if ($param['name']['value'] == "email" && $current_user['Email']) $param['value']['value'] = $current_user['Email'];
+
+    # мультиязычность
+    if ($setting['language']) {
+        $title = getLangWord("cart_oform_" . ($param['name']['value'] ? $param['name']['value'] : $name[1]), $param['label']['value']);
+        if ($placeholder) {
+            $placeholder = "placeholder='" . getLangWord("cart_oform_placeholder_" . ($param['name']['value'] ? $param['name']['value'] : $name[1]), $param['placeholder']['value']) . "'";
+        }
+    }
+
+    switch ($key) {
+        case 'input':
+            $type = array("текст" => "text", "число" => "number", "скрытый" => "hidden");
+            $attrs = "maxlength='255' size='50' {$placeholder} " . ($param['typeInput']['value'] ? "type='" . $type[$param['typeInput']['value']] . "'" : "");
+            $fields = "<div class='userline userline-input userline-oneclick-{$param['name']['value']}'>" . bc_input_standart($customName, $param['value']['value'], $title, $attrs, $param['required']['value']) . "</div>";
+            break;
+        case 'textarea':
+            $fields = "<div class='userline userline-textarea userline-oneclick-{$param['name']['value']}'>" . bc_textarea_standart($customName, $param['value']['value'], $title, $placeholder, $param['required']['value']) . "</div>";
+            break;
+        case 'select':
+            $options = "";
+            foreach ($param["selectGroup"]["values"] as $i => $select)  $options .= "<option value='{$select['value']}'>" . getLangWord($select['value']) . "</option>";
+            $fields = "<div class='userline userline-select userline-oneclick-{$param['name']['value']}'>" . bc_select_standart($customName, $options, $title, "", $param['required']['value']) . "</div>";
+            break;
+        case 'checkbox':
+            $checkboxs = "";
+            foreach ($param["checkboxGroup"]["values"] as $i => $checkbox) $checkboxs .= "<div class='person_line {$param['name']['value']}_{$i}'>" . bc_checkbox_standart($customName . "[]", $checkbox["value"], $checkbox["value"]) . "</div>";
+            $fields = "<div class='userline userline-checkbox userline-oneclick-{$param['name']['value']}'><div class='input-fields-cart input-oneline'>" . bc_label_standart($title, "", $param['required']['value']) . "<div class='field-second'>{$checkboxs}</div></div></div>";
+            break;
+        case 'radio':
+            $radios = "";
+            foreach ($param["radioGroup"]["values"] as $i => $radio) $radios .= "<div class='person_line {$param['name']['value']}_{$i}'>" . bc_radio_standart($customName,  $radio["value"],  $radio["value"], ($i == 0 ? 1 : 0)) . "</div>";
+            $fields = "<div class='userline userline-radio userline-oneclick-{$param['name']['value']}'><div class='input-fields-cart input-oneline'>" . bc_label_standart($title, "", $param['required']['value']) . "<div class='field-second'>{$radios}</div></div></div>";
+            break;
+        case 'title':
+            $fields = "<div class='userline userline-title'><h3>{$param['label']['value']}</h3></div>";
+            break;
+        case 'file':
+            $fields = "<div class='userline userline-file userline-oneclick-{$param['name']['value']}'>" . bc_file_standart($customName, "", $title) . "</div>";
+            break;
+        case 'date':
+            $attrs = "maxlength='255' size='50' {$placeholder} type='date'";
+            $fields = "<div class='userline userline-input userline-oneclick-{$param['name']['value']}'>" . bc_input_standart($customName, $param['value']['value'], $title, $attrs, $param['required']['value']) . "</div>";
+            break;
+    }
+    $allFields .= $fields;
+}
+?>
+
+<div class="oneclick_text">
+    <?= getLangWord('oneclick_text', 'Оставьте ваши контактные данные. Наши менеджеры свяжутся с вами для уточнения деталей заказа.') ?>
+</div>
+
+<form name='order' id='order' class='ajax2' enctype='multipart/form-data' method='post' action='<?= $SUB_FOLDER . $HTTP_ROOT_PATH ?>add.php' data-metr='cartitem' data-id='<?= $item['id'] ?>' data-colornum='<?= $item['colornum'] ?>'>
+
+    <div id='nc_moderate_form'>
+        <input name='admin_mode' type='hidden' value='<?= $admin_mode ?>' />
+        <?= $nc_core->token->get_input() ?>
+        <input name='catalogue' type='hidden' value='<?= $catalogue ?>' />
+        <input name='cc' type='hidden' value='<?= $cartSub['cc'] ?>' />
+        <input name='sub' type='hidden' value='<?= $cartSub['sub'] ?>' />
+        <input name='type_order' type='hidden' value='buy_one_click' />
+        <input name='item_id' type='hidden' value='<?= $item['id'] ?>' />
+        <?= $hiddenNames ?>
+        <?= $hiddenRequired ?>
+        <?= nc_form_moderate('add', $admin_mode, 0, $systemTableID, $current_cc, (isset($f_Checked) ? $f_Checked  : null), $f_Priority, $f_Keyword, $f_ncTitle, $f_ncKeywords, $f_ncDescription) ?>
+    </div>
+
+    <?php if ($cityname) { ?>
+        <div class="oneclick_city">
+            <span><?= getLangWord("your_reg", "Ваш регион") ?>:</span> <span class="oneclick_city_name"><?= $cityname ?></span>
+        </div>
+    <?php  } ?>
+    <div class="txt">
+        <table id="item">
+            <tr class="item-name">
+                <td class="name"><?= getLangWord("oneclick_item", "Товар") ?></td>
+                <td class="value"><?= $item['name'] ?></td>
+            </tr>
+            <tr class="item-price">
+                <td class="name">Цена</td>
+                <td class="value"><span class="price"><?= $item['price'] ?></span><span class="rubl">Р</span></td>
+            </tr>
+            <tr class="item-count">
+                <td class="name"><?= getLangWord("tbl_cat_quant", "Кол-во") ?></td>
+                <td class="value">
+                    <div class="input-field-standart">
+                        <span class='oneclick_input'>
+                            <input name='itemCount' type="number" value='<?= $item['count'] ?: 1 ?>'>
+                            <span class="oneclick_up"></span>
+                            <span class="oneclick_down"></span>
+                        </span>
+                    </div>
+                </td>
+            </tr>
+            <tr class="item-sum">
+                <td class="name">Сумма</td>
+                <td class="value"><span class="price"><?= $item['sum'] ?></span><span class="rubl">Р</span></td>
+            </tr>
+        </table>
+    </div>
+
+    <?= $allFields ?>
+
+    <?php if ($setting['fastbuy_deliv']) { ?>
+        <?php $class2005 = new Class2005(); ?>
+        <div class='userline userline-select userline-oneclick-delivery'>
+            <div class="input-field-standart ">
+                <label class="field-title active"><?= getLangWord("oneclick_txt_dostav", "Способы доставки") ?><div class="red">*</div></label>
+                <?= $class2005->getLists('delivery', 'req') ?>
+            </div>
+        </div>
+        <div class='userline userline-select userline-oneclick-payment'>
+            <div class="input-field-standart ">
+                <label class="field-title active"><?= getLangWord("oneclick_txt_oplat", "Способы оплаты") ?><div class="red">*</div></label>
+                <?= $class2005->getLists('payment', 'req') ?>
+            </div>
+        </div>
+        <style>
+            .blk_title {
+                display: none;
+            }
+
+            .method_items {
+                padding: 0;
+                font-size: 0;
+            }
+
+            .nice-select.select-style ul.list-ul {
+                max-height: 220px;
+            }
+        </style>
+    <?php  } ?>
+    <div class='total_blk'>
+        <?php if ($setting['fastbuy_deliv']) : ?>
+            <div class='tot_item_all'>
+                <div class='tot_item cb discontSumTr'>
+                    <div class='tot_item_1'><?= getLangWord('cart_cost', 'Стоимость') ?>:</div>
+                    <div class='bor_line'></div>
+                    <div class='tot_item_2 discontSum'><span class="price"><?= number_format($order['totalSumDiscont'], 2, ',', ' ') ?></span> <?= $currency['html'] ?></div>
+                </div>
+                <div class='tot_item cb deliverSumTr'>
+                    <div class='tot_item_1'><?= getLangWord('cart_delivery', 'Доставка') ?>:</div>
+                    <div class='bor_line'></div>
+                    <div class='tot_item_2 deliverSum'><span class="price"><?= number_format($order['delivery']['sum_result'], 2, ',', ' ') ?></span> <?= $currency['html'] ?></div>
+                </div>
+                <div class='tot_item cb deliverySumPayAfterTr none-important'>
+                    <div class='tot_item_1'><?= getLangWord('cart_pay_delivery_after_title', 'Оплата доставки при получении') ?>:</div>
+                    <div class='bor_line'></div>
+                    <div class='tot_item_2 deliverySumPayAfter'><span class="price"><?= number_format($order['delivery']['sum'], 2, ',', ' ') ?></span> <?= $currency['html'] ?></div>
+                </div>
+            </div>
+        <?php endif; ?>
+        <div class='total_sum cb'>
+            <div class='total_sum_text'><?= getLangWord('cart_total', 'Итого') ?>:</div>
+            <div class='bor_line'></div>
+            <div class='total_sum_price' data-totaldelsum='<?= $order['totaldelsum'] ?>'>
+                <span class="price"><?= number_format($order['totaldelsum'], 2, ',', ' ') ?></span>
+                <?= $currency['html'] ?>
+            </div>
+        </div>
+    </div>
+    <?= politika() ?>
+    <div class='result center'></div>
+    <div class="modal_button_main">
+        <span class="btn-strt">
+            <input id='small-checkout' value='<?= getLangWord("oneclick_btn_send", "Отправить заказ") ?>' type='submit'>
+        </span>
+    </div>
+</form>
+<script>
+    $('.userline select').niceSelect();
+    $('#lightcase-content #order [name="f_delivery"]').on('change', function() {
+        buyOnClick.delivery($(this), $(this).val());
+    })
+</script>

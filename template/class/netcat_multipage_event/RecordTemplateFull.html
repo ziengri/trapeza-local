@@ -1,0 +1,59 @@
+<section class="object-item-full tpl-text-default">
+    <div class="item-category tpl-text-default-small">
+        <?= nc_edit_inline('Category', $message, $cc_env['Sub_Class_ID']); ?>
+    </div>
+    <h1 class="item-title tpl-text-header1"><?= nc_edit_inline('Name', $message, $cc_env['Sub_Class_ID']); ?></h1>
+    <div class="item-period tpl-text-default-small">
+        <i class="far fa-calendar-alt"></i> <?= nc_edit_inline('Period', $f_RowID, $cc_env['Sub_Class_ID']); ?>
+    </div>
+    <?= $f_AdminButtons; ?>
+    <?php
+    $events_images = array();
+
+    if ($f_Image) {
+        $events_images[] = array(
+            'preview' => $f_Image->resize(250, 250),
+            'full' => $f_Image,
+        );
+    }
+    foreach ($f_Slider->to_array() as $im) {
+        $events_images[] = array(
+            'preview' => $im->resize(250, 250),
+            'full' => $im['path'],
+        );
+    }
+    ?>
+    <div class="item-slider">
+        <?php if ($events_images) { ?>
+            <div class='slider-big-image'><img src='<?= $events_images[0]['full']; ?>'/></div>
+            <div class='slider-preview-list'>
+                <?php foreach ($events_images as $events_image) { ?>
+                    <a href='<?= $events_image['full']; ?>'><?= $events_image['preview']->as_img(); ?></a>
+                <?php } ?>
+            </div>
+        <?php } ?>
+    </div>
+    <div class="item-info">
+        <div class="item-text">
+            <?= nc_edit_inline('Text', $message, $cc_env['Sub_Class_ID']); ?>
+        </div>
+        <!--        <div class="item-form">-->
+        <!--            ФОРМА ОТПРАВКИ ЗАЯВКИ-->
+        <!--        </div>-->
+    </div>
+    <!--<div class="item-link">
+        <a href="<?= nc_folder_url($cc_env['Subdivision_ID']); ?>">К списку мероприятий</a>
+    </div>-->
+</section>
+<script type="text/javascript">
+    document.addEventListener("DOMContentLoaded", function () {
+        jQuery("#<?= $nc_block_id; ?> .slider-preview-list a").on("click", function (e) {
+            e.preventDefault();
+            jQuery("#<?= $nc_block_id; ?> .slider-preview-list a").removeClass('active');
+            jQuery(this).addClass('active');
+            var link = jQuery(this).attr("href");
+            jQuery("#<?= $nc_block_id; ?> .slider-big-image img").attr("src", link);
+        });
+        //jQuery("#<?= $nc_block_id; ?> .slider-preview-list a:first-child").trigger("click");
+    });
+</script>

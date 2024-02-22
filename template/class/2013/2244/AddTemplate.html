@@ -1,0 +1,35 @@
+<?php 
+  global $setting, $setting_texts;
+  $res = $db->get_var("SELECT CustomSettings FROM Sub_Class WHERE Sub_Class_ID=$cc");
+  ( $res ? eval("\$cc_settings = $res") : $cc_settings = NULL );
+  $res = $db->get_var("SELECT CustomSettingsTemplate FROM Class WHERE Class_ID=$classID");
+  eval("\$default_cc_settings = $res");
+  if (!$inside_admin) {
+      echo ( $cc_settings['TextBefore'] ? $cc_settings['TextBefore'] : $default_cc_settings[TextBefore][default_value] );
+?>
+  <div class='callForm'>
+      <form name='tocall' class='ajax2 json form' method='post' action='<?php  echo $SUB_FOLDER.$HTTP_ROOT_PATH ?>add.php' data-metr='call'>
+           <?php  $nc_core->token->get_input() ?>
+          <input name='cc' type='hidden' value='<?php  echo $cc ?>'>
+          <input name='sub' type='hidden' value='<?php  echo $sub ?>'>
+          <input name='catalogue' type='hidden' value='<?php  echo $catalogue ?>'>
+          <input type='hidden' name='posting' value='1'>
+          <input name='f_subname' type='hidden' value='<?php  echo $current_sub['Subdivision_Name'] ?>'>
+
+          <div class="userline callback-name"><?=bc_input_standart("f_Name", $f_Name, ($setting_texts['you_name']['checked'] ? $setting_texts['you_name']['name'] : "Ваше имя"), "maxlength='255' size='50'", 1)?></div>
+          <div class="userline callback-phone"><?=bc_input_standart("f_phone", $f_phone, ($setting_texts['you_phone']['checked'] ? $setting_texts['you_phone']['name'] : "Номер телефона"), "value='+7' maxlength='55' size='20'", 1)?></div>
+          <div class="userline callback-city"><?=bc_input_standart("f_city", $f_city, ($setting_texts['you_city']['checked'] ? $setting_texts['you_city']['name'] : "Ваш город"), "maxlength='55' size='20'")?></div>
+
+          <div class="userline input-line-time center">
+              <div class="input-line-title"><?=($setting_texts['you_selecttime']['checked'] ? $setting_texts['you_selecttime']['name'] : "Укажите удобное для Вас время")?><span class='red'>*</span>:<br>
+                  <b><?=($setting_texts['from']['checked'] ? $setting_texts['from']['name'] : "С")?> <?=(stristr($setting['call_time1'], ":") ? $setting['call_time1'] : $setting['call_time1'].":00")?> <?=($setting_texts['to']['checked'] ? $setting_texts['to']['name'] : "до")?> <?=(stristr($setting['call_time2'], ":") ? $setting['call_time2'] : $setting['call_time2'].":00")?></b> </div>
+              <?=bc_select_standart("time1", callTimeOpt($setting['call_time1'], $setting['call_time2'], 1))?>
+              <?=bc_select_standart("time2", callTimeOpt($setting['call_time1'], $setting['call_time2'], 2))?>
+          </div>
+          <?=politika()?>
+          <div class=result></div>
+          <div class="modal_button_main"><span class="btn-strt"><input type=submit class=submit value='<?=($setting_texts['callme_btn']['checked'] ? $setting_texts['callme_btn']['name'] : "Жду звонка")?>'></span></div>
+
+      </form>
+  </div>
+<?php  } ?>

@@ -1,0 +1,62 @@
+<?php 
+$connectTemplate = $DOCUMENT_ROOT.$pathInc2."/template/{$classID}/templateAdd/AddActionTemplate.html";
+if($current_catalogue['customCode'] && file_exists($connectTemplate)){
+  include($connectTemplate);
+}else{
+
+  if (!$inside_admin) objsys($bc_objsys,$classID,$message);
+    $waterPosition = ($setting[waterPosition] ? ($setting[waterPosition]==5 ? "0" : $setting[waterPosition]) : 4);
+  
+  clearCache($classID,$sub);
+
+  if ($_FILES['f_photo_preview']['size'] != 0 ) {
+    $photo_path = $DOCUMENT_ROOT.nc_file_path($classID, $message,'photo_preview', "");
+    if ($photo_path) {
+      $imsize = getimagesize($photo_path);
+      $ww = 450;  
+      $hh = 3000;
+      if ($ww < $imsize[0] || $hh < $imsize[1]) {
+        nc_ImageTransform::imgResize($photo_path, $photo_path, $ww, $hh, 0, 'jpg', 95, $message, 'photo_preview');
+      }
+    }
+  }
+  
+  if ($pathInc && file_exists($DOCUMENT_ROOT.$pathInc.'/images/watermark.png')) {
+  @require_once($INCLUDE_FOLDER."classes/nc_imagetransform.class.php");
+   
+  $photos = $db->get_results("select Path, ID from Multifield where Size != '1' AND Message_ID = '$message' AND Field_ID = '2462'", ARRAY_A);
+    if ($photos) {
+      foreach($photos as $fot) {
+        if (!$notWater) nc_ImageTransform::putWatermark_file($fot[Path], $pathInc.'/images/watermark.png', $waterPosition);
+        $db->query("UPDATE Multifield set Size = '1' where ID = '$fot[ID]'");
+      }
+    }
+  }
+
+  /** Сохранение тэгов */
+  $tag_list = $tag_list ?? [];
+  (function() use ($tag_list, $message, $classID) {
+      $tagProvider = new \App\modules\Korzilla\Tag\Provider();
+
+      foreach ($tag_list as $tagId => $unused) {
+
+          if ($bind = $tagProvider->bindCreate((int) $tagId, (int) $message, (string) $classID)) {
+              $tagProvider->bindSave($bind);
+          }
+      }
+  })();
+  
+  if($inside_admin) {
+      ob_end_clean();
+      header('Location: '.$goBackLink.'&inside_admin=1');
+      exit;
+  } else { 
+      echo json_encode(ARRAY(
+          "title" => "ОК",
+          "succes" =>  NETCAT_MODERATION_MSG_OBJADD,
+          "reload" => 1
+      ));
+  }
+  
+}
+?>

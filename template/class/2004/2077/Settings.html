@@ -1,0 +1,17 @@
+<?php
+global $IMG_HOST, $setting, $action, $mainpage, $bitcat, $cityid, $cityname, $citylink;
+if ($action=='add' && $curren_sub[EnglishName]!='registration') exit;
+
+if ($isTitle) $query_where = "block = '$mesid'";
+
+if ($rand) $query_order = ($query_where ? " AND " : NULL)."RAND()";
+
+# видимость скрытых для админа
+if (!$isTitle && $bitcat) {
+    $ignore_check = 1;
+}
+
+# targeting content
+$query_where .= targeting($query_where);
+
+?>

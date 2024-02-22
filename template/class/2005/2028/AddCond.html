@@ -1,0 +1,9 @@
+<?php 
+$f_orderlist = json_encode($_SESSION['cart']);
+if ($itemId) $f_orderlist = '{"'.$itemId.'":{"price":"'.$itemPrice.'","sub":"'.$itemSub.'","count":"'.$itemCount.'","sum":"'.$itemPrice.'"}}';
+
+if (!$f_orderlist) {
+    $warnText = "Заказ пуст";
+    $posting = 0;
+}
+?>

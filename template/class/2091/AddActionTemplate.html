@@ -1,0 +1,11 @@
+<?php 
+clearCache($classID,$sub);
+if (!$inside_admin) objsys($bc_objsys,$classID,$message);
+
+echo json_encode(ARRAY(
+  "title" => "ОК",
+  "succes" =>  NETCAT_MODERATION_MSG_OBJADD,
+  "reload" => 1,
+  "modal" => "close"
+));
+?>

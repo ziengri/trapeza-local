@@ -1,0 +1,246 @@
+{
+    "price_setting": {
+        "name": "Цены",
+        "row": [
+            {
+                "name": "noprice_text",
+                "label": "Надпись если нет цены",
+                "type": "text",
+                "colline": 3
+            },
+            {
+                "name": "priceForAuth",
+                "label": "Скрыть цены для неавторизованных",
+                "type": "checkbox",
+                "colline": 3
+            },
+            {
+                "name": "kopeik",
+                "label": "Показывать копейки у цен",
+                "type": "checkbox",
+                "colline": 3
+            },
+            {
+                "name": "minOrderSum",
+                "label": "Мин. порог заказа",
+                "type": "text",
+                "colline": 3
+            },
+            {
+                "name": "markup",
+                "label": "Наценка на все товары (%)",
+                "type": "text",
+                "colline": 3
+            }
+        ]
+    },
+    "price_kurs": {
+        "name": "Курс валюты",
+        "row": [
+            {
+                "name": "dollar",
+                "label": "Доллар ЦБ",
+                "type": "kurs",
+                "colline": 4
+            },
+            {
+                "name": "dollar",
+                "label": "Ваше значения Доллар",
+                "type": "text",
+                "colline": 4
+            },
+            {
+                "name": "euro",
+                "label": "Евро ЦБ",
+                "type": "kurs",
+                "colline": 4
+            },
+            {
+                "name": "euro",
+                "label": "Ваше значения Евро",
+                "type": "text",
+                "colline": 4
+            },
+            {
+                "name": "tenge",
+                "label": "Тенге ЦБ",
+                "type": "kurs",
+                "colline": 4
+            },
+            {
+                "name": "tenge",
+                "label": "Ваше значения Тенге",
+                "type": "text",
+                "colline": 4
+            }
+        ]
+    },
+    "stock_setting": {
+        "name": "Остатки",
+        "row": [
+            {
+                "name": "stockValShow",
+                "label": "Отображать остаток товара",
+                "type": "checkbox",
+                "colline": 3
+            },
+			{
+                "name": "skladstock",
+                "label": "Разделять остатки по складам",
+                "type": "checkbox",
+                "colline": 3
+            },
+            {
+                "name": "edizinprice",
+                "label": "Вывести Ед.изм. рядом с ценой",
+                "type": "checkbox",
+                "colline": 3
+            },
+            {
+                "name": "stockbuy",
+                "label": "Запрет заказа товара больше чем в наличии",
+                "type": "checkbox",
+                "colline": 3
+            },
+            {
+                "name": "itemliststock",
+                "label": "Показывать в наличии/под заказ",
+                "type": "checkbox",
+                "colline": 3
+            },
+            {
+                "name": "itemliststockall",
+                "label": "Всегда в наличии",
+                "type": "checkbox",
+                "colline": 3
+            },
+            {
+                "name": "nostock_noprice",
+                "label": "Убрать цену если подзаказ",
+                "type": "checkbox",
+                "colline": 3
+            }
+        ]
+    },
+    "item_button": {
+        "name": "Кнопки",
+        "row": [
+            {
+                "name": "itemComparison",
+                "label": "Сравнение товаров",
+                "type": "checkbox",
+                "colline": 3
+            },
+            {
+                "name": "buyoneclick",
+                "label": "Купить в 1 клик",
+                "type": "checkbox",
+                "colline": 3
+            },
+            {
+                "name": "hideconsultbutton",
+                "label": "Скрыть Получить консультацию",
+                "type": "checkbox",
+                "colline": 3
+            },
+            {
+                "name": "itemFavorite",
+                "label": "Избранные товары",
+                "type": "checkbox",
+                "colline": 3
+            },
+            {
+                "name": "typeSelectVariable",
+                "label": "Выбор типа товара",
+                "type": "select",
+                "colline": 3,
+                "data": {
+                    "0": "Цвета",
+                    "1": "Варианты (кнопки)"
+                }
+            }
+        ]
+    },
+    "item_sistem_setting": {
+        "name": "Системные настройки",
+        "row": [
+            {
+                "name": "itemMoreSub",
+                "label": "Выводить товар в разных разделах",
+                "type": "checkbox",
+                "colline": 2
+            },
+            {
+                "name": "cartopenmodal",
+                "label": "Открывать товар в модалке",
+                "type": "checkbox",
+                "colline": 2
+            },
+            {
+                "name": "selfvariablename",
+                "label": "Самостоятельные названия вар-ов тов.",
+                "type": "checkbox",
+                "colline": 2
+            },
+            {
+                "name": "groupItem",
+                "label": "Группировать товары по названию",
+                "type": "checkbox",
+                "colline": 2
+            },
+            {
+                "name": "ignoresublink",
+                "label": "Игнорировать реальный путь до товара в хлебных крошках",
+                "type": "checkbox",
+                "colline": 2
+            },
+            {
+                "name": "typeOrder",
+                "label": "Тип заказа",
+                "type": "select",
+                "colline": 2,
+                "permission": "('catalogue')",
+                "data": {
+                    "0": "В настройках каждого товара",
+                    "1": "Оформить заказ без корзины",
+                    "2": "Отключить заказ"
+                }
+            }
+        ]
+    },
+    "item_design": {
+        "name": "Дизайн",
+        "row": [
+            {
+                "name": "cardbutbg",
+                "label": "Кнопка в карточке товара",
+                "type": "color",
+                "colline": 3
+            },
+            {
+                "name": "iconcart",
+                "label": "Текста в кнопке",
+                "type": "color",
+                "colline": 3
+            },
+            {
+                "name": "cardcolorprice1",
+                "label": "Обычная цена товара в карточке",
+                "type": "color",
+                "colline": 3
+            },
+            {
+                "name": "cardcolorprice2",
+                "label": "Старая цена товара в карточке",
+                "type": "color",
+                "colline": 3
+            },
+            {
+                "name": "cardcolorprice3",
+                "label": "Новая цена товара в карточке",
+                "type": "color",
+                "colline": 3
+            }
+        ]
+    }
+}

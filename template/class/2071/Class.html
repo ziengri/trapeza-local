@@ -1,0 +1,385 @@
+<!-- FormPrefix --><?php 
+#получение списка вендоров
+$vendorArr= $db->get_results("SELECT DISTINCT vendor FROM podbor_shini_i_diski ORDER BY vendor ASC",ARRAY_A);
+if ($vendorArr)  {
+	foreach($vendorArr as $rowrow) {
+		$vendors[] = $rowrow['vendor'];
+	}
+}
+
+
+$ajax = $_GET['ajax'];
+$show = $_GET['show'];
+$auto = $_GET['auto'];
+$models = $_GET['models'];
+$year = $_GET['year'];
+$modification = $_GET['modification'];
+$model_id = $_GET['modification'];
+
+
+if (!$ajax) {
+
+if (strstr($_SERVER[REQUEST_URI],"modification")) header("Location: /index/podbor/a{$auto}/m{$models}/y{$year}/v{$modification}/");
+?>
+<div class='filter'>
+<form method="GET" action='/index/podbor/' id='podborautoform'>
+<div class='row'>
+<select name=auto id=auto onchange="getlist('models',this.value)" size=1>
+<option value="0">- Выберите марку</option>
+
+<?php 
+	for ($j=0; $j<=count($vendors); $j++) {
+		if ($vendors[$j] != "") {
+			echo "<option value=\"$j\">".$vendors[$j]."</option>\r\n";
+		}
+	}
+?>
+
+</select></div>
+
+<div class='row'><select disabled name=models id=models size=1 onchange="getlist('year',this.value)">
+<option value=''>- Модель</option>
+</select></div>   
+
+<div class='row'><select disabled name=year id=year size=1 onchange="getlist('modification',this.value)">
+<option value=''>- Год выпуска</option>
+</select></div>
+
+
+<div class='row'><select disabled name='modification' id='modification' size=1>
+<option value=''>- Модификация</option>
+</select></div>
+<div class='row'></div>
+
+
+<div class="modal_button_main">
+	<span class="btn-strt"><input type="submit" class="submit" value="Подобрать"></span>
+</div>
+
+</form>
+
+</div>
+<?php 
+}
+
+if ($models && $auto) {
+
+    if ($model_id == "") echo "<b><center>Ошибка, не полностью выбраны данные для подбора, укажите все данные полностью (производитель, марка, год выпуска, модификация)";
+
+	$rowrow = $db->get_row("SELECT * FROM podbor_shini_i_diski WHERE id = '".addslashes($model_id)."'", ARRAY_A);
+
+	if ($rowrow)  {
+		$vendor  = $rowrow['vendor'];
+		$car  = $rowrow['car'];
+		$year  = $rowrow['year'];
+		$modification = $rowrow['modification'];
+
+		$zavod_shini = $rowrow['zavod_shini'];
+		$zamen_shini = $rowrow['zamen_shini'];
+		$tuning_shini = $rowrow['tuning_shini'];
+ 
+		$pcd = str_replace(",",".",($cc_settings[x] ? str_replace("*",$cc_settings[x],$rowrow['pcd']) : $rowrow['pcd']));
+		$diametr = $rowrow['diametr'];
+		$gaika = $rowrow['gaika'];
+
+		$zavod_diskov1 = $rowrow['zavod_diskov'];
+		$zamen_diskov1 = $rowrow['zamen_diskov'];
+		$tuning_diski1 = $rowrow['tuning_diski'];
+
+ 		echo "<h2>Подбор дисков и шин для автомобиля $vendor $car $year $modification</h2>";
+		echo "<TABLE class=w0>\r\n";
+ 		echo "<TR><TD><b><center>Рекомендуемые шины</center></b></TD><TD><b><center>Рекомендуемые диски</center></b></TD></TR>
+		<TR><td width=50%>";
+
+
+		if ($zavod_shini != "") {
+	 		echo "<h4>Заводская комплектация</h4>";
+
+			$zavod_shini_ = explode('|',$zavod_shini);
+			
+			for ($j=0; $j<count($zavod_shini_); $j++) {
+				$zavod_shini__ = explode('#',$zavod_shini_[$j]);
+					if (count($zavod_shini__) >= 2 ) {
+                        preg_match("/(\d+)\/(\d+)()\s+R(\d+)/",$zavod_shini__[0],$pered);
+                        preg_match("/(\d+)\/(\d+)()\s+R(\d+)/",$zavod_shini__[1],$zad);
+						echo "<div class=zamenVar>
+                        <div>Передняя ось: <a target=_blank href='/search/?filter=1&flt[".$cc_settings[var1]."]=".$pered[1]."&flt[".$cc_settings[var2]."]=".$pered[2]."&flt[".$cc_settings[var3]."]=".$pered[4]."'>".$zavod_shini__[0]."</a></div>
+                        <div>задняя ось: <a target=_blank href='/search/?filter=1&flt[".$cc_settings[var1]."]=".$zad[1]."&flt[".$cc_settings[var2]."]=".$zad[2]."&flt[".$cc_settings[var3]."]=".$zad[4]."'>".$zavod_shini__[1]."</a></div>
+                        </div>";
+					} else {
+                        preg_match("/(\d+)\/(\d+)()\s+R(\d+)/",$zavod_shini_[$j],$all);
+						echo "<div class=zamenVar>
+                        <div><a target=_blank href='/search/?filter=1&flt[".$cc_settings[var1]."]=".$all[1]."&flt[".$cc_settings[var2]."]=".$all[2]."&flt[".$cc_settings[var3]."]=".$all[4]."'>".$zavod_shini_[$j]."</a></div>
+                        </div>";
+					}
+			}
+
+		}
+		
+		if ($zamen_shini != "") {
+			echo "<h4>Варианты замены</h4>";
+
+			$zamen_shini_ = explode('|',$zamen_shini);
+
+			for ($j=0; $j<count($zamen_shini_); $j++) {
+				$zamen_shini__ = explode('#',$zamen_shini_[$j]);
+					if (count($zamen_shini__) >= 2 ) {
+                        preg_match("/(\d+)\/(\d+)()\s+R(\d+)/",$zamen_shini__[0],$peredz);
+                        preg_match("/(\d+)\/(\d+)()\s+R(\d+)/",$zamen_shini__[1],$zadz);
+						echo "
+                        <div class=zamenVar>
+                        <div>Передняя ось: <a target=_blank href='/search/?filter=1&flt[".$cc_settings[var1]."]=".$peredz[1]."&flt[".$cc_settings[var2]."]=".$peredz[2]."&flt[".$cc_settings[var3]."]=".$peredz[4]."'>".$zamen_shini__[0]."</a></div>
+                        <div>задняя ось: <a target=_blank href='/search/?filter=1&flt[".$cc_settings[var1]."]=".$zadz[1]."&flt[".$cc_settings[var2]."]=".$zadz[2]."&flt[".$cc_settings[var3]."]=".$zadz[4]."'>".$zamen_shini__[1]."</a></div>
+                        </div>";
+					} else {
+                        preg_match("/(\d+)\/(\d+)()\s+R(\d+)/",$zamen_shini_[$j],$allz);
+						echo "<div class=zamenVar>
+                        <div>Передняя и задняя ось: <a target=_blank href='/search/?filter=1&flt[".$cc_settings[var1]."]=".$allz[1]."&flt[".$cc_settings[var2]."]=".$allz[2]."&flt[".$cc_settings[var3]."]=".$allz[4]."'>".$zamen_shini_[$j]."</a></div>
+                        </div>";
+					}
+			}
+
+		}
+
+		if ($tuning_shini != "") {
+			echo "<h4>Тюнинг</h4>";
+			$tuning_shini_ = explode('|',$tuning_shini);
+			for ($j=0; $j<count($tuning_shini_); $j++) {
+				$tuning_shini__ = explode('#',$tuning_shini_[$j]);
+					if (count($tuning_shini__) >= 2 ) {
+                        preg_match("/(\d+)\/(\d+)()\s+R(\d+)/",$tuning_shini__[0],$peredt);
+                        preg_match("/(\d+)\/(\d+)()\s+R(\d+)/",$tuning_shini__[1],$zadt);
+                        echo "<div class=zamenVar>
+                        <div>Передняя ось: <a target=_blank href='/search/?filter=1&flt[".$cc_settings[var1]."]=".$peredt[1]."&flt[".$cc_settings[var2]."]=".$peredt[2]."&flt[".$cc_settings[var3]."]=".$peredt[4]."'>".$tuning_shini__[0]."</a></div>
+                        <div>задняя ось: <a target=_blank href='/search/?filter=1&flt[".$cc_settings[var1]."]=".$zadt[1]."&flt[".$cc_settings[var2]."]=".$zadt[2]."&flt[".$cc_settings[var3]."]=".$zadt[4]."'>".$tuning_shini__[1]."</a></div>
+                        </div>";
+					} else {
+                        preg_match("/(\d+)\/(\d+)()\s+R(\d+)/",$tuning_shini_[$j],$allt);
+                        echo "<div class=zamenVar>
+                        <div>Передняя и задняя ось: <a target=_blank href='/search/?filter=1&flt[".$cc_settings[var1]."]=".$allt[1]."&flt[".$cc_settings[var2]."]=".$allt[2]."&flt[".$cc_settings[var3]."]=".$allt[4]."'>".$tuning_shini_[$j]."</a></div>
+                        </div>";
+					}
+			}
+		}
+
+      
+
+ 		echo "</td><TD>";
+		echo "<div>PCD: $pcd<br>Диаметр: $diametr<br>$gaika</div>";
+
+
+
+		
+		if ($zavod_diskov1 != "") {
+			echo "<h4>Заводская комплектация</h4>";
+			$zavod_diskov_ = explode('|',$zavod_diskov1);
+			if (count($zavod_diskov_)>0) { 
+				for ($j=0; $j<count($zavod_diskov_); $j++) {
+					$zavod_diskov__ = explode('#',$zavod_diskov_[$j]);
+						if (count($zavod_diskov__) >= 2 ) {
+							preg_match("/(.*)\s+x\s+(\d+)\s+ET(\d+)/",$zavod_diskov__[0],$diskpered);
+							preg_match("/(.*)\s+x\s+(\d+)\s+ET(\d+)/",$zavod_diskov__[1],$diskzad);
+							if ($diskpered[1]) {
+								$diskpered[1] = str_replace(",",".",$diskpered[1]);
+								if (!strstr($diskpered[1],".")) $diskpered[1] = $diskpered[1].".0";
+							} 
+							if ($diskzad[1]) {
+								$diskzad[1] = str_replace(",",".",$diskzad[1]);
+								if (!strstr($diskzad[1],".")) $diskzad[1] = $diskzad[1].".0";
+							} 
+							echo "<div class=zamenVar>
+							<div>Передняя ось: <a target=_blank href='/search/?filter=1&flt[".$cc_settings[var4]."]=".sVar($diskpered[1])."&flt[".$cc_settings[var3]."]=".$diskpered[2]."&flt[".$cc_settings[var5]."]=".$pcd."'>".$zavod_diskov__[0]."</a><div>
+							<div>задняя ось: <a target=_blank href='/search/?filter=1&flt[".$cc_settings[var4]."]=".sVar($diskzad[1])."&flt[".$cc_settings[var3]."]=".$diskzad[2]."&flt[".$cc_settings[var5]."]=".$pcd."'>".$zavod_diskov__[1]."</a></div>
+							</div>";
+						} else {
+							preg_match("/(.*)\s+x\s+(\d+)\s+ET(\d+)/",$zavod_diskov_[$j],$disk1);
+							if ($disk[1]) {
+								$disk[1] = str_replace(",",".",$disk[1]);
+								if (!strstr($disk[1],".")) $disk[1] = $disk[1].".0";
+							} 
+							echo "<div class=zamenVar>
+							<div><a target=_blank href='/search/?filter=1&flt[".$cc_settings[var4]."]=".sVar($disk[1])."&flt[".$cc_settings[var3]."]=".$disk[2]."&flt[".$cc_settings[var5]."]=".$pcd."'>".$zavod_diskov_[$j]."</a></div>
+							</div>";
+						}
+				}
+			}
+		}
+
+
+
+		if ($zamen_diskov != "") {
+			echo "<h4>Варианты замены</h4>";
+			$zamen_diskov_ = explode('|',$zamen_diskov);
+			for ($j=0; $j<count($zamen_diskov_); $j++) {
+				$zamen_diskov__ = explode('#',$zamen_diskov_[$j]);
+					if (count($zamen_diskov__) >= 2 ) {
+                        preg_match("/(.*)\s+x\s+(\d+)\s+ET(\d+)/",$zamen_diskov__[0],$diskperedz);
+                        preg_match("/(.*)\s+x\s+(\d+)\s+ET(\d+)/",$zamen_diskov__[1],$diskzadz);
+						if ($diskperedz[1]) {
+							$diskperedz[1] = str_replace(",",".",$diskperedz[1]);
+							if (!strstr($diskperedz[1],".")) $diskperedz[1] = $diskperedz[1].".0";
+						} 
+						if ($diskzadz[1]) {
+							$diskzadz[1] = str_replace(",",".",$diskzadz[1]);
+							if (!strstr($diskzadz[1],".")) $diskzadz[1] = $diskzadz[1].".0";
+						} 
+                        echo "<div class=zamenVar>
+                                <div>Передняя ось: <a target=_blank href='/search/?filter=1&flt[".$cc_settings[var4]."]=".sVar($diskperedz[1])."&flt[".$cc_settings[var3]."]=".$diskperedz[2]."&flt[".$cc_settings[var5]."]=".$pcd."'>".$zamen_diskov__[0]."</a></div>
+                                 <div>задняя ось: <a target=_blank href='/search/?filter=1&flt[".$cc_settings[var4]."]=".sVar($diskzadz[1])."&flt[".$cc_settings[var3]."]=".$diskzadz[2]."&flt[".$cc_settings[var5]."]=".$pcd."'>".$zamen_diskov__[1]."</a></div>
+                              </div>";
+					} else {
+                        preg_match("/(.*)\s+x\s+(\d+)\s+ET(\d+)/",$zamen_diskov_[$j],$diskz);
+						if ($diskz[1]) {
+							$diskz[1] = str_replace(",",".",$diskz[1]);
+							if (!strstr($diskz[1],".")) $diskz[1] = $diskz[1].".0";
+						} 
+                        echo "<div class=zamenVar>Передняя и задняя ось: <div><a target=_blank href='/search/?filter=1&flt[".$cc_settings[var4]."]=".sVar($diskz[1])."&flt[".$cc_settings[var3]."]=".$diskz[2]."&flt[".$cc_settings[var5]."]=".$pcd."'>".$zamen_diskov_[$j]."</a></div></div>";
+					}
+			}
+		#echo "<br><br>\r\n";
+		}
+
+
+
+		if ($tuning_diski != "") {
+			echo "<h4>Тюнинг</h4>";
+			$tuning_diski_ = explode('|',$tuning_diski);
+			for ($j=0; $j<count($tuning_diski_); $j++) {
+				$tuning_diski__ = explode('#',$tuning_diski_[$j]);
+					if (count($tuning_diski__) >= 2 ) {
+                        preg_match("/(.*)\s+x\s+(\d+)\s+ET(\d+)/",$tuning_diski__[0],$diskperedt);
+                        preg_match("/(.*)\s+x\s+(\d+)\s+ET(\d+)/",$tuning_diski__[1],$diskzadt);
+						if ($diskperedt[1]) {
+							$diskperedt[1] = str_replace(",",".",$diskperedt[1]);
+							if (!strstr($diskperedt[1],".")) $diskperedt[1] = $diskperedt[1].".0";
+						} 
+						if ($diskzadt[1]) {
+							$diskzadt[1] = str_replace(",",".",$diskzadt[1]);
+							if (!strstr($diskzadt[1],".")) $diskzadt[1] = $diskzadt[1].".0";
+						} 
+                        echo "<div class=zamenVar><div>Передняя ось: <a target=_blank href='/search/?filter=1&flt[".$cc_settings[var4]."]=".sVar($diskperedt[1])."&flt[".$cc_settings[var3]."]=".$diskperedt[2]."&flt[".$cc_settings[var5]."]=".$pcd."&flt[var6]=".$diskperedt[3]."'>".$tuning_diski__[0]."</a></div>  
+                              <div>задняя ось: <a target=_blank href='/search/?filter=1&flt[".$cc_settings[var4]."]=".sVar($diskzadt[1])."&flt[".$cc_settings[var3]."]=".$diskzadt[2]."&flt[".$cc_settings[var5]."]=".$pcd."&flt[var6]=".$diskzadt[3]."'>".$tuning_diski__[1]."</a></div>
+                              </div>";
+					} else {
+                        preg_match("/(.*)\s+x\s+(\d+)\s+ET(\d+)/",$tuning_diski_[$j],$diskt);
+						if ($diskt[1]) {
+							$diskt[1] = str_replace(",",".",$diskt[1]);
+							if (!strstr($diskt[1],".")) $diskt[1] = $diskt[1].".0";
+						} 
+                        echo "<div class=zamenVar>Передняя и задняя ось: <div><a target=_blank href='/search/?filter=1&flt[".$cc_settings[var4]."]=".sVar($diskt[1])."&flt[".$cc_settings[var3]."]=".$diskt[2]."&flt[".$cc_settings[var5]."]=".$pcd."&flt[var6]=".$diskt[3]."'>".$tuning_diski_[$j]."</a></div></div>";
+					}
+			}
+		}
+	    echo "</TABLE> \r\n";
+	}
+
+
+}
+
+if ($models>0 && $ajax) {
+	$modelsArr = $db->get_results("SELECT * FROM podbor_shini_i_diski WHERE vendor = '".addslashes($vendors[$models])."' ORDER BY car ASC",ARRAY_A) ;
+	$i = 0;
+	$out_ = "";
+	$last_car = "";
+	if ($modelsArr)  {
+		foreach($modelsArr as $rowrow)  {
+			if ($last_car != $rowrow['car']) {
+				$i++;
+				$out_ = $out_ . "<option value='".$rowrow['id']."'>".$rowrow['car']."</option>";
+				#$i++;
+				$last_car = $rowrow['car'];
+			}
+		}
+	}
+
+	$i++;
+	echo "{\"list\":\"<option value=''>Выберите марку</option>".$out_."\"}";
+
+	
+}
+
+
+
+
+if ($year>0 && $ajax) {
+
+	if ($year == "") die("year_id is null in getyear");
+
+	$rowrow = $db->get_row("SELECT * FROM podbor_shini_i_diski WHERE id = '".addslashes($year)."'",ARRAY_A);
+	if($rowrow)  {
+		$_vendor = $rowrow['vendor'];
+		$_car = $rowrow['car'];
+		#$_year = $rowrow['year'];
+	}
+
+
+
+	$yearArr = $db->get_results("SELECT * FROM podbor_shini_i_diski WHERE vendor = '$_vendor' AND car = '$_car' ORDER BY year ASC",ARRAY_A);
+	$i = 0;
+	$out_ = "";
+	$last_year = "";
+	if ($yearArr)  {
+		foreach($yearArr as $rowrow) {
+			if ($last_year != $rowrow['year']) {
+				$i++;
+				$out_ = $out_ . "<option value='".$rowrow['id']."'>".$rowrow['year']."</option>";
+				#$i++;
+				$last_year = $rowrow['year'];
+			}
+		}
+	}
+	
+	$i++;
+	echo "{\"list\":\"<option value=''>Выберите год выпуска</option>".$out_."\"}";
+
+}
+
+
+
+
+
+
+
+
+
+if ($modification>0 && $ajax) {
+
+	if ($modification == "") die("modification_id is null in getmodification");
+
+
+	$rowrow = $db->get_row("SELECT * FROM podbor_shini_i_diski WHERE id = '".addslashes($modification)."'",ARRAY_A) ;
+	if($rowrow)  { 
+		$_vendor = $rowrow['vendor'];
+		$_car = $rowrow['car'];
+		$_year = $rowrow['year'];
+	}
+
+	$modificationArr= $db->get_results("SELECT * FROM podbor_shini_i_diski WHERE vendor = '$_vendor' AND car = '$_car' AND year = '$_year'",ARRAY_A);
+
+		$last_name = "";
+		$i = 0;
+		if ($modificationArr)  {
+			foreach($modificationArr as $rowrow2) {
+				
+				if ($last_name != $rowrow2['modification']) {
+					$last_name = $rowrow2['modification'];
+
+					#echo "<a href=\"?model_id=".$rowrow2['id']. "\">".$rowrow2['vendor'] . " -> ". $rowrow2['modification']. " -> ". $rowrow2['name'] . "</a><br>\r\n";
+	
+					$out_ = $out_ . "<option value='".$rowrow2['id']."'>".$rowrow2['modification']."</option>";
+					$i++;
+		
+				}
+			}
+		}
+
+		echo "{\"list\":\"<option value=''>Выберите модификацию</option>".$out_."\"}";
+	
+}
+
+
+?><!-- /FormPrefix -->
+
+<!-- RecordTemplate --><!-- /RecordTemplate -->
+
+<!-- FormSuffix --><!-- /FormSuffix -->

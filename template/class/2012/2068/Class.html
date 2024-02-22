@@ -1,0 +1,41 @@
+<!-- FormPrefix --><!-- /FormPrefix -->
+
+<!-- RecordTemplate --><?php  
+  $fields = array(
+    "isTitle" => $isTitle,
+    "sub" => $sub,
+    "cc" => $cc,
+    "classID" => $classID,
+    "nc_ctpl" => $nc_ctpl,
+    "fullLink" => $fullLink,
+    "editLink" => $editLink,
+    "image_default" => $image_default,
+    "fastprew" => $fastprew,
+    "current_sub" => $current_sub,
+    "current_cc" => $current_cc,
+    "current_catalogue" => $current_catalogue,
+    "RowID" => $f_RowID,
+    "Checked" => $f_Checked,
+    "recNum" => $f_recNum,
+    "name" => $f_name,
+    "adres" => $f_adres,
+    "phones" => $f_phones,
+    "fax" => $f_fax,
+    "time" => $f_time,
+    "email" => $f_email,
+    "site" => $f_site,
+    "skype" => $f_skype,
+    "icq" => $f_icq,
+    "map" => $f_map,
+    "msg" => $msg,
+    "citytarget" => $f_citytarget,
+    "targetcode" => $f_targetcode,
+    "targetphone" => $f_targetphone,
+    "type" => $template_block
+  );
+  $class2012 = new Class2012($fields);
+  echo $class2012->map;
+?>
+<style>body iframe { border: 0!important; width: 100% !important; height: 100% !important; } body { margin: 0!important; padding: 0!important; }</style><!-- /RecordTemplate -->
+
+<!-- FormSuffix --><!-- /FormSuffix -->

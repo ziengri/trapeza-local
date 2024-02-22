@@ -1,0 +1,67 @@
+<?php /* Служебная часть */
+for ($f_RowNum = 0; $f_RowNum < $rowCount; $f_RowNum++) {
+    if($fetch_row[$f_RowNum] instanceof Iterator) {
+        extract($fetch_row[$f_RowNum]->to_array(), EXTR_PREFIX_ALL, "f");
+    } else {
+        extract($fetch_row[$f_RowNum], EXTR_PREFIX_ALL, "f");
+    }
+    foreach($iteration_RecordTemplate[$f_RowNum] as $value) {
+        extract($value);
+    }
+    eval($cc_env["convert2txt"]);
+    ob_start();
+/* Конец служебной части */?>
+
+<?php  if (!$isTitle) { # админка ?>
+Фильтр №<?=$f_RowID?>
+<?=editObjBut($editLink).$f_AdminButtons?>
+
+<?php  } else { # просмотр
+if ($current_catalogue['customCode']) {
+	GLOBAL $pathInc2;
+    $includeClass = NULL;
+	$thisFile = $DOCUMENT_ROOT.$pathInc2."/template/class/{$classID}/RecordTemplate.html";
+	if (file_exists($thisFile)) $includeClass = 1;
+}
+if ($includeClass) { include($thisFile); } else { # ############ START ##########
+global $setting, $AUTH_USER_ID;
+
+$searchincur = ($subClassID == 2001 && $current_sub['EnglishName'] != 'search' ? $current_sub['Subdivision_ID'] : NULL);
+?>
+<?php
+    $optimizeFlt = in_array($nc_ctpl, [2242, 2243]);
+
+    if ($optimizeFlt) {
+        $link = "/bc/modules/default/index.php?user_action=filter&method=getfilter&id={$f_RowID}&cururl={$current_sub['Hidden_URL']}&type={$nc_ctpl}";
+    } else {
+        if (!$nc_ctpl || $nc_ctpl == 1) $nc_ctpl = 2053;
+        $link = $fullLink."?isNaked=1&cururl={$current_sub['Hidden_URL']}&nc_ctpl={$nc_ctpl}";
+    }
+
+    if ($thiscid) $link .= "&thiscid2=".$thiscid;
+    if ($thissub) $link .= "&thissub2=".$thissub;
+    if ($current_sub['EnglishName']) $link .= "&EnglishName2=".$current_sub['EnglishName'];
+    if ($searchincur) $link .= "&searchincur2=".$searchincur;
+    if ($current_sub['outallitem']) $link .= "&sub_outallitem=1";
+
+    $paramurl = str_replace($current_sub['Hidden_URL'],"",$_SERVER['REQUEST_URI']);
+    $paramurl = trim($paramurl, '?');
+    $linkgets = "";
+    foreach (explode("&", $paramurl) as $urlget) {
+        if($optimizeFlt || !stristr($urlget, "nc_ctpl")) $linkgets .= "&".$urlget;
+    }
+
+    if($paramurl) $link .= "{$linkgets}";
+    $cache = $setting['filterCacheOn'] ? setCacheFilter($link) : '';
+?>
+<div class='filtrLoad <?=($setting['filterCacheOn'] ? 'cacheOn' : null)?>' data-load='<?=$link?>'><?=$cache?></div>
+
+
+<?php  } # ############ END ########## ?>
+<?php  } ?>
+
+
+<?php /* Служебная часть */
+    echo nc_finishing_RecordTemplate(ob_get_clean(), $inside_admin, $classID, $f_RowID, $parent_message, $cc, $cc_env["Class_Name"], $no_cache_marks);
+}
+/* Конец служебной части */?>

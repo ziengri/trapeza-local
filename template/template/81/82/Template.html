@@ -1,0 +1,67 @@
+<!-- Header -->%Header
+
+<div id="header_main">
+    <div id="banner"></div>
+    <div id="header_block">
+        <div id="logo">
+            <a href="/">
+                <img src='<?= $template_settings['logotype'] ? $template_settings['logotype']['path'] : $current_catalogue['logo_header']; ?>' alt='Ваша компания' />
+            </a>
+        </div>
+
+        <div id="header_right_block">
+            <?php  /* Проверяем счетчик интернет-магазина и добавляем стиль */ ?>
+            <div class="cart" <?php  if (!$NETSHOP["Netshop_ItemCount"]) { ?> style="color: rgb(51, 51, 51); padding-top: 17px; font-size: 13px; height: 18px;" <?php  } ?>>
+                 <?php  /* Выводим корзину интернет-магазина */ ?>
+                 <?= $GLOBALS['Netshop_CartSum'] ?>
+            </div>
+            <div class="login_block">
+                <?php  /* Если пользователь не залогинен, то выводим ссылки на авторизацию и регистрацию, в противном случае выводим информацию о пользователе */ ?>
+                <?php  if ($AUTH_USER_ID) {
+                    ?>
+                    <p class="auth_text">
+                        Здравствуйте, <a href="<?= $nc_auth_profile_url; ?>"><?= $current_user['Login'] ?></a> (<a href='<?= ($MODULE_VARS['auth'] ? $SUB_FOLDER . $HTTP_ROOT_PATH . "modules/auth/?logoff=1&amp;REQUESTED_FROM=" . $REQUEST_URI . "&amp;REQUESTED_BY=" . $REQUEST_METHOD : $ADMIN_PATH . "unauth.php" ); ?>'>выход</a>)
+                    </p>
+                <?php  } else { ?>
+                    <a href="#" class="login_text">Вход</a>
+                    <?php  /* подставляем ссылку для регистрации из родительского макета дизайна */ ?>
+                    <a href="<?= $SUB_FOLDER . $registration_url ?>" class="register_text">Регистрация</a> <?php  } ?>
+            </div>
+        </div>
+
+        <img src="/images/template1/i/images_<?= $template_settings['color_scheme'] ?>/banner_text.png" alt="" id="banner_text" />
+        <a href="/about/" id="banner_more"><img src="/images/template1/i/images_<?= $template_settings['color_scheme'] ?>/more.png" alt="" /></a>
+        <?php  /* Выводим верхнее меню сайта в соответствии с шаблоном $browse_top_menu */ ?>
+        <?= nc_browse_sub(0, $browse_top_menu) ?>
+
+    </div>
+</div>
+<img src="/images/template1/i/images_<?= $template_settings['color_scheme'] ?>/banner_text.png" alt="" id="banner_text" />
+<a href="#" id="banner_more"><img src="/images/template1/i/images_<?= $template_settings['color_scheme'] ?>/more.png" alt="" /></a>
+
+<div id="middle_main">
+    <div class="left_content">
+        <div class="h1"><?= $template_settings['block_left_header'] ?></div>
+        <?php  /* Выводим объекты для компонента, указанного в настройках макета */ ?>
+        <?= nc_objects_list(0, $template_settings['block_left_cc'], "nc_title=1&nc_num_cols=" . $template_settings['block_left_cols']); ?>
+    </div>
+    <div class="center_content">
+        <div class="h1"><?= $template_settings['block_center_header'] ?></div>
+        <?php  /* Выводим объекты для компонента, указанного в настройках макета */ ?>
+        <?= nc_objects_list(0, $template_settings['block_center_cc'], "nc_num_cols=" . $template_settings['block_center_cols']); ?>
+    </div>
+    <div class="right_content">
+        <div class="h1"><?= $template_settings['block_right_header'] ?></div>
+        <?php  /* Выводим объекты для компонента, указанного в настройках макета */ ?>
+        <?= nc_objects_list(0, $template_settings['block_right_cc'], "nc_num_cols=" . $template_settings['block_right_cols']); ?>
+    </div>
+    <div class="clear"></div>
+</div><!-- /Header -->
+
+<!-- Footer -->	<div id="slider">
+    
+</div>
+
+<div class="clear clear_footer"></div>
+</div>
+%Footer<!-- /Footer -->

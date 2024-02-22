@@ -1,0 +1,55 @@
+<?        
+if ($warnText) {
+    echo json_encode(ARRAY(
+						"title" => "Ошибка",
+						"succes" => $warnText
+	));
+} else {
+
+$ndsArr = array(0=>"Без НДС",1=>"НДС включен",2=>"НДС не включен");
+foreach($ndsArr as $k => $n) $ndsOpt .= "<option value='$k' ".($k==$f_nds ? "selected" : NULL).">$n</option>";
+
+?>
+
+
+  <form name='adminForm' id='adminForm' class='ajax2' method='post' action='<?= $SUB_FOLDER ?><?= $HTTP_ROOT_PATH ?>message.php'>
+    <div id='nc_moderate_form'>
+      <div class='nc_clear'></div>
+      <input name='admin_mode' type='hidden' value='<?= $admin_mode ?>' />
+      <?= $nc_core->token->get_input() ?>
+      <input name='catalogue' type='hidden' value='<?= $catalogue ?>' />
+      <input name='cc' type='hidden' value='<?= $cc ?>' />
+      <input name='sub' type='hidden' value='<?= $sub ?>' /><input name='message' type='hidden' value='<?= $message ?>' />
+      <input name='posting' type='hidden' value='1' />
+      <input name='curPos' type='hidden' value='<?= $curPos ?>' />
+      <input name='f_Parent_Message_ID' type='hidden' value='<?= $f_Parent_Message_ID ?>' />
+      <?= nc_form_moderate('change', $admin_mode, 0, $systemTableID, $current_cc, (isset($f_Checked) ? $f_Checked  : null), $f_Priority , $f_Keyword, $f_ncTitle, $f_ncKeywords, $f_ncDescription ) ?>
+    </div>
+
+    <div class='colline colline-2'><?=bc_input("f_p_name", $f_p_name, "Получатель", "maxlength='255' size='50'")?></div>
+    <div class='colline colline-2'><?=bc_input("f_p_inn", $f_p_inn, "ИНН получателя", "maxlength='255' size='50'")?></div>
+    <div class='colline colline-2'><?=bc_input("f_p_kpp", $f_p_kpp, "КПП получателя", "maxlength='255' size='50'")?></div>
+    <div class='colline colline-2'><?=bc_input("f_p_schet", $f_p_schet, "№ счета получателя", "maxlength='255' size='50'")?></div>
+    <div class='colline colline-2'><?=bc_input("f_p_bank", $f_p_bank, "Банк получателя", "maxlength='255' size='50'")?></div>
+    <div class='colline colline-2'><?=bc_input("f_p_bik", $f_p_bik, "БИК банка получателя", "maxlength='255' size='50'")?></div>
+    <div class='colline colline-2'><?=bc_input("f_p_bankschet", $f_p_bankschet, "Кореспондентский счет", "maxlength='255' size='50'")?></div>
+    <div class='colline colline-2'><?=bc_input("f_p_adres", $f_p_adres, "Адрес поставщика", "maxlength='255' size='50'")?></div>
+    <div class='colline colline-2'><?=bc_input("f_p_phone", $f_p_phone, "Телефон", "maxlength='255' size='50'")?></div>
+    <div class='colline colline-2'><?=bc_input("f_p_fax", $f_p_fax, "Факс", "maxlength='255' size='50'")?></div>
+    <div class='colline colline-2'><?=bc_input("f_p_ruk", $f_p_ruk, "Руководитель", "maxlength='255' size='50'")?></div>
+    <div class='colline colline-2'><?=bc_file("f_p_rukpodpis", $f_p_rukpodpis_old, "Скан подписи руководителя", $f_p_rukpodpis, 'f')?></div>
+    <div class='colline colline-2'><?=bc_input("f_p_buh", $f_p_buh, "Бухгалтер", "maxlength='255' size='50'")?></div>
+    <div class='colline colline-2'><?=bc_file("f_p_buhpodpis", $f_p_buhpodpis_old, "Скан подписи бухгалтера", $f_p_buhpodpis, 'f')?></div>
+    <div class='colline colline-2'><?=bc_file("f_p_pechat", $f_p_pechat_old, "Цветной скан печати", $f_p_pechat, 'f')?></div>
+    <div class='colline colline-2'><?=bc_select("f_nds", $ndsOpt, "НДС 20%", "class='ns'")?></div>
+    <div class='colline colline-height'><?=bc_textarea("f_schetinfo", $f_schetinfo, "Информация на счете", "data-ckeditor='1'")?></div>
+    <div class='colline colline-height'><?=bc_textarea("f_schetinfo_bottom", $f_schetinfo_bottom, "Информация на счете снизу", "data-ckeditor='1'")?></div>
+
+    <div class='bc_submitblock'>
+      <div class='bc_btnbody'>
+        <span class='bc-btn'><input type='submit' value='Сохранить изменения'></span>
+      </div>
+    </div>
+
+  </form>
+<? } ?>

@@ -1,0 +1,9 @@
+.mce-content-body .mceTmpl-box {
+    border: 1px dashed rgba(132, 238, 132, 0.933);
+}
+
+.mce-content-body p.service-blocks {
+    font-size: 12px;
+    margin:2px;
+    display: inline-block;
+}

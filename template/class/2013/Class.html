@@ -1,0 +1,45 @@
+<!-- FormPrefix --><?php  if (!$isTitle && $bitcat) {?>
+  <table class='table-order'>
+      <thead>
+          <tr>
+              <th class="t-num">№</th>
+              <th class="t-date">Дата</th>
+              <th class="t-client">ФИО</th>
+              <th class="t-phone">Телефон</th>
+              <?=(!$zayav ? "<th class='t-email'>Время</th>" : NULL)?>
+              <th class="t-city">Город</th>
+          </tr>
+      </thead>
+      <tbody>
+<?php  }else{
+  echo $addForm;
+} ?>
+<!-- /FormPrefix -->
+
+<!-- RecordTemplate --><?php /* Служебная часть */for ($f_RowNum = 0; $f_RowNum < $rowCount; $f_RowNum++) {    if($fetch_row[$f_RowNum] instanceof Iterator) {        extract($fetch_row[$f_RowNum]->to_array(), EXTR_PREFIX_ALL, "f");    } else {        extract($fetch_row[$f_RowNum], EXTR_PREFIX_ALL, "f");    }    foreach($iteration_RecordTemplate[$f_RowNum] as $value) {        extract($value);    }    eval($cc_env["convert2txt"]);    ob_start();/* Конец служебной части */?>
+<?php /* Служебная часть */for ($f_RowNum = 0; $f_RowNum < $rowCount; $f_RowNum++) {    if($fetch_row[$f_RowNum] instanceof Iterator) {        extract($fetch_row[$f_RowNum]->to_array(), EXTR_PREFIX_ALL, "f");    } else {        extract($fetch_row[$f_RowNum], EXTR_PREFIX_ALL, "f");    }    foreach($iteration_RecordTemplate[$f_RowNum] as $value) {        extract($value);    }    eval($cc_env["convert2txt"]);    ob_start();/* Конец служебной части */?>
+<?php  if (!$isTitle && $bitcat) {?>
+  <tr data-orderid="<?=$f_RowID?>">
+    <td class="t-num">
+      <a href="<?=$editLink?>?isNaked=1" data-lc-options='{"maxWidth":950,"maxHeight":1100,"groupClass":"modal-admin-call"}' title="Заявка обратного звонка #<?=$f_RowID?>" data-rel="lightcase">#<?=$f_RowID?></a>
+    </td>
+    <td class="t-date"><?="$f_Created_day.$f_Created_month.$f_Created_year"?><br><?="$f_Created_hours:$f_Created_minutes"?></td>
+    <td class="t-client">
+      <div class="t-first"><?=$f_Name?></div>
+      <div class="t-second t-link">
+        <a href="<?=$editLink?>?isNaked=1" data-lc-options='{"maxWidth":950,"maxHeight":1100,"groupClass":"modal-admin-call modal-edit"}' title="Заявка обратного звонка #<?=$f_RowID?>" data-rel="lightcase">Редактировать</a>
+      </div>
+    </td>
+    <td class="t-phone"><?=($f_phone ? (stristr($current_user[Login],"admin") ? $f_phone : "контакт скрыт") : "-")?></td>
+    <?=(!$zayav ? "<td class='t-email'>".($f_time ? $f_time : "-")."</td>" : "")?>
+    <td class="t-city"><?=($f_city ? $f_city : "-")?></td>
+  </tr>
+<?php  } ?>
+<?php /* Служебная часть */    echo nc_finishing_RecordTemplate(ob_get_clean(), $inside_admin, $classID, $f_RowID, $parent_message, $cc, $cc_env["Class_Name"], $no_cache_marks);}/* Конец служебной части */?>
+<?php /* Служебная часть */    echo nc_finishing_RecordTemplate(ob_get_clean(), $inside_admin, $classID, $f_RowID, $parent_message, $cc, $cc_env["Class_Name"], $no_cache_marks);}/* Конец служебной части */?><!-- /RecordTemplate -->
+
+<!-- FormSuffix --><?php  if (!$isTitle && $bitcat) {?>
+      </tbody>
+  </table>
+<?php  } ?>
+<!-- /FormSuffix -->

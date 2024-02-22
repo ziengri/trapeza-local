@@ -1,0 +1,394 @@
+[
+    {
+        "id": "53da3c45-9742-46ec-a5a1-004ee9118bbb",
+        "name": "Русская трапеза",
+        "parentId": null,
+        "children": [
+            {
+                "id": "045d397f-1d78-498a-b1e6-2d510d5d5db6",
+                "name": "Кондитерка РТ",
+                "parentId": "53da3c45-9742-46ec-a5a1-004ee9118bbb",
+                "children": [
+                    {
+                        "id": "22fa88fc-d7e1-4fff-aab1-1bf7f0bd5b4d",
+                        "name": "Десерты РТ",
+                        "parentId": "045d397f-1d78-498a-b1e6-2d510d5d5db6"
+                    },
+                    {
+                        "id": "3697f919-7a8b-482c-ba85-3697f7ef2fa1",
+                        "name": "Капкейки РТ",
+                        "parentId": "045d397f-1d78-498a-b1e6-2d510d5d5db6"
+                    },
+                    {
+                        "id": "428587c1-f593-4836-96f6-1c41ec805908",
+                        "name": "Выпечка РТ",
+                        "parentId": "045d397f-1d78-498a-b1e6-2d510d5d5db6"
+                    },
+                    {
+                        "id": "cfb68e4f-c8c8-4c65-8f4c-aac3179ce93f",
+                        "name": "Бенто торты весовые РТ",
+                        "parentId": "045d397f-1d78-498a-b1e6-2d510d5d5db6"
+                    }
+                ]
+            },
+            {
+                "id": "18b44687-cfba-4242-b53a-3d80f8e718d5",
+                "name": "Соусы, добавки, прочее РТ",
+                "parentId": "53da3c45-9742-46ec-a5a1-004ee9118bbb",
+                "children": [
+                    {
+                        "id": "46f2c4ce-f24a-4709-8e13-4d1e1574056a",
+                        "name": "Батончики Бомбар РТ",
+                        "parentId": "18b44687-cfba-4242-b53a-3d80f8e718d5"
+                    }
+                ]
+            },
+            {
+                "id": "44b3b068-c3bd-4c42-b202-5a2e71f3c7c4",
+                "name": "Казан / Мангал РТ",
+                "parentId": "53da3c45-9742-46ec-a5a1-004ee9118bbb"
+            },
+            {
+                "id": "46cfd195-f26f-4d9e-af26-cdb79889bdac",
+                "name": "Бар РТ",
+                "parentId": "53da3c45-9742-46ec-a5a1-004ee9118bbb",
+                "children": [
+                    {
+                        "id": "16a83443-bc60-4e57-9816-9d4dcbb04f9e",
+                        "name": "Алкоголь РТ",
+                        "parentId": "46cfd195-f26f-4d9e-af26-cdb79889bdac",
+                        "children": [
+                            {
+                                "id": "15ab0c5c-d4bb-43c0-a425-bd4dabea12a0",
+                                "name": "Коктейли алк. РТ",
+                                "parentId": "16a83443-bc60-4e57-9816-9d4dcbb04f9e"
+                            },
+                            {
+                                "id": "2d4bdb7d-0c78-4058-b75b-318574a96699",
+                                "name": "Игристые вина РТ",
+                                "parentId": "16a83443-bc60-4e57-9816-9d4dcbb04f9e"
+                            },
+                            {
+                                "id": "8d416b12-f74b-4acd-a0a2-5b26da830752",
+                                "name": "Пиво РТ",
+                                "parentId": "16a83443-bc60-4e57-9816-9d4dcbb04f9e",
+                                "children": [
+                                    {
+                                        "id": "5d68ec4d-badb-4919-b72f-06182799358e",
+                                        "name": "Акция",
+                                        "parentId": "8d416b12-f74b-4acd-a0a2-5b26da830752"
+                                    },
+                                    {
+                                        "id": "8c1a7cbc-21aa-43b2-b818-ff422ef3f8ef",
+                                        "name": "Пиво на розлив",
+                                        "parentId": "8d416b12-f74b-4acd-a0a2-5b26da830752"
+                                    }
+                                ]
+                            },
+                            {
+                                "id": "9f6aa6c3-c24d-4067-899b-7b6d94eb96a7",
+                                "name": "Настойки РТ",
+                                "parentId": "16a83443-bc60-4e57-9816-9d4dcbb04f9e"
+                            },
+                            {
+                                "id": "360f12c8-a3c0-482d-9dbf-e594d7db9995",
+                                "name": "Вино РТ",
+                                "parentId": "16a83443-bc60-4e57-9816-9d4dcbb04f9e",
+                                "children": [
+                                    {
+                                        "id": "25032a9a-8633-4e45-90b4-3bfe40c1f5df",
+                                        "name": "Вино по бокалам РТ",
+                                        "parentId": "360f12c8-a3c0-482d-9dbf-e594d7db9995"
+                                    },
+                                    {
+                                        "id": "f371ab12-5ae2-496b-9580-b6c36f43db98",
+                                        "name": "Вино бутылка РТ",
+                                        "parentId": "360f12c8-a3c0-482d-9dbf-e594d7db9995"
+                                    }
+                                ]
+                            },
+                            {
+                                "id": "391fd27b-eb75-4821-b685-ed91886eaa70",
+                                "name": "Крепкие напитки",
+                                "parentId": "16a83443-bc60-4e57-9816-9d4dcbb04f9e",
+                                "children": [
+                                    {
+                                        "id": "2a25886f-d999-46af-8d9b-9f84cfb23c4f",
+                                        "name": "Виски РТ",
+                                        "parentId": "391fd27b-eb75-4821-b685-ed91886eaa70"
+                                    },
+                                    {
+                                        "id": "5af4b234-d38c-4328-a5c0-6739821c6485",
+                                        "name": "Текила РТ",
+                                        "parentId": "391fd27b-eb75-4821-b685-ed91886eaa70"
+                                    },
+                                    {
+                                        "id": "5bd6469d-d4a3-47ff-b226-0fa9452235db",
+                                        "name": "Ром РТ",
+                                        "parentId": "391fd27b-eb75-4821-b685-ed91886eaa70"
+                                    },
+                                    {
+                                        "id": "6d8abfe2-1ee7-4628-9dff-7c8fb77f2c97",
+                                        "name": "Коньяк РТ",
+                                        "parentId": "391fd27b-eb75-4821-b685-ed91886eaa70"
+                                    },
+                                    {
+                                        "id": "9cef9f94-0f92-4fa3-8c7d-66c7c858d476",
+                                        "name": "Водка РТ",
+                                        "parentId": "391fd27b-eb75-4821-b685-ed91886eaa70"
+                                    },
+                                    {
+                                        "id": "e9eb9c65-e81c-48ca-b578-fd1d803fb6b3",
+                                        "name": "Джин РТ",
+                                        "parentId": "391fd27b-eb75-4821-b685-ed91886eaa70"
+                                    }
+                                ]
+                            }
+                        ]
+                    },
+                    {
+                        "id": "a3245fdc-0780-49e6-a2e7-8e825c4ec50b",
+                        "name": "Напитки РТ",
+                        "parentId": "46cfd195-f26f-4d9e-af26-cdb79889bdac",
+                        "children": [
+                            {
+                                "id": "082f0f26-4020-4ba3-ac6e-70fbe461fc10",
+                                "name": "Соки, вода РТ",
+                                "parentId": "a3245fdc-0780-49e6-a2e7-8e825c4ec50b",
+                                "children": [
+                                    {
+                                        "id": "cc436ad9-7fe0-449d-8b20-bd86f666ac0b",
+                                        "name": "Черноголовка",
+                                        "parentId": "082f0f26-4020-4ba3-ac6e-70fbe461fc10"
+                                    }
+                                ]
+                            },
+                            {
+                                "id": "0a49b8e6-ec6b-43a5-a21b-c70080f20311",
+                                "name": "Лимонады РТ",
+                                "parentId": "a3245fdc-0780-49e6-a2e7-8e825c4ec50b"
+                            },
+                            {
+                                "id": "0fcb8fb8-6eba-4a3e-91bf-b4be63d0e719",
+                                "name": "1. Компоты РТ",
+                                "parentId": "a3245fdc-0780-49e6-a2e7-8e825c4ec50b"
+                            },
+                            {
+                                "id": "4325f93e-d473-42c2-956e-2b32409c3b97",
+                                "name": "Фрэши РТ",
+                                "parentId": "a3245fdc-0780-49e6-a2e7-8e825c4ec50b"
+                            },
+                            {
+                                "id": "434cd907-728b-427d-9915-007aa5de39f0",
+                                "name": "3. Кофе РТ",
+                                "parentId": "a3245fdc-0780-49e6-a2e7-8e825c4ec50b"
+                            },
+                            {
+                                "id": "b9d4846b-acc1-4573-9c09-cb79ba9d64ab",
+                                "name": "Милкшейки РТ",
+                                "parentId": "a3245fdc-0780-49e6-a2e7-8e825c4ec50b"
+                            },
+                            {
+                                "id": "c3b0f732-4de8-490c-b11b-a11d858489a4",
+                                "name": "Сбитень РТ",
+                                "parentId": "a3245fdc-0780-49e6-a2e7-8e825c4ec50b"
+                            },
+                            {
+                                "id": "d193406a-1399-42dd-9d5f-6bdfb4cd2586",
+                                "name": "2. Чай РТ",
+                                "parentId": "a3245fdc-0780-49e6-a2e7-8e825c4ec50b"
+                            }
+                        ]
+                    }
+                ]
+            },
+            {
+                "id": "50a89574-6302-47f2-ab93-7ca17966464b",
+                "name": "Блины РТ",
+                "parentId": "53da3c45-9742-46ec-a5a1-004ee9118bbb"
+            },
+            {
+                "id": "5704bc2a-7a39-4679-a3a3-124114ed5065",
+                "name": "Супы РТ",
+                "parentId": "53da3c45-9742-46ec-a5a1-004ee9118bbb"
+            },
+            {
+                "id": "61f8d007-0cc4-4eec-a821-2aab78e9997a",
+                "name": "Пельмени, вареники отварные",
+                "parentId": "53da3c45-9742-46ec-a5a1-004ee9118bbb"
+            },
+            {
+                "id": "7cfd1943-8330-481d-80b2-f7661144dd05",
+                "name": "БАНКЕТ РТ",
+                "parentId": "53da3c45-9742-46ec-a5a1-004ee9118bbb"
+            },
+            {
+                "id": "8612c9d2-ec2e-4321-973b-a0f5b00a5dc9",
+                "name": "Мясо РТ",
+                "parentId": "53da3c45-9742-46ec-a5a1-004ee9118bbb"
+            },
+            {
+                "id": "892b4a7e-cad0-4dbc-b1ad-3ddb753966cd",
+                "name": "Салаты РТ",
+                "parentId": "53da3c45-9742-46ec-a5a1-004ee9118bbb"
+            },
+            {
+                "id": "8ee7881f-61fc-4373-b4d0-d4b339e3c4de",
+                "name": "Гарниры Л - Я",
+                "parentId": "53da3c45-9742-46ec-a5a1-004ee9118bbb"
+            },
+            {
+                "id": "aceacc79-9816-4c23-bf4b-0fd7e8951274",
+                "name": "Рыба РТ",
+                "parentId": "53da3c45-9742-46ec-a5a1-004ee9118bbb"
+            },
+            {
+                "id": "b01f5d6f-948d-4cc0-aee7-6393759e3a6c",
+                "name": "Завтрак КОМБО",
+                "parentId": "53da3c45-9742-46ec-a5a1-004ee9118bbb"
+            },
+            {
+                "id": "bdd89e07-3368-48e5-95b4-9c5ac315fa22",
+                "name": "Птица РТ",
+                "parentId": "53da3c45-9742-46ec-a5a1-004ee9118bbb"
+            },
+            {
+                "id": "da80dcdb-64e4-4496-a799-0fdff294fd09",
+                "name": "Соленья, консервация РТ",
+                "parentId": "53da3c45-9742-46ec-a5a1-004ee9118bbb"
+            },
+            {
+                "id": "eacac4e1-37dc-4812-be07-e7a1b677e375",
+                "name": "Пекарня РТ",
+                "parentId": "53da3c45-9742-46ec-a5a1-004ee9118bbb",
+                "children": [
+                    {
+                        "id": "10d48896-9508-4cf0-b5e2-d6699c049755",
+                        "name": "Пирожки РТ",
+                        "parentId": "eacac4e1-37dc-4812-be07-e7a1b677e375"
+                    },
+                    {
+                        "id": "2dd8598d-bc82-4e9e-baeb-4eb5db7c3d03",
+                        "name": "Пироги РТ",
+                        "parentId": "eacac4e1-37dc-4812-be07-e7a1b677e375"
+                    },
+                    {
+                        "id": "a485cfcc-22bc-410d-8ea9-20c51dda463d",
+                        "name": "Хлеб РТ",
+                        "parentId": "eacac4e1-37dc-4812-be07-e7a1b677e375",
+                        "children": [
+                            {
+                                "id": "fc6ef807-308a-4ec0-bb0d-feb2e8d031f8",
+                                "name": "Хлеб 1/2",
+                                "parentId": "a485cfcc-22bc-410d-8ea9-20c51dda463d"
+                            }
+                        ]
+                    }
+                ]
+            },
+            {
+                "id": "f2d4de6a-4639-441f-8972-d6601c21a10b",
+                "name": "Гарниры А - К",
+                "parentId": "53da3c45-9742-46ec-a5a1-004ee9118bbb"
+            },
+            {
+                "id": "ff25455b-3a5e-4eb4-ad2a-4677e2406958",
+                "name": "МАГАЗИН",
+                "parentId": "53da3c45-9742-46ec-a5a1-004ee9118bbb",
+                "children": [
+                    {
+                        "id": "277e4e64-8faa-4f9a-9a4d-ca6bd908bee6",
+                        "name": "Молочная продукция РТ",
+                        "parentId": "ff25455b-3a5e-4eb4-ad2a-4677e2406958",
+                        "children": [
+                            {
+                                "id": "6459fa67-c2b4-4e49-84f7-a38243803468",
+                                "name": "Перехвальский завод",
+                                "parentId": "277e4e64-8faa-4f9a-9a4d-ca6bd908bee6"
+                            },
+                            {
+                                "id": "f3e56547-65e4-454d-9d9c-d21786d35a7e",
+                                "name": "Крутые хутора",
+                                "parentId": "277e4e64-8faa-4f9a-9a4d-ca6bd908bee6"
+                            }
+                        ]
+                    }
+                ]
+            },
+            {
+                "id": "50ac3126-9405-4aa8-b801-a3cabec9439f",
+                "name": "Яндекс",
+                "parentId": "53da3c45-9742-46ec-a5a1-004ee9118bbb",
+                "children": [
+                    {
+                        "id": "5aa7af03-e0c7-4afa-8aed-a4a8a726fa67",
+                        "name": "Я. Супы РТ",
+                        "parentId": "50ac3126-9405-4aa8-b801-a3cabec9439f"
+                    },
+                    {
+                        "id": "7647c3e8-0a78-4976-ad2e-b876137e0b85",
+                        "name": "Я. Выпечка РТ",
+                        "parentId": "50ac3126-9405-4aa8-b801-a3cabec9439f"
+                    },
+                    {
+                        "id": "8cfe6b92-d444-4b0e-ad8f-0c4673b4a16d",
+                        "name": "Я. Хлеб РТ",
+                        "parentId": "50ac3126-9405-4aa8-b801-a3cabec9439f"
+                    },
+                    {
+                        "id": "8f7991d1-3307-4631-8745-2f23784f46f2",
+                        "name": "Я. Десерты РТ",
+                        "parentId": "50ac3126-9405-4aa8-b801-a3cabec9439f"
+                    },
+                    {
+                        "id": "a7904082-74ad-4d2d-a114-280855d6b8ff",
+                        "name": "Я. Горячие блюда РТ",
+                        "parentId": "50ac3126-9405-4aa8-b801-a3cabec9439f"
+                    },
+                    {
+                        "id": "bb96c6c4-6924-4e25-b3b7-0e9a0dc46ae5",
+                        "name": "Я. Завтрак РТ",
+                        "parentId": "50ac3126-9405-4aa8-b801-a3cabec9439f"
+                    },
+                    {
+                        "id": "bf58ab7c-064d-4b95-b2bc-b06f5432f132",
+                        "name": "Я. Закуски РТ",
+                        "parentId": "50ac3126-9405-4aa8-b801-a3cabec9439f"
+                    },
+                    {
+                        "id": "d3feda2e-ca5e-4d9d-9a70-75adad143d2a",
+                        "name": "Я. Салаты РТ",
+                        "parentId": "50ac3126-9405-4aa8-b801-a3cabec9439f"
+                    }
+                ]
+            },
+            {
+                "id": "a02c30a7-1225-4615-93d3-ac9a1dd58dc6",
+                "name": "Замороженые П/Ф РТ",
+                "parentId": "53da3c45-9742-46ec-a5a1-004ee9118bbb",
+                "children": [
+                    {
+                        "id": "89386c8c-4ee7-4d2b-9d59-6fcb6e1d5a5a",
+                        "name": "Вареники П/Ф РТ",
+                        "parentId": "a02c30a7-1225-4615-93d3-ac9a1dd58dc6"
+                    },
+                    {
+                        "id": "8b548e97-5644-4ba9-994a-c9df899a4868",
+                        "name": "Котлеты П/Ф РТ",
+                        "parentId": "a02c30a7-1225-4615-93d3-ac9a1dd58dc6"
+                    },
+                    {
+                        "id": "afc268d7-608e-42fa-8c2f-7a7bcba1c76d",
+                        "name": "Пельмени П/Ф РТ",
+                        "parentId": "a02c30a7-1225-4615-93d3-ac9a1dd58dc6"
+                    },
+                    {
+                        "id": "cf86823d-e7b6-46b1-a8db-731e9cbaea51",
+                        "name": "Блинчики П/Ф РТ",
+                        "parentId": "a02c30a7-1225-4615-93d3-ac9a1dd58dc6"
+                    }
+                ]
+            }
+        ]
+    }
+]

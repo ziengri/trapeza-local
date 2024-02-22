@@ -1,0 +1,33 @@
+<?=$warnText?>
+<div class='page_login'>
+    <form method="post" action="/bc/modules/auth/" class="<?=($_GET[sites] ? "ajax2" : "login_form")?>">
+        <input type='hidden' name='AuthPhase' value='1' />
+        <input type='hidden' name='REQUESTED_FROM' value='<?= strpos($_SERVER['REQUEST_URI'], 'bc/modules/auth') !== false ? str_replace('http://', '', str_replace($_SERVER['HTTP_HOST'], '', $_SERVER['HTTP_REFERER'])) : $_SERVER['REQUEST_URI'] ?>' />
+        <input type='hidden' name='REQUESTED_BY' value='GET' />
+        <input type='hidden' name='catalogue' value='<?= $catalogue ?>' />
+        <input type='hidden' name='sub' value='<?= $sub ?>' />
+        <input type='hidden' name='cc' value='<?= $cc ?>' />
+
+
+        <div class="userline"><?=bc_input_standart("AUTH_USER", htmlspecialchars($AUTH_USER, ENT_QUOTES), "Login")?></div>
+        <?php  #data-eye ?>
+        <div class="userline"><?=bc_input_standart("AUTH_PW", "", "Password", "")?></div>
+
+		<?php  if ($ADMIN_AUTHTYPE == "manual" && $AUTHORIZATION_TYPE == "cookie") : ?>
+			<div class="modal_check">
+				 <label><input type="checkbox" name="loginsave" value="1"> Save </label>
+				 <a href="/bc/modules/auth/password_recovery.php" class="forgotpass"><span>Forgot password?</span></a>
+			</div>
+		<?php  endif; ?>
+
+        <div class='result center'></div>
+        <div class="modal_button_main"><span class="btn-strt"><input value='Sign In' type='submit' /></span></div>
+        <div class='login-req-link'><a href='/registration/'>Register now</a></div>
+    </form>
+    </div>
+
+<?php  if ($isNaked || $template==1000) : ?>
+	<div class="noregistr">
+		<a href="/registration/">Еще не зарегестрированы?</a>
+	</div>
+<?php  endif; ?>

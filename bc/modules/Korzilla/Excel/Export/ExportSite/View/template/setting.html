@@ -1,0 +1,127 @@
+<style>
+    .export-site-excel .v-line {
+        display: flex;
+        flex-wrap: nowrap;
+        align-content: center;
+        align-items: center;
+        justify-content: space-between;
+        margin-bottom: 20px;
+    }
+
+    .export-site-excel label.export-file {
+        top: 0;
+    }
+</style>
+<div class="view-body-inline export-site-excel">
+    <div class="v-title">
+        <div class="v-title-text"><b>Загрузить файл</b> каталога в формате csv</div>
+    </div>
+    <div class="v-body">
+        <form action="/bc/modules/bitcat/index.php?bc_action=import_excel&params_e=set_catalog"
+            enctype="multipart/form-data" method="post">
+            <div class="v-line">
+                <label class="export-file">
+                    <input id="catalog_export" type="file" accept=".csv" name="catalog">
+                    <span class="add-btn">Выберите файл</span>
+                    <span class="ex-file-text">
+                        <span class="ex-file-text1">Файл не выбран</span>
+                        <span class="ex-file-text2 file-name-this"></span>
+                    </span>
+                </label>
+                <div class="v-btn">
+                    <span class="bc-btn"><input type="submit" value="Закачать" class="export_catalog"></span>
+                </div>
+            </div>
+            <table>
+                <tr>
+                    <td><b>Статус:</b></td>
+                    <td class="status"></td>
+                </tr>
+                <tr id="message">
+                    <td><b>Сообщение:</b></td>
+                    <td class="message"></td>
+                </tr>
+                <tr id="processing" class="none">
+                    <td><b>Прогресс:</b></td>
+                    <td class="procent">
+                        <progress max="100"></progress>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="warning">
+                        <details>
+                            <summary>Предупреждения: <b class="count">0</b></summary>
+                            <div class="body">
+                                <ul></ul>
+                            </div>
+                        </details>
+                    </td>
+                </tr>
+            </table>
+        </form>
+    </div>
+</div>
+<script>
+    $('.export-site-excel input.export_catalog').addClass('disabled').prop('disabled', true);
+
+    getProcessExportExcelSite();
+
+    $('.export-site-excel input[type="submit"]').on('click', function (e) {
+        e.preventDefault();
+        const form = $(this).parents('form');
+        $('.export-site-excel input.export_catalog').addClass('disabled').prop('disabled', true);
+        form.ajaxSubmit({
+            dataType: 'json',
+            success: (res, req) => {
+                getProcessExportExcelSite();
+                console.log(res, req);
+            },
+            error: (res, err) => {
+                console.error('Ошибка ответа сервера', res, err);
+            }
+        });
+    })
+
+    function getProcessExportExcelSite() {
+        $.get('/bc/modules/bitcat/index.php?bc_action=import_excel&params_e=get_process_export', function (res, req) {
+            const body = $('.export-site-excel');
+            const statusCode = { 0: 'Новая выгрузка', 1: 'Подготовка', 2: 'Обработка', 3: 'Выгрузка завершена', 4: 'Ошибка' };
+            console.log(res);
+
+            if (res?.status > -1) {
+                const status = body.find('table .status');
+                const messageText = body.find('table .message');
+                const messageRow = body.find('table #message');
+                const processing = body.find('table #processing');
+                const progress = processing.find('.procent progress');
+                const warningBox = body.find('table .warning');
+
+                status.text(statusCode[res.status]);
+                messageText.text((res.error || res.message) ?? '');
+
+                if (2 == res.status) {
+                    processing.removeClass('none')
+                    progress.val(res.procent)
+                } else {
+                    processing.addClass('none')
+                    progress.val(0)
+                }
+                if (res?.warnings?.length) {
+                    warningBox.find('.count').text(res.warnings.length)
+                    let li = '';
+                    for (const warning of res.warnings) {
+                        li += `<li>${warning}</li>`;
+                    }
+                    warningBox.find('.body ul').html(li);
+                }
+            }
+
+            if (!res || res?.status === 1 || res?.status === 2) {
+                setTimeout(getProcessExportExcelSite, 3000);
+            } else {
+                body.find('.export_catalog').removeClass('disabled').prop('disabled', false);
+            }
+
+        }, "json");
+    }
+</script>

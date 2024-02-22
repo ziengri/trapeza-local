@@ -1,0 +1,167 @@
+<?php  $connectTemplate = $DOCUMENT_ROOT.$pathInc2."/template/class/sys/AddTemplate.html";
+if($current_catalogue['customCode'] && file_exists($connectTemplate)){
+  include($connectTemplate);
+}else{?>
+
+  <?php
+    global $setting;
+    $fieldsHTML = '';
+    $fieldsData = json_decode($setting['registration_form'] ?: file_get_contents($_SERVER['DOCUMENT_ROOT'] . '/template/class/sys/default_fields_reg_form.json'), 1);
+    $hiddenFields = '';
+    $customf = $_POST['customf'] ?: [];
+    foreach ($fieldsData as $key => $value) {
+      $type = @explode('|', $key)[0];
+      $name = $value['name']['value'];
+      $valueField = $$name;
+      $title = $value['label']['value'];
+      $trimName = str_replace('f_', '', $name);
+
+      if ($name === $trimName) {
+        $hiddenFields .= "<input type='hidden' name='customf[{$name}][name]' value='{$title}'>";
+        $valueField = $customf[$name]['value'];
+        $name = "customf[{$name}][value]";
+      }
+
+      $fields = '';
+      switch ($type) {
+        case 'input':
+          $attr = "maxlength='255' size='50'";
+          if ('f_Login' == $name) {
+            $title .= "<span class='title-info'>
+                          <span id='nc_auth_wait' class='nc_auth_login_check'>".NETCAT_MODULE_AUTH_LOGIN_WAIT."</span>
+                          <span id='nc_auth_login_ok' class='nc_auth_login_check'>".NETCAT_MODULE_AUTH_LOGIN_FREE."</span>
+                          <span id='nc_auth_login_fail' class='nc_auth_login_check'>".NETCAT_MODULE_AUTH_LOGIN_BUSY."</span>
+                          <span id='nc_auth_login_incorrect' class='nc_auth_login_check'>".NETCAT_MODULE_AUTH_LOGIN_INCORRECT."</span>
+                      </span>";
+
+            $attr .= " id='f_Login'";
+          }
+          if ('f_password' == $name) {
+            break;
+          }
+
+          $fields = bc_input_standart($name, $valueField, $title, $attr, $value['required']['value']);
+          break;
+        case 'textarea':
+          $fields = bc_textarea_standart($name, $valueField, $title, '', $value['required']['value']); 
+          break;
+        case 'file':
+          $fields = nc_file_field($trimName, "size='50'", $classID, 1);
+          break;
+        case 'select':
+          $options = "";
+          foreach ($value["selectGroup"]["values"] as $i => $select) {
+            $options .= "<option value=".($select['value']).">".getLangWord($select['value'])."</option>";
+          }
+          if ('f_org' == $name) {
+            $options =  nc_list_field("org", $f_org, $classID, 0);
+          }
+          $fields = bc_select_standart($name, $options, $title, '', $value['required']['value']);
+          break;
+        case 'title':
+            $fields = "<h3>{$value['label']['value']}</h3>";
+          break;
+        case 'date':
+          $fields = bc_input_standart($name, $valueField, $title, "maxlength='255' size='50' data-oneline {$value['placeholder']['value']} type='date'", $value['required']['value']);
+          break;
+        case 'radio':
+          $radios = "";
+          foreach ($value["radioGroup"]["values"] as $i => $radio) {
+            $radios .= "<div class='person_line {$value['name']['value']}_{$i}'>".bc_radio_standart($name,  $radio["value"],  $radio["value"], ($radio["value"] == $valueField))."</div>";
+          }
+          $fields = "<div class='input-fields-cart input-oneline'>".bc_label_standart($title, "", $value['required']['value'])."<div class='field-second'>{$radios}</div></div>";
+          break;
+        case 'checkbox':
+          $checkboxs = "";
+          foreach ($value["checkboxGroup"]["values"] as $i => $checkbox) {
+            $checkboxs .= "<div class='person_line {$value['name']['value']}_{$i}'>
+                      " . bc_checkbox_standart($name."[]", $checkbox["value"], $checkbox["value"], (in_array($checkbox["value"], $valueField))) . "
+                  </div>";
+          }
+          $fields = "<div class='input-fields-cart input-oneline'>".bc_label_standart($title, "", $value['required']['value'])."<div class='field-second'>{$checkboxs}</div></div>";
+          break;
+      }
+      if ('f_password' == $name) {
+        $fieldsHTML .= "<div class='userline userline-" . ($value['coleline']['value'] ?: '1') . " userline-req-nadezh'>
+              ". bc_input_standart('Password1', '', "Пароль
+            <span class='title-info'>
+              <span id='nc_auth_pass1_security' class='nc_auth_pass1_check'>Надёжность: </span>
+              <span id='nc_auth_pass1_s1' class='nc_auth_pass1_check'>Низкая</span>
+              <span id='nc_auth_pass1_s2' class='nc_auth_pass1_check'>Средняя</span>
+              <span id='nc_auth_pass1_s3' class='nc_auth_pass1_check'>Высокая</span>
+              <span id='nc_auth_pass1_s4' class='nc_auth_pass1_check'>Очень высокая</span>
+              <span id='nc_auth_pass1_empty' class='nc_auth_pass1_check'>Пароль не может быть пустым</span>
+              <span id='nc_auth_pass_min' class='nc_auth_pass1_check'>Пароль слишком короткий</span>
+            </span>", "id='Password1' size='25' maxlength='32'", 1) ."
+        </div>
+        <div class='userline userline-" . ($value['coleline']['value'] ?: '1') . " userline-req-passinfo'>
+              " . bc_input_standart('Password2', '', "Введите пароль ещё раз <span class='title-info'>
+              <span id='nc_auth_pass2_ok' class='nc_auth_pass2_check'>Пароли совпадают</span>
+              <span id='nc_auth_pass2_fail' class='nc_auth_pass2_check'>Пароли не совпадают</span>
+            </span>", "id='Password2' size='25' maxlength='32'", 1) . "
+        </div>";
+      }
+      if ($fields) $fieldsHTML .= "<div class='userline userline-" . ($value['coleline']['value'] ?: '1') . " userline-req-{$trimName}' 
+                                        ".($value['userType']['value'] == 'юр лицо' && $setting['registration_user_type'] ? "data-optbody='2' style='display: none;'" : '').">
+                                      {$fields}
+                                    </div>";
+    }
+
+               
+    $fieldsHTML .= ( $nc_core->get_settings('agreed', 'auth') ? "<input type='checkbox' name='nc_agreed' id='nc_agreed' value='1' /><label for='nc_agreed'>".str_replace('%USER_AGR', $nc_core->SUB_FOLDER . nc_auth_regform_url(0, 0)."agreed/", NETCAT_MODULE_AUTH_USER_AGREEMENT)."</label><br/><br/>" : "");
+      
+    $fieldsHTML .= (!$AUTH_USER_ID && $current_cc['UseCaptcha'] && $MODULE_VARS['captcha'] ? "<div class='userline userline-2 userline-req-captcha'>".bc_input_standart("nc_captcha_code", "", "<div>".nc_captcha_formfield()."</div>".NETCAT_MODERATION_CAPTCHA, "maxlength='255' size='10'", 1)."</div>" : "");
+  ?>
+
+  <?php  $auth_settings = $nc_core->get_settings('', 'auth')?>
+  <?= $auth_settings['deny_reg'] ? NETCAT_MODULE_AUTH_SELFREG_DISABLED : ($warnText ? "<div class='warnText'>$warnText</div>" : NULL ) ?>
+  <form name='adminForm' id='adminForm'  enctype='multipart/form-data' method='post' action='<?= $nc_core->SUB_FOLDER ?><?= $nc_core->HTTP_ROOT_PATH ?>add.php'>
+    <div id='register-body'>
+      <div id='nc_moderate_form'>
+        <input name='admin_mode' type='hidden' value='<?= $admin_mode ?>' />
+        <input name='catalogue' type='hidden' value='<?= $catalogue ?>' />
+        <input name='cc' type='hidden' value='<?= $cc ?>' />
+        <input name='sub' type='hidden' value='<?= $sub ?>' />
+        <input name='posting' type='hidden' value='1' />
+        <input name='curPos' type='hidden' value='<?= $curPos ?>' />
+        <?=$hiddenFields?>
+        <?php if(!$inside_admin && false){?> <input name='json' type='hidden' value='1'> <?php }?>
+        <div class='nc_clear'></div>
+      </div>
+      <?php if ($setting['registration_user_type']) : ?>
+      <div class="person_line person_usertype">
+          <div class="input-oneline">
+          <div class="field-first"></div>
+          <div class="field-second">
+            <div class="radio-standart" data-opt="1">
+              <label>
+                <input name="f_usertype" type="radio" value="0" checked="">
+                <span class="rdo-st"></span>
+                <span class="rdo-name">Физ.лицо</span>
+              </label>
+            </div>
+            <div class="radio-standart" data-opt="2">
+              <label>
+                <input name="f_usertype" type="radio" value="1">
+                <span class="rdo-st"></span>
+                <span class="rdo-name">Юр.лицо</span>
+              </label>
+            </div>
+          </div>
+        </div>
+      </div>
+      <?php endif; ?>
+      <?=$fieldsHTML?>
+  <div class='result'><?=(!$_GET['warnText'] ? $warnText : NULL)?></div>
+  
+      <span class="btn-strt"><input type='submit' title='<?= NETCAT_MODULE_AUTH_REGISTER ?>' value='<?= NETCAT_MODULE_AUTH_REGISTER ?>' /></span>
+      <script type='text/javascript'>
+         var SUB_FOLDER = '<?= $nc_core->SUB_FOLDER ?>';
+         var nc_auth_obj = new nc_auth(<?= json_encode(array('check_login'=>$auth_settings['check_login'],
+                                                           'pass_min' => intval($auth_settings['pass_min']),
+                                                           'check_pass'=>$auth_settings['check_pass'],
+                                                           'check_pass2'=>$auth_settings['check_pass2'])) ?>);
+      </script>
+    </div>
+  </form>
+<?php }?>

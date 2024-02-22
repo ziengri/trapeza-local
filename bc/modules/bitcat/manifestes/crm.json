@@ -1,0 +1,257 @@
+{
+    "frontpad" : {
+        "name": "FRONTPAD",
+        "row": [
+            {
+                "name": "frontpadSecret",
+                "label": "Frontpad: ключ api",
+                "type": "text",
+                "colline": 1
+            },
+			{
+                "name": "frontpadNoNameUpd",
+                "label": "Не обновлять названия товаров из Frontpad",
+                "type": "checkbox",
+                "colline": 1
+            },
+            {
+                "label": "Выгрузка новых товаров",
+                "type": "btn_a",
+                "data": [
+                    "class='bc-btn-green'",
+                    "data-lc-href='/bc/modules/bitcat/index.php?bc_action=frontpad_export_usynchronic_products_form'",
+                    "data-rel='lightcase'",
+                    "title='Выгрузка новых товаров'",
+                    "data-lc-options='{\"maxWidth\":950,\"groupClass\":\"modal-edit\"}'"
+                ],
+                "colline": 2
+            },
+            {
+                "label": "Обновление синхронизированных товаров",
+                "type": "btn_a",
+                "data": [
+                    "class='bc-btn-green ajax-btn'",
+                    "href='/bc/modules/bitcat/index.php?bc_action=frontpad_update_synced_products'"
+                ],
+                "colline": 2
+            }
+        ]
+    },
+    "bitrix24": {
+        "name": "БИТРИКС24",
+        "row" : [
+            {
+                "name": "bitrixWorkTypeCompany",
+                "label": "Битрикс24 - режим работы через Компания-Сделка",
+                "type": "checkbox",
+                "colline": 1
+            },
+            {
+                "name": "bitrixUser",
+                "label": "CRM Bitrix (лиды): id пользователя у кого создан вебхук",
+                "type": "text",
+                "colline": 1
+            },
+            {
+                "name": "bitrixOtv",
+                "label": "CRM Bitrix (лиды): id ответственного",
+                "type": "text",
+                "colline": 1
+            },
+            {
+                "name": "bitrixKey",
+                "label": "CRM Bitrix (лиды): ключ вебхука",
+                "type": "text",
+                "colline": 1
+            },
+            {
+                "name": "bitrixCompany",
+                "label": "CRM Bitrix (лиды): адрес портала до .bitrix24.ru",
+                "type": "text",
+                "colline": 1
+            },
+            {
+                "name": "bitrixSource",
+                "label": "CRM Bitrix (лиды): источник. По умолчанию - WEB-сайт",
+                "type": "text",
+                "colline": 1
+            }
+        ]
+    },
+    "iiko": {
+        "name": "IIKO",
+        "row":[
+            {
+                "name": "iikoCheck",
+                "label": "Включить iiko",
+                "type": "checkbox",
+                "colline": 1
+            },
+            {
+                "name": "iikoLogin",
+                "label": "Логин",
+                "type": "text",
+                "colline": 2
+            },
+            {
+                "name": "iikoPassword",
+                "label": "Пароль",
+                "type": "text",
+                "colline": 2
+            },
+            {
+                "label": "Выгрузить товары",
+                "type": "btn_a",
+                "data": [
+                    "class='ajax-btn bc-btn-green'",
+                    "href='/bc/modules/bitcat/index.php?bc_action=iiko&do=export'"
+                ],
+                "colline": 2
+            },
+            {
+                "label": "Удалить все товары и разделы",
+                "type": "btn_a",
+                "data": [
+                    "class='ajax-btn bc-btn-green'",
+                    "href='/bc/modules/bitcat/index.php?bc_action=iiko&do=deleteall'"
+                ],
+                "colline": 2
+            }
+        ]
+    },
+    "sbis": {
+        "name": "СБИС",
+        "row": [
+            {
+                "name": "sbisLogin",
+                "label": "Логин",
+                "type": "text",
+                "colline": 2
+            },
+            {
+                "name": "sbisPass",
+                "label": "Пароль",
+                "type": "text",
+                "colline": 2
+            }
+        ]
+    },
+    "amocrm": {
+        "name": "AmoCrm",
+        "row": [
+            {
+                "name": "AmoCrmWorkTypeCompany",
+                "label": "AmoCrm - режим работы через Компания-Сделка",
+                "type": "checkbox",
+                "colline": 1
+            },
+            {
+                "name": "acsubdomen",
+                "label": "Поддомен:",
+                "type": "text",
+                "colline": 1
+            },
+            {
+                "name": "actoken",
+                "label": "Token:",
+                "type": "text",
+                "colline": 1
+            },
+            {
+                "name": "acreftoken",
+                "label": "Reference Tokens:",
+                "type": "text",
+                "colline": 1
+            },
+            {
+                "name": "actime",
+                "label": "Срок жизни основного токена:",
+                "type": "text",
+                "colline": 1
+            },
+            {
+                "name": "ac_okved_fid",
+                "label": "ID поля ОКВЭД в компании",
+                "type": "text",
+                "colline": 3
+            },
+            {
+                "name": "ac_inn_fid",
+                "label": "ID поля ИНН в компании",
+                "type": "text",
+                "colline": 3
+            },
+            {
+                "name": "ac_yr_address_fid",
+                "label": "ID поля Юр.Адрес в компании",
+                "type": "text",
+                "colline": 3
+            },
+            {
+                "label": "Получить токен",
+                "type": "btn_a",
+                "data": [
+                    "class='bc-btn-green'",
+                    "href=\"/bc/modules/default/amocrm/form_access_token.html?isNaked=1\"",
+                    "title=\"Получить токен\"",
+                    "data-rel=\"lightcase\"",
+                    "data-maxwidth=\"650\""
+                ],
+                "colline": 1
+            },
+            {
+                "name": "acclientid",
+                "type": "hidden",
+                "colline": 1
+            },
+            {
+                "name": "actimestamp",
+                "type": "hidden",
+                "colline": 1
+            },
+            {
+                "name": "acclientsecret",
+                "type": "hidden",
+                "colline": 1
+            }
+        ]
+    },
+    "planfix" :{
+        "name" : "PLANFIX",
+        "row":[
+            {
+                "name": "planfix_webhook_domen",
+                "label": "Домен вебхуков",
+                "type": "text",
+                "colline": 1
+            },            {
+                "name": "planfix_webhook_create_order",
+                "label": "вебхук для отправки заказа ",
+                "type": "text",
+                "colline": 2
+            },            {
+                "name": "planfix_webhook_create_form",
+                "label": "вебхук для отправки форм",
+                "type": "text",
+                "colline": 2
+            }
+        ]
+    },
+	"moisklad" :{
+        "name" : "Мой Склад",
+        "row": [
+            {
+                "name": "login_ms",
+                "label": "Логин",
+                "type": "text",
+                "colline": 2
+            },
+            {
+                "name": "password_ms",
+                "label": "Пароль",
+                "type": "text",
+                "colline": 2
+            }
+        ]
+    }
+}

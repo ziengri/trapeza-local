@@ -1,0 +1,296 @@
+1Array
+(
+    [time] => 20220202 13:54:47
+    [status] => 2
+    [sendMailUser] => 1
+    [apiStatus] => Array
+        (
+            [status] => 3
+            [message] => 2417
+            [statusText] => "Bad order request", Не корректные данные в поле order.
+            [paramBody] => Array
+                (
+                    [ApiKey] => 60fe61e991d830.12029935
+                    [RollBack] => 1
+                    [ExtOrderID] => 2417
+                    [ExtOrderPaid] => 1
+                    [ExtDeliveryCost] => 0
+                    [dsDelivery] => 4
+                    [dsFio] => Test
+                    [dsMobPhone] => +7 800 555-55-55
+                    [dsEmail] => ilsur@korzilla.ru
+                    [dsCity] => Набережные Челны
+                    [order] => -1-1
+                )
+
+            [time] => 20220202 13:54:50
+        )
+
+)
+Array
+(
+    [time] => 20220202 14:01:59
+    [status] => 2
+    [mailAdmin] => Array
+        (
+            [0] => help-Y-help@yandex.ru
+            [1] =>  rusko.sha@yandex.ru
+        )
+
+    [sendMailUser] => 1
+    [sendMailAdmin] => Array
+        (
+            [help-Y-help@yandex.ru] => 1
+            [rusko.sha@yandex.ru] => 1
+        )
+
+    [apiStatus] => Array
+        (
+            [status] => 3
+            [message] => 2418
+            [statusText] => "Bad order request", Не корректные данные в поле order.
+            [paramBody] => Array
+                (
+                    [ApiKey] => 60fe61e991d830.12029935
+                    [RollBack] => 1
+                    [ExtOrderID] => 2418
+                    [ExtOrderPaid] => 1
+                    [ExtDeliveryCost] => 0
+                    [dsDelivery] => 4
+                    [dsFio] => Test
+                    [dsMobPhone] => +7 800 555-55-55
+                    [dsEmail] => ilsur@korzilla.ru
+                    [dsCity] => Набережные Челны
+                    [order] => -1-1
+                )
+
+            [time] => 20220202 14:02:02
+        )
+
+)
+Array
+(
+    [time] => 20220202 14:10:41
+    [status] => 1
+)
+Array
+(
+    [time] => 20220202 14:12:57
+    [status] => 2
+    [mailAdmin] => Array
+        (
+            [0] => help-Y-help@yandex.ru
+            [1] =>  rusko.sha@yandex.ru
+        )
+
+    [sendMailUser] => 1
+    [sendMailAdmin] => Array
+        (
+            [help-Y-help@yandex.ru] => 1
+            [rusko.sha@yandex.ru] => 1
+        )
+
+    [apiStatus] => Array
+        (
+            [status] => 4
+            [message] => 2421
+            [statusText] => "Order do not placed. Some items not at stock OR some problem in aID.", Заказ не размещен, Либо каких-то товаров недостаточное количество на нашем складе, либо какие-то aID не найдены в нашей системе.
+            [paramBody] => Array
+                (
+                    [ApiKey] => 60fe61e991d830.12029935
+                    [RollBack] => 1
+                    [ExtOrderID] => 2421
+                    [ExtOrderPaid] => 1
+                    [ExtDeliveryCost] => 0
+                    [dsDelivery] => 4
+                    [dsFio] => Test
+                    [dsMobPhone] => +7 986 718-14-41
+                    [dsEmail] => ilsur@korzilla.ru
+                    [dsCity] => Test
+                    [order] => 228803-1-11
+                )
+
+            [time] => 20220202 14:13:00
+        )
+
+)
+Array
+(
+    [time] => 20220202 14:16:02
+    [status] => 1
+)
+Array
+(
+    [time] => 20220202 14:16:02
+    [status] => 1
+)
+Array
+(
+    [time] => 20220202 14:46:44
+    [status] => 2
+    [mailAdmin] => Array
+        (
+            [0] => help-Y-help@yandex.ru
+            [1] =>  rusko.sha@yandex.ru
+        )
+
+    [sendMailUser] => 1
+    [sendMailAdmin] => Array
+        (
+            [help-Y-help@yandex.ru] => 1
+            [rusko.sha@yandex.ru] => 1
+        )
+
+    [apiStatus] => Array
+        (
+            [status] => 4
+            [message] => 2422
+            [statusText] => "Order do not placed. Some items not at stock OR some problem in aID.", Заказ не размещен, Либо каких-то товаров недостаточное количество на нашем складе, либо какие-то aID не найдены в нашей системе.
+            [paramBody] => Array
+                (
+                    [ApiKey] => 60fe61e991d830.12029935
+                    [RollBack] => 1
+                    [ExtOrderID] => 2422
+                    [ExtOrderPaid] => 1
+                    [ExtDeliveryCost] => 300
+                    [dsDelivery] => 5
+                    [dsFio] => Верховых Евгений Андреевич
+                    [dsMobPhone] => +7 927 460-13-18
+                    [dsEmail] => wultrex@ya.ru
+                    [dsCity] => Набережные Челны
+                    [dsPickUpId] => 1625-058
+                    [order] => 223362-1-27
+                )
+
+            [time] => 20220202 14:46:47
+        )
+
+)
+Array
+(
+    [time] => 20220202 15:16:02
+    [status] => 3
+)
+Array
+(
+    [time] => 20220202 15:16:02
+    [status] => 3
+)
+Array
+(
+    [time] => 20220202 15:30:59
+    [status] => 2
+    [mailAdmin] => Array
+        (
+            [0] => help-Y-help@yandex.ru
+            [1] =>  rusko.sha@yandex.ru
+        )
+
+    [sendMailUser] => 1
+    [sendMailAdmin] => Array
+        (
+            [help-Y-help@yandex.ru] => 1
+            [rusko.sha@yandex.ru] => 1
+        )
+
+    [apiStatus] => Array
+        (
+            [status] => 1
+            [message] => 2423
+            [statusText] => "Ok", Запрос выполнен успешно. Заказ размещен.
+            [paramBody] => Array
+                (
+                    [ApiKey] => 60fe61e991d830.12029935
+                    [RollBack] => 1
+                    [ExtOrderID] => 2423
+                    [ExtOrderPaid] => 1
+                    [ExtDeliveryCost] => 0
+                    [dsDelivery] => 4
+                    [dsFio] => Верховых Евгений Андреевич
+                    [dsMobPhone] => +7 927 460-13-18
+                    [dsEmail] => wultrex@ya.ru
+                    [dsCity] => москва
+                    [order] => 45769-1-78
+                )
+
+            [time] => 20220202 15:31:02
+        )
+
+)
+Array
+(
+    [time] => 20220215 20:16:02
+    [status] => 1
+)
+Array
+(
+    [time] => 20220215 21:16:03
+    [status] => 3
+)
+Array
+(
+    [time] => 20220216 19:16:01
+    [status] => 1
+)
+Array
+(
+    [time] => 20220216 20:16:02
+    [status] => 3
+)
+Array
+(
+    [time] => 20220228 18:16:02
+    [status] => 1
+)
+Array
+(
+    [time] => 20220228 19:16:02
+    [status] => 3
+)
+Array
+(
+    [time] => 20220307 21:16:02
+    [status] => 3
+)
+Array
+(
+    [time] => 20220309 16:43:35
+    [status] => 2
+    [mailAdmin] => Array
+        (
+            [0] => help-Y-help@yandex.ru
+            [1] =>  rusko.sha@yandex.ru
+        )
+
+    [sendMailUser] => 1
+    [sendMailAdmin] => Array
+        (
+            [help-Y-help@yandex.ru] => 1
+            [rusko.sha@yandex.ru] => 1
+        )
+
+    [apiStatus] => Array
+        (
+            [status] => 1
+            [message] => 3061
+            [statusText] => "Ok", Запрос выполнен успешно. Заказ размещен.
+            [paramBody] => Array
+                (
+                    [ApiKey] => 60fe61e991d830.12029935
+                    [RollBack] => 1
+                    [ExtOrderID] => 3061
+                    [ExtOrderPaid] => 1
+                    [ExtDeliveryCost] => 165
+                    [dsDelivery] => 11
+                    [dsFio] => Evgeniya
+                    [dsMobPhone] => +7 927 481-55-44
+                    [dsEmail] => evgeniyashoar@gmail.com
+                    [dsCity] => Набережные Челны
+                    [dsPickUpId] => NCHL19
+                    [order] => 209338-1-580,161053-1-3160
+                )
+
+            [time] => 20220309 16:43:38
+        )
+
+)

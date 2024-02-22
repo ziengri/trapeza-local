@@ -1,0 +1,29 @@
+<?php 
+global $setting;
+
+if ($f_Checked == NULL) {
+    $f_Checked = ($db->get_var("SELECT `Checked` FROM `Message2020` WHERE `Message_ID` = {$message}"));
+}
+
+if (!$inside_admin) actionObject($classID, $message, $f_Checked, $Checked);
+
+objsys($bc_objsys,$classID,$message);
+
+clearCache($classID,$sub);
+
+if ($f_Created_day && $f_Created_month && $f_Created_year) {
+    $db->query("update Message{$classID} set Created = '{$f_Created_year}-{$f_Created_month}-{$f_Created_day} {$f_Created_hours}:{$f_Created_minutes}:{$f_Created_seconds}' where Message_ID = '{$message}'");
+}
+
+if($inside_admin) {
+    ob_end_clean();
+    header('Location: '.$goBackLink.'&inside_admin=1');
+    exit;
+} else { 
+    echo json_encode(ARRAY(
+        "title" => "ОК",
+        "succes" =>  NETCAT_MODERATION_MSG_OBJCHANGED,
+        "reload" => 1
+    ));
+}
+?>

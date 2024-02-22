@@ -1,0 +1,25 @@
+<?
+actionObject($classID, $message, $f_Checked, $Checked);
+
+clearCache($classID,$sub);
+
+if ($f_Created_day && $f_Created_month && $f_Created_year) {
+    $db->query("update Message{$classID} set Created = '{$f_Created_year}-{$f_Created_month}-{$f_Created_day} {$f_Created_hours}:{$f_Created_minutes}:{$f_Created_seconds}' where Message_ID = '{$message}'");
+}
+
+rateUpdate($message);
+
+
+if($inside_admin) {
+    ob_end_clean();
+    header('Location: '.$goBackLink.'&inside_admin=1');
+    exit;
+} else { 
+    echo json_encode(ARRAY(
+        "title" => "ОК",
+        "modal" => "close",
+        "reload" => "1",
+        "succes" =>  NETCAT_MODERATION_MSG_OBJCHANGED
+    ));
+}
+?>

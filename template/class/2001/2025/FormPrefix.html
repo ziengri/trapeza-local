@@ -1,0 +1,52 @@
+<?php
+
+include($CLASS_TEMPLATE_FOLDER . "2001/FormPrefix.php");
+
+global $setting, $pathInc2;
+
+$th = "";
+$fileds = $setting['fieldInTable'] ? $setting['fieldInTable'] : "art";
+if ($setting['itemComparison'] || $setting['itemFavorite']) {
+    $thFlags = '<th class="th-flags"></th>';
+}
+$names = Class2001::setParams("full");
+foreach (explode(",", $fileds) as $c) {
+    if ($c == "stock" && !$setting['itemliststock'] && !$setting['stockValShow']) {
+        continue;
+    }
+    $th .= "<th class='th_{$c} nomob'>" . ($setting_texts[$c]["name"] ? $setting_texts[$c]["name"] : ($names[$c] ? $names[$c] : "—")) . "</th>";
+}
+
+if ($current_catalogue['customCode']) {
+    $includeClass = null;
+    $thisFile = $DOCUMENT_ROOT . $pathInc2 . "/template/class/{$classID}/2025/FormPrefix.html";
+    if (file_exists($thisFile)) {
+        $includeClass = 1;
+    }
+}
+if ($includeClass) {
+    include($thisFile);
+} else { # ############ START ##########
+    if (isset($settingServiceSupplers) && count($settingServiceSupplers) > 0 && $find) {
+        echo k_renderTemplate($DOCUMENT_ROOT . '/bc/modules/default/OnlineCatalogClasses/template/js.html', [
+            'settingServiceSupplers' => $settingServiceSupplers,
+            'find' => $find
+        ]);
+    } elseif ($totRows) {
+        echo "<div class='catalog-table' data-totrows='{$totRows}'>
+        <table class='table_main'>
+          <thead>
+            <tr>
+                <th class='th_photo'>{$table_photo}</th>
+                <th class='th_name'>{$table_name}</th>
+                {$th}
+                <th class='th_price'>{$table_price}</th>
+                <th class='th_incart'>{$table_buy}</th>
+                {$thFlags}
+            </tr>
+          </thead>
+          <tbody>";
+    } elseif ($find || $filter) {
+        echo "<p class='no-obj'>" . ($setting_texts['search_noitem']['checked'] ? $setting_texts['search_noitem']['name'] : "Товаров не найдено") . "</p>";
+    }
+}

@@ -1,0 +1,21 @@
+<?php /* Служебная часть */for ($f_RowNum = 0; $f_RowNum < $rowCount; $f_RowNum++) {    if($fetch_row[$f_RowNum] instanceof Iterator) {        extract($fetch_row[$f_RowNum]->to_array(), EXTR_PREFIX_ALL, "f");    } else {        extract($fetch_row[$f_RowNum], EXTR_PREFIX_ALL, "f");    }    foreach($iteration_RecordTemplate[$f_RowNum] as $value) {        extract($value);    }    eval($cc_env["convert2txt"]);    ob_start();/* Конец служебной части */?>
+<?php  echo $f_AdminButtons;
+$flink = ($f_openlink || $f_textfull || $croped!=strip_tags($f_text) ? ($f_openlink ? $f_url : $fullLink) : NULL);
+if ($substr) $croped = crop_str(strip_tags($f_text), $substr);
+
+// ссылка таргет, если домен другой
+$urllink = parse_url($f_url);
+$url_target = ($f_openlink && $urllink['host'] && !($_SERVER['SERVER_NAME'] == $urllink['host'] || "www.".$_SERVER['SERVER_NAME'] == $urllink['host']) ? true : false);
+?>
+
+
+<div class="news_item cb obj <?=objHidden($f_Checked,$f_citytarget,$cityid)?> obj<?=$f_RowID?>">
+<div class="news_img"><span class="image_w"><a <?=($noindex ? " rel='nofollow'" : "").($flink  ? " href='".$flink."'" : "").($url_target ? " target='_blank'" :"")?>><img src='<?=$IMG_HOST.($f_photo->get_record(1) ? $f_photo->get_record(1) : "/images/nophoto.png")?>' alt=""></a></span></div>
+
+		<div class="news_link"><a <?=($noindex ? " rel='nofollow'" : "").($flink  ? " href='".$flink."'" : "").($url_target ? " target='_blank'" :"")?>><?=$f_name?></a></div>
+		<div class="news_text"><?=$f_text?></div>
+        <div class="news_date"><?=$f_date_day?>.<?=$f_date_month?>.<?=$f_date_year?></div>
+
+    <?=($bitcat ? editObjBut($editLink) : NULL)?>
+</div>
+<?php /* Служебная часть */    echo nc_finishing_RecordTemplate(ob_get_clean(), $inside_admin, $classID, $f_RowID, $parent_message, $cc, $cc_env["Class_Name"], $no_cache_marks);}/* Конец служебной части */?>

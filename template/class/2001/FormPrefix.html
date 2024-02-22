@@ -1,0 +1,106 @@
+
+<?php
+
+global $noItems, $pathInc2, $AUTH_USER_ID;
+
+if ($current_catalogue['customCode']) {
+    $includeClass = false;
+    $thisFile = $DOCUMENT_ROOT . $pathInc2 . "/template/class/{$classID}/FormPrefix.html";
+    if (file_exists($thisFile)) {
+        $includeClass = true;
+    }
+}
+
+if ($includeClass) {
+    include($thisFile);
+} else {
+    # ############ START ##########
+    require_once $DOCUMENT_ROOT . '/template/class/2001/FormPrefix.php';
+
+    # noIndexSub при отсутствие товара seo
+    $noItems = !$totRows ? false : true;
+    # json раздела
+    $settingsSub = orderArray($cc_env['settingsSub']);
+    # ширина объекта
+    $sizeitemTotal = 0;
+    if ($sizehave) {
+        if ($sizeitem_select == 'count') {
+            $sizeitemTotal = $sizeitem_counts;
+        } elseif ($sizeitem && is_numeric($sizeitem)) {
+            $sizeitemTotal = $sizeitem;
+        }
+    }
+    if (!$sizeitemTotal && $settingsSub["sizehave"]) {
+        if ($settingsSub["sizeitem_select"] == 'count') {
+            $sizeitemTotal = $settingsSub["sizeitem_counts"];
+        } elseif (is_numeric($settingsSub["sizeitem"])) {
+            $sizeitemTotal = $settingsSub["sizeitem"];
+        }
+    }
+    if (!$sizeitemTotal) {
+        if ($setting["size" . $classID . "_select"] == 'count') {
+            $sizeitemTotal = $setting["size" . $classID . "_counts"];
+        } else {
+            $sizeitemTotal = $setting["size" . $classID];
+        }
+    }
+    # отступ
+    if ($sizehave && is_numeric($sizeitem_margin)) {
+        $margin = $sizeitem_margin;
+    } elseif ($settingsSub["sizehave"] && is_numeric($settingsSub["sizeitem_margin"])) {
+        $margin = $settingsSub["sizeitem_margin"];
+    } elseif (is_numeric($setting["size" . $classID . "_margin"])) {
+        $margin = $setting["size" . $classID . "_margin"];
+    } else {
+        $margin = 15;
+    }
+    
+    if($action !='full'){
+        $img=(array)json_decode(str_replace('\u0000*\u0000','',json_encode((array)$current_sub['img'])));
+        $img = $img['file_url']?$img['file_url']:$db->get_var("SELECT b.Path FROM Message2001 AS a, Multifield AS b WHERE a.Message_ID = b.Message_ID AND a.Subdivision_ID = '{$current_sub['Subdivision_ID']}' AND b.Path != '' LIMIT 1");
+        
+        (new App\modules\Korzilla\JSON_LD\JsonLdFactory())->Categories()->setCategory($current_sub['Subdivision_ID'],$current_sub['Subdivision_Name'],$img,get_description(),$current_sub['Hidden_URL']);
+    }
+
+    $data = subdivisionData(
+        array(
+            'find' => $current_sub['find'],
+            'type' => 'catalog',
+            'sizeitem' => $sizeitemTotal,
+            'margin' => $margin,
+            'scrolling' => $scrolling,
+            'scrollspeed' => $scrollspeed,
+            'scrollNav' => $scrollNav,
+            'scrollDots' => $scrollDots,
+            'autoplay' => $autoplay
+        )
+    );
+
+    # лог поисковых запросов
+    if ($setting['searchLog'] && $setting['searchLogTimeLimit'] && $find && !$curPos) {
+        $subLog = $db->get_row("SELECT Subdivision_ID, Sub_Class_ID FROM Sub_Class WHERE Catalogue_ID = '{$catalogue}' AND EnglishName = 'searchLog' LIMIT 1", ARRAY_A);
+        if ($subLog) {
+            $textFind = securityForm($find);
+            $resultFind = ($totRows ? $totRows : 0);
+            $db->query("INSERT INTO Message2033 (User_ID, Created, IP, text, result, Catalogue_ID, limitTime, Subdivision_ID, Sub_Class_ID) VALUES ('{$AUTH_USER_ID}', NOW(), '" . getIP() . "', '{$textFind}', '{$resultFind}', '{$catalogue}', ADDDATE(NOW(), INTERVAL + 12 MONTH), '{$subLog['Subdivision_ID']}', '{$subLog['Sub_Class_ID']}')");
+        }
+    }
+    if (isset($settingServiceSupplers) && count($settingServiceSupplers) > 0 && $find) {
+        echo k_renderTemplate($DOCUMENT_ROOT . '/bc/modules/default/OnlineCatalogClasses/template/js.html', [
+            'settingServiceSupplers' => $settingServiceSupplers,
+            'find' => $find
+        ]);
+    } elseif ($totRows) {
+        echo ($scrollinfo ? "
+            <div class='block_slide_nav'>
+                <div class='blk_num'>
+                    <span></span> " . getLangWord('search_of', 'из') . " {$totRows} " . getLangWord('search_of', 'предложений') . "
+                </div>
+            </div>" : null)
+            . "<div class='{$data['class']}' {$data['attr']} data-totrows='{$totRows}' {$sizeclass} {$vars}>";
+    } elseif ($find || $filter) {
+        echo " <p class='no-obj'>" . ($find ? getLangWord('search_onrequest', 'По запросу') . " «<span class='search-query'>{$find}</span>»" : "") . " 
+		" . ($setting_texts['search_noitem']['checked'] ? $setting_texts['search_noitem']['name'] : "ничего не найдено") . "</p>";
+    }
+} ######### END ##########
+?>

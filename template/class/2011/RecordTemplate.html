@@ -1,0 +1,36 @@
+<?php /* Служебная часть */
+for ($f_RowNum = 0; $f_RowNum < $rowCount; $f_RowNum++) {
+    if($fetch_row[$f_RowNum] instanceof Iterator) {
+        extract($fetch_row[$f_RowNum]->to_array(), EXTR_PREFIX_ALL, "f");
+    } else {
+        extract($fetch_row[$f_RowNum], EXTR_PREFIX_ALL, "f");
+    }
+    foreach($iteration_RecordTemplate[$f_RowNum] as $value) {
+        extract($value);
+    }
+    eval($cc_env["convert2txt"]);
+    ob_start();
+/* Конец служебной части */?>
+<?
+    $socials = [
+        1 => 'vk',
+        2 => 'fb',
+        3 => 'ok',
+        4 => 'twitter',
+        5 => 'live_journal',
+        6 => 'instagram',
+        7 => 'telegram',
+        8 => 'whatsapp',
+        9 => 'you_tube'
+    ];
+?>
+<li class='obj <?=objHidden($f_Checked,$f_citytarget,$cityid)?> obj<?=$f_RowID?> obj-type-<?=$f_social_id?>'>
+    <?=($bitcat ? editObjBut($editLink) : NULL)?>
+    <?=($admin_mode ? "<div>$f_social</div>".$f_AdminButtons : "")?>
+    <a target=_blank class="soc_link <?=$socials[$f_social_id]?>" rel=nofollow href='<?=$f_url?>' <?=($f_social_value ? "style='background-position: $f_social_value'" : NULL)?>></a>
+</li>
+
+<?php /* Служебная часть */
+    echo nc_finishing_RecordTemplate(ob_get_clean(), $inside_admin, $classID, $f_RowID, $parent_message, $cc, $cc_env["Class_Name"], $no_cache_marks);
+}
+/* Конец служебной части */?>

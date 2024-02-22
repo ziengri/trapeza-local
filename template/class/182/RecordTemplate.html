@@ -1,0 +1,47 @@
+<?php /* Служебная часть */
+for ($f_RowNum = 0; $f_RowNum < $rowCount; $f_RowNum++) {
+    if($fetch_row[$f_RowNum] instanceof Iterator) {
+        extract($fetch_row[$f_RowNum]->to_array(), EXTR_PREFIX_ALL, "f");
+    } else {
+        extract($fetch_row[$f_RowNum], EXTR_PREFIX_ALL, "f");
+    }
+    foreach($iteration_RecordTemplate[$f_RowNum] as $value) {
+        extract($value);
+    }
+    eval($cc_env["convert2txt"]);
+    ob_start();
+/* Конец служебной части */?>
+    <?php
+        $thisFile = $DOCUMENT_ROOT.$pathInc2."/template/class/{$classID}/RecordTemplate.html";
+        if ($current_catalogue['customCode'] && file_exists($thisFile)) include $thisFile;
+        else {
+            # [START]
+    ?>
+        <div class='obj <?= ($f_spoler ? "title-spoiler" : "")?> obj<?=$f_RowID?> <?=objHidden($f_Checked,$f_citytarget,$cityid)?> cb'>
+            <?php  echo $f_AdminButtons; ?>
+
+            <?php 
+                $title = $f_name ? ($f_ico ? "<img src='{$f_ico}'>" : NULL)."<span>{$f_name}</span>" : "";
+                if($title){
+                    if($f_spoler){
+                        echo "<h3 class='spoler' id='spoler{$f_RowID}'><a href='#'>{$title}</a></h3><div class='spolerText'>";
+                    }else{
+                        echo "<h3 class='txt-h3'>{$title}</h3>";
+                    }
+                }
+            ?>
+            
+            <?php  if($isTitle) { ?>
+                <?=\Korzilla\Replacer::replaceText(safeEmail(textTargeting(($f_anons ? $f_anons : $f_text))))?>
+            <?php  } else { ?>
+                <?=\Korzilla\Replacer::replaceText(safeEmail(textTargeting(($f_text ? $f_text : $f_anons))))?>
+            <?php  } ?>
+            <?=($f_name && $f_spoler ? "</div>" : NULL)?>
+
+            <?=($bitcat || $bitLoadMore ? editObjBut($editLink) : NULL)?>
+        </div>
+    <?php } # [END] ?>
+<?php /* Служебная часть */
+    echo nc_finishing_RecordTemplate(ob_get_clean(), $inside_admin, $classID, $f_RowID, $parent_message, $cc, $cc_env["Class_Name"], $no_cache_marks);
+}
+/* Конец служебной части */?>

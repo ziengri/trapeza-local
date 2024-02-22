@@ -1,0 +1,70 @@
+<?php /* Служебная часть */for ($f_RowNum = 0; $f_RowNum < $rowCount; $f_RowNum++) {    if($fetch_row[$f_RowNum] instanceof Iterator) {        extract($fetch_row[$f_RowNum]->to_array(), EXTR_PREFIX_ALL, "f");    } else {        extract($fetch_row[$f_RowNum], EXTR_PREFIX_ALL, "f");    }    foreach($iteration_RecordTemplate[$f_RowNum] as $value) {        extract($value);    }    eval($cc_env["convert2txt"]);    ob_start();/* Конец служебной части */?>
+<?php /* Служебная часть */
+for ($f_RowNum = 0; $f_RowNum < $rowCount; $f_RowNum++) {
+    if($fetch_row[$f_RowNum] instanceof Iterator) {
+        extract($fetch_row[$f_RowNum]->to_array(), EXTR_PREFIX_ALL, "f");
+    } else {
+        extract($fetch_row[$f_RowNum], EXTR_PREFIX_ALL, "f");
+    }
+    foreach($iteration_RecordTemplate[$f_RowNum] as $value) {
+        extract($value);
+    }
+    eval($cc_env["convert2txt"]);
+    ob_start();
+/* Конец служебной части */?>
+
+<?php /* Служебная часть */
+for ($f_RowNum = 0; $f_RowNum < $rowCount; $f_RowNum++) {
+    if($fetch_row[$f_RowNum] instanceof Iterator) {
+        extract($fetch_row[$f_RowNum]->to_array(), EXTR_PREFIX_ALL, "f");
+    } else {
+        extract($fetch_row[$f_RowNum], EXTR_PREFIX_ALL, "f");
+    }
+    foreach($iteration_RecordTemplate[$f_RowNum] as $value) {
+        extract($value);
+    }
+    eval($cc_env["convert2txt"]);
+    ob_start();
+/* Конец служебной части */?>
+
+<?php if ($isInclude) : ?>
+    <?php include $includeFilePath; ?>
+<?php else : ?>
+    <?php 
+    if(strstr((string)$cityid, $f_citytarget)){
+        var_dump($f_citytarget);
+    }else{
+        var_dump($cityid);
+    }
+    ?>
+    
+    <div class="cnp_item obj obj<?=$f_RowID?> <?=objHidden($f_Checked,$f_citytarget,$cityid)?>">
+        <?=($f_photo ? "<div class='cnp_img'><div class='image-default image-cover'><img src='{$IMG_HOST}{$f_photo}' alt=''></div></div>" : NULL)?>
+        <div class="cnp_data">
+                <div class="cnp_name"><?=$f_name?></div>
+                <?=($f_text ? "<div class='cnp_opis'>$f_text</div>" : NULL)?>
+                <?php  foreach(explode("\r\n", $f_phone) as $ph) {
+                    if ($ph) echo "<div class='cnp_phone iconsCol icons i_tel'>$ph</div>";
+                } ?>
+
+                <?php  foreach(explode(",", $f_email) as $email) {
+                    if ($email){
+                        echo "<div class='cnp_email mailaj iconsCol icons i_email'><span>E-mail:</span> <a ".safeEmailContact(trim($email))." href=''></a></div>";
+                    }
+                } ?>
+
+                <?=($f_mailsend ? "<div class='cnp_mailsend iconsCol icons i_sendmail'><a href='/feedback/add_feedback.html?isNaked=1&mgr={$f_RowID}' class='dotted' title='Связаться с менеджером' data-rel='lightcase' data-maxwidth='380' data-groupclass='feedback modal-form'>Связаться с менеджером</a></div>" : NULL)?>
+                <?=($f_icq ? "<div class='cnp_phone iconsCol'><img src='http://wwp.icq.com/scripts/online.dll?icq={$f_icq}&amp;img=27'>$f_icq</div>" : NULL)?>
+        </div><?=($bitcat ? editObjBut($editLink) : "")?>
+    </div>
+<?php endif; ?>
+<?php /* Служебная часть */
+    echo nc_finishing_RecordTemplate(ob_get_clean(), $inside_admin, $classID, $f_RowID, $parent_message, $cc, $cc_env["Class_Name"], $no_cache_marks);
+}
+/* Конец служебной части */?>
+
+<?php /* Служебная часть */
+    echo nc_finishing_RecordTemplate(ob_get_clean(), $inside_admin, $classID, $f_RowID, $parent_message, $cc, $cc_env["Class_Name"], $no_cache_marks);
+}
+/* Конец служебной части */?>
+<?php /* Служебная часть */    echo nc_finishing_RecordTemplate(ob_get_clean(), $inside_admin, $classID, $f_RowID, $parent_message, $cc, $cc_env["Class_Name"], $no_cache_marks);}/* Конец служебной части */?>

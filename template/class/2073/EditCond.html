@@ -1,0 +1,15 @@
+<?php
+    global $pathInc2, $DOCUMENT_ROOT;
+    $includeFile = $DOCUMENT_ROOT.$pathInc2."/template/{$classID}/template/EditCond.html";
+    if ($current_catalogue['customCode'] && file_exists($includeFile)) {
+        include $includeFile;
+    } else { # ############ START ##########
+        $f_citytarget = ",".implode(",",$f_citytarget).",";
+        if ($f_citytarget==',,') $f_citytarget='';
+
+        if(!$f_name) $f_name = is_array($inputs) ? $inputs[name] : "";
+        $f_inputs = is_array($inputs) ? json_encode($inputs) : "{}";
+
+        $f_Catalogue_ID = $catalogue;
+    }
+?>

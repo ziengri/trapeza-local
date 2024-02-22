@@ -1,0 +1,568 @@
+{
+    "website": {
+        "name": "Сайт",
+        "data": {
+            "subopt": "4"
+        },
+        "class_name": "adm-first-1",
+        "second": {
+            "sections": {
+                "name": "Разделы",
+                "data": {
+                    "subopt": "400"
+                },
+                "link": "/bc/modules/bitcat/index.php?bc_action=sitetree"
+            },
+            "banners": {
+                "name": "Баннеры",
+                "data": {
+                    "subopt": "401"
+                },
+                "link": "/index/banblocks/?inPanel=1"
+            },
+            "zones_and_blocks": {
+                "name": "Зоны и Блоки",
+                "data": {
+                    "subopt": "402"
+                },
+                "link": "/blockofsite/?nc_ctpl=2023",
+                "permission": "('zoneAndBlocks')"
+            },
+            "popup_window": {
+                "name": "Всплывающие банеры",
+                "data": {
+                    "subopt": "403"
+                },
+                "link": "/index/popup_window/",
+                "permission": "$setting['popup_window']"
+            }
+        }
+    },
+    "shop": {
+        "name": "Магазин",
+        "data": {
+            "subopt": "8"
+        },
+        "class_name": "adm-first-2",
+        "permission": "('catalogue') || ('developer')",
+        "second": {
+            "unloading_1c_excel": {
+                "name": "Выгрузки 1С/Excel",
+                "data": {
+                    "subopt": "800"
+                },
+                "permission": "('PRO') || ('superadmin')",
+                "link": "/index/excel6673958/",
+                "tabs": {
+                    "EXCEL (формат XLS)": {
+                        "permission": "('excel_old')",
+                        "link": "/index/excel6673958/"
+                    },
+                    "Выгрузка EXCEL": {
+                        "link": "/index/excel-v2-25032022/"
+                    },
+                    "Импорт/экспорт каталога": {
+                        "link": "/bc/modules/bitcat/index.php?bc_action=import_excel&params_e=view"
+                    },
+                    "1C v8": {
+                        "link": "/index/excel6673958/?param=1C"
+                    },
+                    "Загрузка фото товаров": {
+                        "link": "/bc/modules/bitcat/index.php?bc_action=get_uploader_photo&action=get_settings"
+                    },
+                    "Google Feed": {
+                        "link": "/bc/modules/Korzilla/Google/GoogleFeed/UI/WEB/Routes/createGoogleForm.php"
+                    }
+                }
+            },
+            "items": {
+                "name": "Каталог товаров",
+                "data": {
+                    "subopt": "805"
+                },
+                "link": "/bc/modules/bitcat/index.php?bc_action=get_manifest&name=item_basic_settings",
+                "tabs": {
+                    "Общие настройки": {
+                        "link": "/bc/modules/bitcat/index.php?bc_action=get_manifest&name=item_basic_settings"
+                    },
+                    "Вид: Плитки": {
+                        "link": "/bc/modules/bitcat/index.php?bc_action=get_manifest&name=card_settings"
+                    },
+                    "Вид: Таблица": {
+                        "link": "/bc/modules/bitcat/index.php?bc_action=get_manifest&name=card_table_settings"
+                    },
+                    "Страница товара": {
+                        "link": "/bc/modules/bitcat/index.php?bc_action=get_manifest&name=card_full_settings"
+                    },
+                    "Поиск": {
+                        "link": "/bc/modules/bitcat/index.php?bc_action=get_manifest&name=search_item"
+                    },
+                    "Доп.параметры": {
+                        "link": "/bc/modules/bitcat/index.php?bc_action=get_manifest&name=add_options"
+                    },
+                    "Ед.измерения": {
+                        "link": "/bc/modules/bitcat/index.php?bc_action=get_manifest&name=item_ezmeren"
+                    }
+                }
+            },
+            "basket": {
+                "name": "Корзина",
+                "data": {
+                    "subopt": "806"
+                },
+                "link": "/bc/modules/bitcat/index.php?bc_action=get_manifest&name=basket",
+                "tabs": {
+                    "Корзина": {
+                        "permission": "('catalogue') || ('PRO') || ('superadmin')",
+                        "link": "/bc/modules/bitcat/index.php?bc_action=get_manifest&name=basket"
+                    },
+                    "Оформить заказ": {
+                        "permission": "('catalogue') || ('PRO') || ('superadmin')",
+                        "link": "/bc/modules/bitcat/index.php?bc_action=get_manifest&name=checkout"
+                    },
+                    "Способы доставки": {
+                        "link": "/bc/modules/bitcat/index.php?bc_action=get_manifest&name=delivery_methods"
+                    },
+                    "Способы оплаты": {
+                        "link": "/bc/modules/bitcat/index.php?bc_action=get_manifest&name=payment_methods"
+                    },
+                    "Статусы заказа": {
+                        "link": "/bc/modules/bitcat/index.php?bc_action=formset&parampack=63,62"
+                    }
+                }
+            },
+            "invoices_for_payment": {
+                "name": "Реквизиты для счета",
+                "data": {
+                    "subopt": "804"
+                },
+                "permission": "!('design', 'only') || ('superadmin')",
+                "link": "/settings/?isNaked=1"
+            },
+            "online_servise": {
+                "name": "Онлайн-сервисы",
+                "data": {
+                    "subopt": "810"
+                },
+                "permission": "!('design', 'only') || ('superadmin')",
+                "link": "/bc/modules/bitcat/index.php?bc_action=get_manifest&name=service_payment",
+                "tabs": {
+                    "Сервисы оплат": {
+                        "link": "/bc/modules/bitcat/index.php?bc_action=get_manifest&name=service_payment"
+                    },
+                    "Сервисы доставки": {
+                        "link": "/bc/modules/bitcat/index.php?bc_action=formset&parampack=47,42,65"
+                    },
+                    "Сервисы каталогов": {
+                        "link": "/bc/modules/bitcat/index.php?bc_action=formset&parampack=19,26,41,44,45"
+                    },
+                    "CRM": {
+                        "link": "/bc/modules/bitcat/index.php?bc_action=get_manifest&name=crm"
+                    },
+                    "Сервисы поставщиков": {
+                        "link": "/bc/modules/bitcat/index.php?bc_action=get_manifest&name=service_suppliers"
+                    }
+                }
+            },
+            "catalog_filters": {
+                "name": "Фильтры каталога",
+                "data": {
+                    "subopt": "807"
+                },
+                "link": "/system/filters/?nc_ctpl=2063"
+            },
+            "labels": {
+                "name": "Лейблы",
+                "data": {
+                    "subopt": "801"
+                },
+                "link": "/bc/modules/bitcat/index.php?bc_action=formset&parampack=20"
+            },
+            "advanced_settings": {
+                "name": "Расширенные настройки",
+                "data": {
+                    "subopt": "808"
+                },
+                "permission": "!('design', 'only') && ('superadmin')",
+                "link": "/bc/modules/bitcat/index.php?bc_action=formset&parampack=18"
+            },
+            "yml": {
+                "name": "Настройки YML",
+                "data": {
+                    "subopt": "802"
+                },
+                "link": "/index/export-yml-221304/",
+                "tabs": {
+                    "YML для Яндекс Маркета": {
+                        "permission": "('office')",
+                        "link": "/bc/modules/bitcat/index.php?bc_action=get_manifest&name=yml_setting"
+                    },
+                    "Яндекс турбо-страницы": {
+                        "permission": "('office')",
+                        "link": "/bc/modules/bitcat/index.php?bc_action=get_manifest&name=yml_turbo_setting"
+                    },
+                    "Экспорт YML": {
+                        "link": "/index/export-yml-221304/"
+                    },
+                    "Загрузка YML": {
+                        "permission": "('office') || ('developer')",
+                        "link": "/bc/modules/Korzilla/UploaderYML/UI/WEB/Routes/getMainSettingPage.php"
+                    }
+                }
+            }
+        }
+    },
+    "applications_from_site": {
+        "name": "Заявки и заказы",
+        "data": {
+            "subopt": "6"
+        },
+        "class_name": "adm-first-3",
+        "permission": "!('design', 'only') || ('developer') || ('seo-developer')",
+        "number_nextto_name": "totalCountOrders",
+        "second": {
+            "orders": {
+                "name": "Заказы",
+                "data": {
+                    "subopt": "600"
+                },
+                "link": "/cart/?nc_ctpl=2015&setdata=1",
+                "permission": "('catalogue')",
+                "number_nextto_name": "countOrders[cart]"
+            },
+            "letters_from_site": {
+                "name": "Письма с форм",
+                "data": {
+                    "subopt": "603"
+                },
+                "link": "/feedback/?action=index&setdata=1",
+                "number_nextto_name": "countOrders[feedback]"
+            },
+            "call_requests": {
+                "name": "Запросы звонка",
+                "data": {
+                    "subopt": "604"
+                },
+                "link": "/callme/?action=index&setdata=1",
+                "number_nextto_name": "countOrders[callme]"
+            },
+            "mail_for_notifications": {
+                "name": "Настройки уведомлений",
+                "data": {
+                    "subopt": "605"
+                },
+                "link": "/bc/modules/bitcat/index.php?bc_action=formset&parampack=3,10,59"
+            }
+        }
+    },
+    "users": {
+        "name": "Пользователи",
+        "class_name": "adm-first-4",
+        "data": {
+            "subopt": "5"
+        },
+        "link": "/profile/?nc_ctpl=278"
+    },
+    "site_design": {
+        "name": "Дизайн сайта",
+        "data": {
+            "subopt": "9"
+        },
+        "class_name": "adm-first-5",
+        "permission": "('design')",
+        "link": "/bc/modules/bitcat/index.php?bc_action=formset",
+        "second": {
+            "the_main": {
+                "name": "Основные",
+                "data": {
+                    "groupname": "gr_basic"
+                }
+            },
+            "top_site": {
+                "name": "Верх сайта",
+                "data": {
+                    "groupname": "gr_top"
+                }
+            },
+            "zone_site": {
+                "name": "Зона сайта",
+                "data": {
+                    "groupname": "gr_main"
+                }
+            },
+            "main_page_background": {
+                "name": "Фон главной страницы",
+                "data": {
+                    "groupname": "gr_bgmain"
+                }
+            },
+            "inner_page_background": {
+                "name": "Фон внутреней страницы",
+                "data": {
+                    "groupname": "gr_bginner"
+                }
+            },
+            "additional_background": {
+                "name": "Фон дополнительный",
+                "data": {
+                    "groupname": "gr_bgsecond"
+                }
+            },
+            "sections": {
+                "name": "Разделы",
+                "data": {
+                    "groupname": "gr_sub"
+                }
+            },
+            "catalog": {
+                "name": "Каталог",
+                "permission": "('catalogue')",
+                "data": {
+                    "groupname": "gr_shop"
+                }
+            },
+            "photo_gallery": {
+                "name": "Фотогаллерея",
+                "data": {
+                    "groupname": "gr_gallery"
+                }
+            },
+            "vendor": {
+                "name": "Производители",
+                "data": {
+                    "groupname": "gr_vendor"
+                }
+            },
+            "advantage": {
+                "name": "Преимущества",
+                "data": {
+                    "groupname": "gr_advantage"
+                }
+            },
+            "portfolio": {
+                "name": "Портфолио",
+                "data": {
+                    "groupname": "gr_portfolio"
+                }
+            },
+            "news": {
+                "name": "Новости",
+                "data": {
+                    "groupname": "gr_news"
+                }
+            },
+            "contacts": {
+                "name": "Контакты",
+                "data": {
+                    "groupname": "gr_contacts"
+                }
+            }
+        }
+    },
+    "settings": {
+        "name": "Настройки",
+        "class_name": "adm-first-6",
+        "data": {
+            "subopt": "7"
+        },
+        "second": {
+            "basic_settings": {
+                "name": "Основные настройки",
+                "data": {
+                    "subopt": "7"
+                },
+                "link": "/bc/modules/bitcat/index.php?bc_action=get_manifest&name=basic_settings"
+            },
+            "site_languages": {
+                "name": "Языки сайта",
+                "data": {
+                    "subopt": "707"
+                },
+                "permission": "('monster') || $setting['language']",
+                "link": "/bc/modules/bitcat/index.php?bc_action=formset&parampack=37",
+                "tabs": {
+                    "Ключевые слова": {
+                        "link": "/bc/modules/bitcat/index.php?bc_action=formset&parampack=37"
+                    },
+                    "Разделы": {
+                        "link": "/bc/modules/bitcat/index.php?bc_action=formset&parampack=35"
+                    },
+                    "Блоки": {
+                        "link": "/bc/modules/bitcat/index.php?bc_action=formset&parampack=36"
+                    }
+                }
+            },
+            "seo_settings_scripts": {
+                "data": {
+                    "subopt": "702"
+                },
+                "name": "SEO, Скрипты, Мета-теги",
+                "link": "/bc/modules/bitcat/index.php?bc_action=get_manifest&name=seo_settings_scripts",
+                "tabs": {
+                    "SEO CSS Скрипты": {
+                        "link": "/bc/modules/bitcat/index.php?bc_action=get_manifest&name=seo_settings_scripts"
+                    },
+                    "Расширение семантики": {
+                        "permission": "('office') || ('superadmin')",
+                        "link": "/bc/modules/bitcat/index.php?bc_action=get_manifest&name=semantics_extension"
+                    }
+                }
+            },
+            "targeting": {
+                "name": "Таргетинг",
+                "data": {
+                    "subopt": "706"
+                },
+                "link": "/bc/modules/bitcat/index.php?bc_action=get_manifest&name=targeting"
+            },
+            "forms": {
+                "name": "Формы",
+                "data": {
+                    "subopt": "705"
+                },
+                "permission": "('zoneAndBlocks')",
+                "link": "/system/forms/?nc_ctpl=2067"
+            },
+            "service_helper_from": {
+                "name": "Сервисы помощники",
+                "data": {
+                    "subopt": "710"
+                },
+                "permission": "('superadmin')",
+                "link": "/bc/modules/bitcat/index.php?bc_action=get_manifest&name=service_helper_from"
+            },
+            "redirect": {
+                "name": "Пересылки",
+                "data": {
+                    "subopt": "703"
+                },
+                "link": "/bc/modules/bitcat/index.php?bc_action=redirectlist"
+            },
+            "tags": {
+                "name": "Тэги",
+                "data": {
+                    "subopt": "709"
+                },
+                "link": "/bc/modules/bitcat/index.php?bc_action=get_manifest&name=tags"
+            },
+            "off_site": {
+                "name": "Выключение сайта",
+                "data": {
+                    "subopt": "708"
+                },
+                "link": "/bc/modules/bitcat/index.php?bc_action=formset&parampack=46"
+            }
+        }
+    },
+    "support": {
+        "name": "Служба поддержки",
+        "class_name": "adm-first-12",
+        "data": {
+            "subopt": "12"
+        },
+        "link": "/bc/modules/bitcat/index.php?bc_action=support&v=4"
+    },
+    "css_style": {
+        "name": "CSS-стили",
+        "class_name": "adm-first-7",
+        "permission": "('design')",
+        "data": {
+            "subopt": "900"
+        },
+        "link": "/bc/modules/bitcat/index.php?bc_action=get_manifest&name=css"
+    },
+    "item_not_phoros": {
+        "name": "Товары без фото",
+        "class_name": "adm-first-10",
+        "data": {
+            "subopt": "10"
+        },
+        "permission": "$setting['powerseo_super']",
+        "link": "/bc/modules/bitcat/index.php?bc_action=itemsNoPhoto"
+    },
+    "SUPERADMIN": {
+        "name": "SUPERADMIN",
+        "class_name": "adm-first-11",
+        "data": {
+            "subopt": "11"
+        },
+        "permission": "('monster') || ('superadmin')",
+        "link": "/bc/modules/bitcat/index.php?bc_action=get_manifest&name=superadmin_setting",
+        "tabs": {
+            "Параметры": {
+                "link": "/bc/modules/bitcat/index.php?bc_action=get_manifest&name=superadmin_setting"
+            },
+            "Разработчик": {
+                "link": "/bc/modules/bitcat/index.php?bc_action=formset&parampack=23"
+            },
+            "Мультиязычность": {
+                "link": "/bc/modules/bitcat/index.php?bc_action=formset&parampack=33"
+            },
+            "Компонент": {
+                "link": "/bc/modules/bitcat/index.php?bc_action=formset&parampack=30,31,32"
+            },
+            "Телеграм": {
+                "link": "/bc/modules/bitcat/index.php?bc_action=formset&parampack=60"
+            }
+        }
+    },
+    "loyalty_system": {
+        "name": "Cистема лояльности",
+        "permission": "('office') && ('superadmin')",
+        "data": {
+            "subopt": "200"
+        },
+        "class_name": "adm-first-6",
+        "second": {
+            "discount_system": {
+                "name": "Скидочная система",
+                "data": {
+                    "subopt": "201"
+                },
+                "link": "/bc/modules/bitcat/index.php?bc_action=get_manifest&name=discount_system"
+            }
+        }
+    },
+    "registration_form": {
+        "name": "Форма регистрации",
+        "class_name": "adm-first-6",
+        "permission": "('developer')",
+        "data": {
+            "subopt": "1900"
+        },
+        "second": {
+            "export_1c": {
+                "name": "Форма регистрации",
+                "data": {
+                    "subopt": "1900"
+                },
+                "link": "/bc/modules/bitcat/index.php?bc_action=get_manifest&name=registration_form"
+            }
+        }
+    },
+    "1C": {
+        "name": "Выгрузка 1С",
+        "permission": "('developer')",
+        "data": {
+            "subopt": "3000"
+        },
+        "class_name": "adm-first-6",
+        "link": "/bc/modules/Korzilla/Upload1C/Admin/index.php?action=get"
+    },
+    "carsYML": {
+        "permission": "!('design', 'only') || ('developer') || ('seo-developer')",
+        "name": "Настройки Cars YML",
+        "data": {
+            "subopt": "100002"
+        },
+        "second": {
+            "carsYML": {
+                "name": "Cars YML",
+                "data": {
+                    "subopt": "10000022"
+                },
+                "link": "/bc/modules/Korzilla/YMLSection/CarsYML/UI/WEB/Templates/ListYMLs.php"
+            }
+        }
+    }
+}

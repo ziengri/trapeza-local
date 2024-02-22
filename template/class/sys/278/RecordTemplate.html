@@ -1,0 +1,36 @@
+<?php /* Служебная часть */for ($f_RowNum = 0; $f_RowNum < $rowCount; $f_RowNum++) {    if($fetch_row[$f_RowNum] instanceof Iterator) {        extract($fetch_row[$f_RowNum]->to_array(), EXTR_PREFIX_ALL, "f");    } else {        extract($fetch_row[$f_RowNum], EXTR_PREFIX_ALL, "f");    }    foreach($iteration_RecordTemplate[$f_RowNum] as $value) {        extract($value);    }    eval($cc_env["convert2txt"]);    ob_start();/* Конец служебной части */?>
+<?php /* Служебная часть */
+for ($f_RowNum = 0; $f_RowNum < $rowCount; $f_RowNum++) {
+    if($fetch_row[$f_RowNum] instanceof Iterator) {
+        extract($fetch_row[$f_RowNum]->to_array(), EXTR_PREFIX_ALL, "f");
+    } else {
+        extract($fetch_row[$f_RowNum], EXTR_PREFIX_ALL, "f");
+    }
+    foreach($iteration_RecordTemplate[$f_RowNum] as $value) {
+        extract($value);
+    }
+    eval($cc_env["convert2txt"]);
+    ob_start();
+/* Конец служебной части */?>
+
+<tr data-orderid="<?=$f_RowID?>" class='<?=(!$f_Checked ? 'uncheck' : "")?>'>
+    <td class='t-num'><?=($f_User_ID)?></td>
+    <td class='t-login'>
+        <div class="t-first"><?=$f_Login?> (<?=($f_ForumName ? $f_ForumName : "")?><?=($f_fam ? " {$f_fam}" : "")?><?=($f_otch ? " {$f_otch}" : "")?>)</div>
+        <div class="t-second t-link">
+            <a href="/profile/edit_profile_<?=$f_RowID?>.html?isNaked=1" data-lc-options='{"maxWidth":950,"maxHeight":1100,"groupClass":"modal-edit-user modal-edit"}' title="Пользователь <?=$f_Login?>" data-rel="lightcase">Редактировать</a>
+        </div>
+    </td>
+    <td class='t-group'><?=$group[$f_PermissionGroup_ID]?></td>
+    <td class='t-phone center'><?=($f_phone ? $f_phone : "-")?></td>
+    <td class='t-email center'><?=($f_Email ? $f_Email : "-")?></td>
+    <td class='t-city center'><?=($f_city ? $f_city : "-")?></td>
+    <td class='t-org none'><?=($f_org || $f_company ? $f_org." ".$f_company : "-")?></td>
+    <td class='t-date center'><?=$f_Created_day.".".$f_Created_month.".".$f_Created_year." - ".$f_Created_hours.":".$f_Created_minutes?></td>
+</tr>
+
+<?php /* Служебная часть */
+    echo nc_finishing_RecordTemplate(ob_get_clean(), $inside_admin, $classID, $f_RowID, $parent_message, $cc, $cc_env["Class_Name"], $no_cache_marks);
+}
+/* Конец служебной части */?>
+<?php /* Служебная часть */    echo nc_finishing_RecordTemplate(ob_get_clean(), $inside_admin, $classID, $f_RowID, $parent_message, $cc, $cc_env["Class_Name"], $no_cache_marks);}/* Конец служебной части */?>

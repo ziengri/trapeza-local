@@ -1,0 +1,15 @@
+<?php
+global $action, $mainpage, $bitcat, $cityid, $cityname, $citylink;
+if ($action=='add'  && $curren_sub[EnglishName]!='registration') exit;
+
+
+# ��������� ������� ��� ������
+if (!$isTitle && $bitcat) {
+    $ignore_check = 1;
+}
+
+if (is_numeric($tovar)) {
+	$query_where = "tovar = '$tovar'";
+}
+
+?>

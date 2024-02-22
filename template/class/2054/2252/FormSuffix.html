@@ -1,0 +1,19 @@
+<?
+$stars = $totRate/$totCount;
+$starsClass = str_replace(".","_",$stars);
+?>
+<div class="kz_otzyvy">
+	<div class="kz_raiting <?=(!$totRows ? "norate" : NULL)?>">
+		<div class="kz_raiting_info">			
+			<div class="big_stars">
+				<div class="big_stars_select star_<?=$starsClass?>_now"></div>
+			</div>
+			<?=($stars>0 ? "<div class='kz_ball'>$stars</div>" : NULL)?>
+			<div class="kz_ball_text"><?=($totRows ? "на основе <span>$totCount ".pluralForm($totRows,"оценки","оценок","оценок")."</span>" : "нет оценок")?></div>
+		</div>
+        <?=(!$totRows ? "<!-- noindex --><div class='kz_nootz'>".getLangWord('comment_first','Здесь еще никто не оставлял отзывы. Вы можете быть первым')."</div><!-- /noindex -->" : NULL)?>
+		<!-- noindex --><div class="kz_napisat"><a href="#" rel='nofollow' data-scrollto='.kz_form'><?=getLangWord('comment_write','Написать отзыв')?></a></div><!-- /noindex -->
+	</div>
+	<?=$otzyvy?>
+</div>
+<div class='kz_form' data-load='/index/otzyvtovar/add_otzyvtovar.html&f_tovar=<?=$tovar?>'></div>

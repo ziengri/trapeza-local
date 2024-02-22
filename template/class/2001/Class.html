@@ -1,0 +1,285 @@
+<!-- FormPrefix -->
+<?php
+
+global $noItems, $pathInc2, $AUTH_USER_ID;
+
+if ($current_catalogue['customCode']) {
+    $includeClass = false;
+    $thisFile = $DOCUMENT_ROOT . $pathInc2 . "/template/class/{$classID}/FormPrefix.html";
+    if (file_exists($thisFile)) {
+        $includeClass = true;
+    }
+}
+
+
+
+if ($includeClass) {
+    include($thisFile);
+} else {
+    # ############ START ##########
+    require_once $DOCUMENT_ROOT . '/template/class/2001/FormPrefix.php';
+
+    # noIndexSub при отсутствие товара seo
+    $noItems = !$totRows ? false : true;
+    # json раздела
+    $settingsSub = orderArray($cc_env['settingsSub']);
+    # ширина объекта
+    $sizeitemTotal = 0;
+    if ($sizehave) {
+        if ($sizeitem_select == 'count') {
+            $sizeitemTotal = $sizeitem_counts;
+        } elseif ($sizeitem && is_numeric($sizeitem)) {
+            $sizeitemTotal = $sizeitem;
+        }
+    }
+    if (!$sizeitemTotal && $settingsSub["sizehave"]) {
+        if ($settingsSub["sizeitem_select"] == 'count') {
+            $sizeitemTotal = $settingsSub["sizeitem_counts"];
+        } elseif (is_numeric($settingsSub["sizeitem"])) {
+            $sizeitemTotal = $settingsSub["sizeitem"];
+        }
+    }
+    if (!$sizeitemTotal) {
+        if ($setting["size" . $classID . "_select"] == 'count') {
+            $sizeitemTotal = $setting["size" . $classID . "_counts"];
+        } else {
+            $sizeitemTotal = $setting["size" . $classID];
+        }
+    }
+    # отступ
+    if ($sizehave && is_numeric($sizeitem_margin)) {
+        $margin = $sizeitem_margin;
+    } elseif ($settingsSub["sizehave"] && is_numeric($settingsSub["sizeitem_margin"])) {
+        $margin = $settingsSub["sizeitem_margin"];
+    } elseif (is_numeric($setting["size" . $classID . "_margin"])) {
+        $margin = $setting["size" . $classID . "_margin"];
+    } else {
+        $margin = 15;
+    }
+
+    $data = subdivisionData(
+        array(
+            'find' => $current_sub['find'],
+            'type' => 'catalog',
+            'sizeitem' => $sizeitemTotal,
+            'margin' => $margin,
+            'scrolling' => $scrolling,
+            'scrollspeed' => $scrollspeed,
+            'scrollNav' => $scrollNav,
+            'scrollDots' => $scrollDots,
+            'autoplay' => $autoplay
+        )
+    );
+
+    # лог поисковых запросов
+    if ($setting['searchLog'] && $setting['searchLogTimeLimit'] && $find && !$curPos) {
+        $subLog = $db->get_row("SELECT Subdivision_ID, Sub_Class_ID FROM Sub_Class WHERE Catalogue_ID = '{$catalogue}' AND EnglishName = 'searchLog' LIMIT 1", ARRAY_A);
+        if ($subLog) {
+            $textFind = securityForm($find);
+            $resultFind = ($totRows ? $totRows : 0);
+            $db->query("INSERT INTO Message2033 (User_ID, Created, IP, text, result, Catalogue_ID, limitTime, Subdivision_ID, Sub_Class_ID) VALUES ('{$AUTH_USER_ID}', NOW(), '" . getIP() . "', '{$textFind}', '{$resultFind}', '{$catalogue}', ADDDATE(NOW(), INTERVAL + 12 MONTH), '{$subLog['Subdivision_ID']}', '{$subLog['Sub_Class_ID']}')");
+        }
+    }
+    if (isset($settingServiceSupplers) && count($settingServiceSupplers) > 0 && $find) {
+        echo k_renderTemplate($DOCUMENT_ROOT . '/bc/modules/default/OnlineCatalogClasses/template/js.html', [
+            'settingServiceSupplers' => $settingServiceSupplers,
+            'find' => $find
+        ]);
+    } elseif ($totRows) {
+        echo ($scrollinfo ? "
+            <div class='block_slide_nav'>
+                <div class='blk_num'>
+                    <span></span> " . getLangWord('search_of', 'из') . " {$totRows} " . getLangWord('search_of', 'предложений') . "
+                </div>
+            </div>" : null)
+            . "<div class='{$data['class']}' {$data['attr']} data-totrows='{$totRows}' {$sizeclass} {$vars}>";
+    } elseif ($find || $filter) {
+        echo " <p class='no-obj'>" . ($find ? getLangWord('search_onrequest', 'По запросу') . " «<span class='search-query'>{$find}</span>»" : "") . " 
+		" . ($setting_texts['search_noitem']['checked'] ? $setting_texts['search_noitem']['name'] : "ничего не найдено") . "</p>";
+    }
+} ######### END ##########
+?>
+<!-- /FormPrefix -->
+
+<!-- RecordTemplate -->
+<?php /* Служебная часть */
+for ($f_RowNum = 0; $f_RowNum < $rowCount; $f_RowNum++) {
+    if ($fetch_row[$f_RowNum] instanceof Iterator) {
+        extract($fetch_row[$f_RowNum]->to_array(), EXTR_PREFIX_ALL, "f");
+    } else {
+        extract($fetch_row[$f_RowNum], EXTR_PREFIX_ALL, "f");
+    }
+    foreach ($iteration_RecordTemplate[$f_RowNum] as $value) {
+        extract($value);
+    }
+    eval($cc_env["convert2txt"]);
+    ob_start();
+    /* Конец служебной части */?>
+
+    <?php
+    if ($f_oneitem && !$find) {
+        include $DOCUMENT_ROOT . "/template/class/2001/RecordTemplateFull.html";
+    } else {
+        $fields = array(
+            "sub" => $f_Subdivision_ID,
+            "cc" => $cc,
+            "classID" => $classID,
+            "nc_ctpl" => $nc_ctpl,
+            "fullLink" => $fullLink,
+            "editLink" => $editLink,
+            "image_default" => $image_default,
+            "fastprew" => $fastprew,
+            "current_sub" => $current_sub,
+            "current_cc" => $current_cc,
+            "current_catalogue" => $current_catalogue,
+            "RowID" => $f_RowID,
+            "Checked" => $f_Checked,
+            "Subdivision_ID" => $f_Subdivision_ID,
+            "name" => preg_replace("/_\[.*\]_/", '', $f_name),
+            "orgName" => $f_name,
+            "art" => $f_art,
+            "art2" => $f_art2,
+            "code" => $f_code,
+            "stock" => $f_stock,
+            "stock2" => $f_stock2,
+            "stock3" => $f_stock3,
+            "stock4" => $f_stock4,
+            "photo" => $f_photo,
+            "photourl" => $f_photourl,
+            "edizm" => $f_edizm,
+            "descr" => $f_descr,
+            "vendor" => $f_vendor,
+            "text" => $f_text,
+            "price" => $f_price,
+            "price2" => $f_price2,
+            "price3" => $f_price3,
+            "price4" => $f_price4,
+            "firstprice" => $f_firstprice,
+            "pricecity" => $f_pricecity,
+            "discont" => $f_discont,
+            "pricediscont" => $f_pricediscont,
+            "notmarkup" => $f_notmarkup,
+            "disconttime" => $f_disconttime,
+            "dogovor" => $f_dogovor,
+            "variable" => $f_variable,
+            "colors" => $f_colors,
+            "extlink" => $f_extlink,
+            "spec" => $f_spec,
+            "nocart" => $f_nocart,
+            "noorder" => $f_noorder,
+            "buyvariable" => $f_buyvariable,
+            "buycolors" => $f_buycolors,
+            "timer" => $f_timer,
+            "itemlabel" => $f_itemlabel,
+            "citytarget" => $f_citytarget,
+            "ves" => $f_ves,
+            "analog" => $f_analog,
+            "variablename" => $f_variablename,
+            "capacity" => $f_capacity,
+            "sizes_item" => $f_sizes_item,
+            "height" => $f_height,
+            "width" => $f_width,
+            "depth" => $f_depth,
+            "tags" => $f_tags,
+            "rate" => $f_rate,
+            "ratecount" => $f_ratecount,
+            "oneitem" => $f_oneitem,
+            "outItems" => $f_outItems,
+            "currency" => $f_currency,
+            "currency_id" => $f_currency_id,
+            "view" => $f_view,
+            "var1" => $f_var1,
+            "var2" => $f_var2,
+            "var3" => $f_var3,
+            "var4" => $f_var4,
+            "var5" => $f_var5,
+            "var6" => $f_var6,
+            "var7" => $f_var7,
+            "var8" => $f_var8,
+            "var9" => $f_var9,
+            "var10" => $f_var10,
+            "var11" => $f_var11,
+            "var12" => $f_var12,
+            "var13" => $f_var13,
+            "var14" => $f_var14,
+            "var15" => $f_var15,
+            "isTitle" => $isTitle,
+            "otherItem" => $f_otherItem,
+            "xlslist" => $f_xlslist,
+            "timestamp_export" => $f_timestamp_export,
+            "import_source" => $f_import_source,
+            "favarit" => (in_array($f_RowID, $favarits) ? true : false),
+            'order_count_price' => $f_order_count_price,
+            "params" => $f_params,
+            "paramKeys" => $paramKeys,
+        );
+        if ($AUTH_USER_ID == 6) {
+            $startTime2 = microtime(true);
+        }
+        $class2001 = new Class2001($fields);
+        echo $class2001->getCard();
+
+        if ($AUTH_USER_ID == 6) {
+            echo 'Время выполнения скрипта2: ' . round(microtime(true) - $startTime2, 4) . ' сек.';
+        }
+    }
+    ?>
+
+    <?php /* Служебная часть */
+    echo nc_finishing_RecordTemplate(ob_get_clean(), $inside_admin, $classID, $f_RowID, $parent_message, $cc, $cc_env["Class_Name"], $no_cache_marks);
+}
+/* Конец служебной части */
+?>
+<!-- /RecordTemplate -->
+
+<!-- FormSuffix -->
+<?php
+
+if ($current_catalogue['customCode']) {
+    global $pathInc2;
+    $includeClass = NULL;
+    $thisFile = $DOCUMENT_ROOT . $pathInc2 . "/template/class/{$classID}/FormSuffix.html";
+    if (file_exists($thisFile))
+        $includeClass = 1;
+}
+if ($includeClass == 1) {
+    include($thisFile);
+} else { # ############ START ##########
+    ?>
+    <?= ($totRows ? "</div>" : NULL) ?>
+    <?php
+    // pre_dump([$totRows, empty($showMoreProducts), $setting['showAdditionalItems']], 1955);
+    if ($totRows < 25 && empty($showMoreProducts) && $setting['showAdditionalItems']) {
+        $shopParentCategoryKeyword = $setting["shopParentCategoryKeyword"];
+        if (!$shopParentCategoryKeyword) {
+            $shopParentCategoryKeyword = "catalog";
+        }
+        $catalogParentSub = $db->get_row("
+    SELECT Subdivision.Subdivision_ID, Sub_Class.Sub_Class_ID
+    FROM Subdivision
+    JOIN Sub_Class ON Subdivision.Subdivision_ID = Sub_Class.Subdivision_ID
+    WHERE   Subdivision.EnglishName = '$shopParentCategoryKeyword' 
+        AND Subdivision.Catalogue_ID = $catalogue
+  ");
+        if ($catalogParentSub->Subdivision_ID && $catalogParentSub->Sub_Class_ID) {
+            ?>
+            <section class='blocks  start end this block_buywith additional-items'>
+                <header class='blk_head nopadingLR' data-name-block='full_ponravtext'>
+                    <div class='h2'>Рекомендуемые товары</div>
+                </header>
+                <article class='cb blk_body nopadingLR'>
+                    <div class='blk_body_wrap'>
+                        <?= nc_objects_list(
+                            $catalogParentSub->Subdivision_ID,
+                            $catalogParentSub->Sub_Class_ID,
+                            "&isTitle=1&nc_ctpl=2001&recNum=40&randomSort=1&outallitem=1&scrollNav=0&showMoreProducts=1"
+                        ) ?>
+                    </div>
+                </article>
+            </section>
+        <?php } ?>
+    <?php } ?>
+
+    <?php include($CLASS_TEMPLATE_FOLDER . "2001/FormSuffix.php"); ?>
+<?php } ?>
+<!-- /FormSuffix -->

@@ -1,0 +1,35 @@
+<?php 
+global $DOCUMENT_ROOT, $pathInc2;
+
+$seporateFile = $DOCUMENT_ROOT.$pathInc2."/template/{$classID}/DeleteActionTemplate.html";
+if ($current_catalogue['customCode'] && file_exists($seporateFile)) {
+	include $seporateFile;
+} else {  
+    clearCache($classID, $sub);     
+     
+    # очистка связи тэгов
+    (function() use ($classID, $message){
+        $tagProvider = new App\modules\Korzilla\Tag\Provider();
+
+        $filter = $tagProvider->filterGet();
+        $filter->objectId[] = $message;
+        $filter->objectType[] = $classID;
+
+        foreach ($tagProvider->bindGetList($filter) as $bind) {
+            $tagProvider->bindRemove($bind);
+        }
+    })();
+
+    if($inside_admin) {
+        ob_end_clean();
+        header('Location: '.$goBackLink.'&inside_admin=1');
+        exit;
+    } else { 
+        echo json_encode(ARRAY(
+            "title" => "ОК",
+            "succes" =>  "ОК",
+            "reload" => 1,
+            "modal" => "close"
+        ));
+    }
+}

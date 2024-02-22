@@ -1,0 +1,33 @@
+<?php 
+  $fields = array(
+	"full" => 1,
+    "sub" => $sub,
+    "cc" => $cc,
+    "classID" => $classID,
+    "nc_ctpl" => $nc_ctpl,
+    "fullLink" => $fullLink,
+    "editLink" => $editLink,
+    "image_default" => $image_default,
+    "fastprew" => $fastprew,
+    "current_sub" => $current_sub,
+    "current_cc" => $current_cc,
+    "current_catalogue" => $current_catalogue,
+    "RowID" => $f_RowID,
+    "Checked" => $f_Checked,
+    "name" => $f_name,
+    "text" => $f_text,
+    "textfull" => $f_textfull,
+    "textfull_bottom" => $f_textfull_bottom,
+    "photo" => $f_photo,
+    "price" => $f_price,
+    "firstprice" => $f_firstprice,
+    "link" => $f_link,
+    "vendor" => $f_citytarget,
+    "nc_next_object" => $nc_next_object,
+    "nc_prev_object" => $nc_prev_object 
+  );
+  $class2021 = new Class2021($fields);
+
+  echo $class2021->getItemFull(); 
+  
+?>

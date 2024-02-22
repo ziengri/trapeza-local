@@ -1,0 +1,44 @@
+<!-- FormPrefix --><?= $f_AdminCommon; ?>
+<?php if ($cc_settings['mapCode'] && $cc_settings['mapPosition'] == 'top'): ?>
+    <div class="contacts-map contacts-object"><?= $cc_settings['mapCode']; ?></div>
+<?php endif; ?><!-- /FormPrefix -->
+
+<!-- RecordTemplate --><div class="contacts-object align-items-<?= $cc_settings['align']; ?>">
+    <?= $f_AdminButtons; ?>
+    <?php if ($admin_mode || $f_Image): ?>
+        <div class="contacts-object-image">
+            <?= nc_image_edit_inline('Image', $f_RowID, $cc_env['Sub_Class_ID']); ?>
+        </div>
+    <?php endif; ?>
+    <div class="contacts-object-info">
+        <?php if ($admin_mode || $f_Name): ?>
+            <div class="contacts-object-header  tpl-text-header4"><?= nc_edit_inline('Name', $f_RowID,
+                    $cc_env['Sub_Class_ID']); ?></div>
+        <?php endif; ?>
+        <div class="contacts-object-about tpl-text-default">
+            <?php if ($admin_mode || $f_Description): ?>
+                <div class=' tpl-text-header5'><?= nc_edit_inline('Description', $f_RowID, $cc_env['Sub_Class_ID']); ?></div><?php endif; ?>
+            <?php if ($admin_mode || $f_Address): ?>
+                <div><?= nc_edit_inline('Address', $f_RowID, $cc_env['Sub_Class_ID']); ?></div><?php endif; ?>
+            <?php if ($admin_mode || $f_Phone): ?>
+                <div><a href='tel:<?= nc_process_phone($f_Phone); ?>'><?= nc_edit_inline('Phone', $f_RowID,
+                        $cc_env['Sub_Class_ID']); ?></a></div><?php endif; ?>
+            <?php if ($admin_mode || $f_Email): ?>
+                <div><a href='mailto:<?= $f_Email; ?>'><?= nc_edit_inline('Email', $f_RowID,
+                        $cc_env['Sub_Class_ID']); ?></a></div><?php endif; ?>
+        </div>
+        <div class="contacts-object-socials">
+            <?php if ($admin_mode): ?> <?= nc_edit_inline('Social', $f_RowID, $cc_env['Sub_Class_ID']); ?>
+            <?php else: ?> <?= nc_social_icons($f_Social,
+                "<a href='%URL' class='contacts-object-socials-social' title='%NAME' target='_blank'>%ICON</a>"); ?>
+            <?php endif; ?>
+        </div>
+    </div>
+</div><!-- /RecordTemplate -->
+
+<!-- FormSuffix --><?php if ($cc_settings['mapCode'] && $cc_settings['mapPosition'] == 'bottom'): ?>
+    <div class="contacts-map contacts-object"><?= $cc_settings['mapCode']; ?></div>
+<?php endif; ?>
+<?php if ($totRows > $recNum): ?>
+  <?= nc_browse_messages($cc_env, 10); ?>
+<?php endif; ?><!-- /FormSuffix -->

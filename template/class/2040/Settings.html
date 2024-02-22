@@ -1,0 +1,24 @@
+<?php
+global $bitcat, $setting, $cityid, $cityname, $citylink, $citylinkPath, $officeInCity;
+
+$ignore_catalogue = 1;
+$ignore_sub = 1;
+$ignore_cc = 1;
+
+$ofices = $db->get_results("select citytarget from Message2012 where Checked  = 1 AND Catalogue_ID = '$catalogue'",ARRAY_A);
+if ($ofices) {
+	foreach($ofices as $c) {
+		$arrayCityID .= $arrayCityID.$c[citytarget];
+	}
+	$arrayCityID = array_unique(explode(",",$arrayCityID));
+}
+
+
+
+if (!$cityid || ($cityid && in_array($cityid,$arrayCityID))) {
+    $query_where .= ($query_where ? " AND " : "")."a.city = '0'";
+} else {
+    $query_where .= ($query_where ? " AND " : "")."a.name like '%$cityname%'";
+}
+
+?>

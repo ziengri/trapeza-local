@@ -1,0 +1,19 @@
+<?php /* Служебная часть */for ($f_RowNum = 0; $f_RowNum < $rowCount; $f_RowNum++) {    if($fetch_row[$f_RowNum] instanceof Iterator) {        extract($fetch_row[$f_RowNum]->to_array(), EXTR_PREFIX_ALL, "f");    } else {        extract($fetch_row[$f_RowNum], EXTR_PREFIX_ALL, "f");    }    foreach($iteration_RecordTemplate[$f_RowNum] as $value) {        extract($value);    }    eval($cc_env["convert2txt"]);    ob_start();/* Конец служебной части */?>
+<message id="<?= $f_RowID; ">
+	<excel><?= htmlspecialchars($f_excel_name)."</excel>
+	<name><?= htmlspecialchars($f_name); ?></name>
+	<url><?= htmlspecialchars($f_url); ?></url>
+	<list><?= htmlspecialchars($f_list); ?></list>
+	<firsthead><?= htmlspecialchars($f_firsthead); ?></firsthead>
+	<parent><?= htmlspecialchars($f_parent); ?></parent>
+	<gr><?= htmlspecialchars($f_gr); ?></gr>
+	<startcol><?= htmlspecialchars($f_startcol); ?></startcol>
+	<updateprice><?= htmlspecialchars($f_updateprice); ?></updateprice>
+	<ssub><?= htmlspecialchars($f_ssub); ?></ssub>
+	<ccc><?= htmlspecialchars($f_ccc); ?></ccc>
+	<pole><?= htmlspecialchars($f_pole); ?></pole>
+	<class><?= htmlspecialchars($f_class); ?></class>
+	<ncctpl><?= htmlspecialchars($f_ncctpl); ?></ncctpl>
+</message>
+
+<?php /* Служебная часть */    echo nc_finishing_RecordTemplate(ob_get_clean(), $inside_admin, $classID, $f_RowID, $parent_message, $cc, $cc_env["Class_Name"], $no_cache_marks);}/* Конец служебной части */?>

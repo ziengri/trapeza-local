@@ -1,0 +1,20 @@
+<?php
+$connectTemplate = $DOCUMENT_ROOT.$pathInc2."/template/{$classID}/templateDelete/DeleteActionTemplate.html";
+if ($current_catalogue['customCode'] && file_exists($connectTemplate)) {
+  include($connectTemplate);
+} else {
+    clearCache($classID,$sub);
+
+    if($inside_admin) {
+        ob_end_clean();
+        header('Location: '.$goBackLink.'&inside_admin=1');
+        exit;
+    } else {
+        echo json_encode(ARRAY(
+            "title" => "ОК",
+            "succes" =>  "ОК",
+            "reload" => 1
+        ));
+    }
+}
+?>

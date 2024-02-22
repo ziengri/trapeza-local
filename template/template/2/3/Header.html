@@ -1,0 +1,322 @@
+<?php 
+set_time_limit(0);
+$ROOTDIR = $_SERVER['DOCUMENT_ROOT'];
+require_once $ROOTDIR."/vars.inc.php";
+
+require_once $ROOTDIR."/bc/connect_io.php";
+require_once $ROOTDIR."/bc/modules/default/function.inc.php";
+GLOBAL $db, $pathInc, $catalogue, $login, $current_catalogue, $nc_core, $pathInc2, $field_connect, $passite, $file1c, $AUTH_USER_ID;
+require_once $ROOTDIR."/bc/modules/bitcat/class.upload.php";
+
+if ($current_catalogue['customCode'] && file_exists($DOCUMENT_ROOT . $pathInc2 . "/template/template/2/3/Header.html")) {
+    include $DOCUMENT_ROOT . $pathInc2 . "/template/template/2/3/Header.html";
+} else { // START
+
+if (is_numeric($order) && $hash == hexorder($order)) $o = $db->get_row("select a.*, DATE_FORMAT(a.Created,'%d') as day, DATE_FORMAT(a.Created,'%m') as month, DATE_FORMAT(a.Created,'%Y') as year from Message2005 as a where a.Message_ID = '$order'", ARRAY_A);
+if (!$o['Message_ID']) die;
+$ord = orderArray($o['orderlist'], 1);
+$customf = orderArray($o['customf'], 1);
+
+
+foreach($ord['items'] as $t) { $ii++;
+    if (!isset($t['price']) || $t['price'] == 0) continue;
+	$param = $db->get_row("select * from Message2001 where Message_ID = '".$item['id']."'", ARRAY_A);
+	$tr .= "<tr class='tabs_11'>
+				<td colspan='2' style='text-align: center;'>
+					{$ii}
+				</td>
+				<td colspan='18'>
+					{$t['art']} {$t['name']}
+				</td>
+				<td colspan='3' style='text-align: center;'>
+                    {$t['count']}
+				</td>
+				<td colspan='3' style='text-align: center;'>
+					шт
+				</td>
+				<td colspan='5' style='text-align: right;'>
+					{$t['price']}
+				</td>
+				<td colspan='5' style='text-align: right;'>
+					".($t['price'] * $t['count'])."
+				</td>
+			</tr>";
+	$totalSum = $totalSum + $t['sum'];
+}
+
+# доставка
+$delivery = array();
+if($setting_delivery[--$o['delivery']]){
+	$delivery['name'] = $setting_delivery[$o['delivery']]['name'];
+	$delivery['price'] = $setting_delivery[$o['delivery']]['price'];
+	$totalSum += $delivery['price'];
+}
+
+$totalSumFinal = $totalSum;
+
+
+# НДС
+//$ndsSizeArr = array(255=>12);
+$ndsSize = ($ndsSizeArr[$catalogue] ? $ndsSizeArr[$catalogue] : 20);
+
+if ($settingCont[nds]>0) {
+	$nds = round($totalSum*$ndsSize/(100+$ndsSize),2);
+	if ($settingCont[nds]==1) {
+		$ndsText = "В том числе НДС";
+		$ndsItemText = "с НДС";
+	}
+	if ($settingCont[nds]==2) {
+		$ndsItemText = "без НДС";
+		$ndsText = "НДС (20%)"; $ndsTextTotal = "Итого с НДС";
+		$totalSumNds = $nds+$totalSum;
+		$totalSumFinal = $totalSumNds;
+	}
+}
+
+?><html >
+    <head>
+        <style>
+            body {margin: 0px; padding:0px;}
+            table.table_schet td {padding: 3px 6px;}table.tab_s_two td {border: 1px solid #333;}
+        </style>
+
+    </head>
+    <body>
+	<div style='position:relative;'>
+	<div style='position:relative; z-index:10;'>
+        <table class="table_schet" style="width: 890px;border-collapse: collapse;font-size: 13px;font-family: sans-serif;">
+            <tbody>
+                <tr class="tabs_warn">
+                    <td colspan="36" style="padding-bottom: 19px;text-align: center; font-size:11px;">
+                        <?=($settingCont[schetinfo] ? $settingCont[schetinfo] : "
+                        Внимание! Оплата данного счета означает согласие с условиями поставки товара. Уведомление об оплате 
+                        обязательно, в противном случае не гарантируется наличие товара на складе. Товар отпускается по факту 
+                        прихода денег на р/с Поставщика, самовывозом, при наличии доверенности и паспорта.")?>
+                    </td>
+                </tr>
+                <tr class="tabs_1">
+                    <td colspan="19" rowspan="2" style="border-top: 1px solid #333;border-left: 1px solid #333;"><?=$settingCont[p_bank]?>
+                    </td>
+                    <td colspan="5" style="border: 1px solid #333;">БИК</td>
+                    <td colspan="12" style="border-right: 1px solid #333;border-top: 1px solid #333;"><?=$settingCont[p_bik]?>
+                    </td>
+                </tr>
+                <tr class="tabs_2">
+                    <td colspan="5" rowspan="2" style="border: 1px solid #333;padding-bottom: 15px;vertical-align: top;"> Сч. №</td>
+                    <td colspan="12" rowspan="2" style="border-right: 1px solid #333;border-bottom: 1px solid #333;border-left: 1px solid #333;vertical-align: top;">
+                        <?=$settingCont[p_bankschet]?>
+                    </td>
+                </tr>
+                <tr class="tabs_3" style="border-bottom: 1px solid #333;">
+                    <td colspan="19" style="border-right: 1px solid #333;border-left: 1px solid #333;vertical-align: bottom;">
+                        Банк получателя
+                    </td>
+                </tr>
+                <tr class="tabs_4">
+                    <td colspan="3" style="border-left: 1px solid #333;border-bottom: 1px solid #333;">ИНН</td>
+                    <td colspan="7" style="border-bottom: 1px solid #333;border-right: 1px solid #333;"><?=$settingCont[p_inn]?></td>
+                    <td colspan="2" style="border-bottom: 1px solid #333;"> КПП</td>
+                    <td colspan="7" style="border-bottom: 1px solid #333;border-right: 1px solid #333;">
+                        <?=$settingCont[p_kpp]?>
+                    </td>
+                    <td colspan="5" rowspan="3" style="border-bottom: 1px solid #333;border-left: 1px solid #333;border-right: 1px solid #333;vertical-align: top;">
+                        Сч. №
+                    </td>
+                    <td colspan="12" rowspan="3" style="border-bottom: 1px solid #333;border-right: 1px solid #333;vertical-align: top;">
+                        <?=$settingCont[p_schet]?>
+                    </td>
+                </tr>
+                <tr class="tabs_5">
+                    <td colspan="19" style="border-left: 1px solid #333;padding-bottom: 13px;">
+                       <?=$settingCont[p_name]?>
+                    </td>
+                </tr>
+                <tr class="tabs_6">
+                    <td colspan="19" style="border-bottom: 1px solid #333;border-left: 1px solid #333;">
+                        Получатель
+                    </td>
+                </tr>
+                <tr class="tabs_7">
+                    <td colspan="36" style="font-size: 18px;font-weight: bold;padding-top: 16px;padding-bottom: 16px;border-bottom: 2px solid #333;">
+                        Счет на оплату № <?=$order?>-ИМ от <?=$o[day]?> <?=month($o[month])?> <?=$o[year]?> г.
+                    </td>
+                </tr>
+                <tr class="tabs_8">
+                    <td colspan="5" style="vertical-align: top;padding-bottom: 12px;padding-top: 11px;">
+                        Поставщик:
+                    </td>
+                    <td colspan="31" style="font-weight: bold;vertical-align: top;padding-bottom: 12px;padding-top: 11px;">
+                        <?
+                            $infoProvider = [];
+
+                            if ($settingCont['p_name']) {
+                                $infoProvider[] = $settingCont['p_name'];
+                            }
+
+                            if ($settingCont['p_inn']) {
+                                $infoProvider[] = "ИНН {$settingCont['p_inn']}";
+                            }
+
+                            if ($settingCont['p_kpp']) {
+                                $infoProvider[] = "КПП {$settingCont['p_kpp']}";
+                            }
+
+                            if ($settingCont['p_adres']) {
+                                $infoProvider[] = $settingCont['p_adres'];
+                            }
+
+                            if ($settingCont['p_phone']) {
+                                $infoProvider[] = "тел.: {$settingCont['p_phone']}";
+                            }
+
+                            if ($settingCont['p_fax']) {
+                                $infoProvider[] = "факс: {$settingCont['p_fax']}";
+                            }
+                        ?>
+                       <?=implode(', ', $infoProvider)?>
+                    </td>
+                </tr>
+                <tr class="tabs_9">
+                    <td colspan="5" style="vertical-align: top;padding-bottom: 29px;">
+                        Покупатель:
+                    </td>
+                    <td colspan="31" style="font-weight: bold;vertical-align: top;29px:12px;">
+                        <?
+                            $infoCustomer = [];
+
+                            if ($customf['company']['value']) {
+                                $isOrg = preg_match("/^{$customf['org']['value']}\s/i", $customf['company']['value']);
+                                $infoCustomer[] = ($customf['org']['value'] && !$isOrg ?: null) . " {$customf['company']['value']}";
+                            } else {
+                                $infoCustomer[] = $customf['name']['value'];
+                            }
+
+                            if ($customf['inn']['value']) {
+                                $infoCustomer[] = "ИНН: {$customf['inn']['value']}";
+                            }
+
+                            if ($customf['kpp']['value']) {
+                                $infoCustomer[] = "КПП: {$customf['kpp']['value']}";
+                            }
+
+                            if ($customf['city']['value']) {
+                                $infoCustomer[] = $customf['city']['value'];
+                            }
+
+                            if ($customf['address']['value']) {
+                                $infoCustomer[] = $customf['address']['value'];
+                            }
+
+                            if ($customf['phone']['value']) {
+                                $infoCustomer[] = "тел.:  {$customf['phone']['value']}";
+                            }
+                        ?>
+                        <?=implode(', ', $infoCustomer)?>
+                    </td>
+                </tr>
+                <tr class="tabs_143">
+                    <td colspan="36" style="padding: 0;">
+                        <table class="tab_s_two" style="border-collapse: collapse;font-size: 13px;font-family: sans-serif;width: 100%;border: 2px solid #333;">
+                            <tbody>
+                                <tr style="font-weight: bold;text-align: center;">
+                                    <td colspan="2">
+                                        №
+                                    </td>
+                                    <td colspan="18">
+                                        Товары (работы, услуги)
+                                    </td>
+                                    <td colspan="3">
+                                        Кол-во
+                                    </td>
+                                    <td colspan="3">
+                                        Ед.
+                                    </td>
+                                    <td colspan="5" style="text-align: right;">
+                                        Цена <?=$ndsItemText?>
+                                    </td>
+                                    <td colspan="5" style="text-align: right;">
+                                        Сумма
+                                    </td>
+                                </tr>
+                                <?=$tr?>
+                            </tbody>
+                        </table>
+                    </td>
+                </tr>
+                <tr class="tabs_12">
+                    <td colspan="35" style="padding-top: 12px;">&nbsp;</td>
+                    <td colspan="5" style="text-align: right;font-weight: bold;padding-top: 12px;"><?=price($totalSum,1)?></td>
+                </tr>
+                <tr class="tabs_13">
+                    <td colspan="30">&nbsp;</td>
+                    <td style="text-align: right;font-weight: bold;"> Доставка - <?=$delivery['name']?>:</td>
+                    <td colspan="5" style="text-align: right;font-weight: bold;"> <?=price(($delivery['price'] > 0 ? $delivery['price'] : 0), 1)?></td>
+                </tr>
+				<?php  if ($ndsText) { ?>
+	                <tr class="tabs_13">
+	                    <td colspan="30">&nbsp;</td>
+	                    <td style="text-align: right;font-weight: bold;"> <?=$ndsText?>:</td>
+	                    <td colspan="5" style="text-align: right;font-weight: bold;"> <?=price($nds,1)?></td>
+	                </tr>
+				<?php  } ?>
+
+				<?php  if ($ndsTextTotal) { ?>
+	                <tr class="tabs_13">
+	                    <td colspan="30">&nbsp;</td>
+	                    <td style="text-align: right;font-weight: bold;"> <?=$ndsTextTotal?>:</td>
+	                    <td colspan="5" style="text-align: right;font-weight: bold;"> <?=price($totalSumNds,1)?></td>
+	                </tr>
+				<?php  } ?>
+
+
+                <tr class="tabs_14">
+                    <td colspan="30">&nbsp;</td>
+                    <td style="text-align: right;font-weight: bold;">Всего к оплате:</td>
+                    <td colspan="5" style="text-align: right;font-weight: bold;"><?=price($totalSumFinal,1)?></td>
+                </tr>
+                <tr class="tabs_15">
+                    <td colspan="36">Всего наименований <?=count($ord[items])?><?=($delivery['price'] > 0 ? " + доставка": "")?>, на сумму <?=price($totalSumFinal,1)?> руб.</td>
+                </tr>
+                <tr style="height:17.8px;">
+                    <td colspan="36" style="font-weight: bold;border-bottom: 2px solid #333;padding-bottom: 6px;"><?=num2strmy($totalSumFinal)?></td>
+                </tr>
+                <tr>
+                    <td colspan="36">&nbsp;</td>
+                </tr>
+                <tr>
+                    <td>Руководитель</td>
+                    <td colspan="9">&nbsp;</td>
+                    <td colspan="9" style="border-bottom: 1px solid;text-align: right;"><?=$settingCont[p_ruk]?></td>
+                    <td colspan="2"> &nbsp;</td>
+                    <td>Бухгалтер</td>
+                    <td colspan="8">&nbsp;</td>
+                    <td colspan="6" style='border-bottom: 1px solid;text-align: right;'><?=$settingCont[p_buh]?></td>
+                </tr>
+                <tr style="text-align: center; font-weight: bold;">
+                    <td colspan="36" style=" padding-top: 30px;">
+					 <?=($settingCont[schetinfo] ? "&nbsp;" : "
+                        ВНИМАНИЕ!<br/>О сроках поставки продукции Вы можете уточнить у наших специалистов<br/>по телефонам: ".$settingCont[p_phone].", ".$settingCont[p_fax]."
+					 ")?>
+                    </td>
+                </tr>
+                <?php if($settingCont[schetinfo_bottom]) {?>
+                <tr class="tabs_warn">
+                    <td colspan="36" style="padding-top: 19px;text-align: center; font-size:11px;">
+                        <?=$settingCont[schetinfo_bottom]?>
+                    </td>
+                </tr>
+                <?php } ?>
+            </tbody>
+        </table></div>
+		<?php  if ($settingCont[rukpodpis] && $settingCont[p_ruk]) { ?><img src="<?=$HTTP_FILES_PATH.$settingCont[rukpodpis]?>" alt="" style="z-index:2; position: absolute;height: 80px;left: 185px; bottom: 45px;"/><?php  } ?>
+		<?php  if ($settingCont[buhpodpis] && $settingCont[p_buh]) { ?><img src="<?=$HTTP_FILES_PATH.$settingCont[buhpodpis]?>" alt="" style="z-index:2; position: absolute;height: 80px;left: 560px;bottom: 45px;"/><?php  } ?>
+		<?php  if ($settingCont[pechat]) { ?><img src="<?=$HTTP_FILES_PATH.$settingCont[pechat]?>" alt="" style="z-index:1; position: absolute;height: 190px;left: 70px;bottom: 43px;"/><?php  } ?>
+		<div style='clear:both;'></div>
+</div>
+
+<SCRIPT LANGUAGE="JavaScript">
+window.print();
+</SCRIPT>
+<? 
+} // END 
+?>

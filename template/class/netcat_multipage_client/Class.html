@@ -1,0 +1,19 @@
+<!-- FormPrefix --><?= $f_AdminCommon; ?><!-- /FormPrefix -->
+
+<!-- RecordTemplate --><div class="object-item "><?= $f_AdminButtons; ?>
+    <div class="item-image <?= $cc_settings['border'] == 'on' ? "item-border" : ""; ?>">
+        <a href="<?= $fullLink; ?>" title="<?= $f_Name; ?>" class="image "><?= $f_Image->resize(648, 400,
+                nc_ImageTransform::RESIZE_TO_BEST_FIT)->as_img(['alt' => $f_Name]); ?></a>
+    </div>
+
+    <div class="tpl-text-header3" data-toggle="tooltip" data-placement="bottom" data-trigger='hover focus' title='<?= $admin_mode?"стиль: заголовок 3":""; ?>' data-><?= nc_edit_inline('Name', $f_RowID, $cc_env['Sub_Class_ID']); ?></div>
+    <div class="tpl-text-alt" data-toggle="tooltip" data-placement="bottom" data-trigger='hover focus' title='<?= $admin_mode?"стиль: дополнительный шрифт":""; ?>'><?= nc_edit_inline('Category', $f_RowID, $cc_env['Sub_Class_ID']); ?></div>
+</div><!-- /RecordTemplate -->
+
+<!-- FormSuffix --><?php if ($totRows > $recNum): ?>
+  <?= nc_browse_messages($cc_env, 10); ?>
+<?php endif; ?>
+<?php if($admin_mode) { ?>
+<script>jQuery(function () { jQuery('[data-toggle="tooltip"]').tooltip() })</script>
+<?php } ?>
+<!-- /FormSuffix -->

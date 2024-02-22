@@ -1,0 +1,261 @@
+<?=($inside_admin ? $f_AdminCommon : addObjBut($addLink,$isTitle,null,'acat'))?>
+<?php 
+global $settings_array, $setting, $hrefPrefix, $noimage;
+session_start();
+require __DIR__ . '/Helper.php';
+
+# keyword страницы
+$sub_id = $db->get_var("SELECT Subdivision_ID FROM Sub_Class WHERE Class_ID = 210 AND Class_Template_ID = 2079 AND Catalogue_ID = {$catalogue}");
+$link_acatv2 = $db->get_var("SELECT Hidden_URL FROM Subdivision WHERE Subdivision_ID = {$sub_id}");
+
+$settings_array = array(
+                    'template_path' => __DIR__ . '/templates/',
+                    'path' => '/template/class/210/2079/',
+                    'api' => array(
+                        'host' => 'https://acat.online/api',
+                        'token' => $setting['acatToken'],
+                        'urlBeforeCatalog' => $link_acatv2
+                    )
+                );
+
+
+$settings = Helper::getJSON($settings_array['api']);
+$hrefPrefix = $settings->urlBeforeCatalog;
+
+# Токен не установлен
+if (!property_exists($settings,'token') || property_exists($settings,'token') && strlen($settings->token) === 0) {
+
+    $error = 'Укажите ваш API Token';
+    require $settings_array[template_path].'/index.php';
+
+}else if($search && !$type){
+    // Поиск
+    $data = Helper::getData($settings, true, "/search?text=".urlencode($text));
+
+    $data['searchValue'] = $text;
+    if ((array_key_exists('vins', $data) && count($data['vins']) === 1) || (array_key_exists('frames', $data) && count($data['frames']) === 1)) {
+        $vin = count($data['vins']) === 1 ? $data['vins'][0] : $data['frames'][0];
+        switch (property_exists($vin, 'mark')) {
+            case (in_array($vin->mark, array('INFINITI', 'NISSAN'))):
+                $url = "/{$vin->type}/{$vin->mark}/{$vin->country_short_name}/{$vin->directory}/{$vin->modification}";
+                return redirect($url);
+                break;
+            case (in_array($vin->mark, array('MERCEDES_BENZ', 'SMART', 'MERCEDES_BENZ_PS'))):
+                $url = "/{$vin->type}/{$vin->mark}/{$vin->country}/{$vin->aggregation}/{$vin->model}/{$vin->catalog}";
+                return redirect($url);
+                break;
+            case (in_array($vin->mark, array('FIAT', 'LANCIA', 'ALFA_ROMEO', 'ABARTH'))):
+                $url = "/{$vin->type}/{$vin->mark}/{$vin->model_short_name}/{$vin->modification_short_name}";
+                return redirect($url);
+                break;
+            case (in_array($vin->mark, array('BMW', 'ROLLS-ROYCE', 'MINI'))):
+                $url = "/{$vin->type}/{$vin->mark}/{$vin->series_short_name}/{$vin->model_short_name}/{$vin->rule_position}/{$vin->transmission}";
+                return redirect($url);
+                break;
+            case (in_array($vin->mark, array('KIA', 'HYUNDAI'))):
+                $url = "/{$vin->type}/{$vin->mark}/{$vin->country_short}/{$vin->family}/{$vin->model}/{$vin->modification}";
+                return redirect($url);
+                break;
+            case (in_array($vin->mark, array('TOYOTA', 'LEXUS'))):
+                $url = "/{$vin->type}/{$vin->mark}/{$vin->country_short_name}/{$vin->catalog_code}/{$vin->model_code}/{$vin->sysopt}/{$vin->complectation_code}";
+                return redirect($url);
+                break;
+            case (in_array($vin->mark, array('WEICHAI_ENGINE', 'CVS_FERRARI', 'FRESIA', 'SCHOPF', 'DELTA', 'BZST', 'BZTM', 'BOLSHAYA_ZEMLYA', 'DZAK', 'ZLATMASH', 'OMSKTRANSMASH', 'PERVOMAJSKHIMMASH', 'SMOLTRA', 'SPECBURMASH', 'SEK', 'TDA_ENGINE', 'CHELEKS', 'YAVT', 'CSM', 'SDEC_ENGINE', 'VOLGABUS', 'VZS', 'GATCHINSELMASH', 'DORELECTROMASH', 'TMZV', 'GAZ_ENGINE', 'ANDORIA_ENGINE', 'AVIA', 'BALKANCAR_ENGINE', 'BALKANCAR', 'BAW', 'BEARFORD_ENGINE', 'BEIFANG_BENCHI', 'BYD', 'CAMC', 'CASE', 'CATERPILLAR', 'CF_MOTO', 'CHENGGONG', 'CHEVROLET', 'CHEVROLET_SKD', 'CHRYSLER_ENGINE', 'CITROEN_SKD', 'CNHTC_SINOTRUK', 'CNHTC_SINOTRUK_ARCHIVE', 'CUMMINS_ENGINE', 'CUMMINS_ENGINE', 'DAEWOO', 'DAEWOO_SKD', 'DAEWOO_ARCHIVE', 'DAF', 'DERWAYS', 'DETVA', 'DEUTZ_ENGINE', 'DONGFENG_ENGINE', 'DONGFENG', 'DONGFENG', 'DOOSAN', 'EAGLE-WING', 'FAW_ARCHIVE', 'FAW', 'FORD_SKD', 'FORTSCHRITT', 'FOTON', 'FOTON', 'GEELY', 'GOLDEN_DRAGON', 'HAFEI', 'HANWOO', 'HBXG', 'HIDROMEK_ARCHIVE', 'HIDROMEK', 'HIGER', 'HONDA_SKD', 'HONDA_SKD', 'HONEY_BEE', 'IKARUS', 'IRAN_KHODRO', 'ISUZU_ENGINE', 'ISUZU_SKD', 'IVECO_ENGINE', 'IVECO', 'JAC', 'JAGUAR_SKD', 'JAWA', 'JCB', 'JEEP_SKD', 'JIANSHE', 'JMC', 'KING_LONG', 'KOMAT\'SU_ENGINE', 'KOMAT\'SU', 'LAND_ROVER_SKD', 'LIFAN', 'LIUGONG', 'LOCUST', 'MACDON', 'MADARA', 'MADARA', 'MAHINDRA', 'MAN_SKD', 'MAN', 'MAZDA_SKD', 'MECANICA_CEAHLAU', 'MERCEDES_BENZ_SKD', 'MERCEDES_BENZ_SKD', 'METAL-FACH_ARCHIVE', 'METAL-FACH', 'MITSUBER', 'MITSUBISHI_SKD', 'NEW_HOLLAND', 'NISSAN_ENGINE', 'OPEL_SKD', 'PEUGEOT_SKD', 'PORSCHE_SKD', 'RENAULT_SKD', 'RENAULT', 'ROVER_SKD', 'SAAB', 'SAAB_SKD', 'SARKANA_ZVAIGZNE', 'SCANIA_SKD', 'SDLG', 'SHAANXI', 'SHAANXI_FAST_GEAR', 'SHANTUI', 'SSANGYONG_SKD', 'SUBARU_SKD', 'SUZUKI', 'SUZUKI_SKD', 'SUZUKI_SKD', 'TATA', 'TATRA', 'TEREX', 'THERMO_KING', 'TIGARBO', 'TRACOM', 'VERSATILE', 'VOLVO', 'VOLVO', 'VOLVO_SKD', 'VOLVO_SKD', 'XCMG', 'XIAMEN', 'YANMAR_ENGINE', 'YUCHAI_ENGINE', 'YUTONG_ARCHIVE', 'YUTONG', 'ZETOR_ENGINE', 'ZF', 'ZONGSHEN', 'AVTOKRAN', 'AGRO', 'AZLK', 'ALTAJ', 'AMZ_ENGINE', 'AMKODOR_ARCHIVE', 'AMKODOR', 'ATZ', 'BARNAULTRANSMASH_ARCHIVE_ENGINE', 'BARNAULTRANSMASH_ENGINE', 'BELAZ_ARCHIVE', 'BELAZ', 'BELAZ', 'BELOVEZH_ARCHIVE', 'BELOVEZH', 'BELOCERKOVMAZ', 'BOBRUJSKAGROMASH_ARCHIVE', 'BOBRUJSKAGROMASH', 'BOBRUJSKSELMASH', 'BOGDAN', 'BRYANSKIJ_ARSENAL_ARCHIVE', 'BRYANSKIJ_ARSENAL', 'BRYANSKIJ_ARSENAL', 'BEHMZ', 'VAZ_ARCHIVE', 'VAZ', 'VGTZ', 'VSM', 'VTZ_ARCHIVE_ENGINE', 'VTZ_ENGINE', 'VTZ', 'VEHKS', 'GAZ_ARCHIVE', 'GAZ', 'GAZ_ARCHIVE', 'GAZ', 'GAZPROM-KRAN', 'GAKZ', 'GEOMASH', 'GIDROMASH', 'GOMSELMASH', 'GOMSELMASH_ARCHIVE', 'DKZ', 'DONEHKS', 'DORMASH', 'ELAZ', 'ZAZ_ARCHIVE', 'ZAZ', 'ZZGT_ARCHIVE', 'ZZGT', 'ZID', 'ZID', 'ZIK', 'ZIL', 'ZIL_ARCHIVE', 'ZIL_ARCHIVE', 'ZIL', 'ZLATEHKS', 'ZMZ_ARCHIVE_ENGINE', 'ZMZ_ENGINE', 'IZH', 'IZH', 'IZH_ARCHIVE', 'IZHNEFTEMASH', 'IZHORSKIE_ZAVODY', 'IMZ', 'KAVZ', 'KAZ', 'KAMAZ_ENGINE', 'KAMAZ_ARCHIVE', 'KAMAZ_ARCHIVE', 'KAMAZ_ARCHIVE_ENGINE', 'KAMAZ', 'KAMAZ', 'KANASH', 'KZK_ARCHIVE', 'KZK', 'KZKT', 'KLEVER_ARCHIVE', 'KLEVER', 'KMZ', 'KMZ_1_MAYA', 'KOVROVEC', 'KRAZ_ARCHIVE', 'KRAZ', 'KREDMASH', 'KEHZ', 'LAZ', 'LZA', 'LIAZ', 'LIAZ_ARCHIVE', 'LIDAGROPROMMASH', 'LIDSELMASH', 'LTZ', 'LUAZ', 'MAZ_ARCHIVE', 'MAZ', 'MAZ', 'MAZ_ARCHIVE', 'MAZ', 'MASHTEKHREMONT', 'MZKM_ARCHIVE', 'MZKM', 'MZKT', 'MMZ', 'MMZ_ARCHIVE_ENGINE', 'MMZ_ENGINE', 'MOAZ', 'MOAZ', 'MOAZ_ARCHIVE', 'MOLDAGROTEKHNIKA', 'MRMZ', 'MTZ_ARCHIVE', 'MTZ', 'MTM', 'MTM', 'NEFAZ_ARCHIVE', 'NEFAZ_ARCHIVE', 'NEFAZ', 'NEFAZ', 'NEFAZ', 'NKMZ', 'OREL-POGRUZCHIK', 'OSTA', 'OTZ', 'PAZ', 'PAZ_ARCHIVE', 'PENZADIZELMASH_ENGINE', 'PROMTRAKTOR', 'PTZ', 'RASKAT', 'RAF', 'RMZ', 'ROSTSELMASH_ARCHIVE', 'ROSTSELMASH', 'RUSSKAYA_MEKHANIKA', 'RUSSKAYA_MEKHANIKA_ARCHIVE', 'SAZ', 'SALSKSELMASH', 'SAREHKS', 'SZAP_ARCHIVE', 'SZAP', 'SIBSELMASH', 'SINERGIYA', 'SMD_ENGINE', 'STROJDORMASH', 'STROMNEFTEMASH', 'TVEHKS_ARCHIVE', 'TVEHKS', 'TEPLOSTAR_ENGINE', 'TZA', 'TKZ', 'TMZ_ARCHIVE_ENGINE', 'TMZ_ENGINE', 'TMZ', 'TONAR_ARCHIVE', 'TONAR', 'TORFMASH', 'UAZ_ARCHIVE', 'UAZ', 'UVZ', 'UVZ_ARCHIVE', 'UMZ_ARCHIVE_ENGINE', 'UMZ_ENGINE', 'UMZ_-2', 'UMPO', 'UMPO', 'UNISIBMASH', 'URAL', 'URAL_ARCHIVE', 'URAL', 'URALMASH', 'HZTSSH', 'HTZ_ARCHIVE', 'HTZ', 'CHERVONA_ZIRKA', 'CHZTS', 'CHMZ', 'CHSDM', 'CHTZ', 'SHAAZ', 'EHKSKO', 'EHKSMASH', 'EHLTRA_ENGINE', 'YUMZ', 'YURMASH', 'YAMZ_ARCHIVE_ENGINE', 'YAMZ_ENGINE'))):
+                $url = "/{$vin->type}/{$vin->mark}/{$vin->model_short_name}/{$vin->modification_short_name}";
+                return redirect($url);
+                break;
+            default:
+                foreach ($data as $key => $value) $$key = $value;
+                require $settings_array[template_path].'search/index.php';
+                break;
+        }
+    }
+
+    foreach ($data as $key => $value) $$key = $value;
+    require $settings_array[template_path].'search/index.php';
+
+}else if($type){
+
+    if(!$mark){
+        # нету марки
+        return redirect();
+
+    }else if(in_array($type, array("CARS_FOREIGN", "CARS_NATIVE", "TRUCKS_NATIVE", "TRUCKS_FOREIGN", "BUS", "SPECIAL_TECH_NATIVE", "SPECIAL_TECH_FOREIGN", "AGRICULTURAL_MACHINERY", "TRACTOR", "ENGINE", "MOTORCYCLE")) && in_array($mark, array("WEICHAI_ENGINE", "CVS_FERRARI", "FRESIA", "SCHOPF", "DELTA", "BZST", "BZTM", "BOLSHAYA_ZEMLYA", "DZAK", "ZLATMASH", "OMSKTRANSMASH", "PERVOMAJSKHIMMASH", "SMOLTRA", "SPECBURMASH", "SEK", "TDA_ENGINE", "CHELEKS", "YAVT", "CSM", "SDEC_ENGINE", "VOLGABUS", "VZS", "GATCHINSELMASH", "DORELECTROMASH", "TMZV", "GAZ_ENGINE", "ANDORIA_ENGINE", "AVIA", "BALKANCAR_ENGINE", "BALKANCAR", "BAW", "BEARFORD_ENGINE", "BEIFANG_BENCHI", "BYD", "CAMC", "CASE", "CATERPILLAR", "CF_MOTO", "CHENGGONG", "CHEVROLET", "CHEVROLET_SKD", "CHRYSLER_ENGINE", "CITROEN_SKD", "CNHTC_SINOTRUK", "CNHTC_SINOTRUK_ARCHIVE", "CUMMINS_ENGINE", "CUMMINS_ENGINE", "DAEWOO", "DAEWOO_SKD", "DAEWOO_ARCHIVE", "DAF", "DERWAYS", "DETVA", "DEUTZ_ENGINE", "DONGFENG_ENGINE", "DONGFENG", "DONGFENG", "DOOSAN", "EAGLE-WING", "FAW_ARCHIVE", "FAW", "FORD_SKD", "FORTSCHRITT", "FOTON", "FOTON", "GEELY", "GOLDEN_DRAGON", "HAFEI", "HANWOO", "HBXG", "HIDROMEK_ARCHIVE", "HIDROMEK", "HIGER", "HONDA_SKD", "HONDA_SKD", "HONEY_BEE", "IKARUS", "IRAN_KHODRO", "ISUZU_ENGINE", "ISUZU_SKD", "IVECO_ENGINE", "IVECO", "JAC", "JAGUAR_SKD", "JAWA", "JCB", "JEEP_SKD", "JIANSHE", "JMC", "KING_LONG", "KOMAT\'SU_ENGINE", "KOMAT\'SU", "LAND_ROVER_SKD", "LIFAN", "LIUGONG", "LOCUST", "MACDON", "MADARA", "MADARA", "MAHINDRA", "MAN_SKD", "MAN", "MAZDA_SKD", "MECANICA_CEAHLAU", "MERCEDES_BENZ_SKD", "MERCEDES_BENZ_SKD", "METAL-FACH_ARCHIVE", "METAL-FACH", "MITSUBER", "MITSUBISHI_SKD", "NEW_HOLLAND", "NISSAN_ENGINE", "OPEL_SKD", "PEUGEOT_SKD", "PORSCHE_SKD", "RENAULT_SKD", "RENAULT", "ROVER_SKD", "SAAB", "SAAB_SKD", "SARKANA_ZVAIGZNE", "SCANIA_SKD", "SDLG", "SHAANXI", "SHAANXI_FAST_GEAR", "SHANTUI", "SSANGYONG_SKD", "SUBARU_SKD", "SUZUKI", "SUZUKI_SKD", "SUZUKI_SKD", "TATA", "TATRA", "TEREX", "THERMO_KING", "TIGARBO", "TRACOM", "VERSATILE", "VOLVO", "VOLVO", "VOLVO_SKD", "VOLVO_SKD", "XCMG", "XIAMEN", "YANMAR_ENGINE", "YUCHAI_ENGINE", "YUTONG_ARCHIVE", "YUTONG", "ZETOR_ENGINE", "ZF", "ZONGSHEN", "AVTOKRAN", "AGRO", "AZLK", "ALTAJ", "AMZ_ENGINE", "AMKODOR_ARCHIVE", "AMKODOR", "ATZ", "BARNAULTRANSMASH_ARCHIVE_ENGINE", "BARNAULTRANSMASH_ENGINE", "BELAZ_ARCHIVE", "BELAZ", "BELAZ", "BELOVEZH_ARCHIVE", "BELOVEZH", "BELOCERKOVMAZ", "BOBRUJSKAGROMASH_ARCHIVE", "BOBRUJSKAGROMASH", "BOBRUJSKSELMASH", "BOGDAN", "BRYANSKIJ_ARSENAL_ARCHIVE", "BRYANSKIJ_ARSENAL", "BRYANSKIJ_ARSENAL", "BEHMZ", "VAZ_ARCHIVE", "VAZ", "VGTZ", "VSM", "VTZ_ARCHIVE_ENGINE", "VTZ_ENGINE", "VTZ", "VEHKS", "GAZ_ARCHIVE", "GAZ", "GAZ_ARCHIVE", "GAZ", "GAZPROM-KRAN", "GAKZ", "GEOMASH", "GIDROMASH", "GOMSELMASH", "GOMSELMASH_ARCHIVE", "DKZ", "DONEHKS", "DORMASH", "ELAZ", "ZAZ_ARCHIVE", "ZAZ", "ZZGT_ARCHIVE", "ZZGT", "ZID", "ZID", "ZIK", "ZIL", "ZIL_ARCHIVE", "ZIL_ARCHIVE", "ZIL", "ZLATEHKS", "ZMZ_ARCHIVE_ENGINE", "ZMZ_ENGINE", "IZH", "IZH", "IZH_ARCHIVE", "IZHNEFTEMASH", "IZHORSKIE_ZAVODY", "IMZ", "KAVZ", "KAZ", "KAMAZ_ENGINE", "KAMAZ_ARCHIVE", "KAMAZ_ARCHIVE", "KAMAZ_ARCHIVE_ENGINE", "KAMAZ", "KAMAZ", "KANASH", "KZK_ARCHIVE", "KZK", "KZKT", "KLEVER_ARCHIVE", "KLEVER", "KMZ", "KMZ_1_MAYA", "KOVROVEC", "KRAZ_ARCHIVE", "KRAZ", "KREDMASH", "KEHZ", "LAZ", "LZA", "LIAZ", "LIAZ_ARCHIVE", "LIDAGROPROMMASH", "LIDSELMASH", "LTZ", "LUAZ", "MAZ_ARCHIVE", "MAZ", "MAZ", "MAZ_ARCHIVE", "MAZ", "MASHTEKHREMONT", "MZKM_ARCHIVE", "MZKM", "MZKT", "MMZ", "MMZ_ARCHIVE_ENGINE", "MMZ_ENGINE", "MOAZ", "MOAZ", "MOAZ_ARCHIVE", "MOLDAGROTEKHNIKA", "MRMZ", "MTZ_ARCHIVE", "MTZ", "MTM", "MTM", "NEFAZ_ARCHIVE", "NEFAZ_ARCHIVE", "NEFAZ", "NEFAZ", "NEFAZ", "NKMZ", "OREL-POGRUZCHIK", "OSTA", "OTZ", "PAZ", "PAZ_ARCHIVE", "PENZADIZELMASH_ENGINE", "PROMTRAKTOR", "PTZ", "RASKAT", "RAF", "RMZ", "ROSTSELMASH_ARCHIVE", "ROSTSELMASH", "RUSSKAYA_MEKHANIKA", "RUSSKAYA_MEKHANIKA_ARCHIVE", "SAZ", "SALSKSELMASH", "SAREHKS", "SZAP_ARCHIVE", "SZAP", "SIBSELMASH", "SINERGIYA", "SMD_ENGINE", "STROJDORMASH", "STROMNEFTEMASH", "TVEHKS_ARCHIVE", "TVEHKS", "TEPLOSTAR_ENGINE", "TZA", "TKZ", "TMZ_ARCHIVE_ENGINE", "TMZ_ENGINE", "TMZ", "TONAR_ARCHIVE", "TONAR", "TORFMASH", "UAZ_ARCHIVE", "UAZ", "UVZ", "UVZ_ARCHIVE", "UMZ_ARCHIVE_ENGINE", "UMZ_ENGINE", "UMZ_-2", "UMPO", "UMPO", "UNISIBMASH", "URAL", "URAL_ARCHIVE", "URAL", "URALMASH", "HZTSSH", "HTZ_ARCHIVE", "HTZ", "CHERVONA_ZIRKA", "CHZTS", "CHMZ", "CHSDM", "CHTZ", "SHAAZ", "EHKSKO", "EHKSMASH", "EHLTRA_ENGINE", "YUMZ", "YURMASH", "YAMZ_ARCHIVE_ENGINE", "YAMZ_ENGINE"))){
+        //a2d
+        if($search){
+            // поиск но номеру(артикулу) или названию детали
+            $data['numbers'] = Helper::getData($settings, true, "/search?type=".urlencode($type)."&mark=".urlencode($mark)."&number=".urlencode($number));
+            echo print_r($data, 1);
+            foreach ($data as $key => $value) $$key = $value;
+            require $settings_array[template_path].'a2d/search.php';
+        }else if($modelId && $groupId && $image){
+            //изображение
+            ob_end_clean();
+            Helper::getImage($settings, "/{$type}/{$mark}/{$modelId}/{$groupId}/image", 1);
+        }else if($modelId && $groupId){
+            // номера (артикулы) запчастей
+            $data = Helper::getData($settings, true,"/{$type}/{$mark}/{$modelId}/{$groupId}");
+            foreach ($data as $key => $value) $$key = $value;
+            require $settings_array[template_path].'a2d/numbers.php';
+        }else if($modelId){
+            // группы
+            $data = Helper::getData($settings, true,"/{$type}/{$mark}/{$modelId}");
+            foreach ($data as $key => $value) $$key = $value;
+            require $settings_array[template_path].'a2d/groups.php';
+        }else{
+            $data = Helper::getData($settings, true,"/{$type}/{$mark}");
+            foreach ($data as $key => $value) $$key = $value;
+            require $settings_array[template_path].'a2d/models.php';
+        }
+
+    }else if(in_array($type, array("CARS_FOREIGN")) && in_array($mark, array("ABARTH", "ALFA_ROMEO", "LANCIA", "FIAT"))){
+
+        //Abarth | Alfa Romeo | Lancia | Fiat
+
+        if($search){
+
+            // поиск но номеру(артикулу)
+            $data['numbers'] = Helper::getData($settings, true,"/search?type={$type}&mark={$mark}&number={$number}");
+            foreach ($data as $key => $value) $$key = $value;
+            require $settings_array[template_path].'fiat/search.php';
+
+        }else if($model && $modification && $group && $subgroup && $variant){
+
+            // numbers
+            $data = Helper::getData($settings, true,"/{$type}/{$mark}/{$model}/{$modification}/{$group}/".urlencode($subgroup)."/{$variant}");
+            $data['labels'] = [];
+            $added = [];
+            if ($data['numbers'] && is_array($data['numbers'])) {
+                foreach ($data['numbers'] as $item) {
+                    if (property_exists($item,'coordinate') && $item->coordinate) {
+                        $coordinateIndex = $item->coordinate->bottom->x.$item->coordinate->bottom->y.$item->coordinate->top->x.$item->coordinate->top->y;
+                        if (!in_array($coordinateIndex, $added)) {
+                            $added[] = $coordinateIndex;
+                            $data['labels'][] = json_decode(json_encode([
+                                'index' => $item->index ? $item->index : ( $item->number ? $item->number : $item->description),
+                                'title' => "{$item->description} ({$item->number})",
+                                'bottomX' => $item->coordinate->bottom->x,
+                                'bottomY' => $item->coordinate->bottom->y,
+                                'topX' => $item->coordinate->top->x,
+                                'topY' => $item->coordinate->top->y
+                            ]));
+                        }
+                    }
+                }
+            }
+
+            $prev = $data['previousGroup'];
+            $next = $data['nextGroup'];
+            $data['prevUrl'] = $prev ? "{$hrefPrefix}?type={$prev->type}&mark={$prev->mark}&model={$prev->model}&modification={$prev->modification}&group={$prev->unit}&subgroup={$prev->subgroup_id}&variant={$prev->variant}" : null;
+            $data['nextUrl'] = $next ? "{$hrefPrefix}?type={$next->type}&mark={$next->mark}&model={$next->model}&modification={$next->modification}&group={$next->unit}&subgroup={$next->subgroup_id}&variant={$next->variant}" : null;
+            $data['title'] = "{$data['breadcrumbs'][5]->name} {$data['description']}";
+
+            foreach ($data as $key => $value) $$key = $value;
+            require $settings_array[template_path].'fiat/numbers.php';
+
+        }else if($model && $modification && $group){
+
+            // subgroups
+            $data = Helper::getData($settings, true, "/{$type}/{$mark}/{$model}/{$modification}/{$group}");
+            foreach ($data as $key => $value) $$key = $value;
+            require $settings_array[template_path].'fiat/subgroups.php';
+
+        }else if($model && $modification){
+
+            // groups
+            $data = Helper::getData($settings, true, "/{$type}/{$mark}/{$model}/{$modification}");
+            foreach ($data as $key => $value) $$key = $value;
+            require $settings_array[template_path].'fiat/groups.php';
+
+        }else if($model){
+
+            // модификации
+            $data = Helper::getData($settings, true, "/{$type}/{$mark}/{$model}");
+            foreach ($data as $key => $value) $$key = $value;
+            require $settings_array[template_path].'fiat/modifications.php';
+
+        }else{
+
+            // модели
+            $data = Helper::getData($settings, true, "/{$type}/{$mark}");
+            foreach ($data as $key => $value) $$key = $value;
+            require $settings_array[template_path].'fiat/models.php';
+
+        }
+
+
+    }else if(in_array($type, array("CARS_FOREIGN", "MOTORCYCLE")) && in_array($mark, array("BMW", "ROLLS-ROYCE", "MINI"))){
+
+        //BMW | Rolls-Royce | Mini
+        if($search){
+            // поиск но номеру(артикулу)
+            $data['numbers'] = Helper::getData($settings, true,"/search?type={$args['type']}&mark={$args['mark']}&number={$number}");
+            foreach ($data as $key => $value) $$key = $value;
+            require $settings_array[template_path].'bmw/search.php';
+
+        }else if($series && $model && $rule && $transmission && $group && $subgroup){
+
+            // numbers
+            $data = Helper::getData($settings, true,"/{$type}/{$mark}/{$series}/{$model}/{$rule}/{$transmission}/{$group}/{$subgroup}");
+            $data['labels'] = [];
+            $added = [];
+            if ($data['numbers'] && is_array($data['numbers'])) {
+                foreach ($data['numbers'] as $item) {
+                    if (property_exists($item,'coordinate') && $item->coordinate) {
+                        $coordinateIndex = $item->coordinate->bottom->x.$item->coordinate->bottom->y.$item->coordinate->top->x.$item->coordinate->top->y;
+                        if (!in_array($coordinateIndex, $added)) {
+                            $added[] = $coordinateIndex;
+                            $data['labels'][] = json_decode(json_encode([
+                                'index' => strlen($item->group_number) > 0 ? $item->group_number : strlen($item->number) > 0 ? $item->number : $item->full_name,
+                                'title' => "{$item->full_name} ({$item->number})",
+                                'bottomX' => $item->coordinate->bottom->x,
+                                'bottomY' => $item->coordinate->bottom->y,
+                                'topX' => $item->coordinate->top->x,
+                                'topY' => $item->coordinate->top->y
+                            ]));
+                        }
+                    }
+                }
+            }
+
+            $prev = $data['previousGroups'];
+            $next = $data['nextGroup'];
+            $data['prevUrl'] = $prev ? "{$hrefPrefix}?type={$prev->type}&mark={$prev->mark}&series={$prev->series}&model={$prev->model}&rule={$prev->rule}&transmission={$prev->transmission}&group={$prev->group}&subgroup={$prev->short_name}".($date ? "?date={$date}" : '') : null;
+            $data['nextUrl'] = $next ? "{$hrefPrefix}?type={$next->type}&mark={$next->mark}&series={$next->series}&model={$next->model}&rule={$next->rule}&transmission={$next->transmission}&group={$next->group}&subgroup={$next->short_name}".($date ? "?date={$date}" : '') : null;
+            $data['title'] = $data['breadcrumbs'][6]->name;
+
+            foreach ($data as $key => $value) $$key = $value;
+            require $settings_array[template_path].'bmw/numbers.php';
+
+        }else if($series && $model && $rule && $transmission && $group){
+            // subgroups
+            $data = Helper::getData($settings, true,"/{$type}/{$mark}/{$series}/{$model}/{$rule}/{$transmission}/{$group}");
+            if ($date) $data['queryDate'] = $date;
+            foreach ($data as $key => $value) $$key = $value;
+            require $settings_array[template_path].'bmw/subgroups.php';
+
+        }else if($series && $model && $rule && $transmission){
+            // groups
+            $data = Helper::getData($settings, true,"/{$type}/{$mark}/{$series}/{$model}/{$rule}/{$transmission}");
+            if ($date) $data['queryDate'] = $date;
+            foreach ($data as $key => $value) $$key = $value;
+            require $settings_array[template_path].'bmw/groups.php';
+
+        }else if($series){
+            // models
+            $data = Helper::getData($settings, true,"/{$type}/{$mark}/{$series}");
+            foreach ($data as $key => $value) $$key = $value;
+            require $settings_array[template_path].'bmw/models.php';
+        }else{
+            // series
+            $data = Helper::getData($settings, true, "/{$type}/{$mark}");
+            foreach ($data as $key => $value) $$key = $value;
+            require $settings_array[template_path].'bmw/series.php';
+        }
+
+    }
+}else{
+    # Вывод главной страницы
+    $types = Helper::getData($settings, false);
+    require $settings_array[template_path].'/index.php';
+}

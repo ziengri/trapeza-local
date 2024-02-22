@@ -1,0 +1,32 @@
+<?php 
+if ($_FILES['f_ForumAvatar']['size'] != 0 && $_FILES['f_ForumAvatar']['type'] != '')  {
+	eval(listQuery("SELECT CustomSettings FROM Sub_Class WHERE Sub_Class_ID='$cc'","\$data[CustomSettings]"));
+	
+    require_once($nc_core->INCLUDE_FOLDER . "classes/nc_imagetransform.class.php");
+	
+    $photo_path = $DOCUMENT_ROOT . nc_file_path('User', $message, 'ForumAvatar');
+    if ($photo_path) {
+		nc_ImageTransform::imgResize($photo_path, $photo_path, $CustomSettings['avatar_height'] ? $CustomSettings['avatar_height'] : 100, $CustomSettings['avatar_width'] ? $CustomSettings['avatar_width'] : 100);
+	}
+}
+
+if ($current_user['PermissionGroup_ID']==1 && $f_group){
+    $db->query("UPDATE User SET Checked=".$f_Checked." WHERE Catalogue_ID=".$catalogue." AND Email='".$f_Email."'");
+    $res = $db->get_var("SELECT PermissionGroup_ID FROM PermissionGroup WHERE PermissionGroup_Name LIKE 'Группа %' AND PermissionGroup_ID=".intval($f_group));
+    if (!empty($res))
+        $db->query("UPDATE User SET PermissionGroup_ID=".$res." WHERE Catalogue_ID=".$catalogue." AND Email='".$f_Email."'");
+}
+
+if($inside_admin) {
+	ob_end_clean();
+	header("Location: ".$goBackLink."&inside_admin=1");
+	exit;
+}else{
+    echo json_encode(ARRAY(
+        "title" => "ОК",
+        "succes" =>  NETCAT_MODERATION_MSG_OBJCHANGED,
+        "reloadtab" => 1,
+        "modal" => "close"
+    ));
+}
+?>

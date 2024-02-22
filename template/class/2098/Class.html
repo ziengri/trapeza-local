@@ -1,0 +1,14 @@
+<!-- FormPrefix --><?php 
+
+global $current_sub, $current_cc;
+
+$subs_type = $current_cc[Sub_Class_Settings][subs_type];
+$type = $subs_type == 'list' ? array('list' => 1) : NULL;
+# если не выбран Показ подразделов
+if ($current_sub[subdir] == '0') echo catalogCategory($current_sub[Subdivision_ID], $type);
+
+?><!-- /FormPrefix -->
+
+<!-- RecordTemplate --><!-- /RecordTemplate -->
+
+<!-- FormSuffix --><!-- /FormSuffix -->

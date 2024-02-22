@@ -1,0 +1,13 @@
+<?php
+$f_citytarget = ",".implode(",",$f_citytarget).",";
+if ($f_citytarget==',,') $f_citytarget='';
+
+if(stristr($f_text, '<body') || stristr($f_text, '</body')){
+    $f_text = preg_replace("/<body[^>]+\>/g", "", $f_text);
+    $f_text = preg_replace("/<[\/]+body>/g", "", $f_text);
+}
+
+$f_lang = json_encode($f_lang);
+
+$f_Catalogue_ID = $catalogue;
+?>

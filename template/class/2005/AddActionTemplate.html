@@ -1,0 +1,455 @@
+<?php
+
+$connectTemplate = $DOCUMENT_ROOT . $pathInc2 . "/template/{$classID}/templateAdd/AddActionTemplate.html";
+
+if ($current_catalogue['customCode'] && file_exists($connectTemplate)) {
+    include($connectTemplate);
+} else {
+    global $setting, $settingCont, $catalogue, $db, $current_user, $AUTH_USER_ID, $pathInc;
+
+
+    require_once $DOCUMENT_ROOT . '/bc/modules/default/iiko.php';
+    require_once $DOCUMENT_ROOT . '/bc/modules/default/PaymentMethod/class_payment_method.php';
+    require_once $DOCUMENT_ROOT . '/bc/modules/default/PaymentMethod/Cart/cart.class.php';
+    
+    if ($f_payment) {
+        $paymentname = Class2005::getListName('payment', $f_payment, 'name');
+        $servisePayment = Class2005::getListName('payment', $f_payment, 'servise_payment');
+    }
+        
+    if ($current_user["User_ID"]) {
+        $formRemData = $db->get_var("SELECT formRem FROM User WHERE User_ID = {$current_user["User_ID"]}");
+        $formRem = $formRemData ? orderArray($formRemData) : array();
+        foreach (orderArray($setting['cartForm']) as $customInp) {
+            if ($customInp["required"]["value"] == 1 && $_POST["customf"][$customInp["name"]["value"]]["value"]) {
+                $formRem[$customInp["name"]["value"]] = $_POST["customf"][$customInp["name"]["value"]]["value"];
+            }
+        }
+        $db->query("UPDATE User SET formRem = '" . json_encode($formRem) . "' WHERE User_ID = {$current_user["User_ID"]}");
+    }
+    
+    $cityname = ($cityname ? $cityname : $_COOKIE['cityname']);
+    // поля из компанета счет
+    if (!$settingCont) {
+        $settingCont = $db->get_row(
+            "SELECT 
+                    a.*,
+                    a.Message_ID AS mesid
+                FROM 
+                    Message2024 AS a,
+                    Subdivision AS b
+                WHERE
+                    b.Catalogue_ID = '{$catalogue}' 
+                    AND a.Subdivision_ID=b.Subdivision_ID 
+                ORDER BY 
+                    a.Created
+                LIMIT 0,1",
+            ARRAY_A
+        );
+    }
+    
+    $order = json_decode($f_orderlist, true);
+    $mailPayUrl = '';
+
+
+    //Автоматическое создание заказа в сдек
+    if ($f_deliveryAssist) {
+        $deliveryAssist = is_array($f_deliveryAssist) ? $f_deliveryAssist : orderArray($f_deliveryAssist);
+        if ($deliveryAssist['type'] = 'cdek') {
+            if($setting['cdek_auto_register'] == 1){
+    
+                $cdek = new \App\modules\Korzilla\Service\Delivery\Cdek\Cdek();
+        
+                $inputData = ['Message_ID'=>$message,'orderlist'=>$order,"customf"=>$customf,"fio"=>$f_fio,"phone"=>$f_phone,"email"=>$f_email];
+                $data =new \App\modules\Korzilla\Service\Delivery\Cdek\DbOrderParser($inputData);
+        
+                $cdek_res =  $cdek ->orderRegistrate($data);
+                
+                $uuid =$cdek_res['entity']['uuid'];
+        
+        
+            }    
+        }         
+    }
+   
+    if ($servisePayment) {
+        $PaymentMethod = new PaymentMethod($message, $order, $customf);
+        switch ($servisePayment) {
+            case 'UNITELLER':
+                $res = $PaymentMethod->uniteller();
+                break;
+            case 'robokassa':
+                $res = $PaymentMethod->robokassa();
+                break;
+            case 'tinkoff':
+                $res = $PaymentMethod->tinkoff();
+                break;
+            case 'yKassa':
+                $res = $PaymentMethod->yKassa($order, $message, $customf);
+                break;
+            case 'sberbank':
+                $res = $PaymentMethod->sberbank();
+                break;
+            case 'alfa':
+                $res = $PaymentMethod->alfa($message, $order['totaldelsum']);
+                break;
+            case 'PAYANYWAY':
+                $res = $PaymentMethod->payAnyWay();
+                break;
+            case 'DirectCredit':
+                $res = $PaymentMethod->directCredit();
+                break;
+            case 'AVANTGARDE':
+                $res = $PaymentMethod->avangarde();
+                break;
+            case 'check':
+                $res = $PaymentMethod->check();
+                break;
+            case 'ubrr':
+                $res = $PaymentMethod->ubrr();
+                break;
+            case 'payKeeper':
+                $res = $PaymentMethod->payKeeper();
+                break;
+            case 'dolyami':
+                $res = $PaymentMethod->dolyami();
+                break;
+        }
+        if (isset($res) && is_array($res)) {
+            if ($res['status']) {
+                if ($res['payUrl']) {
+                    $mailPayUrl = $res['payUrl'];
+                }
+                if ($res['payButton']) {
+                    $payButton = $res['payButton'];
+                } elseif ($res['payUrl']) {
+                    $payButton = "<script type='text/javascript'>location='{$res['payUrl']}';</script>";
+                }
+            } else {
+                $payError = $res['message'];
+            }
+        }
+        unset($res);
+    }
+
+
+    #Bitrix
+    $bitrix_items = [];
+
+    // html корзины
+    if ($order) {
+        $cart = new Cart();
+        $paramCatrMail = [
+            'dateCreated' => date("d.m.Y H:i"),
+            'order' => $order,
+            'Message_ID' => $msgID,
+            'currency' => getLangWord('currency', 'руб'),
+            'totalSum' => $order['totalsum'],
+            'paymentname' => $paymentname,
+			'paybutton' => $mailPayUrl,
+            'siteName' => $current_catalogue['Catalogue_Name'],
+            'phone' => $settingCont['phone']
+        ];
+
+        $suppliersSetting = json_decode(file_get_contents($_SERVER['DOCUMENT_ROOT'].'/bc/modules/bitcat/manifestes/service_suppliers.json'), 1);
+
+        foreach ($order['items'] as $itemid => $item) {
+            $bitrix_items[] = [
+                'name'  => $item['name'],
+                'price' => $item['price'],
+                'count' => $item['count'],
+				'edizm' => ($item['edizm'] ? $item['edizm'] : 796)
+            ];
+            $param = $db->get_row(
+                "SELECT 
+                    a.*, 
+                    b.Preview, 
+                    b.Path 
+                FROM 
+                    Message2001 AS a
+                LEFT JOIN 
+                    Multifield AS b 
+                ON b.Message_ID = a.Message_ID 
+                    AND b.Field_ID = '2353'  
+                WHERE 
+                    a.Message_ID = '{$item['id']}' 
+                ORDER BY 
+                    b.`Priority` 
+                LIMIT 0,1", ARRAY_A);
+            $itemParam = $item;
+            $itemParam['source'] = ($suppliersSetting[$param['import_source']]['name'] ?: '');
+            $itemParam['variablename'] = $param['variablename'];
+            if ($param['Preview']) {
+                $itemParam['img'] = "http://{$_SERVER['HTTP_HOST']}{$param['Preview']}";
+            }
+            $itemParam['fullLink'] = "http://{$_SERVER['HTTP_HOST']}" . nc_message_link($item['id'], 2001);
+            $paramCatrMail['items'][] = $itemParam;
+
+            // Frontpad array items
+            $product[] = $item['art'];
+            $product_kol[] = $item['count'];
+
+            # вычитание товара из остатков
+            unset($newstock, $vrid);
+            if (strstr($itemid, "vr")) { //вариант товара
+                $itemidArr = explode("_", $itemid);
+                $vrid = str_replace("vr", "", $itemidArr[1]);
+                $variable = orderArray($param['variable']);
+                if ($variable[$vrid]['stock'] && $variable[$vrid]['stock'] > 0) {
+                    $newstock = ($variable[$vrid]['stock'] - $item['count'] >= 0 ? ($variable[$vrid]['stock'] - $item['count']) : 0);
+                    if ($newstock >= 0) {
+                        $variable[$vrid]['stock'] = "$newstock";
+                        $db->query("update Message2001 set variable = '" . json_encode($variable) . "' where Message_ID = '" . $item['id'] . "'");
+                    }
+                }
+            } else { //сам товар
+                if ($param['stock'] > 0) {
+                    $newstock = ($param['stock'] - $item['count'] >= 0 ? ($param['stock'] - $item['count']) : 0);
+                    if ($newstock >= 0) {
+                        $db->query("update Message2001 set stock = '" . $newstock . "' where Message_ID = '" . $item['id'] . "'");
+                    }
+                }
+            }
+        }
+
+
+        # сумма доставки
+        if ($f_delivery) {
+            $paramCatrMail['deliveryvalue'] = $_SESSION['cart']['delivery']['sum_result'];
+            if ($f_deliveryAssist) {
+                $deliveryAssist = is_array($f_deliveryAssist) ? $f_deliveryAssist : orderArray($f_deliveryAssist);
+                switch ($deliveryAssist['type']) {
+                    case 'cdek':
+
+                        $cdek = \App\modules\Korzilla\Service\Delivery\Cdek\Cdek::getInstance();
+            
+                        $paramCatrMail['deliveryInfo'] = '<br/>Способ доставки:';
+                        
+                        if ($cdek->getTariffType($deliveryAssist['tariffid'], 'type') === 'courier') {
+                            $paramCatrMail['deliveryInfo'] .= 'Курьером (до девери)';
+                        } else {
+                            $paramCatrMail['deliveryInfo'] .= 'В пункт выдачи / постамат';
+                        }
+     
+                        if (!empty($deliveryAssist['pvzcode'])) {
+                            $paramCatrMail['deliveryInfo'] .= " по адресу: ".$cdek->getPvz($deliveryAssist['pvzcode'], 'addressFull');
+                        }
+                        $paramCatrMail['deliveryname'] = 'CDEK';
+                        $paramCatrMail['deliveryInfo'] .= '<br/>Тариф: '.$cdek->getTariff($deliveryAssist['tariffid'], 'name')." ({$deliveryAssist['tariffid']})";
+                        break;
+                    case 'pochta_russia':
+                        $PR = new PochtaRussia();
+                        $paramCatrMail['deliveryname'] = 'Почта России';
+                        $paramCatrMail['deliveryInfo'] .= '<br/>' . $PR->getDeliveryInfo($deliveryAssist['description'], $deliveryAssist['pvzType'], $deliveryAssist['mailType']);
+                        break;
+                    default:
+                        $paramCatrMail['deliveryname'] = "<b>{$deliveryAssist['name']}</b> - {$deliveryAssist['description']}";
+                        break;
+                }
+            } else {
+            $paramCatrMail['deliveryvalue'] = $_SESSION['cart']['delivery']['sum_result'];
+                $paramCatrMail['deliveryname'] = ($_SESSION['cart']['delivery']['type'] ?: $_SESSION['cart']['delivery']['name']);
+            }
+        }
+
+        $paramCatrMail['totalSumToPay'] = $order['totalsum'] + $paramCatrMail['deliveryvalue'];
+
+        foreach ($customf as $customField) {
+            # Юр.лицо
+            if (stristr($customField['name'], "(Юр.лицо)") && !$f_usertype) {
+                continue;
+            }
+
+            $paramCatrMail['user'][] = [
+                'name' => str_replace("(Юр.лицо)", "", $customField['name']),
+                'value' => (is_array($customField['value']) ? implode(', ', $customField['value']) : $customField['value'])
+            ];
+			
+			$customFields[] = $customField['name'].": ".$customField['value'];
+        }
+
+        $frommail = getDomenMail();
+        $toemailArr =  explode(",", $cc_settings['EmailTo'] ?: $setting['email'] ?: $system_env['SpamFromEmail']) ?: [];
+
+        $emailForNotification = Class2005::getListName('delivery', $order['delivery']['id'])['emailForNotification'];
+        if ($emailForNotification) {
+            $toemailArr = [$emailForNotification];
+        }
+
+        # письмо клиенту
+        if (checkEmail($customf['email']['value'])) {
+            $mailerUser = new MailAssist();
+
+            if ($_FILES) {
+                foreach ($_FILES as $file) {
+                    if (fileForm($file)) {
+                        $mailerUser->addFile($file['tmp_name'], $file['name'], mime_content_type($file['tmp_name']));
+                    }
+                }
+            }
+
+            $resUser = $mailerUser->send($customf['email']['value'], $frommail, $cart->renderCart($paramCatrMail), "Ваш заказ № {$msgID} принят", $current_catalogue['Catalogue_Name']);
+        }
+        # письмо магазину
+        if (!empty($toemailArr)) {
+            $mailerAdmin = new MailAssist();
+
+            if (file_exists($DOCUMENT_ROOT . $pathInc . '/1C/import.xml')) {
+                $orderPath = import1C("", $orderId);
+                if ($orderPath) {
+                    $mailerAdmin->addFile($orderPath . ".xml", "order_1C.xml", "application/octet-stream");
+                    if (@file_exists($orderPath . ".txt")) {
+                        $mailerAdmin->addFile($orderPath . ".txt", "order_1C.txt", "application/octet-stream");
+                    }
+                }
+            }
+            # файл
+            if ($_FILES) {
+                foreach ($_FILES as $file) {
+                    if (fileForm($file)) {
+                        $mailerAdmin->addFile($file['tmp_name'], $file['name'], mime_content_type($file['tmp_name']));
+                    }
+                }
+            }
+
+            if (count(getCheckedServiceSuppliers())) {
+                $paramCatrMail['source_on'] = true;
+            }
+
+            foreach ($toemailArr as $toeml) {
+                $resAdmin = $mailerAdmin->send(trim($toeml), $frommail, $cart->renderCart($paramCatrMail), "В магазине" . ($cityname ? " ($cityname)" : null) . " новый заказ № {$msgID}", $current_catalogue['Catalogue_Name']);
+            }
+        }
+    } // end order
+
+    # Bitrix новый лид
+    bitrixNewLead([
+        'TITLE'         => 'Заказ с сайта №' . $message,
+		'ORIGIN_ID' 	=> $message,
+        'PHONE'         => $f_phone,
+        'EMAIL'         => $f_email,
+        'NAME'          => $f_fio,
+        'ADDRESS_CITY'  => $f_city,
+        'COMMENTS'      => $f_textcomment . ($f_delivery ? " |Доставка: {$deliveryname} {$deliveryvalue}p." : null) . " |Оплата: " . $paymentname
+    ], $bitrix_items);
+
+    # amoCRM
+    if ($setting['actoken'] && $setting['acsubdomen']) {
+        amoCrm([
+            'TITLE'         => 'Заказ с сайта №' . $message,
+            'PHONE'         => $f_phone,
+            'EMAIL'         => $f_email,
+            'NAME'          => $f_fio,
+            'ADDRESS_CITY'  => $f_city,
+            'COMMENTS'      => $f_textcomment . ($f_delivery ? " |Доставка: {$deliveryname} {$deliveryvalue}p." : null) . " |Оплата: " . $paymentname
+        ]);
+    }
+
+    # отправка заказа в iiko
+    if ($setting['iikoCheck'] && $setting['iikoLogin'] && $setting['iikoPassword']) {
+        $auth = array(
+            'login' => $setting['iikoLogin'],
+            'pass' => $setting['iikoPassword']
+        );
+        $iiko = new Iiko($auth, $catalogue, $db, $pathInc);
+        $iikoSend = true;
+        $iikoSendResult = $iiko->sendOrder($message, ($current_user ? $current_user : false));
+    }
+
+    # заказ в XML
+    if ($orderPath) {
+        import1C();
+    }
+
+    // Подгтовка ответа
+
+    # товары которые были в сессии для yaDataLayer
+    $purchaseItems = array_reduce($_SESSION['cart']['items'], function ($carry, $item) {
+        $carry[] = [
+            'id' => $item['id'],
+            'name' => $item['name'],
+            'price' => $item['price'],
+            'count' => $item['count']
+        ];
+        return $carry;
+    }, []);
+
+    $messageReplacer = [
+      '[ИМЯ]' => $customf['name']['value'],
+      '[НОМЕР_ЗАКАЗА]' => $message
+    ];
+
+    $templateResponseUser = "Спасибо, {$customf['name']['value']}, Ваш заказ №{$message} оформлен." . (!$payButton ? ($setting_texts['manager_will_contact_text']['checked'] ? $setting_texts['manager_will_contact_text']['name'] : "<p>Менеджер свяжется с Вами в ближайшее время</p>") : null);
+
+    $succes = strtr(getLangWord('orderedText', $templateResponseUser), $messageReplacer) . $payButton;
+    
+    if ($type_order == 'buy_one_click') {
+        unset($_SESSION['buy_one_click']);
+    } else {
+        unset($_SESSION['cart']);
+    }
+    
+    
+
+    # ответ
+    echo json_encode([
+        "title" => getLangWord('title_thank', "Спасибо!"),
+        "succes" => $succes,
+        "hash" => "ordered",
+        "todo" => ($type_order == 'buy_one_click' ? 'reload' : 'clearcart'),
+        "transaction" => "$message",
+        "items" => ($setting['rrIDtovar'] ? $f_orderlist : ""),
+        "submodal" => 1,
+        "purchase_items" => $purchaseItems,
+        'payError' => $payError,
+        'order' => Class2005::getListName('delivery', $order['delivery']['id'])['whatsappNumberForNotification'],
+    ]);
+
+    # выключение товаров онлайн сервисов
+    $subId = $db->get_var("select Subdivision_ID from Subdivision where Catalogue_ID=$catalogue and EnglishName='onlajn-servisy'");
+    if ($subId) {
+        $classId = $db->get_var("select Sub_Class_ID from Sub_Class where Catalogue_ID=$catalogue and Class_ID=2001 and Subdivision_ID=$subId");
+        if ($classId) {
+            $db->query("UPDATE Message2001 SET price='', stock='', Checked=0, var1=0 where Catalogue_ID=$catalogue and Sub_Class_ID=$classId and Subdivision_ID=$subId");
+        }
+    }
+
+    $whatsappNumber = '';
+    $deliveryNotificationPhone = Class2005::getListName('delivery', $order['delivery']['id'])['whatsappNumberForNotification'];
+    if ($deliveryNotificationPhone) {
+        $whatsappNumber = $deliveryNotificationPhone;
+    } else if ($setting['noticewhatsapp']) {
+        $whatsappNumber = $setting['noticewhatsapp'];
+    }
+
+    if (!$paramCatrMail['deliveryvalue']) {
+      $paramCatrMail['deliveryvalue'] = 0;
+    }
+    if ($whatsappNumber) {
+        $whatsappMessage = "На сайте $_SERVER[HTTP_HOST] появился новый заказ № $message\n"
+            . "Сумма заказа: $order[totaldelsum] \n"
+            . ($f_fio ? "Имя: $f_fio\n" : "")
+            . ($f_phone ? "Телефон: $f_phone\n" : "")
+			. ($f_email ? "E-mail: $f_email\n" : "")
+			. ($f_city ? "Город: $f_city\n" : "")
+			. implode("\n",$customFields)
+      . ($paramCatrMail['deliveryname'] ? "Тип доставки: {$paramCatrMail['deliveryname']}\n" : "")
+      . ($order['delivery']['sum_result'] ? "Стоимость доставки: {$order['delivery']['sum_result']}р.\n" : "")
+      . ($paymentname ? "Тип оплаты: ${paymentname}\n" : "")
+	  . ($f_textcomment ? "Комментарий: $f_textcomment\n" : "")
+            . "____________\n"
+            . "Состав заказа\n";
+
+        foreach ($order['items'] as $item) {
+            $whatsappMessage .= "\n$item[name]";
+            if (!empty($item['count'])) $whatsappMessage .= " - {$item['count']} шт.";
+            if (!empty($item['sum'])) $whatsappMessage .= " - {$item['sum']} руб.";
+        }
+		
+		$whatsappMessage .= "";
+
+        sendWhatsappMessage($whatsappNumber, $whatsappMessage);
+    }
+    
+
+} # ################# END ############

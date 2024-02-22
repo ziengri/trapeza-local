@@ -1,0 +1,19 @@
+<!-- FormPrefix --><?=($inside_admin ? $f_AdminCommon : addObjBut($addLink,$isTitle))?>
+
+<ul class='phototype1'><!-- /FormPrefix -->
+
+<!-- RecordTemplate --><?php 
+unset($file); unset($rel);
+$file = ($f_filelink ? $f_filelink : $f_file);
+if (stristr($file,'.gif') || stristr($file,'.png') || stristr($file,'.bmp') || stristr($file,'.jpg') || stristr($file,'.jpeg')) $rel = "rel='photo[p]'";
+if (stristr($file,'.pdf')) $rel = "target=_blank";
+?>
+
+<li class='obj <?=objHidden($f_Checked,$f_citytarget,$cityid).(!$f_Checked ? " uncheck" : NULL)?> obj<?=$f_RowID?>'>
+	            <a <?=$rel?> href='<?=$file?>' class='img'><span><img src='<?=$f_img?>'></span></a>
+	            <a <?=$rel?> href='<?=$file?>' class='txt'><?=$f_name?></a>
+                <?=($f_AdminButtons ? "<div class=clear></div>$f_AdminButtons" : "")?>
+                <?=($bitcat ? editObjBut($editLink) : NULL)?>
+</li><!-- /RecordTemplate -->
+
+<!-- FormSuffix --><?php  require $nc_parent_field_path; ?><!-- /FormSuffix -->

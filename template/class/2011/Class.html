@@ -1,0 +1,26 @@
+<!-- FormPrefix --><?=($inside_admin ? $f_AdminCommon : addObjBut($addLink, $isTitle, null, 'соц. сеть', 0))?>
+
+<?php  if ($totRows) {?>
+	<ul class='soc_bar'>
+<?php }?>
+<!-- /FormPrefix -->
+
+<!-- RecordTemplate --><li class='obj <?=objHidden($f_Checked,$f_citytarget,$cityid)?> obj<?=$f_RowID?> obj-type-<?=$f_social_id?>'>
+    <?=($bitcat ? editObjBut($editLink) : NULL)?>
+    <?=($admin_mode ? "<div>$f_social</div>".$f_AdminButtons : "")?>
+    <a target=_blank rel=nofollow href='<?=$f_url?>' <?=($f_social_value ? "style='background-position: $f_social_value'" : NULL)?>></a>
+</li><!-- /RecordTemplate -->
+
+<!-- FormSuffix --><?php  if ($totRows) {?>
+</ul>
+<?php  } else { ?>
+
+<ul class='soc_bar'>
+<li class='obj'><a href="#" class="goodshare" data-type="vk" style='background-position: 0 0'></a></li>
+<li class='obj'><a href="#" class="goodshare" data-type="fb" style='background-position: -40px 0'></a></li>
+<li class='obj'><a href="#" class="goodshare" data-type="ok" style='background-position: -78px 0'></a></li>
+<!--<li class='obj'><a href="#" class="goodshare" data-type="mr" style='background-position: -156px 0'></a></li>
+<li class='obj'><a href="#" class="goodshare" data-type="tw" style='background-position: -194px 0'></a></li>-->
+
+</ul>
+<?php }?><!-- /FormSuffix -->

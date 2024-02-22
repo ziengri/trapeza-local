@@ -1,0 +1,4 @@
+<?php  if ($totRows) { ?>
+	</ul>
+    <?=(!$isTitle ? getLoadMore(array("totRows" => $totRows, "recNum" => $recNum, "sub" => $sub, "cc" => $cc)) : "")?>
+<?php  } ?>

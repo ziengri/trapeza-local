@@ -1,0 +1,36 @@
+<?php
+if ($current_catalogue['customCode']) {
+  global $pathInc2;
+  $includeClass = NULL;
+  $thisFile = $DOCUMENT_ROOT . $pathInc2 . "/template/class/2001/2019/FormPrefix.html";
+  if (file_exists($thisFile))
+    $includeClass = 1;
+}
+
+if ($includeClass == 1) {
+  include($thisFile);
+} else { # ############ START ##########
+  ?>
+  <?
+  global $setting, $find;
+
+  if ($setting['searchCurrentSub'] && $_POST['r']) {
+    $type = 3;
+    $curr_cat_name = $db->get_var("SELECT Subdivision_Name FROM Subdivision WHERE Subdivision_ID = '{$_GET['r']}'");
+  }
+
+  ?>
+  <div class="header_search">
+    <form class='searchform <?= ($setting['searchLife'] ? "search-life" : "") ?> iconsCol' action='/search/' method='get'
+      <?= ($yaid[1] ? "onsubmit=\"yaCounter{$yaid[1]}.reachGoal('search'); return true;\"" : NULL) ?>>
+      <div class='searchform-inp'>
+        <?= ($type == 3 && (!$find || ($find && $_GET['r'] > 0)) && $current_cc['Class_ID'] == 2001 ? "<div class='curr_cat_search'><div class='curr_cat_search_txt'><span class='curr_cat_name'>" . ($curr_cat_name ? $curr_cat_name : $current_sub['Subdivision_Name']) . "</span></div><span class='remove_cat_search'></span><input type='checkbox' value='" . ($_GET['r'] ?: $current_sub['Subdivision_ID']) . "' class='none' name='r' checked></div>" : "") ?>
+        <input class='inp' value='<?= $find ?>' type=text autocomplete="off" name=find
+          placeholder='<?= ($setting_texts['search_field']['checked'] ? $setting_texts['search_field']['name'] : "Для поиска по каталогу введите название или артикул") ?>'>
+      </div>
+      <span class="btn-strt"><input type=submit class=submit
+          value='<?= ($setting_texts['search_btn']['checked'] ? $setting_texts['search_btn']['name'] : "Поиск") ?>'></span>
+      <?= ($type == 2 && (!$find|| ($find && $_GET['r'] > 0)) && $current_cc['Class_ID'] == 2001 ? "<label><input type='checkbox' value='" . ($_GET['r'] ?: $current_sub['Subdivision_ID']) . "' name='r' " . ($_GET['r'] > 0 ? "checked" : "") . "> в текущем разделе</label>" : "") ?>
+    </form>
+  </div>
+<? } ?>

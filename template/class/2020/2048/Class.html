@@ -1,0 +1,35 @@
+<!-- FormPrefix --><div class="ind_r_block ind_otzivy"><!-- /FormPrefix -->
+
+<!-- RecordTemplate --><?php 
+unset($otvetAut);
+if ($f_otvet) {
+	$otvetAut = getUser($f_LastUser_ID);
+}
+if ($f_UserID>0) {
+	$userAut = getUser($f_UserID);
+}
+
+if (date("dmY")==$f_Created_day.$f_Created_month.$f_Created_year) {
+	$date = "Сегодня";
+} else {
+	$date = "$f_Created_day ".month($f_Created_month)." в $f_Created_hours:$f_Created_minutes";
+}
+?>
+
+
+<div class='obj <?=(!$f_Checked ? "uncheck" : NULL)?> obj<?=$f_RowID?>'>
+	<div class="otz_person">
+		<div class="otz_img"><img src="<?=($userAut[photo] ? $userAut[photo] : $nophoto)?>" alt=""></div>
+		<div class="otz_name"><b><?=($f_name ? $f_name : "Аноним")?></b></div>
+	</div>
+	<div class="otz_text">
+		<?=$f_textt?>
+	</div>
+	<?=($bitcat ? editObjBut($editLink,1) : "")?>
+</div><!-- /RecordTemplate -->
+
+<!-- FormSuffix --></div>
+
+<?php  if ($totRows>$recNum) {?>
+<a href="<?=$cc_env[Hidden_URL]?>" class="otz_all">Читать все отзывы »</a>
+<?php  } ?><!-- /FormSuffix -->

@@ -1,0 +1,43 @@
+<?php
+
+/** @var string $selector */
+/** @var array $settings */
+
+$nc_core = nc_core::get_object();
+$css = '';
+
+foreach (array('label_font_asset', 'input_font_asset') as $asset) {
+    if (!empty($settings[$asset])) {
+        $nc_core->page->require_asset($asset);
+    }
+}
+
+$legacy_requests_selector = '.tpl-component-netcat-module-requests-request';
+$selectors = array(
+    'field' => "$selector .nc-field, $selector .tpl-block-input, $selector $legacy_requests_selector .tpl-block-input",
+    'label' => "$selector .nc-field-caption, $selector .tpl-caption, $selector $legacy_requests_selector .tpl-caption",
+    'input' =>
+        "$selector input, $selector select, $selector textarea, " .
+        "$selector $legacy_requests_selector input, $selector $legacy_requests_selector select, $selector $legacy_requests_selector textarea"
+);
+
+// temporary
+$inputs_selectors = $selectors['input'];
+$selectors['input'] = $inputs_selectors . ', ' .
+    str_replace(',', ':focus,', $inputs_selectors) . ':focus, ' .
+    str_replace(',', ':hover,', $inputs_selectors) . ':hover';
+
+
+foreach ($selectors as $type => $selector) {
+    $type_css = '';
+    foreach ($settings[$type] as $property => $value) {
+        if (strlen($value) && !preg_match('/_unit$/', $property)) {
+            $css_property = strtr($property, '_', '-');
+            $unit = isset($settings[$type][$property . '_unit']) ? $settings[$type][$property . '_unit'] : '';
+            $type_css .= "$css_property:$value$unit;";
+        }
+    }
+    $css .= "$selector { $type_css }\n";
+}
+
+return $css;

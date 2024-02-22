@@ -1,0 +1,123 @@
+<?php /* Служебная часть */
+for ($f_RowNum = 0; $f_RowNum < $rowCount; $f_RowNum++) {
+	if ($fetch_row[$f_RowNum] instanceof Iterator) {
+		extract($fetch_row[$f_RowNum]->to_array(), EXTR_PREFIX_ALL, "f");
+	} else {
+		extract($fetch_row[$f_RowNum], EXTR_PREFIX_ALL, "f");
+	}
+	foreach ($iteration_RecordTemplate[$f_RowNum] as $value) {
+		extract($value);
+	}
+	eval($cc_env["convert2txt"]);
+	ob_start();
+	/* Конец служебной части */?>
+
+	<?php
+	unset($otvetAut);
+	if ($f_otvet) {
+		$otvetAut = getUser($f_LastUser_ID);
+	}
+	if ($f_UserID > 0) {
+		$userAut = getUser($f_UserID);
+	}
+
+	if (date("dmY") == $f_Created_day . $f_Created_month . $f_Created_year) {
+		$date = "Сегодня";
+	} else {
+		$date = "$f_Created_day " . month($f_Created_month) . " {$f_Created_year} в $f_Created_hours:$f_Created_minutes";
+	}
+	global $pathInc2;
+	$recordCustomPath = $DOCUMENT_ROOT . $pathInc2 . "/template/class/{$classID}/RecordTemplate.html";
+	$isIncludeRecordCustom = !empty($current_catalogue['customCode']) && file_exists($recordCustomPath);
+	if ($isIncludeRecordCustom) {
+		include $recordCustomPath;
+	} else {
+		?>
+
+		<div class='otzyv_item obj <?= objHidden($f_Checked, $f_citytarget, $cityid) ?> obj<?= $f_RowID ?>'><?php echo $f_AdminButtons; ?>
+			<?= ($bitcat ? editObjBut($editLink, 1) : "") ?>
+			<div class="otz_img">
+				<img src="<?= ($userAut[photo] ? $userAut[photo] : $nophoto) ?>" alt="">
+			</div>
+			<div class="otz_information">
+				<div class="otz_title">
+					<div class="kz_otz_time">
+						<?= $date ?>
+					</div>
+					<div class="otz_name">
+						<?= ($f_name ? $f_name : "Аноним") ?>
+					</div>
+				</div>
+				<div class="otz_user_text">
+					<?php if ($f_text11) { ?>
+						<div class="otz_itm_i">
+							<div class="otz_what">Что понравилось</div>
+							<div class="otz_text">
+								<?= $f_text11 ?>
+							</div>
+						</div>
+					<?php } ?>
+					<?php if ($f_text22) { ?>
+						<div class="otz_itm_i">
+							<div class="otz_what">Что не понравилось</div>
+							<div class="otz_text">
+								<?= $f_text22 ?>
+							</div>
+						</div>
+					<?php } ?>
+					<div class="otz_itm_i">
+						<?php if ($f_text11 || $f_text22) { ?>
+							<div class="otz_what">Общие выводы</div>
+						<?php } ?>
+						<div class="otz_text">
+							<?= $f_textt ?>
+						</div>
+					</div>
+					<?php if ($f_otvet) { ?>
+						<div class="otz_otvet">
+							<div class="otz_img">
+								<span class="image_w">
+									<img src="<?= ($otvetAut[photo] ? $otvetAut[photo] : $nophoto) ?>" alt="">
+								</span>
+							</div>
+							<div class="otz_information_mng">
+								<div class="otz_title_mng">
+									<div class="otz_name_mng">
+										<?= $otvetAut['name'] ?>
+										<?= $otvetAut['fam'] ?>
+									</div>
+								</div>
+								<div class="otz_text_mng">
+									<?= $f_otvet ?>
+								</div>
+								<div class="otz_podpis">— с уважением,
+									<?= $otvetAut['name'] ?>
+									<?= $otvetAut['fam'] ?>
+								</div>
+							</div>
+						</div>
+					<?php } ?>
+
+					<?php if (count($f_photo->records) > 0) { ?>
+						<ul class='gallery-items gallery-review count-gallery-1' data-calculated='1'>
+							<?php foreach ($f_photo->records as $record): ?>
+								<li class='obj image-default'>
+									<a href='<?= $record['Path'] ?>' data-rel='lightcase:review-<?= $f_RowID ?>'>
+										<span class='img-preview'>
+											<img src='<?= $record['Preview'] ?: $record['Path'] ?>' loading="lazy" />
+											<span>
+									</a>
+								</li>
+							<?php endforeach; ?>
+						</ul>
+					<?php } ?>
+				</div>
+			</div>
+		</div>
+
+	<?php
+	}
+	/* Служебная часть */
+	echo nc_finishing_RecordTemplate(ob_get_clean(), $inside_admin, $classID, $f_RowID, $parent_message, $cc, $cc_env["Class_Name"], $no_cache_marks);
+}
+/* Конец служебной части */?>

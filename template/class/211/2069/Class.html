@@ -1,0 +1,186 @@
+<!-- FormPrefix --><script src="/b/autoholding/jquery.tablesorter.min.js"></script>
+<div id="pc_form">
+	<input id="pc_value" placeholder="Введите артикул" />
+	<button id="pc_search">Поиск</button>
+</div>
+<div id="pc_result"></div>
+<script>
+$(document).ready(function(){
+	//запрос детали
+	$('#pc_search').on('click', function(){
+		pc_value = $('#pc_value').val();
+		if (pc_value!=''){
+			load.loading("start");
+			$.ajax({
+				url:'?isNaked=1&pc_value='+pc_value,
+				success:function(data){
+					$('#pc_result').html(data);
+					load.loading("end");
+				}
+			});
+		}
+	});
+	if (location.search.indexOf('find')!=-1){
+		temp = location.search.split('=');
+		if (temp[1]!=''){
+			load.loading("start");
+			search = location.search;
+			$('#pc_value').val(search.replace('?find=','').replace("'",''));
+			pc_value = search.replace('?find=','');
+			$.ajax({
+				url:'?isNaked=1&pc_value='+pc_value,
+				success:function(data){
+					$('#pc_result').html(data);
+					load.loading("end");
+				}
+			});
+		}
+	}
+});
+function pc_get_vendors(arg){
+	load.loading("start");
+	pc_value = $('#pc_value').val();
+	pc_vendor = arg;
+	$.ajax({
+		url:'?isNaked=1&pc_value='+pc_value+'&pc_vendor='+pc_vendor,
+		success:function(data){
+			$('#pc_result').html(data);
+			load.loading("end");
+		}
+	});
+}
+function pc_add_to_cart(pc_value, pc_vendor, pc_sklad){
+	load.loading("start");
+	$.ajax({
+		url:'?isNaked=1&pc_value='+pc_value+'&pc_vendor='+pc_vendor+'&pc_sklad='+pc_sklad,
+		success:function(data){
+			if (data.indexOf('добавлен')!=-1){
+				$('#baton_'+pc_value+'_'+pc_sklad).html('В корзине');
+				$.ajax({
+					url:'/cart/?nc_ctpl=2006&isNaked=1',
+					success:function(data){
+						$('#block5>article>div').html(data);
+					}
+				});
+				alert(data);
+				load.loading("end");
+			}
+			else{
+				alert(data);
+				load.loading("end");
+			}
+		}
+	});
+}
+</script>
+<style>
+.pc_span {
+	text-decoration:underline;
+	cursor:pointer;
+	color:blue;
+}
+.pc_tabler {
+	display:none;
+}
+.pc_tabler th:first-child {
+	width:60%;
+}
+.pc_show {
+    color: #fff;
+    background: #7686ab;
+    padding: 5px;
+    margin: 5px auto;
+    cursor:pointer;
+}
+.pc_tabler button {
+    width: 100%;
+    border: 0;
+    color: #fff;
+    background: #263a62;
+    padding: 5px;
+}
+#pc_form {
+	width: 100%;
+    font-size: 0;
+    margin-top:10px;
+}
+#pc_value {
+	width: 75%;
+    height: 40px;
+    padding: 5px 10px;
+    margin: 0;
+    border: 1px solid #263a62;
+}
+#pc_search {
+	width: 25%;
+    height: 40px;
+    margin: 0;
+    border: 0;
+    color: #fff;
+    background: #d82130;
+}
+#pc_result {
+	margin-top:10px;
+}
+#pc_result>table {
+	background: #f5ffff;
+	border-collapse: collapse;
+	text-align: left;
+	width:100%;
+}
+#pc_result>table th {
+	background: #263a62;
+	color: white;
+	padding: 5px;
+	position: relative;
+}
+#pc_result>table tr:nth-child(odd) {
+	background: #ebf3f9;
+}
+#pc_result>table td {
+	border: 1px solid #e3eef7;
+	padding: 1px 5px;
+	position: relative;
+	transition: all 0.5s ease;
+	font-size: 14px;
+}
+.pc_all {
+    background: #263a62;;
+    width: 200px;
+    position: relative;
+    left: calc(100% - 200px);
+    color: #fff;
+    display:none;
+    text-align: center;
+    padding: 5px;
+    border-radius: 0px 0px 5px 5px;
+    cursor:pointer;
+}
+.pc_table_tr {
+	display:none;
+}
+#_pc_table td:first-child {
+	width:15%;
+}
+#_pc_table td:nth-of-type(2) {
+	width:40%;
+}
+#_pc_table td:nth-of-type(3) {
+	width:10%;
+	text-align: center;
+}
+#_pc_table td:nth-of-type(4) {
+	width:15%;
+	text-align: center;
+}
+.pc_span_sklad {
+    background: #72ae4c;
+    color: #fff;
+    border-radius: 10px;
+    padding: 0 5px;
+}
+</style><!-- /FormPrefix -->
+
+<!-- RecordTemplate --><!-- /RecordTemplate -->
+
+<!-- FormSuffix --><!-- /FormSuffix -->

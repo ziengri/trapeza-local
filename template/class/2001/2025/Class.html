@@ -1,0 +1,153 @@
+<!-- FormPrefix --><?php  include($CLASS_TEMPLATE_FOLDER."2001/FormPrefix.php"); ?>
+<?php 
+global $setting;
+    $th = "";
+    $fileds = $setting[fieldInTable] ? $setting[fieldInTable] : "art";
+    if($setting[itemComparison]) $fileds .= ",comparison";
+    $names = Class2001::setParams("full");
+    foreach(explode(",", $fileds) as $c) {
+        if($c=="stock" && !$setting[itemliststock] && !$setting['stockValShow']) continue;
+        $th .= "<th class='th_{$c} nomob'>".($setting_texts[$c]["name"] ? $setting_texts[$c]["name"] : ($names[$c] ? $names[$c] : "—"))."</th>";
+    }
+?>
+
+
+<?php 
+if ($current_catalogue['customCode']) {
+
+
+	GLOBAL $pathInc2;
+    $includeClass = NULL;
+	$thisFile = $DOCUMENT_ROOT.$pathInc2."/template/class/{$classID}/2025/FormPrefix.html";
+	if (file_exists($thisFile)) $includeClass = 1;
+
+}
+if ($includeClass) { include($thisFile); } else { # ############ START ##########
+?>
+
+
+<?=($totRows ? "
+<div class='catalog-table' data-totrows='{$totRows}'>
+  <table class='table_main'>
+    <thead>
+      <tr>
+          <th class='th_photo'>{$table_photo}</th>
+          <th class='th_name'>{$table_name}</th>
+          {$th}
+          <th class='th_price'>{$table_price}</th>
+          <th class='th_incart'>{$table_buy}</th>
+      </tr>
+    </thead>
+    <tbody>
+" : ($find || $filter ? "<p class='no-obj'>".($setting_texts['search_noitem']['checked'] ? $setting_texts['search_noitem']['name'] : "Товаров не найдено")."</p>" : ""))?>
+
+<?php  } ?><!-- /FormPrefix -->
+
+<!-- RecordTemplate --><?php 
+
+if ($current_catalogue['customCode']) {
+    GLOBAL $pathInc2;
+    $thisFile = $DOCUMENT_ROOT.$pathInc2."/template/class/{$classID}/RecordTemplate.html";
+}
+
+if (file_exists($thisFile)) { include($thisFile); } else { # ############ START ##########
+
+    if ($f_oneitem && !$find) {
+        include $DOCUMENT_ROOT."/template/class/2001/RecordTemplateFull.html";
+    } else {
+        $fields = array(
+          "sub" => $sub,
+          "cc" => $cc,
+          "classID" => $classID,
+          "nc_ctpl" => $nc_ctpl,
+          "fullLink" => $fullLink,
+          "editLink" => $editLink,
+          "image_default" => $image_default,
+          "fastprew" => $fastprew,
+          "current_sub" => $current_sub,
+          "current_cc" => $current_cc,
+          "current_catalogue" => $current_catalogue,
+          "RowID" => $f_RowID,
+          "Checked" => $f_Checked,
+    	  "Subdivision_ID" => $f_Subdivision_ID,
+          "name" => preg_replace("/_\[.*\]_/", '', $f_name),
+          "orgName" => $f_name,
+          "art" => $f_art,
+          "code" => $f_code,
+          "stock" => $f_stock,
+			"stock2" => $f_stock2,
+			"stock3" => $f_stock3,
+			"stock4" => $f_stock4,
+          "photo" => $f_photo,
+          "photourl" => $f_photourl,
+          "edizm" => $f_edizm,
+          "descr" => $f_descr,
+          "vendor" => $f_vendor,
+          "text" => $f_text,
+          "price" => $f_price,
+          "price2" => $f_price2,
+          "price3" => $f_price3,
+          "price4" => $f_price4,
+          "firstprice" => $f_firstprice,
+          "pricecity" => $f_pricecity,
+          "discont" => $f_discont,
+          "pricediscont" => $f_pricediscont,
+          "notmarkup" => $f_notmarkup,
+          "disconttime" => $f_disconttime,
+          "dogovor" => $f_dogovor,
+          "variable" => $f_variable,
+          "colors" => $f_colors,
+          "extlink" => $f_extlink,
+          "spec" => $f_spec,
+          "nocart" => $f_nocart,
+    	  "noorder" => $f_noorder,
+          "buyvariable" => $f_buyvariable,
+          "buycolors" => $f_buycolors,
+          "timer" => $f_timer,
+          "itemlabel" => $f_itemlabel,
+          "citytarget" => $f_citytarget,
+          "ves" => $f_ves,
+          "analog" => $f_analog,
+          "variablename" => $f_variablename,
+          "capacity" => $f_capacity,
+          "size" => $f_size,
+          "height" => $f_height,
+          "width" => $f_width,
+          "depth" => $f_depth,
+          "tags" => $f_tags,
+          "rate" => $f_rate,
+          "ratecount" => $f_ratecount,
+          "oneitem" => $f_oneitem,
+          "outItems" => $f_outItems,
+          "currency" => $f_currency,
+          "currency_id" => $f_currency_id,
+          "view" => $f_view,
+          "var1" => $f_var1,
+          "var2" => $f_var2,
+          "var3" => $f_var3,
+          "var4" => $f_var4,
+          "var5" => $f_var5,
+          "var6" => $f_var6,
+          "var7" => $f_var7,
+          "var8" => $f_var8,
+          "var9" => $f_var9,
+          "var10" => $f_var10,
+          "var11" => $f_var11,
+          "var12" => $f_var12,
+          "var13" => $f_var13,
+          "var14" => $f_var14,
+          "var15" => $f_var15,
+          "isTitle" => $isTitle,
+          "otherItem" => $f_otherItem,
+          "xlslist" => $f_xlslist,
+        );
+        $class2001 = new Class2001($fields);
+    	echo $class2001->getTableItem();
+    }
+}
+?><!-- /RecordTemplate -->
+
+<!-- FormSuffix --><?=($totRows ? "</tbody></table></div>" : NULL)?>
+
+<?php  include($CLASS_TEMPLATE_FOLDER."2001/FormSuffix.php"); ?>
+<!-- /FormSuffix -->

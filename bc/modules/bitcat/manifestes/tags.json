@@ -1,0 +1,14 @@
+{
+    "search_item": {
+        "name": "Тэги",
+        "row": [
+            {
+                "name": "tags",
+                "label": "Тэги",
+                "type": "tags",
+                "type_old": "11",
+                "colline": "height"
+            }
+        ]
+    }
+}

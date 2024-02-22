@@ -1,0 +1,50 @@
+
+<?php
+
+if ($current_catalogue['customCode']) {
+    global $pathInc2;
+    $includeClass = NULL;
+    $thisFile = $DOCUMENT_ROOT . $pathInc2 . "/template/class/{$classID}/FormSuffix.html";
+    if (file_exists($thisFile))
+        $includeClass = 1;
+}
+if ($includeClass == 1) {
+    include($thisFile);
+} else { # ############ START ##########
+    ?>
+    <?= ($totRows ? "</div>" : NULL) ?>
+    <?php
+    // pre_dump([$totRows, empty($showMoreProducts), $setting['showAdditionalItems']], 1955);
+    if ($totRows < 25 && empty($showMoreProducts) && $setting['showAdditionalItems']) {
+        $shopParentCategoryKeyword = $setting["shopParentCategoryKeyword"];
+        if (!$shopParentCategoryKeyword) {
+            $shopParentCategoryKeyword = "catalog";
+        }
+        $catalogParentSub = $db->get_row("
+    SELECT Subdivision.Subdivision_ID, Sub_Class.Sub_Class_ID
+    FROM Subdivision
+    JOIN Sub_Class ON Subdivision.Subdivision_ID = Sub_Class.Subdivision_ID
+    WHERE   Subdivision.EnglishName = '$shopParentCategoryKeyword' 
+        AND Subdivision.Catalogue_ID = $catalogue
+  ");
+        if ($catalogParentSub->Subdivision_ID && $catalogParentSub->Sub_Class_ID) {
+            ?>
+            <section class='blocks  start end this block_buywith additional-items'>
+                <header class='blk_head nopadingLR' data-name-block='full_ponravtext'>
+                    <div class='h2'>Рекомендуемые товары</div>
+                </header>
+                <article class='cb blk_body nopadingLR'>
+                    <div class='blk_body_wrap'>
+                        <?= nc_objects_list(
+                            $catalogParentSub->Subdivision_ID,
+                            $catalogParentSub->Sub_Class_ID,
+                            "&isTitle=1&nc_ctpl=2001&recNum=40&randomSort=1&outallitem=1&scrolling=0&scrollNav=1&showMoreProducts=1"
+                        ) ?>
+                    </div>
+                </article>
+            </section>
+        <?php } ?>
+    <?php } ?>
+
+    <?php include($CLASS_TEMPLATE_FOLDER . "2001/FormSuffix.php"); ?>
+<?php } ?>

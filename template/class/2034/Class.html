@@ -1,0 +1,8 @@
+<!-- FormPrefix --><?php  echo $f_AdminCommon; ?>
+<div id="siteTree"><ul><!-- /FormPrefix -->
+
+<!-- RecordTemplate --><li><span class="link"><?=$f_name?> (<?=count(orderArray($f_data))?>)
+<span class='modify'><?=editObjBut($editLink,1)."</span>".$f_AdminButtons?></span>
+</li><!-- /RecordTemplate -->
+
+<!-- FormSuffix --></ul></div><!-- /FormSuffix -->

@@ -1,0 +1,6 @@
+<? if (!empty($data['nc_ctpl_options'])): ?>
+<div class='colline colline-3 colline-nc_ctpl'>
+    <?= bc_select("params[nc_ctpl]", getOptionsFromArray($data['nc_ctpl_options'], $data['nc_ctpl']), "Вариант отображения", "class='ns'") ?>
+</div>
+<? endif ?>
+2

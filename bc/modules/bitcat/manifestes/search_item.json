@@ -1,0 +1,25 @@
+{
+    "search_item": {
+        "name": "Поиск",
+        "row": [
+            {
+                "name": "noSearchInText",
+                "label": "Искать по полям \"text и var1\"",
+                "type": "checkbox",
+                "colline": 2
+            },
+            {
+                "name": "searchLife",
+                "label": "Живой поиск",
+                "type": "checkbox",
+                "colline": 2
+            },
+            {
+                "name": "searchCurrentSub",
+                "label": "Поиск в текущем разделе",
+                "type": "checkbox",
+                "colline": 2
+            }
+        ]
+    }
+}

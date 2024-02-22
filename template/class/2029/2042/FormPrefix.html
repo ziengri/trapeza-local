@@ -1,0 +1,22 @@
+<?php 
+if ($_FILES['xmlfile']) {
+    $allowName = array("import.xml","offers.xml");
+    //$error = print_r($_FILES['xmlfile'],1);
+    $ii = 0;
+    foreach($_FILES['xmlfile']['name'] as $filename) {
+        if (!in_array($filename, $allowName)) continue;
+        if ($_FILES['xmlfile']['type'][$ii]!='text/xml') continue;
+        if (!move_uploaded_file($_FILES['xmlfile']['tmp_name'][$ii], $DOCUMENT_ROOT.$pathInc."/1C/".$filename)) $error .= "error file ".$filename; else $succes .= "succes file ".$filename;
+        $ii++;
+    }
+}
+
+    if (!$error && !$succes) $error = "Файлы не выбраны";
+    
+    echo json_encode(ARRAY(
+        "title" => "ОК",
+        "succes" =>  ($succes ? "Файлы успешно загружены" : ""),
+        "error" => ($error ? $error : "")
+    ));
+
+?>

@@ -1,0 +1,92 @@
+<?php
+global $setting, $DOCUMENT_ROOT, $pathInc, $db, $AUTH_USER_ID;
+$waterPosition = ($setting[waterPosition] ? ($setting[waterPosition] == 5 ? "0" : $setting[waterPosition]) : 4);
+
+if ($current_catalogue['customCode']) {
+	global $pathInc2;
+	$includeClass = NULL;
+	$thisFile = $DOCUMENT_ROOT . $pathInc2 . "/template/{$classID}/templateAdd/AddActionTemplate.html";
+	if (file_exists($thisFile))
+		$includeClass = 1;
+}
+
+if ($includeClass == 1) {
+	include($thisFile);
+} else { # ############ START ##########
+
+	if (!$inside_admin)
+		objsys($bc_objsys, $classID, $message);
+	clearCache('', '', '', $catalogue);
+	if ($removeID)
+		removeObj($message, $classID, $removeID);
+	if (!$f_Keyword)
+		setKeywordObj($message, $classID, array($f_name, $f_variablename, $f_art));
+
+	$sub_id = $db->get_var("SELECT `Subdivision_ID` FROM `Message2001` WHERE `Message_ID` = {$message} AND `Catalogue_ID` = {$catalogue}");
+
+	// Если это основной товара сделать другие товары его вариантами.
+	if (!$f_variablenameSide) {
+		$db->query(
+			"UPDATE 
+				Message2001 
+			SET 
+				variablenameSide = 1 
+			WHERE 
+				Subdivision_ID = {$sub_id} 
+				AND name = '{$f_name}'
+				AND Message_ID != {$message}
+				AND `Catalogue_ID` = {$catalogue}");
+	}
+
+	if ($pathInc && file_exists($DOCUMENT_ROOT . $pathInc . '/images/watermark.png')) {
+		@require_once($INCLUDE_FOLDER . "classes/nc_imagetransform.class.php");
+		$previewWater = array(456); // кому ставить вод.знак на превью
+
+		$photos = $db->get_results("select * from Multifield where Size != '1' AND Size != '2' AND Message_ID = '$message' AND Field_ID = '2353' LIMIT 0,10", ARRAY_A);
+		if ($photos) {
+			foreach ($photos as $fot) {
+
+				if (!$notWater) {
+					nc_ImageTransform::putWatermark_file($fot[Path], $pathInc . '/images/watermark.png', $waterPosition);
+					if (in_array($catalogue, $previewWater))
+						nc_ImageTransform::putWatermark_file($fot[Preview], $pathInc . '/images/watermark.png', $waterPosition);
+				}
+				$db->query("UPDATE Multifield set Size = '1' where ID = '$fot[ID]'");
+			}
+		}
+	}
+
+	// фотки с гугла
+	if ($googlephoto && count($googlephoto) > 0) {
+		savePhotoByGoogle($message, $googlephoto);
+	}
+
+	/** Сохранение тэгов */
+	$tag_list = $tag_list ?? [];
+	(function () use ($tag_list, $message, $classID) {
+		$tagProvider = new \App\modules\Korzilla\Tag\Provider();
+
+		foreach ($tag_list as $tagId => $unused) {
+
+			if ($bind = $tagProvider->bindCreate((int) $tagId, (int) $message, (string) $classID)) {
+				$tagProvider->bindSave($bind);
+			}
+		}
+	})();
+
+	if ($inside_admin) {
+		ob_end_clean();
+		header('Location: ' . $goBackLink . '&inside_admin=1');
+		exit;
+	} else {
+		echo json_encode(array(
+			"title" => "ОК",
+			"succes" => NETCAT_MODERATION_MSG_OBJADD,
+			"reload" => 1,
+			"modal" => "close"
+		));
+
+	}
+	
+}
+?>

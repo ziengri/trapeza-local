@@ -1,0 +1,43 @@
+<?php
+$connectTemplate = $DOCUMENT_ROOT.$pathInc2."/template/{$classID}/AddCond.html";
+if($current_catalogue['customCode'] && file_exists($connectTemplate)){
+  include($connectTemplate);
+}else{
+
+    /*if ($phone[0] && $phone[1]) {
+    	$f_phone = "+7{$phone[0]}{$phone[1]}";
+    } else {
+        $posting = 0;
+        echo json_encode(ARRAY(
+            "title" => "Ошибка",
+            "error" => "Номер указан неверно"
+        ));
+        exit;
+    }*/
+     
+    $f_time = "с {$time1} до {$time2}";
+
+    if (!$f_Name || !$f_phone || !$f_time) {
+        $posting = 0;
+        echo json_encode(ARRAY(
+            "title" => getLangWord('error',"Ошибка"),
+            "error" => getLangWord('er_txt_fillReq',"Заполните все обязательные поля.")
+        ));
+        exit;
+    }
+
+
+    // $ipcount = $db->get_var("select count(Message_ID) as cnt from Message{$classID} where IP = '".getIP()."' AND Created >= now() - interval 1 hour");
+    // if ($ipcount>0) {
+    //     $posting = 0;
+    //     echo json_encode(ARRAY(
+    //         "title" => getLangWord('error',"Ошибка"),
+    //         "error" => getLangWord('er_txt_alradyWrite',"Вы нам уже писали, мы видели ваш запрос.")
+    //     ));
+    //     exit;
+    // }
+
+    $f_Catalogue_ID = $catalogue;
+
+}
+?>

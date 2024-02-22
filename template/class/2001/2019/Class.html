@@ -1,0 +1,15 @@
+<!-- FormPrefix --><div class="header_search">
+  <form class='searchform <?=($setting['searchLife'] ? "search-life" : "")?> iconsCol' action='/search/' method='get' <?=($yaid[1] ? "onsubmit=\"yaCounter{$yaid[1]}.reachGoal('search'); return true;\"" : NULL)?>>
+  <div class='searchform-inp'>
+      <input class='inp' value='<?=strip_tags($_GET[find])?>' type=text autocomplete="off" name=find placeholder='<?=($setting_texts['search_field']['checked'] ? $setting_texts['search_field']['name'] : "Для поиска по каталогу введите название или артикул")?>'>
+  </div>
+  <span class="btn-strt"><input type=submit class=submit  value='<?=($setting_texts['search_btn']['checked'] ? $setting_texts['search_btn']['name'] : "Поиск")?>'></span>
+
+  <?=($type==2 && (!$_GET[find] || ($_GET[find] && $_GET[r]>0)) && $current_cc[Class_ID]==2001 ? "<label><input type='checkbox' value='".($_GET[r]>0 ? $_GET[r] : $current_sub[Subdivision_ID])."' name='r' ".($_GET[r]>0 ? "checked":"")."> в текущем разделе</label>":"")?>
+  </form>
+</div>
+<!-- /FormPrefix -->
+
+<!-- RecordTemplate --><!-- /RecordTemplate -->
+
+<!-- FormSuffix --><!-- /FormSuffix -->

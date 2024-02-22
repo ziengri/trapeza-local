@@ -1,0 +1,51 @@
+{
+    "SEOitemcard": {
+        "name": "SEO CSS СКРИПТЫ",
+        "row": [
+            {
+                "name": "SEOitemcard",
+                "label": "SEO текст в карточке товара",
+                "type": "textarea",
+                "type_old": 3,
+                "colline": "height"
+            },
+            {
+                "permission": "$setting['powerseo_super'] || ('superadmin')",
+                "name": "SEOTitleObj",
+                "label": "SEO заголовок карточки объекта (тег title)",
+                "type": "textarea",
+                "type_old": 3,
+                "colline": "height"
+            },
+            {
+                "permission": "$setting['powerseo_super'] || ('superadmin')",
+                "name": "SEODescriptionObj",
+                "label": "SEO описание карточки объекта (тег meta:Description)",
+                "type": "textarea",
+                "type_old": 3,
+                "colline": "height"
+            },
+            {
+                "name": "meta",
+                "label": "Meta-тэги, подключение скриптов / css файлов",
+                "type": "textarea",
+                "type_old": 3,
+                "colline": "height"
+            },
+            {
+                "name": "counter",
+                "label": "Коды счетчиков, консультанов (получить код: <a target=_blank href='http://www.liveinternet.ru/add'>LiveInternet</a>, <a target=_blank href='https://metrika.yandex.ru/add/'>Я.Метрика</a>, <a target=_blank href='https://www.jivo.ru/?partner_id=40449'>Jivosite</a>, <a target=_blank href='https://bitrix24.korzilla.ru'>Битрикс24</a>)",
+                "type": "textarea",
+                "type_old": 3,
+                "colline": "height"
+            },
+            {
+                "name": "robot",
+                "label": "Содержимое файла Robots.txt (<a href=\"\" onclick=\"if(navigator.userAgent.toLowerCase().indexOf('opera') != -1 &amp;&amp; window.event.preventDefault) window.event.preventDefault();this.newWindow = window.open('/sitemap.php?forceRefresh=1', 'sitemap', 'toolbar=0,scrollbars=0,location=0,status=0,menubar=0,width=500,height=200,resizable=0');this.newWindow.focus();this.newWindow.opener=window;return false;\">Обновить файл Sitemap.xml</a>)",
+                "type": "textarea",
+                "type_old": 3,
+                "colline": "height"
+            }
+        ]
+    }
+}

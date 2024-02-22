@@ -1,0 +1,349 @@
+<?
+if ($current_catalogue['customCode']) {
+    $includeClass = false;
+    $thisFile = $DOCUMENT_ROOT . $pathInc2 . "/template/template/2/Header.html";
+    if (file_exists($thisFile)) $includeClass = 1;
+}
+
+if ($includeClass == 1) include $thisFile;
+else {
+
+    if ($action == 'full' && $message > 0 && !$f_name && !$isTitle && $classID == 2001) { //если товар был перемещен
+        // ищем товар в базе сайта и получаем новую ссылку
+        $newitemlink = nc_message_link($message, $classID);
+
+        if (stristr($_SERVER['REQUEST_URI'] . '?', '?', true) != $newitemlink) {
+            if ($newitemlink) {
+                header("HTTP/1.1 301 Moved Permanently");
+                header("Location: $newitemlink");
+            } else {
+                header("HTTP/1.0 404 Not Found");
+                header("Location: /404/");
+            }
+        }
+
+    } /* не доделано
+    else if (strstr($_SERVER['REQUEST_URI'],".html")) {
+        $urlpars = array_reverse(explode("/",$_SERVER['REQUEST_URI']));
+        $urlpars = str_replace(".html","",$urlpars[0]);
+        echo $urlpars;
+    } else {
+        header("HTTP/1.0 404 Not Found"); header("Location: /404/");
+    }*/
+
+
+    if ($classID == 2001) {
+        $itemObj = Class2001::getItemById($f_Message_ID);
+    }
+
+    # сайт выключен
+    // if(!$current_catalogue[Checked]) header("Location: //korzilla.ru/extend-the-tariff");
+
+    # БЛОКИ
+    include($DOCUMENT_ROOT . $SUB_FOLDER . $HTTP_TEMPLATE_PATH . "blocks.php");
+    # Ширина нынешней данной страницы
+    $cols = !$noleftcol && $zoneall[2] ? 9 : 12;
+    // if ($_SERVER['REMOTE_ADDR'] === '95.78.63.157') {
+    //     echo "<pre>";
+    //     var_dump($nc_core->page->get_title());
+    //     var_dump($action != 'full' && !empty($nc_core->page->get_title()), $action == 'full' && !empty($f_ncTitle));
+    //     echo "</pre>";
+    //     exit;
+    // }
+?>
+    <!DOCTYPE html>
+    <html lang="ru" prefix="og: http://ogp.me/ns#">
+
+    <head itemscope itemtype="http://schema.org/WPHeader">
+        <meta charset="utf-8">
+        <title itemprop='headline'><?
+
+                                    switch (true) {
+                                        case  $action != 'full' && !empty($current_sub['Title2']):
+                                            $titlepath = $current_sub['Title2'];
+                                            break;
+                                        case $action != 'full' && !empty($nc_core->page->get_title()) || $action == 'full' && !empty($f_ncTitle):
+                                            $titlepath = $nc_core->page->get_title();
+                                            break;
+                                        case $action == 'full' && !empty($current_sub['TitleObj']):
+                                            $titlepath = $current_sub['TitleObj'];
+                                            break;
+                                        case $action == 'full' && !empty(trim($setting['SEOTitleObj'])):
+                                            $titlepath = $setting['SEOTitleObj'];
+                                            break;
+                                        case $action == 'full' && empty($current_sub['TitleObj']):
+                                            $titlepath = implode(" / ", array_reverse(explode(" / ", strip_tags(nc_browse_path($browse_path)))));
+                                            break;
+                                        default:
+                                            $titlepath = implode(" / ", array_reverse(explode(" / ", strip_tags(nc_browse_path($browse_path)))));
+                                            break;
+                                    }
+
+                                    if (!empty($titlepath) && !empty($cityname) && !preg_match("/(%CITYNAME)|(%NOCITY%)/", $titlepath)) {
+                                        $titlepath .= " %CITYNAME%";
+                                    }
+                                    $titlepath = \Korzilla\Replacer::replaceText(strip_tags($titlepath));
+                                    echo html_entity_decode($titlepath);
+                                    ?></title>
+
+        <?
+
+        # description
+        switch (true) {
+            case $action != 'full' && empty($current_sub['Description']) && !empty($current_sub['Description2']):
+                $descrpath = $current_sub['Description2'];
+                break;
+            case $action != 'full' && !empty($nc_core->page->get_description()) || $action == 'full' && !empty($f_ncDescription):
+                $descrpath = $nc_core->page->get_description();
+                break;
+            case $action == 'full' && !empty($current_sub['DescriptionObj']):
+                $descrpath = $current_sub['DescriptionObj'];
+                break;
+            case $action == 'full' && $classID == 2001 && !empty(trim($setting['SEODescriptionObj'])):
+                $descrpath = $setting['SEODescriptionObj'];
+                break;
+            case $action == 'full' && $classID == 2001 && empty($current_sub['DescriptionObj']):
+                $descrpath = $itemObj->text;
+                break;
+            default:
+                $descrpath = '';
+                break;
+        }
+        if (!empty($descrpath) && !empty($cityname) && !preg_match("/(%CITYNAME)|(%NOCITY%)/", $descrpath)) {
+            $descrpath .= " %CITYNAME%";
+        }
+        if (!empty($descrpath)) {
+            $descrpath = \Korzilla\Replacer::replaceText(strip_tags($descrpath));
+        }
+        
+        # keywords
+        switch (true) {
+            case $action != 'full' && empty($current_sub['Keywords']) && !empty($current_sub['Keywords2']):
+                $keywpath = $current_sub['Keywords2'];
+                break;
+            case $action != 'full' && !empty($nc_core->page->get_keywords()) || $action == 'full' && !empty($f_ncKeywords):
+                $keywpath = $nc_core->page->get_keywords();
+                break;
+            case $action == 'full' && !empty($current_sub['KeywordsObj']):
+                $keywpath = $current_sub['KeywordsObj'];
+                break;
+            default:
+                $keywpath = '';
+                break;
+        }
+
+        if (!empty($cityname) && (!empty($keywpath) && !preg_match("/(%CITYNAME)|(%NOCITY%)/", $keywpath))) {
+            $keywpath .= " %CITYNAME-LOW%";
+        }
+        if (!empty($keywpath)) {
+            $keywpath = \Korzilla\Replacer::replaceText($keywpath);
+            $keywpath = addslashes($keywpath);
+        }
+        ?>
+        <?
+        $followRobotsSeo = true;
+        $indexRobotsSeo = true;
+        if ($current_sub['no_index_seo'] || ($current_sub['no_index_pagination_seo'] && $curPos)) $indexRobotsSeo = false;
+        if ($current_sub['no_follow_seo'] || ($current_sub['no_follow_pagination_seo'] && $curPos)) $followRobotsSeo = false;
+        if ($action == 'full' && !$current_sub['no_follow_seo']) $indexRobotsSeo = true;
+        if (isset($_GET['name']) && $classID == 2001) $indexRobotsSeo = false;
+        $httpHostExplode = array_reverse(explode('.', $HTTP_HOST));
+        if ($httpHostExplode[1] == 'krza') {
+            $indexRobotsSeo = false;
+            $followRobotsSeo = false;
+        } 
+        ?>
+        <meta name="robots" content="<?=($indexRobotsSeo ? 'index' : 'noindex')?>, <?=($followRobotsSeo ? 'follow' : 'nofollow')?>"/>
+        <meta name="yandex" content="<?=($indexRobotsSeo ? 'index' : 'noindex')?>, <?=($followRobotsSeo ? 'follow' : 'nofollow')?>"/>
+        <meta name="googlebot" content="<?=($indexRobotsSeo ? 'index' : 'noindex')?>, <?=($followRobotsSeo ? 'follow' : 'nofollow')?>"/>
+		
+        <meta name='Description' content='<?= htmlspecialchars($descrpath, ENT_QUOTES) ?>'>
+        <meta name='Keywords' content='<?= htmlspecialchars($keywpath, ENT_QUOTES) ?>'>
+
+        
+        <meta name="format-detection" content="telephone=no">
+        <?= openGraph(['description' =>htmlspecialchars($descrpath, ENT_QUOTES)]) ?>
+
+        <?= (!$setting['notmobile'] ? "<meta name='viewport' content='width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=0'>" : null) ?>
+
+        
+        <link rel='icon' href='<?= $favicon ?>' type='image/png'>
+        <link rel='shortcut icon' href='<?= $favicon ?>' type='image/png'>
+        <?php 
+            $canonicalURl = 
+            ((\App\modules\Korzilla\Canonical\Canonical::getInstance())
+                ->getCanonical())
+            ?: 
+            (($_GET && $redirect_url && $redirect_url != $_SERVER['REQUEST_URI']) 
+                ? (($_SERVER['HTTP_HOST'] ? 'https' : 'http')."://".$_SERVER['HTTP_HOST']. $redirect_url) : "");
+            $canonicalURl = $canonicalURl?:$canonicalLink; 
+        ?>
+        <? if($canonicalURl) :?>
+            <link rel="canonical" href="<?= $canonicalURl ?>" />
+        <? endif;?>
+        <script src="/js/jquery-2.1.4.min.js?v=2"></script>
+        <script type="text/javascript">
+            <?php foreach( (\App\modules\Korzilla\ConsoleLog\ConsoleLog::getInstance())->getLog() as $key => $log) : ?>
+                console.log(<?= json_encode([$key => $log], 1) ?>)
+            <? endforeach; ?>
+        </script>
+        <?= stripcslashes($setting['meta']) ?>
+
+        <LINK href='<?= $SRV_HOST ?>/css/grid1000.css' rel='Stylesheet' type='text/css'>
+        <?= ($setting['sitewidth'] ? "<LINK href='{$SRV_HOST}/css/grid1200.css' media='screen and (min-width:1280px)' rel='Stylesheet' type='text/css'>" : null) ?>
+        <link href="//<?= $HTTP_HOST ?>/css/style.css?v=<?= filectime($DOCUMENT_ROOT . $SUB_FOLDER . '/css/style.css') ?>" rel='Stylesheet' type='text/css'>
+        <?= (!$setting['notmobile'] ? "<LINK href='{$SRV_HOST}/css/mobile.css?v=" . filectime($DOCUMENT_ROOT . $SUB_FOLDER . '/css/mobile.css') . "' media=\"screen and (max-width:780px)\" rel='Stylesheet' type='text/css'>" : null) ?>
+        <LINK href='<?= $pathInc ?>/bc_custom<?= (!$bitcat && file_exists($DOCUMENT_ROOT . $SUB_FOLDER . $pathInc . "/bc_custom.min.css") ? ".min" : null) ?>.css?v=<?= filectime($DOCUMENT_ROOT . $SUB_FOLDER . $pathInc . '/bc_custom.css') ?>' rel='Stylesheet' type='text/css'>
+
+        <?= ($_SESSION['deviceID'] && file_exists($DOCUMENT_ROOT . $SUB_FOLDER . $pathInc . "/bc_custom_app.min.css") ? "<LINK href='" . $pathInc . "/bc_custom_app.min.css?v=" . filectime($DOCUMENT_ROOT . $SUB_FOLDER . $pathInc . '/bc_custom_app.min.css') . "' rel='Stylesheet' type='text/css'>" : null) ?>
+
+        <?= ($cc_env['File_Path'] == '/sys/' && $action == 'add' ? "<script type='text/javascript' src='{$SRV_HOST}/bc/modules/auth/auth.js'></script>" : null) ?>
+        <?= ($_SESSION['deviceID'] ? '<script charset="utf-8" src="https://widgets.2gis.com/js/DGWidgetLoader.js"></script>' : null) ?>
+        <?= ($setting['mainMenuBg'] && $setting['mainMenuBg'] != 'ffffff' ? "<meta name='theme-color' content='{$setting['mainMenuBg']}'>" : null) ?>
+
+        <?= ($bitcat ? "<script src='/bc/modules/Korzilla/UploaderPhotoItems/src/dropzone.min.js'></script><link rel='stylesheet' href='/bc/modules/Korzilla/UploaderPhotoItems/src/dropzone.min.css'>" : '') ?>
+        <script src="/js/jquery.lazy-master/jquery.lazy.min.js"></script>
+        <script src="/bc/modules/Korzilla/Cart/src/cart.js"></script>
+        <? if ($setting['dadata_autocomplit_by_inn']): ?>
+        <script src="/bc/modules/Korzilla/DaData/src/OrganizationByINN.js"></script>
+        <link href='/bc/modules/Korzilla/DaData/src/OrganizationByINN.css' rel='stylesheet' type='text/css'>
+        <? endif; ?>
+        <?= initPopUp() ?>
+        <?=(PochtaRussia::on() ? "<link href='/bc/modules/default/delivery_classes/pochtaRussia/style.css' rel='stylesheet' type='text/css'>" : null)?>
+    </head>
+
+    <?php
+
+    global $animate_text_top;
+    $settingsSub = orderArray($current_sub['settingsSub']);
+    $animate_h1 = "";
+    $animate_text_top = "";
+    $animate_text_top_delay = 0;
+    if ($settingsSub["animate"]) {
+        if ($settingsSub["animate_items"] && $settingsSub["animate_items"] != "_empty_") {
+            $animate_h1 = $settingsSub["animate_items"];
+            $animate_text_top_delay += 0.16;
+        }
+        if ($settingsSub["animate_text"] && $settingsSub["animate_text"] != "_empty_") $animate_text_top = $settingsSub["animate_text"];
+    }
+
+    if (!$mainpage) {
+        if ($classID == 2001 && $action == 'full') {
+        } else {
+            # убрали условие $action != 'full'
+            $h1text = $current_sub['AlterTitle'] ? getLangWord("lang_sub_alt" . $current_sub['EnglishName'], $current_sub['AlterTitle']) : ($current_sub['AlterTitle2'] ? $current_sub['AlterTitle2'] : getLangWord("lang_sub_" . $current_sub['EnglishName'], $f_title));
+            # SEO замены для H1
+            $h1html = \Korzilla\Replacer::replaceText($h1text);
+
+            $titleH1cont = "<section class='zone-title'>
+            <h1 " . ($animate_h1 ? "class='wow {$animate_h1}'" : "") . ">{$h1html}</h1>
+            " . ($classID == 2020 ? "<div class='kz_napisat h1-title'><a href='#reviewAdd'>" . ($setting_texts['review_write']['checked'] ? $setting_texts['review_write']['name'] : "Написать отзыв") . "</a></div>" : "") . "
+        </section>";
+        }
+    }
+
+    if ($_SERVER['REQUEST_URI'] != '/' && $_SERVER['PHP_SELF'] != '/index.php') $bodyclass[] = ($action == 'full' ? "page{$sub}obj class{$classID}obj pageobj" : "pagelist");
+
+    $ncctpl = $nc_ctpl > 1 ? $nc_ctpl : $current_cc['Class_Template_ID'];
+
+    $bodyclass[] = "shema" . $shema;
+    $bodyclass[] = $subdivClass;
+    $bodyclass[] = ($setting['sitewidth'] ? "sitew1200" : "sitew1000");
+    $bodyclass[] = ($bitcat ? "authbit" : NULL);
+    $bodyclass[] = ($AUTH_USER_ID ? "authuser authuser" . $AUTH_USER_ID : "notauth");
+    $bodyclass[] = ($bitcat ? "devuser" : "");
+    $bodyclass[] = ($mainpage ? "mainpage" : "innerpage");
+    $bodyclass[] = "st" . $catalogue;
+    $bodyclass[] = "page" . $sub;
+    if ($message) $bodyclass[] = "item" . $message;
+    $bodyclass[] = "class" . $classID;
+    if ($ncctpl) $bodyclass[] = "subclass" . $ncctpl;
+    $bodyclass[] = "level" . $sub_level_count;
+    $bodyclass[] = "targcookie";
+    $bodyclass[] = $citylink ? $citylink : 'nocity';
+
+    if ($current_sub['ajaxload']) $bodyclass[] = "ajaxload";
+    $bodyclass[] = ($cols == 9 ? "left-have" : "left-nothave");
+    ($AUTH_USER_ID && $_COOKIE["adminkorzilla"] ? $bodyclass[] = "admin-sett-" . $_COOKIE["adminkorzilla"] : NULL);
+    (in_array($AUTH_USER_ID, array(1, 96, 119, 121)) ? $bodyclass[] = "SUPERVIKTOR" : NULL);
+    if ($setting['language']) $bodyclass[] = "lang-{$langs['langnow']}";
+    if (is_mobile() || $_SESSION['deviceID'] || $deviceID || $_COOKIE['deviceID']) $bodyclass[] = "is_mobile";
+    if ($_SESSION['deviceID'] || $deviceID || $_COOKIE['deviceID']) $bodyclass[] = "mobileapp mobile";
+    $bodyclass[] = permission('design') ? "design-yes" : "design-no";
+    $bodyclass[] = $setting['editortype'];
+
+    if ($setting['language']) $bodydata[] = "data-lang='{$langs['langnow']}'";
+    $bodydata[] = "data-metrikaid='{$metrikaid}'";
+    $bodydata[] = "data-sub='{$sub}'";
+    $bodydata[] = "data-catalogue='{$catalogue}'";
+    $bodydata[] = "data-class='{$classID}'";
+    $bodydata[] = "data-nc_ctpl='{$nc_ctpl}'";
+    $bodydata[] = $setting['kopeik'] ? "data-kopeek='1'" : "";
+    $bodydata[] = $setting['showImageHover'] ? "data-imagehover='1'" : "";
+    if ($_SESSION['deviceID']) $bodydata[] = "data-deviceid='" . $_SESSION['deviceID'] . "'";
+    ?>
+
+    <body <?= implode(" ", $bodydata) ?> class='<?= implode(" ", $bodyclass) ?>'>
+	
+	<!-- offi <?=(permission('office') ? "w" :"")?> -->
+        <?= ($_SESSION['deviceID'] ? "<div id='page-preloader'></div>" : "") ?>
+        <?= getElements(); ?>
+        <div id='site'>
+            <div class='topfix'></div>
+            <div id='main'>
+
+                <?= ($zoneall[1] ? $zoneall[1] : "") ?>
+
+                <section id='center'>
+                    <div class='centerwrap container container_12'>
+
+                        <?= getXleb(["type" => 1, "main" => 1]) ?>
+
+                        <?= $titleH1oncont ?>
+
+                        <? # Левая колонка
+                        if (!$noleftcol && $zoneall[2]) echo "<section id='sidebar' data-zone='" . getMessId(2) . "' " . ($bitcat ? "data-editlink='" . nc_message_link(getMessId(2), 2000, "edit") . "'" : null) . " data-id='2' data-width='3' data-name='Зона слева' class='zone zone2 grid_3 start'><div class='container-zone'>{$zoneblocks[2]}</div></section>";
+                        ?>
+                        <section id='content' class='end <?= ($cols == 12 ? " start" : "") ?> grid_<?= $cols ?>'>
+                            <section class='zone zone3 cb' data-zone='<?= getMessId(3) ?>' data-id='3' <?= ($bitcat ? "data-name='Над контентом' data-editlink='" . nc_message_link(getMessId(3), 2000, "edit") . "'" : "") ?> data-width='9'>
+                                <div class='container-zone'><?= (!$is404 ? $zoneblocks[3] : null) ?></div>
+                            </section>
+                            <?= (!$is404 ? \Korzilla\Replacer::replaceText($titleH1cont) : null) ?>
+                            <?= $html404 ?>
+                            <section class='zone zone4 cb' data-zone='<?= getMessId(4) ?>' data-id='4' <?= ($bitcat ? "data-name='Контент' data-editlink='" . nc_message_link(getMessId(4), 2000, "edit") . "'" : "") ?> data-width='9'>
+                                <div class='container-zone'><?= (!$is404 ? $zoneblocks[4] : null) ?>
+
+                                    <?= (!$mainpage ? "<section class='start end zone-content-all grid_{$cols} typeblock'><article>" : null) ?>
+
+                                    <?
+                                    $caterory_params = array();
+                                    if (stristr($current_sub['sortby'], "name") || stristr($current_sub['sortby'], "Priority")) {
+                                        if (stristr($current_sub['sortby'], "name")) $caterory_params['sortsub'] = 1;
+                                        if (stristr($current_sub['sortby'], "DESC")) $caterory_params['descsub'] = 1;
+                                    }
+                                    if ($current_sub['subdirLvl_id']) $caterory_params['level'] = $current_sub['subdirLvl_id'];
+                                    if ($current_sub['subdir_id'] == 1 && $action != 'full') $catalogHeader = catalogCategory($sub, array_merge($caterory_params, array('list' => 1)));
+                                    if ($current_sub['subdir_id'] == 3 && $action != 'full') $catalogHeader = catalogCategory($sub, $caterory_params);
+                                    echo ($catalogHeader ? "<div class='subdivision-top'>{$catalogHeader}</div>" : "");
+                                    ?>
+                                    <?= subTags('top'); ?>
+                                    <?= ($current_sub['filtermenu'] ? "<div class='subdivision-filter'>" . catalogFilter($current_sub) . "</div>" : null) ?>
+
+                                    <?= ($classID == '2001' && $action != 'full' ? "<div class='zone-sort'>" . getCatalogSort() . "</div>" : "") ?>
+
+                                    <?= (!$mainpage ? "<div class='zone-content'>" : null) ?>
+                                    <? if ($action != 'full' && $current_sub['text']): ?>
+                                        <?
+                                            $classTextSubTop = ['txt', 'textsub-top'];
+                                            $dataTextSubTop = [];
+                                            if ($animate_text_top) {
+                                                $classTextSubTop[] = "wow {$animate_text_top}";
+                                                $dataTextSubTop[] = "data-wow-delay='" . str_replace(",", ".", $animate_text_top_delay) . "s'";
+                                            }
+                                        ?>
+                                        <div class='<?=implode(' ', $classTextSubTop)?>' <?implode(' ', $dataTextSubTop)?>>
+                                            <?=\Korzilla\Replacer::replaceText(textTargeting($current_sub['text']))?>
+                                        </div>
+                                    <? endif;?>
+                                    <?= ($classID == '2001' && $action != 'full' && $current_sub['filter_for_name'] ? getFillterForName() : null) ?>
+                                <? } ?>

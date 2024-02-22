@@ -1,0 +1,24 @@
+<?php 
+if ($f_excel_url) {
+	flush(); ob_flush();
+	if ($f_updateprice) $updateprice = $f_updateprice;
+    if (!$f_ccc && $f_ssub) $f_ccc = $db->get_var("select Sub_Class_ID from Sub_Class where Class_ID = '2001' AND Subdivision_ID = '$f_ssub' limit 0,1");
+	$r = excelPrice($message, ($f_excel_url ? $f_excel_url : $f_url), round($f_list-1), $f_class, $f_firsthead, $f_parent, $f_gr, $f_pole, $f_startcol, "$updateprice", "$f_ssub", "$f_ccc", "$f_ncctpl", $f_currency, $f_spacesub);
+}
+
+
+if($inside_admin) {
+    ob_end_clean();
+    header('Location: '.$goBackLink.'&inside_admin=1');
+    exit;
+} else { 
+    echo json_encode(ARRAY(
+        "title" => "ОК",
+        "succes" =>  "Закачан ".$r,
+        "reloadtab" => 1,
+        "modal" => "close",
+        "sdf" => $message
+    ));
+}
+
+?>

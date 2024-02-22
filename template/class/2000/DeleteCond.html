@@ -1,0 +1,7 @@
+<?php 
+# нельзя удалить системный блок
+if ($db->get_var("select static from Message2000 where Message_ID = '$message'")==1) {
+  $posting = 0;
+  exit;
+}
+?>

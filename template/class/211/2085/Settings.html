@@ -1,0 +1,406 @@
+<?php 
+global $MODULE_FOLDER;
+
+include_once($MODULE_FOLDER."default/OnlineCatalogClasses/Partcom.php");
+include_once($MODULE_FOLDER."default/OnlineCatalogClasses/Tradesoft.php");
+
+global $setting, $catalogue, $srokPlus,$db, $current_user;
+
+if ($setting['partkomLogin'] && $setting['partkomPass'])
+    $partcom = new Partcom($setting['partkomLogin'], $setting['partkomPass']);
+
+if ($setting['tradesoftLogin'] && $setting['tradesoftPassword'] && $setting['lists_tradesoft']) {
+    foreach ($setting['lists_tradesoft'] as $provider) {
+        if ($provider['name'] && $provider['login'] && $provider['password'])
+            $tradeProviders[$provider['name']] = ['login' => $provider['login'], 'pass' => $provider['password']];
+    }
+    if ($tradeProviders)
+        $tradesoft = new Tradesoft($setting['tradesoftLogin'], $setting['tradesoftPassword'], $tradeProviders);
+}
+// unset($_SESSION['cart']);
+if (!$partcom && !$tradesoft)
+    die('Нет данных об онлайн сервисах.');
+
+$item_id = ($_GET['item_id'] ? $_GET['item_id'] : '');
+$vendorId = ($_GET['vendorId'] ? $_GET['vendorId'] : '');
+$vendorName = ($_GET['vendorName'] ? $_GET['vendorName'] : '');
+$vendorName2 = ($_GET['vendorName2'] ? $_GET['vendorName2'] : '');
+$in_cart = ($_GET['in_cart'] ? $_GET['in_cart'] : '');
+
+if ($in_cart) { # Добавлекние в корзину
+    $itemParams = json_decode($in_cart,true);
+    switch ($itemParams['provider']) {
+        case 'tatparts_ru':
+            $goods = $tradesoft->getGoods($itemParams['art'], $itemParams['vendor']);
+            foreach ($goods as $type) {
+                foreach ($type as $vendor) {
+                    foreach ($vendor as $art) {
+                        foreach ($art as $val) {
+                            if ($val['id'] == $itemParams['id']) {
+                                $item = markup($val);
+                                break;
+                            }
+                        }
+                    }
+                }
+            }
+            break;
+        case 'partcom':
+            $goods = $partcom->getGoods($itemParams['art'], $itemParams['vendorId']);
+            foreach ($goods as $type) {
+                foreach ($type as $vendor) {
+                    foreach ($vendor as $art) {
+                        foreach ($art as $val) {
+                            var_dump($val);
+                            if ($val['name'].$val['direction'].$val['develery'] == $itemParams['name'].$itemParams['direction'].$itemParams['develery']) {
+                                $item = markup($val);
+                                break;
+                            }
+                        }
+                    }
+                }
+            }
+            break;
+        default:
+            # code...
+            break;
+    }
+    $id = $db->get_var("SELECT Message_ID FROM Message2001 WHERE Catalogue_ID={$catalogue} AND name='{$item['name']}' AND art='{$item['art']}' AND var1=0");
+    if ($id) {
+        $db->query("UPDATE Message2001 SET price={$item['price']}, stock={$item['stock']}, var1=1 WHERE Message_ID={$id}");
+        $tovar = $db->get_row("SELECT * FROM Message2001 WHERE Message_ID={$id}", ARRAY_A);
+        if (!checkItemInCart($item)) {
+            $crt = [
+                    'id'        => $id,
+                    'name'      => $tovar['name'],
+                    'check'     => $item['name'].$item['direction'].$item['develery'],
+                    'price'     => $item['price'],
+                    'sub'       => ($tovar['Subdivision_ID']?$tovar['Subdivision_ID']:0),
+                    'count'     => 1,
+                    'art'       => $item['art'],
+                    'sum'       => $item['price'],
+                    'provider'  => $item['provider'],
+                    'direction' => $item['direction'],
+                    'vendor'    => $item['vendor']
+                    ];
+            addInSess($crt,$item);
+            die('Товар добавлен в корзину');
+        } else {
+            die('Товар уже добавлен');
+        }
+    } else {
+        # запрос на раздел в котором можно сохранить товары из сервисов, если нет, то создать
+        $cat['Subdivision_ID'] = $db->get_var("SELECT Subdivision_ID FROM Subdivision WHERE Catalogue_ID={$catalogue} AND EnglishName='onlajn-servisy'");
+        if (!$cat['Subdivision_ID']) {
+            $db->query("INSERT INTO Subdivision (Catalogue_ID, Parent_Sub_ID, Subdivision_Name, EnglishName, Hidden_URL, Checked)
+                        VALUES ({$catalogue},0,'ОнлайнСервисы','onlajn-servisy','/onlajn-servisy/',0)");
+            $last_id = $db->insert_id;
+            $cat['Subdivision_ID'] = ($last_id ? $last_id : die('Невозможно добавить товар в корзину (код ошибки 1)'));
+        }
+        # запрос на инфоблок, если нет, то создаьб
+        $cat['Sub_Class_ID'] = $db->get_var("SELECT Sub_Class_ID FROM Sub_Class
+                                            WHERE Catalogue_ID={$catalogue} AND Subdivision_ID={$cat['Subdivision_ID']} and Class_ID=2001 and EnglishName='online-servises'");
+        if (!$cat['Sub_Class_ID']) {
+            $db->query("INSERT INTO Sub_Class (Catalogue_ID, Subdivision_ID, Sub_Class_Name, EnglishName, Checked, Class_ID)
+                        VALUES ({$catalogue},{$cat['Subdivision_ID']},'ОнлайнСервисы','online-servises',1,2001)");
+            $last_id = $db->insert_id;
+            $cat['Sub_Class_ID'] = ($last_id && $last_id != $cat['Subdivision_ID'] ? $last_id : die('Невозможно добавить товар в корзину (код ошибки 2)'));
+        }
+
+        if ($cat['Subdivision_ID'] && $cat['Sub_Class_ID']) {
+            $db->query("INSERT INTO Message2001 (Subdivision_ID, Sub_Class_ID, name, art, stock, price, vendor, Catalogue_ID, Checked, var1)
+                        VALUES ({$cat['Subdivision_ID']},{$cat['Sub_Class_ID']},'{$item['name']}','{$item['art']}',{$item['stock']},{$item['price']},'{$item['vendor']}',{$catalogue}, 0, 1)");
+            $id = $db->insert_id;
+            if ($id) {
+                $crt = [
+                    'id'       => $id,
+                    'name'     => $item['name'],
+                    'check'    => $item['name'].$item['direction'].$item['develery'],
+                    'price'    => $item['price'],
+                    'sub'      => ($cat['Subdivision_ID']?$cat['Subdivision_ID']:0),
+                    'count'    => 1,
+                    'art'      => $item['art'],
+                    'sum'      => $item['price'],
+                    'provider' => $item['provider'],
+                    'direction'=> $item['direction'],
+                    'vendor'   => $item['vendor']
+                    ];
+                addInSess($crt,$item);
+                die('Товар добавлен в корзину');
+            } else {
+                die('Невозможно добавить товар в корзину (код ошибки 1)');
+            }
+        } else {
+            die('Невозможно добавить товар в корзину (код ошибки 2)');
+        }
+    }
+} elseif ($item_id && ($vendorId || $vendorName)) { #Список товаров
+    if ($partcom && ($vendorId || $vendorName))
+        $pcGoods = $partcom->getGoods($item_id, $vendorId, $vendorName);
+    if ($tradesoft && ($vendorName || $vendorName2))
+        $tsGoods = $tradesoft->getGoods($item_id, ($vendorName ? $vendorName : $vendorName2));
+    // if ($current_user['PermissionGroup_ID'] == 1 ) {
+    //     echo '<pre>';
+    //     var_dump($tsGoods);
+    //     var_dump($pcGoods);
+    //     exit;
+    // }
+
+    $goods = mergeArr($pcGoods,$tsGoods, 2);
+    if (!is_array($goods) && !$goods['original'])
+        die('Нет результата');
+
+    # оригиналы
+    $html = "<div class='originals'>";
+    foreach ($goods['original'] as $key => $vendor) {
+        foreach ($vendor as $art => $val) {
+            $html .= "<div class='pc_show'>{$key}</div>";
+            $html .= createPartTable($key, startSort($val));
+        }
+    }
+    $html .= "</div>";
+
+    # замены
+    if ($goods['replace']) {
+        $html .= "<h3>Оригинальные замены</h3><div class='other-items'>";
+        unset($html2);
+        foreach ($goods['replace'] as $key => $vendor) {
+            foreach ($vendor as $art => $val) {
+                $start_price = minPrice($val);
+                $html2[$start_price] .= "<div class='pc_show'>
+                                            <span class='vendor'>{$key}</span>
+                                            <span class='art'>".str_replace('art.','',$art)."</span>
+                                            <span class='nal'>".($nal ? "<span>В наличии</span>" : '')."</span>
+                                            <span class='price'>от {$start_price} руб.</span>
+                                        </div>".createPartTable($key, startSort($val), true);
+            }
+        }
+        uksort($html2, "stPrSort");
+        $html .= implode('', $html2);
+        $html .= "</div>";
+    }
+
+    # аналоги
+    if ($goods['analog']) {
+        $html .= "<h3>Аналоги</h3><div class='other-items'>";
+        unset($html2);
+        foreach ($goods['analog'] as $key => $vendor) {
+            foreach ($vendor as $art => $val) {
+                $start_price = minPrice($val);
+                $html2[$start_price] .= "<div class='pc_show'>
+                                <span class='vendor'>{$key}</span>
+                                <span class='art'>".str_replace('art.','',$art)."</span>
+                                <span class='nal'>".($nal ? "<span>В наличии</span>" : '')."</span>
+                                <span class='price'>от {$start_price} руб.</span>
+                            </div>".createPartTable($key, startSort($val), true);
+            }
+        }
+        uksort($html2, "stPrSort");
+        $html .= implode('', $html2);
+        $html .= "</div>";
+    }
+    die($html);
+} elseif ($item_id) { #Каталоги
+    if ($partcom) $pcCatalog = $partcom->getCatalog($item_id);
+    if ($tradesoft) $tsCatalog = $tradesoft->getCatalog($item_id);
+    // if ($current_user['PermissionGroup_ID'] == 1 ) {
+    //     echo '<pre>';
+    //     var_dump($pcCatalog);
+    //     var_dump($tsCatalog);
+    //     exit;
+    // }
+    $catalogs = mergeArr($pcCatalog, $tsCatalog, 1);
+
+    if ($catalogs) {
+        $html = "<div class='table-wraper'>
+                        <table id='catalogs-table' class='table_main'>
+                            <thead>
+                                <tr>
+                                    <th>Производитель</th>
+                                    <th>Название</th>
+                                    <th>Цена</th>
+                                </tr>
+                            </thead>
+                            <tbody>";
+        foreach ($catalogs as $key => $val) {
+            $dataParam = array();
+            if ($val['vendorId']) $dataParam[] = "data-vendorId='{$val['vendorId']}'";
+            if ($val['vendor']) $dataParam[] = "data-vendor='{$val['vendor']}'";
+            if ($val['vendorName']) $dataParam[] = "data-vendorName='{$val['vendorName']}'";
+
+            $html .= "<tr class='table_item' ".implode(' ', $dataParam).">
+                        <td class='td_name'><span class='pc_span'>{$key}</span></td>
+                        <td>{$val['name']}</td>
+                        <td>от {$val['price']} р.</td>
+                    </tr>";
+        }
+        $html .= "</tbody></table></div>";
+    } else {
+        die ('Каталогов не неайдено.');
+    }
+    die($html);
+}
+
+function createPartTable($vendor, $arr, $hide='') //собираем таблицу товаров
+{
+    global $srokPlus, $catalogue;
+
+    $html = ($hide ? "<div class='hide-table'>":'')
+                ."<div class='table-wraper'>
+                    <table class='pc_tabler table_main'>
+                        <thead>
+                            <tr>
+                                <th class='th_name'>Наименование</th>
+                                <th>Артикул</th>
+                                <th><i class='sort'></i>Наличие</th>
+                                <th><i class='sort'></i>Цена</th>
+                                <th><i class='sort develery'></i>Срок</th>
+                                <th>Заказать</th>
+                            </tr>
+                        </thead>
+                        <tbody>";
+    foreach ($arr as $val) {
+        if (checkItemInCart($val)) {
+            $btn = "<span class='incard'><a href='/cart/'>В корзине</a><span>";
+        } else {
+            $btn = "<button data-params='".htmlspecialchars(json_encode($val))."' class='os-incart incart-js' data-metr='addincart'>В корзину</button>";
+        }
+        $html .= "<tr>
+                    <td class='td_name'>{$val['name']}</td>
+                    <td>{$val['art']}</td>
+                    <td>{$val['stock']}</td>
+                    <td>{$val['price']} руб.</td>
+                    <td class='td_stock'>".($val['existence']?'<span class="instock ">на складе</span>':$val['develery'].' д.')."</td>
+                    <td>{$btn}</td>
+                 </tr>";
+    }
+    $html .= "</tbody></table></div>".($hide ? "</div>":'');
+    return $html;
+}
+function checkItemInCart($item) //проверка добавлен ли товар в карзину
+{
+    foreach ($_SESSION['cart']['items'] as $_item) {
+        if ($_item['check'] == $item['name'].$item['direction'].$item['develery']) return true;
+    }
+    return false;
+}
+function addInSess($crt, $item)//добавить товар в сессию для корзины
+{
+    $_SESSION['cart']['items'][$crt['id']] = $crt;
+    $_SESSION['cart']['totalsum'] = $_SESSION['cart']['totalsum'] + $item['price'];
+    $_SESSION['cart']['totalSumDiscont'] = $_SESSION['cart']['totalsum'] - $_SESSION['cart']['discont'];
+    $_SESSION['cart']['totaldelsum'] = $_SESSION['cart']['totalSumDiscont'] + $_SESSION['cart']['delivery']['sum'];
+}
+function startSort($arr)//сортировка при загрузке наличие->цена
+{
+    $orderBy = ['existence' => 'desc','price' => 'asc'];
+    uasort($arr, function ($a, $b) use ($orderBy) {
+        foreach ($orderBy as $key => $value) {
+            if ((!$a[$key] && !$b[$key]) || $a[$key] == $b[$key]) continue;
+
+            $result = ($a[$key] < $b[$key]) ? -1 : 1;
+            if ($value == 'desc') $result = -$result;
+            break;
+        }
+        return $result ? $result : 0;
+    });
+    return $arr;
+}
+function mergeArr($arr1,$arr2,$level) #склеивание массивов
+{
+    $arr1 = clearKey($arr1,$level);
+    $arr2 = clearKey($arr2,$level);
+    $arr = is_array($arr1) && is_array($arr2) ? array_merge_recursive($arr1, $arr2) : ($arr1 ? $arr1 : $arr2);
+    switch ($level) {
+        case '1':
+            foreach ($arr as $key => $val) {
+                $arr[$key] = $val = markup($val);
+                if (is_array($val['price'])) {
+                    sort($val['price']);
+                    $arr[$key]['price'] = $val['price'][0];
+                }
+                if (is_array($val['name'])) $arr[$key]['name'] = $val['name'][0];
+                if (is_array($val['provider'])) $arr[$key]['provider'] = $val['provider'][0];
+            }
+            break;
+        case '2':
+            foreach ($arr as $typeKey => $type) {
+                foreach ($type as $providerKey => $provider) {
+                    foreach ($provider as $artKey => $art) {
+                        foreach ($art as $itemKey => $item) {
+                            $arr[$typeKey][$providerKey][$artKey][$itemKey] = markup($item);
+                        }
+                    }
+                }
+            }
+
+            break;
+        default: break;
+    }
+
+    return $arr;
+}
+function clearKey($arr, $level)
+{
+    if (!is_array($arr)) return array();
+
+    if ($level == 1) {
+        foreach ($arr as $key => $val) {
+            $k = preg_replace("/[^a-zа-я 0-9]+/iu", ' ',$key);
+            $result[strtoupper($k)] = $val;
+        }
+    } elseif($level == 2) {
+        foreach ($arr as $type => $value) {
+            foreach ($value as $key => $val) {
+                $k = preg_replace("/[^a-zа-я 0-9]+/iu", ' ',$key);
+                $result[$type][strtoupper($k)] = $val;
+            }
+        }
+    }
+    return $result;
+}
+
+function markup($item)
+{
+    global $setting, $rate;
+
+    if (!$rate) {
+        if ($setting['partkomPrice']) $rate['partcom'] = getMark($setting['partkomPrice']);
+
+        if ($setting['lists_tradesoft']) {
+            foreach ($setting['lists_tradesoft'] as $val) {
+                if ($val['name'] && $val['rate'])
+                    $rate[$val['name']] = getMark($val['rate']);
+            }
+        }
+    }
+    if (is_array($item['price'])) {
+        foreach ($item['price'] as $key => $price) {
+            $item['price'][$key] = $rate[$item['provider'][$key]] ? ceil($price*$rate[$item['provider'][$key]]) : ceil($price);
+        }
+    } else {
+        $item['price'] = $rate[$item['provider']] ? ceil($item['price']*$rate[$item['provider']]) : ceil($item['price']);
+    }
+    return $item;
+}
+function getMark($val)
+{
+    preg_match('/[\d.,]+/',$val,$rate);
+    $rate = str_replace(',', '.', $rate[0]);
+    return (mb_strstr($val,'%') ? (1+($rate/100)) : $rate);
+}
+
+function minPrice($item)
+{
+    $min = $item[0]['price'];
+    foreach ($item as $val) {
+        $val = $val;
+        if ($min > $val['price']) $min = $val['price'];
+    }
+    return $min;
+}
+function stPrSort($a,$b)
+{
+    return ($a > $b) ? 1 : -1;
+}
+?>

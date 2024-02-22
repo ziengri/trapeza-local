@@ -1,0 +1,10 @@
+<?php
+global $bitcat, $nav_templ, $nav_mob, $setting;
+
+if ($colpos) $query_where .= "col = '$colpos'";
+if ($fix==1) $query_where .= ($query_where ? " AND " : "")."fixblock = '1'";
+if ($fix==2) $query_where .= ($query_where ? " AND " : "")."fixblock2 = '1'";
+//if (!$colpos) $query_where = "col = ''";
+if ($blockId) $query_where .= ($query_where ? " AND " : "")."Message_ID = '$blockId'";
+
+?>

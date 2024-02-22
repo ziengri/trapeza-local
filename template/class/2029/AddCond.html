@@ -1,0 +1,18 @@
+<?php 
+$f_Catalogue_ID = $catalogue;
+
+if (!$f_parent && $f_ssub) $f_parent = $f_ssub;
+if (!$f_class) $f_class = 2001;
+if ($f_ssub && !$f_ccc) $f_ccc = $db->get_var("select Sub_Class_ID from Sub_Class where Subdivision_ID = '$f_ssub' AND Class_ID = '$f_class'");
+
+// проверка обязательных полей
+if (!$f_excel) {
+    $posting = 0;
+    echo json_encode(ARRAY(
+        "title" => "Ошибка",
+        "error" => "Файл не выбран"
+    ));
+    exit;
+}
+//$_FILES
+?>

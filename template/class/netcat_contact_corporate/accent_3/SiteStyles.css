@@ -1,0 +1,89 @@
+& {min-height:60px}
+
+
+.tpl-block-list-objects {
+    max-width: 1200px;
+    margin-left: auto;
+    margin-right: auto;
+    display: flex;
+    flex-wrap: wrap;
+}
+
+.tpl-block-list-objects .contacts-object {
+    display: flex;
+    padding: 30px 0;
+    flex-direction: column;
+    margin: 0px auto;
+    max-width: 700px;
+    min-width:100px;
+    /*font-family: var(--tpl-font-family-common);*/
+    text-align: center;
+}
+
+.tpl-block-list-objects .contacts-item {
+    /*font-size: 18px;*/
+    /*line-height: 1.55;*/
+    font-weight: 300;
+}
+
+.tpl-block-list-objects .contacts-object-accent {
+    margin: 0 0 45px;
+}
+
+.tpl-block-list-objects .contacts-object-accent .contacts-social {
+    margin: 0 4px;
+}
+
+.tpl-block-list-objects .contacts-object-accent .contacts-item {
+    /*font-size: 48px;*/
+    /*line-height: 1.23;*/
+    font-weight: 600;
+}
+
+.tpl-block-list-objects .contacts-object-description .contacts-item {
+    /*font-size: 24px;*/
+    /*line-height: 1.35;*/
+    font-weight: 600;
+}
+
+.tpl-block-list-objects .contacts-object-description + .contacts-object-items {
+    margin-top: 45px;
+}
+
+.tpl-block-list-objects .contacts-object-accent .contacts-object-socials-social {
+    margin: 0 4px;
+    width: 3rem;
+    height: 3rem;
+    background-color: var(--tpl-color-background-accent);
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    padding: 4px;
+}
+
+.tpl-block-list-objects .contacts-object-socials-social svg, .tpl-block-list-objects .contacts-object-image img {
+    width: 2rem !important;
+    height: 2rem !important;
+}
+
+.tpl-block-list-objects .contacts-object-socials-social svg path {
+    fill: var(--tpl-color-foreground-accent);;
+}
+
+.tpl-block-list-objects .accent-separator .contacts-object-accent {
+    position: relative;
+    padding-bottom: 45px;
+}
+
+.tpl-block-list-objects .accent-separator .contacts-object-accent:after {
+    width: 100px;
+    height: 1px;
+    background-color: black;
+    content: "";
+    bottom: 0;
+    left: 0;
+    right: 0;
+    margin: 0 auto;
+    position: absolute;
+}

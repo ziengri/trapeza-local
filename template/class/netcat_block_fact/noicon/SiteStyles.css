@@ -1,0 +1,28 @@
+& {min-height:60px}
+
+.advantages-object {
+    display: flex;
+    margin-bottom: 65px;
+    align-items: center;
+    flex-direction: column;
+    text-align: center;
+    color: var(--tpl-color-foreground-main);
+}
+.advantages-number-old {
+    font-weight: 400;
+    line-height: 1.35;
+    margin-bottom: 14px;
+    text-align: center;
+}
+.advantages-container {
+    border-top: 1px solid var(--tpl-color-background-main-darkest, gray);
+    padding-top: 14px;
+}
+.no-separator .advantages-container {
+    border-top: 0;
+    padding-top: 0;
+}
+.advantages-desc {
+    font-weight: 300;
+    line-height: 1.55;
+}

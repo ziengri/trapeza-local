@@ -1,0 +1,52 @@
+<?php 
+if (!$inside_admin) {
+	include($DOCUMENT_ROOT."/template/class/{$classID}/2015/EditTemplate.html"); 
+} else { ?>
+
+	<form name='adminForm' id='adminForm' class='nc-form' enctype='multipart/form-data' method='post' action='<?= $SUB_FOLDER ?><?= $HTTP_ROOT_PATH ?>message.php'>
+	<div id='nc_moderate_form'>
+	<div class='nc_clear'></div>
+	<input name='admin_mode' type='hidden' value='<?= $admin_mode ?>' />
+	<?= $nc_core->token->get_input() ?>
+	<input name='catalogue' type='hidden' value='<?= $catalogue ?>' />
+	<input name='cc' type='hidden' value='<?= $cc ?>' />
+	<input name='sub' type='hidden' value='<?= $sub ?>' /><input name='message' type='hidden' value='<?= $message ?>' />
+	<input name='posting' type='hidden' value='1' />
+	<input name='curPos' type='hidden' value='<?= $curPos ?>' />
+	<input name='f_Parent_Message_ID' type='hidden' value='<?= $f_Parent_Message_ID ?>' />
+	<?= nc_form_moderate('change', $admin_mode, 0, $systemTableID, $current_cc, (isset($f_Checked) ? $f_Checked  : null), $f_Priority , $f_Keyword, $f_ncTitle, $f_ncKeywords, $f_ncDescription ) ?>
+	</div>
+	<?php  if (nc_field_check_admin_perm()) { ?>
+	<?= nc_list_field('ShopOrderStatus', "", ($class_id ? $class_id : $classID), 1) ?><br />
+	<?php  } ?><br />
+
+	<?=($setting['lists_texts']['oform_name']['checked'] ? $setting['lists_texts']['oform_name']['name'] : "ФИО")?>:<br>
+	<?= nc_string_field('fio', "maxlength='255' size='50'", ($class_id ? $class_id : $classID), 0) ?><br />
+	<br />
+
+	<?=($setting['lists_texts']['oform_phone']['checked'] ? $setting['lists_texts']['oform_phone']['name'] : "Телефон")?>:<br>
+	<?= nc_string_field('phone', "maxlength='255' size='50'", ($class_id ? $class_id : $classID), 0) ?><br />
+	<br />
+
+	<?=($setting['lists_texts']['oform_mail']['checked'] ? $setting['lists_texts']['oform_mail']['name'] : "Эл. почта")?>:<br>
+	<?= nc_string_field('email', "maxlength='255' size='50'", ($class_id ? $class_id : $classID), 0) ?><br />
+	<br />
+
+	<?=($setting['lists_texts']['oform_adres']['checked'] ? $setting['lists_texts']['oform_adres']['name'] : "Адрес")?>:<br>
+	<?= nc_text_field('adres', "", ($class_id ? $class_id : $classID), 0) ?><br />
+	<br />
+
+	<?=($setting['lists_texts']['oform_city']['checked'] ? $setting['lists_texts']['oform_city']['name'] : "Город")?>:<br>
+	<?= nc_string_field('city', "maxlength='255' size='50'", ($class_id ? $class_id : $classID), 0) ?><br />
+	<br />
+
+	<?=($setting['lists_texts']['oform_text']['checked'] ? $setting['lists_texts']['oform_text']['name'] : "Примечание")?>:<br>
+	<?= nc_text_field('text', "", ($class_id ? $class_id : $classID), 0) ?><br />
+	<br />
+
+
+	<div><?= NETCAT_MODERATION_INFO_REQFIELDS ?></div><br/>
+	<?= nc_submit_button(NETCAT_MODERATION_BUTTON_CHANGE) ?>
+	</form>
+
+<?php  } ?>

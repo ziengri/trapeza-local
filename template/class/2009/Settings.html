@@ -1,0 +1,30 @@
+<?php
+global $action, $mainpage, $setting, $bitcat, $cityid, $cityname, $citylink, $current_cc;
+
+if ($rand) $query_order = "RAND()";
+
+# видимость скрытых для админа
+if (!$isTitle && $bitcat) {
+    $ignore_check = 1;
+}
+
+# аналогичные товары
+if ($getdocuments) {
+    $documentsArr = explode(",", $getdocuments);
+    if ($documentsArr) {
+        foreach($documentsArr as $pr) {
+            $docssql .= ($docssql ? " OR " : NULL)."a.Message_ID = '".trim($pr)."'";
+        }
+        if ($docssql) {
+            $ignore_sub = $ignore_cc = $ignore_calc = 1;
+            $query_where .= ($query_where ? " AND " : NULL)."($docssql)";
+        }
+    }
+}
+
+# targeting content
+$query_where .= targeting($query_where);
+#language
+$query_where = getLangQuery($query_where);
+
+?>

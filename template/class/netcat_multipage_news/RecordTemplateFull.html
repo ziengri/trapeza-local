@@ -1,0 +1,20 @@
+<div class="object-full">
+    <h1><?= nc_edit_inline('Name', $message, $cc_env['Sub_Class_ID']); ?></h1>
+    <?php
+        if (date("Ymd") ==  $f_Date_year . $f_Date_month . $f_Date_day) {
+            $dt = "<span title='{$f_Date_day} {$months_number_to_text[(int)$f_Date_month]}'>{$f_Date_hours}:{$f_Date_minutes}</span>";
+        } else {
+            $dt = "<span title='{$f_Date_day} {$months_number_to_text[(int)$f_Date_month]} {$f_Date_hours}:{$f_Date_minutes}'>{$f_Date_day}.{$f_Date_month}</span>";
+        }
+    ?>
+    <?php if ($admin_mode): ?>
+        <p class="tpl-text-alt"><?= nc_edit_inline('Date', $message, $cc_env['Sub_Class_ID']); ?></p>
+    <?php else: ?>
+        <p class="tpl-text-alt"><span title="<?= $f_Date_day . ' ' . $months_number_to_text[(int)$f_Date_month] . ' ' . $f_Date_hours . ':' . $f_Date_minutes; ?>"><?= $f_Date_day . ' ' . $months_number_to_text[(int)$f_Date_month] . ' ' . $f_Date_hours . ':' . $f_Date_minutes; ?></span></p>
+    <?php endif; ?>
+    <?= $f_AdminButtons; ?>
+    <div class="full-image size-<?=$cc_settings["objectSize"]; ?>">
+        <div class="image"><?= $f_Image->resize(1200, 740, nc_ImageTransform::RESIZE_TO_BEST_FIT)->as_img(array('class' => 'news-img')); ?></div>
+    </div>
+    <div class="object-text"><?= nc_edit_inline('Text', $message, $cc_env['Sub_Class_ID']); ?></div>
+</div>

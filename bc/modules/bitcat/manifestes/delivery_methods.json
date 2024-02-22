@@ -1,0 +1,13 @@
+{
+    "delivery_methods": {
+        "row": [
+            {
+                "name": "lists_delivery",
+                "label": "Способы доставки",
+                "type": "multi_line",
+                "type_old": "11",
+                "colline": "height"
+            }
+        ]
+    }
+}

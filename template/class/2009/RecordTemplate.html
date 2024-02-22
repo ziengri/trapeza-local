@@ -1,0 +1,39 @@
+<?php /* Служебная часть */for ($f_RowNum = 0; $f_RowNum < $rowCount; $f_RowNum++) {    if($fetch_row[$f_RowNum] instanceof Iterator) {        extract($fetch_row[$f_RowNum]->to_array(), EXTR_PREFIX_ALL, "f");    } else {        extract($fetch_row[$f_RowNum], EXTR_PREFIX_ALL, "f");    }    foreach($iteration_RecordTemplate[$f_RowNum] as $value) {        extract($value);    }    eval($cc_env["convert2txt"]);    ob_start();/* Конец служебной части */?>
+<?php /* Служебная часть */
+for ($f_RowNum = 0; $f_RowNum < $rowCount; $f_RowNum++) {
+    if($fetch_row[$f_RowNum] instanceof Iterator) {
+        extract($fetch_row[$f_RowNum]->to_array(), EXTR_PREFIX_ALL, "f");
+    } else {
+        extract($fetch_row[$f_RowNum], EXTR_PREFIX_ALL, "f");
+    }
+    foreach($iteration_RecordTemplate[$f_RowNum] as $value) {
+        extract($value);
+    }
+    eval($cc_env["convert2txt"]);
+    ob_start();
+/* Конец служебной части */?>
+
+<?php 
+unset($file); unset($rel); unset($type);
+$file = ($f_filelink ? $f_filelink : $f_file);
+$fileArr = array_reverse(explode(".",$file));
+$type = strtoupper($fileArr[0]);
+if (stristr($type,"php")) $type = '';
+
+if (stristr($file,'.gif') || stristr($file,'.png') || stristr($file,'.bmp') || stristr($file,'.jpg') || stristr($file,'.jpeg')) $rel = "rel='photo[p]'";
+if (stristr($file,'.pdf')) $rel = "target=_blank";
+?>
+<div class="obj <?=objHidden($f_Checked,$f_citytarget,$cityid)?> obj<?=$f_RowID?>">
+  <div class="ind_docum dcm_xls iconsCol icons i_file">
+    <a <?=$rel?> href="<?=$file?>"><?=$f_name?></a>
+    <div class='infofile'><?=($type ? "<span class='typefile'>".$type."</span>," : NULL)?> <?=($f_file_size ? "<span class='sizefile'>".SizeOfFile($f_file_size)."</span>" : NULL)?></div>
+    <div class='datefile none'><?=$f_date_day?>.<?=$f_date_month?>.<?=$f_date_year?></div>
+    <?=($bitcat ? editObjBut($editLink) : $f_AdminButtons)?>
+  </div>
+</div>
+
+<?php /* Служебная часть */
+    echo nc_finishing_RecordTemplate(ob_get_clean(), $inside_admin, $classID, $f_RowID, $parent_message, $cc, $cc_env["Class_Name"], $no_cache_marks);
+}
+/* Конец служебной части */?>
+<?php /* Служебная часть */    echo nc_finishing_RecordTemplate(ob_get_clean(), $inside_admin, $classID, $f_RowID, $parent_message, $cc, $cc_env["Class_Name"], $no_cache_marks);}/* Конец служебной части */?>

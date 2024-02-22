@@ -1,0 +1,25 @@
+<?php
+global $action, $mainpage, $db, $setting, $bitcat, $cityid, $cityname, $citylink, $citylinkPath, $titleArr, $pathInc2, $DOCUMENT_ROOT;
+
+# определение зеркального инфоблока
+if ($tsub!=$cc_env['Subdivision_ID'] && $tcc!=$cc_env['Sub_Class_ID']) $mirrorCC = 1;
+
+# видимость скрытых для админа
+if (!$isTitle && ($bitcat || $bitLoadMore)) {
+    $ignore_check = 1;
+}
+
+# size items in sub
+if(isJson($current_sub['settingsSub'])) $settingsSub = orderArray($current_sub['settingsSub']);
+# object fit
+if($sizehave && $sizeitem_fit) $imagefit = $sizeitem_fit;
+else if($settingsSub["sizehave"] && $settingsSub["sizeitem_fit"]) $imagefit = $settingsSub["sizeitem_fit"];
+else $imagefit = $setting["size".$classID."_fit"];
+$image_default = image_fit($imagefit);
+
+if ($msg) $query_where = "Message_ID = '$msg'";
+
+#language
+$query_where = getLangQuery($query_where);
+
+?>

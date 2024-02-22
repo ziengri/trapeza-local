@@ -1,0 +1,49 @@
+<?php  if(!$param){ ?>
+      </div>
+    </div>
+<?php  } ?>
+
+
+<?php  if($param=="1C"){ ?>
+      <div class="view-body-inline export-1c">
+          <div class="export-1c-line"><span>Примечание 1.</span> Для автоматической связи каталога с 1С 8 обратитесь к разработчику сайта.</div>
+          <div class="export-1c-line"><span>Примечание 2.</span> Для ручного обновления цен требуется выгрузка данных в формате CommerceML2.</div>
+      </div>
+      <div class="view-body-inline">
+          <div class="v-title"><div class='v-title-text'><b>Загрузка файлов.</b> Выберите подготовленные файлы:</div></div>
+          <div class="v-body">
+            <form enctype="multipart/form-data"  class="ajax2" method=post action='<?=$cc_env[Hidden_URL]?>?nc_ctpl=2042' class=ajax2>
+              <div class='v-line'>
+                <div class="v-inline v-name1c">Файл import.xml:</div>
+                <label class="export-file">
+                  <input type='file' name='xmlfile[]'>
+                  <span class="add-btn">Выберите файл</span>
+                  <span class="ex-file-text"><span class="ex-file-text1">Файл не выбран</span><span class="ex-file-text2 file-name-this"></span></span>
+                </label>
+              </div>
+              <div class='v-line'>
+                <div class="v-inline v-name1c">Файл offers.xml:</div>
+                <label class="export-file">
+                  <input type='file' name='xmlfile[]'>
+                  <span class="add-btn">Выберите файл</span>
+                  <span class="ex-file-text"><span class="ex-file-text1">Файл не выбран</span><span class="ex-file-text2 file-name-this"></span></span>
+                </label>
+              </div>
+
+              <div class='result'></div>
+              <div class="v-btn">
+                <span class="bc-btn"><input type="submit" value="Закачать"></span>
+              </div>
+            </form>
+          </div>
+      </div>
+      <div class="view-body-inline export-start-1c">
+          <div class="v-title"><div class='v-title-text'><b>Запуск обновления каталога.</b></div></div>
+          <div class="v-body">
+              <div class='v-line v-nohover'>
+                <div class="v-inline">Последняя загрузка: <b><?=($current_catalogue[file1Ctime] ? date('d.m.Y H:i:s', $current_catalogue[file1Ctime]) : "не выгружалось ни разу")?></b></div>
+              </div>
+            <iframe class='w0' height=400 frameborder='0' src='/export_1c.php'></iframe>
+          </div>
+      </div>
+<?php  } ?>

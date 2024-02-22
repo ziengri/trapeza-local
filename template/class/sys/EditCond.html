@@ -1,0 +1,23 @@
+<?php
+
+
+if ($f_Email) {
+  if ($db->get_var("SELECT User_ID FROM User WHERE Email = '$f_Email' AND User_ID != ".$f_User_ID)) {
+    $warnText = "Пользователь с таким email адресом уже зарегистрирован!<br><br>";
+    $posting = 0;
+  }
+}
+
+if ((!$f_Email || $warnText) && $json) {
+    $posting = 0;
+    echo json_encode(ARRAY(
+        "title" => "Ошибка",
+        "error" => ($warnText ? $warnText : "Заполните все обязательные поля.")
+    ));
+    exit;
+}
+
+if ($_POST['customf']) {
+  $f_customf = json_encode($_POST['customf']);
+}
+?>

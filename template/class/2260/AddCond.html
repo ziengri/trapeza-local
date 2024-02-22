@@ -1,0 +1,20 @@
+<?php
+
+
+// preg_match_all("/video=([\w\/]+).mp4/", $f_textfull, $video_matches);
+
+
+// foreach($video_matches[1] as $video) {
+//     if(!file_exists("/var/www/krza/data/www/krza.ru/a/speakenglish/lessons_files/{$video}.mp4")) {
+//         $posting = 0;
+//         echo json_encode(array(
+//             "title" => getLangWord('error',"Ошибка"),
+//             "error" => getLangWord('er_txt_badMail',"{$video}.Файл не найден файл"),
+//         ));
+//     }
+//     $videoHTML = "<video controls><source src='/a/speakenglish/lessons_files/{$video}.mp4' type='video/mp4'>Not supported</video>";
+//     $f_textfull = str_replace("video={$video};", $videoHTML, $f_textfull);
+// }
+
+$ob = new Class2260();
+$f_files = $ob->cleanArray($files);

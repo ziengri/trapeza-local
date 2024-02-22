@@ -1,0 +1,28 @@
+.profile {
+    display: flex;
+    flex-wrap: nowrap;
+    flex-direction: row;
+    align-items: center;
+    color: var(--tpl-color-foreground-main);
+    text-decoration: none;
+}
+
+.profile:hover {
+    color: var(--tpl-color-brand);
+}
+
+@media (max-width: 500px) {
+    .profile.display-texticon .profile-name {
+        display: none;
+    }
+}
+
+.profile-icon {
+    font-size: 1.1rem;
+    color: var(--tpl-color-foreground-main);
+    width: 1.5rem;
+    height: 1.5rem;
+}
+.profile-icon:hover {
+    color: var(--tpl-color-brand);
+}

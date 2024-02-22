@@ -1,0 +1,63 @@
+{
+    "basic_settings": {
+        "name": "Основные настройки",
+        "row": [{
+                "name": "sitename",
+                "label": "Название сайта",
+                "type": "sitename",
+                "colline": 2
+            },
+            {
+                "name": "allowreg",
+                "label": "Разрешить регистрацию пользователей",
+                "type": "checkbox",
+                "colline": 2
+            },
+            {
+                "name": "editortype",
+                "label": "Редактор текста",
+                "type": "select",
+                "colline": 2,
+                "data": {
+                    "editor-1": "Редактор №1",
+                    "editor-2": "Редактор №2"
+                }
+            },
+            {
+                "name": "hidephone",
+                "label": "Показывать номера телефонов",
+                "type": "checkbox",
+                "colline": 2
+            },
+            {
+                "name": "defaultSortSite",
+                "label": "Сортировка товаров по умолчанию",
+                "type": "select",
+                "colline": 2,
+                "data": {
+                    "0": "Не выбрано",
+                    "name": "По названию А-Я",
+                    "name;1": "По названию Я-А",
+                    "Priority": "По приоритету",
+                    "price": "Сначала дешевле",
+                    "price;1": "Сначала дороже",
+                    "rate": "По популярности",
+                    "stock": "Сначала под заказ",
+                    "stock;1": "Сначала в наличии"
+                }
+            }
+        ]
+    },
+    "inscriptions_on_site": {
+        "name": "Надписи на сайте",
+        "permission": "!$setting['language']",
+        "row": [{
+                "name": "lists_texts",
+                "type": "lists_texts",
+                "type_old": "11",
+                "colline": "height"
+            }
+        ]
+    }
+
+}

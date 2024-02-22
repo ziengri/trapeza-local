@@ -1,0 +1,51 @@
+<?php /* Служебная часть */
+for ($f_RowNum = 0; $f_RowNum < $rowCount; $f_RowNum++) {
+    if($fetch_row[$f_RowNum] instanceof Iterator) {
+        extract($fetch_row[$f_RowNum]->to_array(), EXTR_PREFIX_ALL, "f");
+    } else {
+        extract($fetch_row[$f_RowNum], EXTR_PREFIX_ALL, "f");
+    }
+    foreach($iteration_RecordTemplate[$f_RowNum] as $value) {
+        extract($value);
+    }
+    eval($cc_env["convert2txt"]);
+    ob_start();
+/* Конец служебной части */?>
+
+<?php  if (!$isTitle) { ?>
+
+  <div class='sld-item obj <?=objHidden($f_Checked,$f_citytarget,$cityid)?> obj<?=$f_RowID?>'>
+    <?php  $imsize = getimagesize($DOCUMENT_ROOT.$f_photo_url); ?>
+    <div class="ba-ing"><img src='<?=$f_photo?>'></div>
+    <div class="ba-text1"><?=($f_name ? "$f_name | " : NULL)?> <?=$imsize[0]?> × <?=$imsize[1]?></div>
+     <?=($f_text ? "<div class='ba-text2'>".strip_tags($f_text)."</div>" : NULL)?>
+    <?=($inside_admin ? $f_AdminButtons : editObjBut($editLink))?>
+  </div>
+
+<?php  } else {
+if($bannerNameEffect && stristr($bannerNameEffect, "|")){
+  $effects = explode("|", $bannerNameEffect);
+  $effectsAttr = " data-animation-in='{$effects[0]}' data-animation-out='{$effects[1]}'";
+}
+if($bannerTextEffect && stristr($bannerTextEffect, "|")){
+  $effects = explode("|", $bannerTextEffect);
+  $effectsAttr = " data-animation-in='{$effects[0]}' data-animation-out='{$effects[1]}'";
+}
+echo "<div class='slider-item obj obj{$f_RowID} ".(!$f_Checked ? "uncheck" : "")."'>
+        ".($f_videolink ? "<a class='owl-video' href='{$f_videolink}' data-video-type='youtube'></a>" : ($f_link ? "<a href='{$f_link}'>" : ""))."
+               ".($f_videoiframe ? "<div class='slider-iframe'>{$f_videoiframe}</div>" : "")."
+               <div class='slider-img'><img src='{$IMG_HOST}{$f_photo}' alt='".strip_tags($f_photo_alt)."' title='".strip_tags($f_name)." ".strip_tags($f_text)."'></div>
+               ".($f_name || $f_text ? "<div class='slider-data'><div class='slider-data-second'>" : "")."
+               ".($f_name ? "<div class='slider-name' {$effectsAttr}><span>{$f_name}</span></div>" : "")."
+               ".($f_text ? "<div class='slider-text' {$effectsAttr}><span>{$f_text}</span></div>" : "")."
+               ".($f_name || $f_text ? "</div></div>" : "")."
+           ".($f_videolink || $f_link ? "</a>" : "")."
+           ".($bitcat ? ($inside_admin ? $f_AdminButtons : editObjBut($editLink)) : "")."
+      </div>";
+
+}?>
+
+<?php /* Служебная часть */
+    echo nc_finishing_RecordTemplate(ob_get_clean(), $inside_admin, $classID, $f_RowID, $parent_message, $cc, $cc_env["Class_Name"], $no_cache_marks);
+}
+/* Конец служебной части */?>

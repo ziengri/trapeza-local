@@ -1,0 +1,7 @@
+<?php 
+# нельзя удалить системный блок
+if ($db->get_var("select sys from Message2016 where Message_ID = '$message'")==1) {
+  $posting = 0;
+  exit;
+}
+?>

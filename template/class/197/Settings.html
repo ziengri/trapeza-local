@@ -1,0 +1,9 @@
+<?php
+global $bitcat, $setting_texts, $AUTH_USER_ID;
+
+//записать дату просмотра для админки
+if($setdata == 1) setDateOrders('feedback');
+
+if ($isTitle || !$bitcat) $query_where = "Message_ID = ''";
+
+if ($current_user['PermissionGroup_ID'] !=1 ) $query_where = "Message_ID = ''";

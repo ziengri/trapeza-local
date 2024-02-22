@@ -1,0 +1,25 @@
+<!-- FormPrefix --><?php  echo $f_AdminCommon; ?>
+
+<?=(!$excel ? "<div style='float:right;margin: 20px;'><a style='font-size: 16px;' href='{$current_sub[Hidden_URL]}{$current_cc[EnglishName]}.html?recNum=1000000000&isNaked=1&excel=1'>Скачать в Excel</a></div>" : NULL)?>
+
+<table class=nc-table width=100%>
+<tr>
+<th>№</th>
+<th>Дата</th>
+<th>Запрос</th>
+<th>Найдено</th>
+<th>IP</th>
+</tr><!-- /FormPrefix -->
+
+<!-- RecordTemplate --><tr>
+<td><?=$f_RowID?></td>
+<td><?=$f_Created_day?>.<?=$f_Created_month?>.<?=$f_Created_year?> <?=$f_Created_hours?>:<?=$f_Created_minutes?></td>
+<td><?=$f_text?></td>
+<td><?=$f_result?></td>
+<td><?=$f_IP?></td>
+</tr><!-- /RecordTemplate -->
+
+<!-- FormSuffix --></table>
+
+
+<?=(browse_messages($cc_env, 1000) && !$isTitle ? "<div class='pagination' style='margin: 20px 0;'>Страницы: ".browse_messages($cc_env, 10000)."</div>" : "")?><!-- /FormSuffix -->

@@ -1,0 +1,731 @@
+<?php
+global $DOCUMENT_ROOT, $THIS_HTTP_HOST, $setting, $settingCont, $bitcat, $nav_templ, $cols, $pathDom, $pathInc, $pathInc2, $catalogue, $retailrocket, $titleArr, $leftblock, $subset, $setting_texts, $thissub, $thiscc, $thiscid, $catalogFooter, $domainexp, $mainpage, $xlebhave, $curdomen, $langs, $AUTH_USER_ID;
+
+if ($current_catalogue['customCode']) {
+    $includeClass = false;
+    $thisFile = $DOCUMENT_ROOT . $pathInc2 . "/template/template/2/Settings.html";
+    if (file_exists($thisFile)) {
+        $includeClass = 1;
+    }
+}
+
+if ($includeClass == 1) {
+    include $thisFile;
+} else {
+    $p = str_replace(
+        urldecode(strrev(stristr(strrev(parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH)), '/'))), 
+        parse_url(($parent_sub_tree[0]['ExternalURL'] ?:$parent_sub_tree[0]['Hidden_URL']), PHP_URL_PATH), 
+        $_SERVER['REQUEST_URI']
+    );
+
+    if ($_SERVER['REDIRECT_URL'] == '/bc/require/e404.php' && $_SERVER['REQUEST_URI'] != $p && $_SERVER['REQUEST_URI'] != '/') {
+        if (strpos($p, '/404/') === false) {
+            header("HTTP/1.1 301 Moved Permanently");
+            header("Location: " . str_replace('&amp;', '&', $p));
+        }
+    }
+    
+    # HTTPS
+    if ($current_catalogue['https']) {
+        $SRV_HOST = $IMG_HOST = null;
+        $httpsToHttp = array('');
+        $nohttpsredir = array('cinemania.pro' => 1);
+        if (!in_array($catalogue, $httpsToHttp) && !strstr($_SERVER['REQUEST_URI'], 'well-known')) {
+            if (!stristr($_SERVER['HTTPS'], "on") && !$nohttpsredir[$_SERVER['HTTP_HOST']]) {
+                header("HTTP/1.1 301 Moved Permanently");
+                header("Location: https://{$HTTP_HOST}" . str_replace('&amp;', '&', $_SERVER['REQUEST_URI']));
+                exit();
+            }
+        } else {
+            //if(stristr($_SERVER['HTTP_X_FORWARDED_PROTO'],"https")) header("Location: http://{$HTTP_HOST}{$_SERVER[REQUEST_URI]}");
+        }
+    }
+
+
+    # Модули
+    if ($current_sub['EnglishName'] == 'comparison' || $setting['itemComparison']) {
+        $plugins['modules']['comparison'] = 1;
+    }
+
+
+    # убрать уровень поддомена language и targeting
+    $ARRAY_HOST = explode(".", $HTTP_HOST);
+    if (($setting[language] && isset($langs['lang'][$ARRAY_HOST[0]])) || isset($citys[$ARRAY_HOST[0]])) {
+        $sub_targeting = $ARRAY_HOST[0];
+        array_shift($ARRAY_HOST);
+    }
+    $curdomen = implode(".", $ARRAY_HOST);
+    # редирект на основной домен
+    $noredirectArr = array(340);
+    if (stristr($current_catalogue['Domain'], 'www')) { // с www
+        if (!stristr($HTTP_HOST, "www") && !in_array($catalogue, $noredirectArr)) {
+            header("Location: //" . $current_catalogue['Domain'] . $_SERVER['REQUEST_URI']);
+        }
+    } else { // без www
+        if ($current_catalogue['Domain'] && in_array($curdomen, explode("\r\n", str_replace(" ", "", $current_catalogue['Mirrors']))) && $curdomen != $current_catalogue['Domain'] && !in_array($catalogue, $noredirectArr)) {
+            header("Location: //" . $current_catalogue['Domain'] . $_SERVER['REQUEST_URI']);
+        }
+    }
+
+
+    $thissub = $sub;
+    $thiscc = $cc;
+    if ($thiscc && $thissub) {
+        $thiscid = $db->get_var("SELECT Class_ID FROM Sub_Class where Sub_Class_ID = '$cc' AND Subdivision_ID = '$sub' AND Catalogue_ID = '$catalogue'");
+    }
+
+
+    # content settings
+    if (!$settingCont) {
+        $settingCont = $db->get_row("select *, Message_ID as mesid, SUBSTRING_INDEX(p_pechat, ':', -1) as pechat, SUBSTRING_INDEX(p_rukpodpis, ':', -1) as rukpodpis, SUBSTRING_INDEX(p_buhpodpis, ':', -1) as buhpodpis from Message2024 where Catalogue_ID = '$catalogue' order by Created limit 0,1", ARRAY_A);
+    }
+
+    # contacts setting
+    if (!$contactSet) {
+        $contactSet = $db->get_row("select a.*, a.Message_ID as mesid from Message210 as a, Subdivision as b where b.Catalogue_ID = '$catalogue' AND a.Subdivision_ID=b.Subdivision_ID order by a.Created limit 0,1", ARRAY_A);
+    }
+
+    # массив замен для title
+    if ($action == 'full') {
+        $itemvar = $nc_core->message->get_by_id($classID, $message);
+    }
+
+    # иконка путь
+    $favicon = ($setting['favicon'] ? $HTTP_FILES_PATH . $setting['favicon'] : $pathInc . "/favicon.ico");
+
+    # статус раздела
+    $subset = array(
+        "systemsub" => $current_sub['systemsub'], # системный раздел
+        "nodeletesub" => $current_sub['systemsub'], # нельзя удалять
+        "nosettings" => $current_sub['nosettings'] # нельзя редактировать
+    );
+
+    # авторизация
+    if ($AUTH_USER_ID && $current_user['PermissionGroup_ID'] == 1) {
+        if (($current_user['Catalogue_ID'] > 0 && $current_user['Catalogue_ID'] == $catalogue) || $current_user['Catalogue_ID'] == 0 || !$current_user['Catalogue_ID']) {
+            $bitcat = 1;
+        } else {
+            Unauthorize();
+            header("Location: //" . $HTTP_HOST);
+        }
+    }
+
+
+    # 404
+    if ($current_sub['EnglishName'] == 404) {
+        $is404 = 1;
+        $html404 = "<div class='error404 mainmenubg-font'><div class='error404_text'><span class='error404_logo'></span>404</div></div>
+                    <div class='error404_title'>" . ($setting_texts['page404_1']['checked'] ? $setting_texts['page404_1']['name'] : "ТАКОЙ СТРАНИЦЫ У НАС НЕТ.<br>ВОЗМОЖНО, ОНА КОГДА-ТО ЗДЕСЬ БЫЛА") . "</div>
+                    <div class='error404_mini'>" . ($setting_texts['page404_2']['checked'] ? $setting_texts['page404_2']['name'] : "Скорее всего, то, что вы ищете, перенесено в другое место") . "</div>
+                    <div class='error404_btn'><div class='error404_btnline'><a href='/' class='error404_btn_green btn-strt-a'><span>" . ($setting_texts['page404_3']['checked'] ? $setting_texts['page404_3']['name'] : "Перейти на главную страницу") . "</span></a></div></div>
+                    <div class='error404_textbot'>
+                    " . ($setting_texts['page404_4']['checked'] ? $setting_texts['page404_4']['name'] : "Воспользуйтесь главным меню, ") . "<a href='/index/sitemap/'>" . ($setting_texts['page404_5']['checked'] ? $setting_texts['page404_5']['name'] : "картой сайта") . "</a>" . ($setting_texts['page404_6']['checked'] ? $setting_texts['page404_6']['name'] : ", перейдите в ") . " <a href='/contacts/'>" . ($setting_texts['page404_7']['checked'] ? $setting_texts['page404_7']['name'] : "контакты") . "</a> " . ($setting_texts['page404_8']['checked'] ? $setting_texts['page404_8']['name'] : "или позвоните нам по телефону") . "</div>";
+        $logic404file = $DOCUMENT_ROOT . $pathInc2 . "/404.php";
+        if ($current_catalogue['customCode'] && file_exists($logic404file)) {
+            include($logic404file);
+        }
+    }
+
+    # корзина
+    if ($current_sub['noleftcol']) {
+        $noleftcol = 1;
+    }
+
+
+    if (!$shema) {
+        $shemaCSS = $setting['htmlShema'];
+        $shema = $setting['htmlShema'];
+        if ($shemaCSS == 5) {
+            $shemaCSS = 3;
+        }
+    }
+
+
+    # таргетинг
+    require_once $DOCUMENT_ROOT . '/template/template/2/targeting.html';
+
+    $titleArr = array(
+        "PARENTNAME-low" => mb_strtolower($parent_sub_tree[1]['Subdivision_Name']),
+        "PARENT2NAME-low" => mb_strtolower($parent_sub_tree[2]['Subdivision_Name']),
+        "PARENTNAME" => $parent_sub_tree[1]['Subdivision_Name'],
+        "PARENT2NAME" => $parent_sub_tree[2]['Subdivision_Name'],
+        "PRICE" => ($itemvar['price'] > 0 ? price($itemvar['price']) : "договорной"),
+        "ART" => $itemvar['art'],
+        "STOCK" => $itemvar['stock'],
+        "ITEMNAME-low" => mb_strtolower($itemvar['name']),
+        "ITEMNAME" => $itemvar['name'],
+        "VENDOR" => htmlspecialchars_decode($itemvar['vendor']),
+        "COMPANY" => $current_catalogue['Catalogue_Name'],
+        "CITYGDE" => cityGde($cityname),
+        "CITYNAME" => $cityname,
+        "NOCITY" => "",
+        "VARIANT" => mb_strtolower($f_variablename),
+        "NAME-low" => mb_strtolower($current_sub['Subdivision_Name']),
+        "NAME" => $current_sub['Subdivision_Name'],
+        "ITEMNUM" => $message
+    );
+
+    if ($action != "full" && !$mainpage && $classID == 2001) {
+        $titleArr["NUMITEMS"] = seoWordsRazdel($current_sub["Subdivision_ID"], 'NUM');
+        $titleArr["PMAX"] = seoWordsRazdel($current_sub["Subdivision_ID"], 'DESC');
+        $titleArr["PMIN"] = seoWordsRazdel($current_sub["Subdivision_ID"], 'ASC');
+    }
+
+    # title path
+    $browse_path['active_link'] = "<b>%NAME</b>";
+    $browse_path['unactive'] = "<a href='%URL'>%NAME</a>";
+    $browse_path['active'] = "<a href='%URL'><b>%NAME</b></a>";
+    $browse_path['divider'] = " <span>/</span> ";
+
+    # xleb
+    $browse_xleb['unactive'] = "<li class='xleb-item --%URL--'>
+        <span>
+            <span>
+                <a href='%URL'>%NAME<span class='xleb-close'></span></a>
+            </span>
+        </span>
+        <ul class='xleb-open'>__%URL__</ul>
+    </li>";
+    $browse_xleb['active'] = $browse_xleb['unactive'];
+    $browse_xleb['active_link'] = "<li class='xleb-item'>
+        <span>
+            <span><span>%NAME</span></span>
+        </span>
+    </li>";
+
+    # xleb micromarking
+    $browse_xleb_2['unactive'] = "<li class='xleb-default-item'>
+    	<span>
+    		<span>
+    			<a href='%URL'>%NAME</a>
+    		</span>
+    	</span>
+    </li>";
+    $browse_xleb_2['active'] = $browse_xleb_2['unactive'];
+    $browse_xleb_2['active_link'] = "<li class='xleb-default-item'>
+        <span>
+            <span>%NAME</span>
+        </span>
+    </li>";
+
+    # страницы
+    $browse_msg['prefix'] = "";
+    $browse_msg['suffix'] = "";
+    $browse_msg['active'] = "<span class='lnkpage mainmenubg'>%PAGE</span>";
+    $browse_msg['unactive'] = "<a class='lnkpage' href=%URL>%PAGE</a>";
+    $browse_msg['divider'] = "";
+
+
+
+
+
+
+
+
+
+
+
+    # Горизонтальное #1
+    $nav_templ_0[0]['prefix'] = "<nav class='header_bot nowidth100 menu-img-no'><ul class='header_menu'>";
+    $nav_templ_0[0]['suffix'] = "</ul></nav>";
+    $nav_templ_0[0]['droping_class'] = "menu-drop";
+    $nav_templ_0[0]['unactive'] = "
+    <li class='sub%SUB %DROPING_CLASS <!--itmscl %URL-->'>
+        %NEXT_LEVEL
+        <a data-o='%blank' title='%NAME' href='%URL'>
+            <span class='mn_sp_1'>
+                <span class='menu_img_top'><img src='%icon' alt='%NAME'></span>
+                <span>%NAME</span>
+            </span>
+        </a><!--itms %URL-->
+    </li>";
+    $nav_templ_0[0]['active'] = "
+    <li class='sub%SUB %DROPING_CLASS active <!--itmscl %URL-->'>
+        %NEXT_LEVEL
+        <a data-o='%blank' title='%NAME' href='%URL'>
+            <span class='mn_sp_1'>
+                <span class='menu_img_top'><img src='%icon' alt='%NAME'></span>
+                <span>%NAME</span>
+            </span>
+        </a><!--itms %URL-->
+    </li> ";
+
+    $nav_templ_0[1]['prefix'] = "<ul class='h_menu_sec'>";
+    $nav_templ_0[1]['suffix'] = "</ul>";
+    $nav_templ_0[1]['unactive'] = "
+    <li class='sub%SUB <!--itmscl %URL-->'>
+        %NEXT_LEVEL
+        <a data-o='%blank' title='%NAME' href='%URL'>
+            <span class='mn_sp_2'>
+                <span>%NAME</span>
+            </span>
+        </a> <!--itms %URL-->
+    </li>";
+    $nav_templ_0[1]['active'] = "
+    <li class='sub%SUB active <!--itmscl %URL-->'>
+        %NEXT_LEVEL
+        <a data-o='%blank' title='%NAME' href='%URL'>
+            <span class='mn_sp_2'>
+                <span>%NAME</span>
+            </span>
+        </a> <!--itms %URL-->
+    </li>";
+
+    $nav_templ_0[2]['prefix'] = "<ul class='h_menu_third'>";
+    $nav_templ_0[2]['suffix'] = "</ul>";
+    $nav_templ_0[2]['unactive'] = "
+    <li class='sub%SUB <!--itmscl %URL-->'>
+        <a data-o='%blank' title='%NAME' href='%URL'>
+            <span class='mn_sp_2'>
+                <span>%NAME</span>
+            </span>
+        </a> <!--itms %URL-->
+    </li>";
+    $nav_templ_0[2]['active'] = "
+    <li class='sub%SUB active <!--itmscl %URL-->'>
+        <a data-o='%blank' title='%NAME' href='%URL'>
+            <span class='mn_sp_2'>
+                <span>%NAME</span>
+            </span>
+        </a> <!--itms %URL-->
+    </li>";
+    # Горизонтальное #1 End
+
+    /* горизонтальное 1 , 2 уровня с картинкаи */
+    $nav_templ_0_img[0]['prefix'] = "<nav class='header_bot nowidth100 menu-img-no'><ul class='header_menu'>";
+    $nav_templ_0_img[0]['suffix'] = "</ul></nav>";
+    $nav_templ_0_img[0]['droping_class'] = "menu-drop";
+    $nav_templ_0_img[0]['unactive'] = "
+    <li class='sub%SUB %DROPING_CLASS <!--itmscl %URL-->'>
+        %NEXT_LEVEL
+        <a data-o='%blank' title='%NAME' href='%URL'>
+            <span class='mn_sp_1'>
+                <span class='menu_img_top'><img src='%icon' alt='%NAME'></span>
+                <span>%NAME</span>
+            </span>
+        </a> <!--itms %URL-->
+    </li>";
+
+    $nav_templ_0_img[0]['active'] = "
+    <li class='sub%SUB active %DROPING_CLASS <!--itmscl %URL-->'>
+        %NEXT_LEVEL
+        <a data-o='%blank' title='%NAME' href='%URL'>
+            <span class='mn_sp_1'>
+                <span class='menu_img_top'><img src='%icon' alt='%NAME'></span>
+                <span>%NAME</span>
+            </span>
+        </a> <!--itms %URL-->
+    </li>";
+
+    $nav_templ_0_img[1]['prefix'] = "<ul class='h_menu_sec_img'>";
+    $nav_templ_0_img[1]['suffix'] = "</ul>";
+    $nav_templ_0_img[1]['unactive'] = "
+    <li class='sub%SUB <!--itmscl %URL--> li_sec_img'>
+        %NEXT_LEVEL
+        <a data-o='%blank' title='%NAME' href='%URL'>
+            <span class='mn_sp_2'><img src='%icon' alt='%NAME'>
+            <span>%NAME</span></span>
+        </a> <!--itms %URL-->
+    </li> ";
+    $nav_templ_0_img[1]['active'] = "
+    <li class='sub%SUB active <!--itmscl %URL--> li_sec_img'>
+        %NEXT_LEVEL
+        <a data-o='%blank' title='%NAME' href='%URL'>
+            <span class='mn_sp_2'>
+                <img src='%icon' alt='%NAME'>
+                <span>%NAME</span>
+            </span>
+        </a> <!--itms %URL-->
+    </li> ";
+
+    $nav_templ_0_img[2]['prefix'] = "<ul class='h_menu_third_img'>";
+    $nav_templ_0_img[2]['suffix'] = "</ul>";
+    $nav_templ_0_img[2]['unactive'] = "
+    <li class='sub%SUB <!--itmscl %URL--> li_third_img'>
+        <a data-o='%blank' title='%NAME' href='%URL'>
+            <span class='mn_sp_2'>
+                <img src='%img' alt='%NAME'>
+                <span>%NAME</span>
+            </span>
+        </a> <!--itms %URL-->
+    </li> ";
+
+    $nav_templ_0_img[2]['active'] =  "
+    <li class='sub%SUB active <!--itmscl %URL--> li_third_img'>
+        <a data-o='%blank' title='%NAME' href='%URL'>
+            <span class='mn_sp_2'>
+                <img src='%img' alt='%NAME'>
+                <span>%NAME</span>
+            </span>
+        </a> <!--itms %URL-->
+    </li> ";
+
+    /* END горизонтальное 1 , 2 уровня с картинкаи */
+
+    # Горизонтальное #2 
+    // по логике должно называться по другому. И тут небыло картинок...
+    $nav_templ_2[0]['prefix'] = "<div class='foot-menu-main'><nav class='foot-menu'><ul class='foot-mn'>";
+    $nav_templ_2[0]['suffix'] = "</ul></nav></div>";
+    $nav_templ_2[0]['droping_class'] = "menu-drop";
+    $nav_templ_2[0]['unactive'] = "
+    <li class='sub%SUB %DROPING_CLASS'>
+        <a data-o='%blank' href='%URL'>
+            <span>%NAME</span>
+        </a>
+        %NEXT_LEVEL
+    </li>";
+
+    $nav_templ_2[0]['active'] = "
+    <li class='sub%SUB %DROPING_CLASS active'>
+        <a data-o='%blank' href='%URL'><span>%NAME</span></a>
+        %NEXT_LEVEL
+    </li>";
+
+    $nav_templ_2[1]['prefix'] = "<ul class='foot-menu-sec'>";
+    $nav_templ_2[1]['suffix'] = "</ul>";
+    $nav_templ_2[1]['droping_class'] = "menu-drop";
+    $nav_templ_2[1]['unactive'] = "
+    <li class='sub%SUB %DROPING_CLASS'>
+        <a data-o='%blank' href='%URL'><span>%NAME</span></a>
+        %NEXT_LEVEL
+    </li>";
+    $nav_templ_2[1]['active'] = "
+    <li class='sub%SUB %DROPING_CLASS active'>
+        <a data-o='%blank' href='%URL'><span>%NAME</span></a>
+        %NEXT_LEVEL
+    </li>";
+
+    $nav_templ_2[2]['prefix'] = "<ul class='foot-menu-third'>";
+    $nav_templ_2[2]['suffix'] = "</ul>";
+    $nav_templ_2[2]['unactive'] = "
+    <li>
+        <a data-o='%blank' href='%URL'>
+            <span>%NAME</span>
+        </a>
+    </li>";
+    $nav_templ_2[2]['active'] = "
+    <li>
+        <a data-o='%blank' href='%URL' class='active'>
+            <span>%NAME</span>
+        </a>
+    </li>";
+
+
+    # первое меню на всю щирину 3 уровня
+    $nav_templ_3_drop[0]['prefix'] = "\";global \$nav_templ_3_drop;\$result.=\"<nav class='header_bot nowidth100'><ul class='header_menu'>";
+    $nav_templ_3_drop[0]['suffix'] = "</ul></nav>";
+    $nav_templ_3_drop[0]['unactive'] = "
+    \".opt(\$menu=s_browse_sub(\$data[\$i][Subdivision_ID], \$nav_templ_3_drop[1]),\"\").\"
+    <li class='sub%SUB \".opt(\$menu, \"menu-drop\").\"'>\".opt(\$menu, \"<ul class='h_menu_sec \".opt(stristr(\$menu, 'menu-drop'), \"drop-main-menu\").\"'>\$menu</ul>\").\"<a data-o='%blank' href='%URL'><span class='mn_sp_1'><span>\".getLangWord(\"lang_sub_%KEYWORD\", \"%NAME\").\"</span></span></a></li> ";
+    $nav_templ_3_drop[0]['active'] = "
+    \".opt(\$menu=s_browse_sub(\$data[\$i][Subdivision_ID], \$nav_templ_3_drop[1]),\"\").\"
+    <li class='active sub%SUB \".opt(\$menu, \"menu-drop\").\"'>\".opt(\$menu, \"<ul class='h_menu_sec \".opt(stristr(\$menu, 'menu-drop'), \"drop-main-menu\").\"'>\$menu</ul>\").\"<a data-o='%blank' href='%URL'><span class='mn_sp_1'><span>\".getLangWord(\"lang_sub_%KEYWORD\", \"%NAME\").\"</span></span></a></li> ";
+
+    $nav_templ_3_drop[1]['prefix'] = "\";global \$nav_templ_3_drop;\$result.=\"";
+    $nav_templ_3_drop[1]['suffix'] = "";
+    $nav_templ_3_drop[1]['unactive'] = "
+    \".opt(\$menu=s_browse_sub(\$data[\$i][Subdivision_ID], \$nav_templ_3_drop[2]),\"\").\"
+    <li class='sub%SUB \".opt(\$menu, \"menu-drop\").\"'><a data-o='%blank' href='%URL'><span class='mn_sp_2'><span>\".getLangWord(\"lang_sub_%KEYWORD\", \"%NAME\").\"</span></span></a>\".opt(\$menu, \"\$menu\").\"</li> ";
+    $nav_templ_3_drop[1]['active'] = "
+    \".opt(\$menu=s_browse_sub(\$data[\$i][Subdivision_ID], \$nav_templ_3_drop[2]),\"\").\"
+    <li class='active sub%SUB \".opt(\$menu, \"menu-drop\").\"'><a data-o='%blank' href='%URL'><span class='mn_sp_2'><span>\".getLangWord(\"lang_sub_%KEYWORD\", \"%NAME\").\"</span></span></a>\".opt(\$menu, \"\$menu\").\"</li> ";
+
+    $nav_templ_3_drop[2]['prefix'] = "<ul class='h_menu_third'>";
+    $nav_templ_3_drop[2]['suffix'] = "</ul>";
+    $nav_templ_3_drop[2]['unactive'] = "<li class='sub%SUB'><a data-o='%blank' href='%URL'><span class='mn_sp_2'><span>\".getLangWord(\"lang_sub_%KEYWORD\", \"%NAME\").\"</span></span></a></li> ";
+    $nav_templ_3_drop[2]['active'] = "<li class='active sub%SUB'><a data-o='%blank' href='%URL'><span class='mn_sp_2'><span>\".getLangWord(\"lang_sub_%KEYWORD\", \"%NAME\").\"</span></span></a></li> ";
+
+
+
+
+    # Вертикальное
+    $nav_templ_20[0]['prefix'] = "<ul class='menu-img-no menu-dashed-no menu-decoration-no menu_catalog'>";
+    $nav_templ_20[0]['suffix'] = "</ul>";
+    $nav_templ_20[0]['droping_class'] = "menu_open";
+    $nav_templ_20[0]['unactive'] = "<li class='%DROPING_CLASS sub%SUB <!--itmscl %URL-->'>
+                                <a data-o='%blank' href='%URL'>
+                                    <span class='menu_img'><img src='%icon' alt=''></span>
+                                    <span class='menu_title'>
+                                        <span class='menu-tit'>%NAME</span>
+                                        <span class='menu-sub'></span>
+                                    </span>
+                                    <span class='menu_arrow'></span>
+                                </a>%NEXT_LEVEL<!--itms %URL--></li> ";
+    $nav_templ_20[0]['active'] = "<li class='active %DROPING_CLASS sub%SUB <!--itmscl %URL-->'>
+                                <a data-o='%blank' href='%URL'>
+                                    <span class='menu_img'><img src='%icon' alt=''></span>
+                                    <span class='menu_title'><span class='menu-tit'>%NAME</span><span class='menu-sub'></span></span>
+                                    <span class='menu_arrow'></span>
+                                </a>%NEXT_LEVEL<!--itms %URL--></li> ";
+
+    $nav_templ_20[1]['prefix'] = "<ul class='left_m_sec'>";
+    $nav_templ_20[1]['suffix'] = "</ul>";
+    $nav_templ_20[1]['droping_class'] = "menu_open";
+    $nav_templ_20[1]['unactive'] = "<li class='sub%SUB %DROPING_CLASS <!--itmscl %URL-->'>
+                                                <a data-o='%blank' href='%URL'>
+                                                    <span class='menu_plus'></span>
+                                                    <span class='menu_img'><img src='%icon' alt=''></span>
+                                                    <span class='menu_title_sec'>%NAME<span class='menu-sub'></span></span>
+                                                </a>%NEXT_LEVEL<!--itms %URL-->
+                                            </li>";
+
+    $nav_templ_20[1]['active'] = "<li class='active sub%SUB %DROPING_CLASS <!--itmscl %URL-->'>
+                                                <a data-o='%blank' href='%URL'>
+                                                    <span class='menu_plus'></span>
+                                                    <span class='menu_img'><img src='%icon' alt=''></span>
+                                                    <span class='menu_title_sec'>%NAME<span class='menu-sub'></span></span>
+                                                </a>%NEXT_LEVEL<!--itms %URL-->
+                                            </li>";
+
+    $nav_templ_20[2]['prefix'] = "<ul class='left_m_th'>";
+    $nav_templ_20[2]['suffix'] = "</ul>";
+    $nav_templ_20[2]['unactive'] = "<li class='sub%SUB'>
+                                        <a data-o='%blank' href='%URL'>
+                                            <span class='menu_img'>
+                                                
+                                            </span>
+                                            %NAME
+                                            <span class='menu-sub'></span>
+                                        </a>
+                                    </li> ";
+    $nav_templ_20[2]['active'] = "<li class='active sub%SUB'>
+                                    <a data-o='%blank' href='%URL'>
+                                        <span class='menu_img'>
+                                            <img src='%icon' alt=''>
+                                        </span>
+                                        %NAME
+                                        <span class='menu-sub'></span></a>
+                                </li> ";
+    # Вертикальное end
+
+    # Кнопка (выпадашка) #1
+    $nav_templ_40[0]['prefix'] = "<ul class='menu-type-40'>";
+    $nav_templ_40[0]['suffix'] = "</ul>";
+    $nav_templ_40[0]['droping_class'] = "menu-drop";
+    $nav_templ_40[0]['unactive'] = "
+    <li class='sub%SUB %DROPING_CLASS'>
+        %NEXT_LEVEL
+        <a data-o='%blank' title='%NAME' href='%URL'>
+            <span class='menu-40-data'>
+                <span class='menu-40-second-img none'>
+                    <img src='%icon' alt='%NAME'>
+                </span>
+                <span>%NAME</span>
+            </span>
+        </a>
+    </li>";
+    $nav_templ_40[0]['active'] = "
+    <li class='active sub%SUB %DROPING_CLASS'>
+        %NEXT_LEVEL
+        <a data-o='%blank' title='%NAME' href='%URL'>
+            <span class='menu-40-data'>
+                <span class='menu-40-second-img none'>
+                    <img src='%icon' alt='%NAME'>
+                </span>
+                <span>%NAME</span>
+            </span>
+        </a>
+    </li> ";
+
+    $nav_templ_40[1]['prefix'] = "<ul class='menu-40-second'>";
+    $nav_templ_40[1]['suffix'] = "</ul>";
+    $nav_templ_40[1]['droping_class'] = "menu-drop";
+    $nav_templ_40[1]['unactive'] = "
+    <li class='sub%SUB %DROPING_CLASS'>
+        %NEXT_LEVEL
+        <a data-o='%blank' title='%NAME' href='%URL'>
+            <span class='menu-40-data-second'>
+                <span class='menu-40-second-img none'><img src='%icon' alt='%NAME'></span>
+                <span>%NAME</span>
+            </span>
+        </a>
+    </li>";
+
+    $nav_templ_40[1]['active'] = "
+    <li class='sub%SUB %DROPING_CLASS active'>
+        %NEXT_LEVEL
+        <a data-o='%blank' title='%NAME' href='%URL'>
+            <span class='menu-40-data-second'>
+                <span class='menu-40-second-img none'><img src='%icon' alt='%NAME'></span>
+                <span>%NAME</span>
+            </span>
+        </a>
+    </li>";
+
+    $nav_templ_40[2]['prefix'] = "<ul class='menu-40-third'>";
+    $nav_templ_40[2]['suffix'] = "</ul>";
+    $nav_templ_40[2]['unactive'] = "
+    <li class='sub%SUB'>
+        <a data-o='%blank' title='%NAME' href='%URL'>
+            <span class='menu-40-data-third'>
+                <span class='menu-40-second-img none'><img src='%icon' alt='%NAME'></span>
+                <span>%NAME</span>
+            </span>
+        </a>
+    </li> ";
+    $nav_templ_40[2]['active'] = "
+    <li class='sub%SUB active'>
+        <a data-o='%blank' title='%NAME' href='%URL'>
+            <span class='menu-40-data-third'>
+                <span class='menu-40-second-img none'><img src='%icon' alt='%NAME'></span>
+                <span>%NAME</span>
+            </span>
+        </a>
+    </li> ";
+
+    # меню кнопка
+
+    # Кнопка (выпадашка) #2
+
+    $nav_templ_41[0]['prefix'] = "<ul class='menu-type-41'>";
+    $nav_templ_41[0]['suffix'] = "</ul>";
+    $nav_templ_41[0]['droping_class'] = "menu-drop";
+    $nav_templ_41[0]['unactive'] = "
+    <li class='sub%SUB %DROPING_CLASS'>
+        <a data-o='%blank' title='%NAME' href='%URL'>
+            <span class='menu-41-data'>
+                <span>%NAME</span>
+            </span>
+        </a>
+        %NEXT_LEVEL
+    </li>";
+    $nav_templ_41[0]['active'] = "
+    <li class='sub%SUB %DROPING_CLASS active'>
+        <a data-o='%blank' title='%NAME' href='%URL'>
+            <span class='menu-41-data'>
+                <span>%NAME</span>
+            </span>
+        </a>
+        %NEXT_LEVEL
+    </li>";
+
+    $nav_templ_41[1]['prefix'] = "
+    <div class='menu-41-main'>
+        <div class='menu-41-title'>%PARENT_NAME</div>
+            <ul class='menu-41-second'>";
+    $nav_templ_41[1]['suffix'] = "</ul></div>";
+    $nav_templ_41[1]['droping_class'] = "menu-drop";
+    $nav_templ_41[1]['unactive'] = "
+    <li class='sub%SUB menu-packery-item %DROPING_CLASS'>
+        <a data-o='%blank' title='%NAME' href='%URL'>
+            <span class='menu-41-data-second'>
+                <span class='menu-41-second-img none'><img src='%icon' alt='%NAME'></span>
+                <span>%NAME</span>
+            </span>
+        </a>
+        %NEXT_LEVEL
+    </li> ";
+    $nav_templ_41[1]['active'] = "
+    <li class='sub%SUB menu-packery-item %DROPING_CLASS active'>
+        <a data-o='%blank' title='%NAME' href='%URL'>
+            <span class='menu-41-data-second'>
+                <span class='menu-41-second-img none'><img src='%icon' alt='%NAME'></span>
+                <span>%NAME</span>
+            </span>
+        </a>
+        %NEXT_LEVEL
+    </li>";
+
+    $nav_templ_41[2]['prefix'] = "<ul class='menu-41-third'>";
+    $nav_templ_41[2]['suffix'] = "</ul>";
+    $nav_templ_41[2]['unactive'] = "
+    <li class='sub%SUB'>
+        <a data-o='%blank' title='%NAME' href='%URL'>
+            <span class='menu-41-data-third'>
+                <span>%NAME</span>
+            </span>
+        </a>
+    </li> ";
+    $nav_templ_41[2]['active'] = "
+    <li class='sub%SUB active'>
+        <a data-o='%blank' title='%NAME' href='%URL'>
+            <span class='menu-41-data-third'>
+                <span>%NAME</span>
+            </span>
+        </a>
+    </li> ";
+
+    # меню кнопка пред разделов
+    $nav_templ_42[0]['prefix'] = "<ul class='menu-type-40'>";
+    $nav_templ_42[0]['suffix'] = "</ul>";
+    $nav_templ_42[0]['unactive'] = "
+    <li class='sub%SUB'>
+        <a data-o='%blank' title='%NAME' href='%URL'>
+            <span class='menu-40-data'>
+                <span>%NAME</span>
+            </span>
+        </a>
+    </li>";
+    $nav_templ_42[0]['active'] = "
+    <li class='active sub%SUB'>
+        <a data-o='%blank' title='%NAME' href='%URL'>
+            <span class='menu-40-data'>
+                <span>%NAME</span>
+            </span>
+        </a>
+    </li>";
+
+
+    # мобильное меню
+    $nav_mob[0]['unactive'] = "<option value='%URL'>%NAME</option>";
+    $nav_mob[0]['active'] = "<option value='%URL' selected>%NAME</option>";
+
+    $nav_mob[1]['unactive'] = "<option value='%URL'>%NAME</option>";
+    $nav_mob[1]['active'] = "<option selected value='%URL'>%NAME</option>";
+
+    # карта сайта
+    $browse_map['prefix'] = "<ul class=sitemap>";
+    $browse_map['unactive'] = "<li><a data-o='%blank' href=%URL>\".getLangWord(\"lang_sub_%KEYWORD\", \"%NAME\").\"</a>\".sitemapTovar(\$data[\$i][Subdivision_ID]).\"  \".s_browse_sub(\$data[\$i][Subdivision_ID],\$browse_template).\"</li>";
+    $browse_map['active'] = "<li><a data-o='%blank' href=%URL>\".getLangWord(\"lang_sub_%KEYWORD\", \"%NAME\").\"</a>\".sitemapTovar(\$data[\$i][Subdivision_ID]).\"  \".s_browse_sub(\$data[\$i][Subdivision_ID],\$browse_template).\"</li>";
+    $browse_map['suffix'] = "</ul>";
+
+    # CSS пути разделов
+    if (!$mainpage && !$subdivClass) {
+        foreach (explode("/", $current_sub['Hidden_URL']) as $hd) {
+            if ($hd) {
+                $subdivClass .= " subdiv-" . $hd;
+            }
+        }
+        $subdivClass .= " this-" . $current_sub['EnglishName'];
+    }
+
+
+    global $call_id, $mail_id;
+    $call_id = $db->get_row("select a.Subdivision_ID as sub, a.Sub_Class_ID as cc from Sub_Class as a, Subdivision as b where a.Class_ID = '2013' AND a.EnglishName = 'callme' AND b.Catalogue_ID='$catalogue' AND a.Subdivision_ID = b.Subdivision_ID LIMIT 0,1", ARRAY_A);
+
+    $mail_id = $db->get_row("select a.Subdivision_ID as sub, a.Sub_Class_ID as cc from Sub_Class as a, Subdivision as b where a.Class_ID = '2013' AND a.EnglishName = 'mail' AND b.Catalogue_ID='$catalogue' AND a.Subdivision_ID = b.Subdivision_ID LIMIT 0,1", ARRAY_A);
+
+    # creater
+    if ($setting['createrText']) {
+        $DEVELOPER_NAME1 = $setting['createrText'];
+    }
+    if ($setting['createrLink']) {
+        $DEVELOPER_URL1 = $setting['createrLink'];
+    }
+
+    # yclid
+    /*if ($_GET['yclid']) {
+        $notyclid = str_replace("?yclid=".$_GET['yclid'],"",$_SERVER['REQUEST_URI']);
+        if ($notyclid) header("Location: {$notyclid}");
+    }*/
+
+    # получить ID метрики
+    if (preg_match('/yaCounter(\d+) = new/', $setting['counter'], $arr)) {
+        $metrikaid = $arr[1];
+    }
+    if (!$metrikaid && preg_match('/ym\((\d+),/', $setting['counter'], $arr)) {
+        $metrikaid = $arr[1];
+    }
+
+    if (!$metrikaid && preg_match('/yaCounter(\d+) = new/', $setting['meta'], $arr)) {
+        $metrikaid = $arr[1];
+    }
+    if (!$metrikaid && preg_match('/ym\((\d+),/', $setting['meta'], $arr)) {
+        $metrikaid = $arr[1];
+    }
+
+
+    if (function_exists('function_Template_Settings')) { // своя функция
+        function_Template_Settings();
+    }
+}

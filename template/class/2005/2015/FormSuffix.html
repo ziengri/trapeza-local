@@ -1,0 +1,21 @@
+    </tbody>
+</table>
+<div class="bc_submitblock bc_paneltable">
+	<div class="bc_btnbody">
+		<div class="bc-submit-text">Действия с выделенными:</div>
+		<div class="bc-btn-green bc-btn-delete"></div>
+	</div>
+</div>
+    <?=getPagination(array(
+        'isTitle' => $isTitle,
+        'cc_env' => $cc_env,
+        'prevLink' => $prevLink,
+        'nextLink' => $nextLink,
+        'totRows' => $totRows,
+        'recNum' => $recNum,
+        'vars_str2' => $vars_str2,
+        'sub' => $sub,
+        'cc' => $cc,
+        'inside_admin' => 1,
+        'url' => '/cart/'
+    ))?>

@@ -1,0 +1,3036 @@
+Array
+(
+    [123123123] => 20221214 11:12:04
+    [result] => Array
+        (
+            [errorCode] => 5
+            [errorMessage] => Access denied
+        )
+
+)
+Array
+(
+    [234234234] => 20221215 09:38:27
+    [domain] => securepayments.sberbank.ru
+    [result] => Array
+        (
+            [errorCode] => 5
+            [errorMessage] => Access denied
+        )
+
+)
+Array
+(
+    [234234234] => 20221216 09:34:41
+    [domain] => securepayments.sberbank.ru
+    [result] => Array
+        (
+            [errorCode] => 5
+            [errorMessage] => Access denied
+        )
+
+)
+Array
+(
+    [date] => 20221216 09:37:16
+    [domain] => securepayments.sberbank.ru
+    [result] => Array
+        (
+            [errorCode] => 5
+            [errorMessage] => Access denied
+        )
+
+    [login] => T3428986633-api
+)
+Array
+(
+    [date] => 20221216 09:38:36
+    [domain] => 3dsec.sberbank.ru
+    [result] => Array
+        (
+            [orderId] => 8da80ba3-0db1-7985-b075-e1a028e4073d
+            [formUrl] => https://3dsec.sberbank.ru/payment/merchants/sbersafe_sberid/payment_ru.html?mdOrder=8da80ba3-0db1-7985-b075-e1a028e4073d
+        )
+
+    [login] => t3428986633-api
+)
+Array
+(
+    [date] => 20221216 09:40:32
+    [domain] => 3dsec.sberbank.ru
+    [result] => Array
+        (
+            [orderId] => 8146efa9-d71e-7997-947d-a18d28e4073d
+            [formUrl] => https://3dsec.sberbank.ru/payment/merchants/sbersafe_sberid/payment_ru.html?mdOrder=8146efa9-d71e-7997-947d-a18d28e4073d
+        )
+
+    [login] => t3428986633-api
+)
+Array
+(
+    [date] => 20221216 09:41:35
+    [domain] => 3dsec.sberbank.ru
+    [result] => Array
+        (
+            [orderId] => e30f0520-907c-7f36-84dc-6e5428e4073d
+            [formUrl] => https://3dsec.sberbank.ru/payment/merchants/sbersafe_sberid/payment_ru.html?mdOrder=e30f0520-907c-7f36-84dc-6e5428e4073d
+        )
+
+    [login] => t3428986633-api
+)
+Array
+(
+    [date] => 20221216 09:42:46
+    [domain] => 3dsec.sberbank.ru
+    [result] => Array
+        (
+            [orderId] => 871e6fd6-0876-7194-9499-586f28e4073d
+            [formUrl] => https://3dsec.sberbank.ru/payment/merchants/sbersafe_sberid/payment_ru.html?mdOrder=871e6fd6-0876-7194-9499-586f28e4073d
+        )
+
+    [login] => t3428986633-api
+)
+Array
+(
+    [date] => 20221216 09:44:09
+    [domain] => 3dsec.sberbank.ru
+    [result] => Array
+        (
+            [orderId] => 48b9f7bd-cbc6-70f2-970a-cee328e4073d
+            [formUrl] => https://3dsec.sberbank.ru/payment/merchants/sbersafe_sberid/payment_ru.html?mdOrder=48b9f7bd-cbc6-70f2-970a-cee328e4073d
+        )
+
+    [login] => t3428986633-api
+)
+Array
+(
+    [date] => 20221216 09:45:17
+    [domain] => 3dsec.sberbank.ru
+    [result] => Array
+        (
+            [orderId] => 491ef2db-7e47-758e-9746-928c28e4073d
+            [formUrl] => https://3dsec.sberbank.ru/payment/merchants/sbersafe_sberid/payment_ru.html?mdOrder=491ef2db-7e47-758e-9746-928c28e4073d
+        )
+
+    [login] => t3428986633-api
+)
+Array
+(
+    [qweqwe] => 20230207 11:30:57
+    [domain] => securepayments.sberbank.ru
+    [result] => Array
+        (
+            [errorCode] => 5
+            [errorMessage] => Access denied
+        )
+
+)
+Array
+(
+    [qweqwe] => 20230207 11:50:41
+    [domain] => securepayments.sberbank.ru
+    [result] => Array
+        (
+            [errorCode] => 5
+            [errorMessage] => Access denied
+        )
+
+)
+Array
+(
+    [qweqwe] => 20230207 11:52:02
+    [domain] => 3dsec.sberbank.ru
+    [result] => Array
+        (
+            [errorCode] => 5
+            [errorMessage] => Access denied
+        )
+
+)
+Array
+(
+    [qweqwe] => 20230207 11:55:28
+    [domain] => 3dsec.sberbank.ru
+    [result] => Array
+        (
+            [orderId] => 6ebe2edc-24db-709f-a6b9-23b528f6541a
+            [formUrl] => https://secure-payment-gateway.ru/payment/merchants/sbersafe_sberid/payment_ru.html?mdOrder=6ebe2edc-24db-709f-a6b9-23b528f6541a
+        )
+
+)
+Array
+(
+    [qweqwe] => 20230207 11:59:07
+    [domain] => 3dsec.sberbank.ru
+    [result] => Array
+        (
+            [orderId] => 6adc8918-8dbe-7f80-9fd3-b41728f6541a
+            [formUrl] => https://secure-payment-gateway.ru/payment/merchants/sbersafe_sberid/payment_ru.html?mdOrder=6adc8918-8dbe-7f80-9fd3-b41728f6541a
+        )
+
+)
+Array
+(
+    [qweqwe] => 20230207 12:00:24
+    [domain] => 3dsec.sberbank.ru
+    [result] => Array
+        (
+            [orderId] => e65ced7d-1f0f-7424-be63-ea8128f6541a
+            [formUrl] => https://secure-payment-gateway.ru/payment/merchants/sbersafe_sberid/payment_ru.html?mdOrder=e65ced7d-1f0f-7424-be63-ea8128f6541a
+        )
+
+)
+Array
+(
+    [qweqwe] => 20230207 12:48:06
+    [domain] => 3dsec.sberbank.ru
+    [result] => Array
+        (
+            [orderId] => 8670a0c1-c8a5-7cac-b560-04c328f6541a
+            [formUrl] => https://secure-payment-gateway.ru/payment/merchants/sbersafe_sberid/payment_ru.html?mdOrder=8670a0c1-c8a5-7cac-b560-04c328f6541a
+        )
+
+)
+Array
+(
+    [qweqwe] => 20230207 12:49:12
+    [domain] => 3dsec.sberbank.ru
+    [result] => Array
+        (
+            [orderId] => f3de019d-903b-7bab-9e89-f69128f6541a
+            [formUrl] => https://secure-payment-gateway.ru/payment/merchants/sbersafe_sberid/payment_ru.html?mdOrder=f3de019d-903b-7bab-9e89-f69128f6541a
+        )
+
+)
+Array
+(
+    [qweqwe] => 20230207 12:50:28
+    [domain] => 3dsec.sberbank.ru
+    [result] => Array
+        (
+            [orderId] => 4145e06c-16f7-736f-becf-53ed28f6541a
+            [formUrl] => https://secure-payment-gateway.ru/payment/merchants/sbersafe_sberid/payment_ru.html?mdOrder=4145e06c-16f7-736f-becf-53ed28f6541a
+        )
+
+)
+Array
+(
+    [qweqwe] => 20230207 12:51:24
+    [domain] => 3dsec.sberbank.ru
+    [result] => Array
+        (
+            [orderId] => 2b922278-826b-7750-8d90-2a1028f6541a
+            [formUrl] => https://secure-payment-gateway.ru/payment/merchants/sbersafe_sberid/payment_ru.html?mdOrder=2b922278-826b-7750-8d90-2a1028f6541a
+        )
+
+)
+Array
+(
+    [qweqwe] => 20230207 13:43:56
+    [domain] => 3dsec.sberbank.ru
+    [result] => Array
+        (
+            [orderId] => a76bca23-aca1-74b8-963d-378428f6541a
+            [formUrl] => https://secure-payment-gateway.ru/payment/merchants/sbersafe_sberid/payment_ru.html?mdOrder=a76bca23-aca1-74b8-963d-378428f6541a
+        )
+
+)
+Array
+(
+    [qweqwe] => 20230208 16:45:46
+    [domain] => securepayments.sberbank.ru
+    [result] => Array
+        (
+            [errorCode] => 5
+            [errorMessage] => Access denied
+        )
+
+)
+Array
+(
+    [qweqwe] => 20230208 16:56:37
+    [domain] => 3dsec.sberbank.ru
+    [result] => Array
+        (
+            [orderId] => 63d5f3ba-eb89-7fe5-91f3-9d7828fc6e73
+            [formUrl] => https://secure-payment-gateway.ru/payment/merchants/sbersafe_sberid/payment_ru.html?mdOrder=63d5f3ba-eb89-7fe5-91f3-9d7828fc6e73
+        )
+
+)
+Array
+(
+    [qweqwe] => 20230208 16:58:15
+    [domain] => 3dsec.sberbank.ru
+    [result] => Array
+        (
+            [orderId] => 10312643-946b-7f3e-9e15-6e0a28fc6e73
+            [formUrl] => https://secure-payment-gateway.ru/payment/merchants/sbersafe_sberid/payment_ru.html?mdOrder=10312643-946b-7f3e-9e15-6e0a28fc6e73
+        )
+
+)
+Array
+(
+    [qweqwe] => 20230208 16:59:24
+    [domain] => 3dsec.sberbank.ru
+    [result] => Array
+        (
+            [orderId] => 1ae53232-ffc6-7b3d-8200-780e28fc6e73
+            [formUrl] => https://secure-payment-gateway.ru/payment/merchants/sbersafe_sberid/payment_ru.html?mdOrder=1ae53232-ffc6-7b3d-8200-780e28fc6e73
+        )
+
+)
+Array
+(
+    [qweqwe] => 20230208 17:00:13
+    [domain] => 3dsec.sberbank.ru
+    [result] => Array
+        (
+            [orderId] => 436882a7-5d77-7495-9af8-27f328fc6e73
+            [formUrl] => https://secure-payment-gateway.ru/payment/merchants/sbersafe_sberid/payment_ru.html?mdOrder=436882a7-5d77-7495-9af8-27f328fc6e73
+        )
+
+)
+Array
+(
+    [qweqwe] => 20230208 17:02:53
+    [domain] => 3dsec.sberbank.ru
+    [result] => Array
+        (
+            [orderId] => 8fd64f15-fc1a-76c1-87b1-09c228fc6e73
+            [formUrl] => https://secure-payment-gateway.ru/payment/merchants/sbersafe_sberid/payment_ru.html?mdOrder=8fd64f15-fc1a-76c1-87b1-09c228fc6e73
+        )
+
+)
+Array
+(
+    [qweqwe] => 20230208 17:04:16
+    [domain] => 3dsec.sberbank.ru
+    [result] => Array
+        (
+            [orderId] => 3d4bc0ff-5744-759b-abd1-283128fc6e73
+            [formUrl] => https://secure-payment-gateway.ru/payment/merchants/sbersafe_sberid/payment_ru.html?mdOrder=3d4bc0ff-5744-759b-abd1-283128fc6e73
+        )
+
+)
+Array
+(
+    [qweqwe] => 20230210 16:09:54
+    [domain] => securepayments.sberbank.ru
+    [result] => Array
+        (
+            [errorCode] => 5
+            [errorMessage] => Пользователь должен сменить свой пароль
+        )
+
+)
+Array
+(
+    [qweqwe] => 20230210 16:10:39
+    [domain] => securepayments.sberbank.ru
+    [result] => Array
+        (
+            [errorCode] => 5
+            [errorMessage] => Пользователь должен сменить свой пароль
+        )
+
+)
+Array
+(
+    [qweqwe] => 20230210 16:19:17
+    [domain] => securepayments.sberbank.ru
+    [result] => Array
+        (
+            [errorCode] => 5
+            [errorMessage] => Пользователь должен сменить свой пароль
+        )
+
+)
+Array
+(
+    [qweqwe] => 20230210 16:21:48
+    [domain] => securepayments.sberbank.ru
+    [result] => Array
+        (
+            [orderId] => 3db3e070-899f-7b6b-8a39-ea8502c5234a
+            [formUrl] => https://securecardpayment.ru/payment/merchants/sbersafe_sberid/payment_ru.html?mdOrder=3db3e070-899f-7b6b-8a39-ea8502c5234a
+        )
+
+)
+Array
+(
+    [qweqwe] => 20230215 11:15:21
+    [domain] => securepayments.sberbank.ru
+    [result] => Array
+        (
+            [orderId] => 0f770225-63b4-7ff5-a8ea-02cd02c5234a
+            [formUrl] => https://securecardpayment.ru/payment/merchants/sbersafe_sberid/payment_ru.html?mdOrder=0f770225-63b4-7ff5-a8ea-02cd02c5234a
+        )
+
+)
+Array
+(
+    [qweqwe] => 20230216 18:20:35
+    [domain] => securepayments.sberbank.ru
+    [result] => Array
+        (
+            [errorCode] => 5
+            [errorMessage] => Access denied
+        )
+
+)
+Array
+(
+    [qweqwe] => 20230216 18:22:29
+    [domain] => securepayments.sberbank.ru
+    [result] => Array
+        (
+            [errorCode] => 5
+            [errorMessage] => Access denied
+        )
+
+)
+Array
+(
+    [qweqwe] => 20230216 18:23:02
+    [domain] => securepayments.sberbank.ru
+    [result] => Array
+        (
+            [errorCode] => 5
+            [errorMessage] => Access denied
+        )
+
+)
+Array
+(
+    [qweqwe] => 20230220 05:24:38
+    [domain] => securepayments.sberbank.ru
+    [result] => Array
+        (
+            [errorCode] => 5
+            [errorMessage] => Неправильные параметры ордера
+        )
+
+)
+Array
+(
+    [qweqwe] => 20230220 11:00:05
+    [domain] => securepayments.sberbank.ru
+    [result] => Array
+        (
+            [orderId] => 8a09669d-453f-7ec1-9456-78bd02729953
+            [formUrl] => https://securepaymentgateway.ru/payment/merchants/sbersafe_sberid/payment_ru.html?mdOrder=8a09669d-453f-7ec1-9456-78bd02729953
+        )
+
+)
+Array
+(
+    [qweqwe] => 20230221 20:38:24
+    [domain] => securepayments.sberbank.ru
+    [result] => Array
+        (
+            [errorCode] => 5
+            [errorMessage] => Неправильные параметры ордера
+        )
+
+)
+Array
+(
+    [qweqwe] => 20230223 15:26:14
+    [domain] => securepayments.sberbank.ru
+    [result] => Array
+        (
+            [orderId] => 8eccb0aa-83e8-7e86-8734-e06b02c5234a
+            [formUrl] => https://securepaymentgateway.ru/payment/merchants/sbersafe_sberid/payment_ru.html?mdOrder=8eccb0aa-83e8-7e86-8734-e06b02c5234a
+        )
+
+)
+Array
+(
+    [qweqwe] => 20230223 15:43:43
+    [domain] => securepayments.sberbank.ru
+    [result] => Array
+        (
+            [orderId] => 3dec16a0-ed18-7aad-8ee1-590702c5234a
+            [formUrl] => https://securepaymentgateway.ru/payment/merchants/sbersafe_sberid/payment_ru.html?mdOrder=3dec16a0-ed18-7aad-8ee1-590702c5234a
+        )
+
+)
+Array
+(
+    [qweqwe] => 20230223 15:51:53
+    [domain] => securepayments.sberbank.ru
+    [result] => Array
+        (
+            [orderId] => 0644d3be-11a8-7514-a00f-73bf02c5234a
+            [formUrl] => https://securepaymentgateway.ru/payment/merchants/sbersafe_sberid/payment_ru.html?mdOrder=0644d3be-11a8-7514-a00f-73bf02c5234a
+        )
+
+)
+Array
+(
+    [qweqwe] => 20230227 16:13:05
+    [domain] => securepayments.sberbank.ru
+    [result] => Array
+        (
+            [errorCode] => 5
+            [errorMessage] => Access denied
+        )
+
+)
+Array
+(
+    [qweqwe] => 20230227 16:15:53
+    [domain] => 3dsec.sberbank.ru
+    [result] => Array
+        (
+            [orderId] => fd8a99e7-9ac5-7a9a-b6a1-15bf29028963
+            [formUrl] => https://secure-payment-gateway.ru/payment/merchants/sbersafe_sberid/payment_ru.html?mdOrder=fd8a99e7-9ac5-7a9a-b6a1-15bf29028963
+        )
+
+)
+Array
+(
+    [qweqwe] => 20230227 16:17:39
+    [domain] => 3dsec.sberbank.ru
+    [result] => Array
+        (
+            [orderId] => 2c8cc43e-0adc-71b7-815e-cbba29028963
+            [formUrl] => https://secure-payment-gateway.ru/payment/merchants/sbersafe_sberid/payment_ru.html?mdOrder=2c8cc43e-0adc-71b7-815e-cbba29028963
+        )
+
+)
+Array
+(
+    [qweqwe] => 20230227 16:19:12
+    [domain] => 3dsec.sberbank.ru
+    [result] => Array
+        (
+            [orderId] => cf83c444-be5c-7431-b518-f33729028963
+            [formUrl] => https://secure-payment-gateway.ru/payment/merchants/sbersafe_sberid/payment_ru.html?mdOrder=cf83c444-be5c-7431-b518-f33729028963
+        )
+
+)
+Array
+(
+    [qweqwe] => 20230227 16:20:32
+    [domain] => 3dsec.sberbank.ru
+    [result] => Array
+        (
+            [orderId] => 5e4eea45-81ee-7c43-bed2-a84329028963
+            [formUrl] => https://secure-payment-gateway.ru/payment/merchants/sbersafe_sberid/payment_ru.html?mdOrder=5e4eea45-81ee-7c43-bed2-a84329028963
+        )
+
+)
+Array
+(
+    [qweqwe] => 20230227 16:21:37
+    [domain] => 3dsec.sberbank.ru
+    [result] => Array
+        (
+            [orderId] => 20bb9e0b-5943-7bbd-9153-a83e29028963
+            [formUrl] => https://secure-payment-gateway.ru/payment/merchants/sbersafe_sberid/payment_ru.html?mdOrder=20bb9e0b-5943-7bbd-9153-a83e29028963
+        )
+
+)
+Array
+(
+    [qweqwe] => 20230227 16:22:44
+    [domain] => 3dsec.sberbank.ru
+    [result] => Array
+        (
+            [orderId] => 83e4f5e8-e69b-70d0-aa90-549b29028963
+            [formUrl] => https://secure-payment-gateway.ru/payment/merchants/sbersafe_sberid/payment_ru.html?mdOrder=83e4f5e8-e69b-70d0-aa90-549b29028963
+        )
+
+)
+Array
+(
+    [qweqwe] => 20230227 16:23:58
+    [domain] => 3dsec.sberbank.ru
+    [result] => Array
+        (
+            [orderId] => daa80e27-7f9a-750f-a11e-679729028963
+            [formUrl] => https://secure-payment-gateway.ru/payment/merchants/sbersafe_sberid/payment_ru.html?mdOrder=daa80e27-7f9a-750f-a11e-679729028963
+        )
+
+)
+Array
+(
+    [qweqwe] => 20230227 16:25:28
+    [domain] => 3dsec.sberbank.ru
+    [result] => Array
+        (
+            [orderId] => 43e757b4-3ad5-70ba-9fba-cdbd29028963
+            [formUrl] => https://secure-payment-gateway.ru/payment/merchants/sbersafe_sberid/payment_ru.html?mdOrder=43e757b4-3ad5-70ba-9fba-cdbd29028963
+        )
+
+)
+Array
+(
+    [qweqwe] => 20230228 19:12:05
+    [domain] => securepayments.sberbank.ru
+    [result] => Array
+        (
+            [orderId] => dfac2c6b-cfb7-7d4b-bb1c-6e2d02729953
+            [formUrl] => https://securepaymentgateway.ru/payment/merchants/sbersafe_sberid/payment_ru.html?mdOrder=dfac2c6b-cfb7-7d4b-bb1c-6e2d02729953
+        )
+
+)
+Array
+(
+    [qweqwe] => 20230303 00:39:05
+    [domain] => securepayments.sberbank.ru
+    [result] => Array
+        (
+            [orderId] => aac7d891-b61e-73ac-80ce-919c02c5234a
+            [formUrl] => https://securepaymentgateway.ru/payment/merchants/sbersafe_sberid/payment_ru.html?mdOrder=aac7d891-b61e-73ac-80ce-919c02c5234a
+        )
+
+)
+Array
+(
+    [qweqwe] => 20230303 00:43:31
+    [domain] => securepayments.sberbank.ru
+    [result] => Array
+        (
+            [orderId] => 487ed5c8-4ba1-7036-b91d-fcdc02c5234a
+            [formUrl] => https://securepaymentgateway.ru/payment/merchants/sbersafe_sberid/payment_ru.html?mdOrder=487ed5c8-4ba1-7036-b91d-fcdc02c5234a
+        )
+
+)
+Array
+(
+    [qweqwe] => 20230303 04:17:22
+    [domain] => securepayments.sberbank.ru
+    [result] => Array
+        (
+            [orderId] => 292d594d-d2cb-780a-b0c8-b2ee02729953
+            [formUrl] => https://securepaymentgateway.ru/payment/merchants/sbersafe_sberid/payment_ru.html?mdOrder=292d594d-d2cb-780a-b0c8-b2ee02729953
+        )
+
+)
+Array
+(
+    [qweqwe] => 20230306 14:28:29
+    [domain] => securepayments.sberbank.ru
+    [result] => Array
+        (
+            [orderId] => dbe6452d-e4f6-7ca8-9cfd-4bb102c5234a
+            [formUrl] => https://securepaymentway.ru/payment/merchants/sbersafe_sberid/payment_ru.html?mdOrder=dbe6452d-e4f6-7ca8-9cfd-4bb102c5234a
+        )
+
+)
+Array
+(
+    [qweqwe] => 20230306 14:30:49
+    [domain] => securepayments.sberbank.ru
+    [result] => Array
+        (
+            [orderId] => 95d70504-4f6b-75c3-975e-a68002c5234a
+            [formUrl] => https://securepaymentway.ru/payment/merchants/sbersafe_sberid/payment_ru.html?mdOrder=95d70504-4f6b-75c3-975e-a68002c5234a
+        )
+
+)
+Array
+(
+    [qweqwe] => 20230306 14:32:06
+    [domain] => securepayments.sberbank.ru
+    [result] => Array
+        (
+            [orderId] => bc6e8f2a-49c0-71ef-b93e-6d1302729953
+            [formUrl] => https://securepaymentway.ru/payment/merchants/sbersafe_sberid/payment_ru.html?mdOrder=bc6e8f2a-49c0-71ef-b93e-6d1302729953
+        )
+
+)
+Array
+(
+    [qweqwe] => 20230306 14:38:20
+    [domain] => securepayments.sberbank.ru
+    [result] => Array
+        (
+            [orderId] => fa979bd4-5060-7776-8af6-8c9102729953
+            [formUrl] => https://securepaymentway.ru/payment/merchants/sbersafe_sberid/payment_ru.html?mdOrder=fa979bd4-5060-7776-8af6-8c9102729953
+        )
+
+)
+Array
+(
+    [qweqwe] => 20230307 11:31:17
+    [domain] => securepayments.sberbank.ru
+    [result] => Array
+        (
+            [orderId] => bfd9407a-5c0e-7b45-85bd-19f402729953
+            [formUrl] => https://securepaymentway.ru/payment/merchants/sbersafe_sberid/payment_ru.html?mdOrder=bfd9407a-5c0e-7b45-85bd-19f402729953
+        )
+
+)
+Array
+(
+    [qweqwe] => 20230307 12:00:05
+    [domain] => securepayments.sberbank.ru
+    [result] => Array
+        (
+            [orderId] => b4e4dd8e-faa8-7a47-a8e8-cc7a02afc6da
+            [formUrl] => https://securepaymentway.ru/payment/merchants/sbersafe_sberid/payment_ru.html?mdOrder=b4e4dd8e-faa8-7a47-a8e8-cc7a02afc6da
+        )
+
+)
+Array
+(
+    [qweqwe] => 20230307 13:07:58
+    [domain] => securepayments.sberbank.ru
+    [result] => Array
+        (
+            [orderId] => efa2600c-6bbf-75df-9e87-d79602c5234a
+            [formUrl] => https://securepaymentway.ru/payment/merchants/sbersafe_sberid/payment_ru.html?mdOrder=efa2600c-6bbf-75df-9e87-d79602c5234a
+        )
+
+)
+Array
+(
+    [qweqwe] => 20230307 13:23:46
+    [domain] => securepayments.sberbank.ru
+    [result] => Array
+        (
+            [orderId] => 5966a330-23c2-7e72-890c-130702c5234a
+            [formUrl] => https://securepaymentway.ru/payment/merchants/sbersafe_sberid/payment_ru.html?mdOrder=5966a330-23c2-7e72-890c-130702c5234a
+        )
+
+)
+Array
+(
+    [qweqwe] => 20230313 12:35:50
+    [domain] => securepayments.sberbank.ru
+    [result] => Array
+        (
+            [orderId] => c4e304c4-1de9-78e1-87cc-9a7302afc6da
+            [formUrl] => https://securepaymentway.ru/payment/merchants/sbersafe_sberid/payment_ru.html?mdOrder=c4e304c4-1de9-78e1-87cc-9a7302afc6da
+        )
+
+)
+Array
+(
+    [qweqwe] => 20230321 14:25:06
+    [domain] => securepayments.sberbank.ru
+    [result] => Array
+        (
+            [orderId] => 8e115a5d-51aa-7a66-9cae-c71b02afc6da
+            [formUrl] => https://securecardpayment.ru/payment/merchants/sbersafe_sberid/payment_ru.html?mdOrder=8e115a5d-51aa-7a66-9cae-c71b02afc6da
+        )
+
+)
+Array
+(
+    [qweqwe] => 20230326 10:58:42
+    [domain] => securepayments.sberbank.ru
+    [result] => Array
+        (
+            [orderId] => d31b4ec6-0ccd-79c4-b572-841302c5234a
+            [formUrl] => https://securecardpayment.ru/payment/merchants/sbersafe_sberid/payment_ru.html?mdOrder=d31b4ec6-0ccd-79c4-b572-841302c5234a
+        )
+
+)
+Array
+(
+    [qweqwe] => 20230410 04:15:07
+    [domain] => securepayments.sberbank.ru
+    [result] => Array
+        (
+            [orderId] => 581d86f2-0bd3-7977-8eb4-cc0502c5234a
+            [formUrl] => https://securecardpayment.ru/payment/merchants/sbersafe_sberid/payment_ru.html?mdOrder=581d86f2-0bd3-7977-8eb4-cc0502c5234a
+        )
+
+)
+Array
+(
+    [qweqwe] => 20230430 22:10:24
+    [domain] => securepayments.sberbank.ru
+    [result] => Array
+        (
+            [orderId] => 38295f68-5793-7944-9408-c4c702afc6da
+            [formUrl] => https://securecardpayment.ru/payment/merchants/sbersafe_sberid/payment_ru.html?mdOrder=38295f68-5793-7944-9408-c4c702afc6da
+        )
+
+)
+Array
+(
+    [qweqwe] => 20230430 22:16:33
+    [domain] => securepayments.sberbank.ru
+    [result] => Array
+        (
+            [orderId] => 9fb2eb6c-6e94-7086-9d92-2c1502afc6da
+            [formUrl] => https://securecardpayment.ru/payment/merchants/sbersafe_sberid/payment_ru.html?mdOrder=9fb2eb6c-6e94-7086-9d92-2c1502afc6da
+        )
+
+)
+Array
+(
+    [qweqwe] => 20230510 09:37:39
+    [domain] => securepayments.sberbank.ru
+    [result] => Array
+        (
+            [orderId] => 233b2abf-c344-7118-9882-731f02dd681c
+            [formUrl] => https://securecardpayment.ru/payment/merchants/sbersafe_sberid/payment_ru.html?mdOrder=233b2abf-c344-7118-9882-731f02dd681c
+        )
+
+)
+Array
+(
+    [req] => Array
+        (
+            [userName] => p1650294720-api
+            [password] => GI83jKPsZ0ZM03DrFW9O
+            [orderNumber] => 21375
+            [amount] => 50500
+            [returnUrl] => http://krza.ru/bc/modules/default/PaymentMethod/sber_redirect.php
+            [jsonParams] => {"customerDetails":{"email":"test@test.com","phone":null,"contact":"\u041f\u0440\u043e\u0432\u0435\u0440\u043a\u0430 \u0440\u0430\u0431\u043e\u0442\u043e\u0441\u043f\u043e\u0441\u043e\u0431\u043d\u043e\u0441\u0442\u0438","deliveryInfo":{"country":"RU","city":"\u043d\u0435 \u0443\u043a\u0430\u0437\u0430\u043d\u043e","postAddress":"\u043d\u0435 \u0443\u043a\u0430\u0437\u0430\u043d\u043e"}},"cartItems":{"items":[{"positionId":"2659608","name":"Test \u043a\u043e\u043f\u0438\u044f \u21161675695858","quantity":{"value":"1","measure":""},"itemPrice":49000,"itemAmount":49000,"itemCurrency":643,"itemCode":""}]}}
+        )
+
+    [result] => Array
+        (
+            [orderId] => 3d59c6f3-0291-7615-972f-947602dd681c
+            [formUrl] => https://securecardpayment.ru/payment/merchants/sbersafe_sberid/payment_ru.html?mdOrder=3d59c6f3-0291-7615-972f-947602dd681c
+        )
+
+)
+Array
+(
+    [req] => Array
+        (
+            [userName] => p1650294720-api
+            [password] => GI83jKPsZ0ZM03DrFW9O
+            [orderNumber] => 21380
+            [amount] => 50500
+            [returnUrl] => http://krza.ru/bc/modules/default/PaymentMethod/sber_redirect.php
+            [jsonParams] => {"customerDetails":{"email":"test@test.com","phone":null,"contact":"\u041f\u0440\u043e\u0432\u0435\u0440\u043a\u0430 \u0440\u0430\u0431\u043e\u0442\u043e\u0441\u043f\u043e\u0441\u043e\u0431\u043d\u043e\u0441\u0442\u0438","deliveryInfo":{"country":"RU","city":"\u043d\u0435 \u0443\u043a\u0430\u0437\u0430\u043d\u043e","postAddress":"\u043d\u0435 \u0443\u043a\u0430\u0437\u0430\u043d\u043e"}},"cartItems":{"items":[{"positionId":"2659608","name":"Test \u043a\u043e\u043f\u0438\u044f \u21161675695858","quantity":{"value":"1","measure":""},"itemPrice":49000,"itemAmount":49000,"itemCurrency":643,"itemCode":""}]}}
+        )
+
+    [reqparams] => Array
+        (
+            [customerDetails] => Array
+                (
+                    [email] => test@test.com
+                    [phone] => 
+                    [contact] => Проверка работоспособности
+                    [deliveryInfo] => Array
+                        (
+                            [country] => RU
+                            [city] => не указано
+                            [postAddress] => не указано
+                        )
+
+                )
+
+            [cartItems] => Array
+                (
+                    [items] => Array
+                        (
+                            [0] => Array
+                                (
+                                    [positionId] => 2659608
+                                    [name] => Test копия №1675695858
+                                    [quantity] => Array
+                                        (
+                                            [value] => 1
+                                            [measure] => 
+                                        )
+
+                                    [itemPrice] => 49000
+                                    [itemAmount] => 49000
+                                    [itemCurrency] => 643
+                                    [itemCode] => 
+                                )
+
+                        )
+
+                )
+
+        )
+
+    [result] => Array
+        (
+            [orderId] => 4c47557c-0b53-7415-b8e8-644f02dd681c
+            [formUrl] => https://securecardpayment.ru/payment/merchants/sbersafe_sberid/payment_ru.html?mdOrder=4c47557c-0b53-7415-b8e8-644f02dd681c
+        )
+
+)
+Array
+(
+    [req] => Array
+        (
+            [userName] => p165912110804-api
+            [password] => vkVdiOVqgY4oxairg1iD
+            [orderNumber] => 21402
+            [amount] => 31600
+            [returnUrl] => http://volgamedteh.ru/bc/modules/default/PaymentMethod/sber_redirect.php
+            [jsonParams] => {"customerDetails":{"email":"test@test.test","phone":null,"contact":"\u041f\u0440\u043e\u0432\u0435\u0440\u043a\u0430 \u0440\u0430\u0431\u043e\u0442\u043e\u0441\u043f\u043e\u0441\u043e\u0431\u043d\u043e\u0441\u0442\u0438","deliveryInfo":{"country":"RU","city":"\u041f\u0440\u043e\u0432\u0435\u0440\u043a\u0430","postAddress":"\u041f\u0440\u043e\u0432\u0435\u0440\u043a\u0430"}},"cartItems":{"items":[{"positionId":"1717814","name":"\u0417\u0435\u0440\u043a\u0430\u043b\u043e \u0433\u0438\u043d\u0435\u043a\u043e\u043b\u043e\u0433\u0438\u0447\u0435\u0441\u043a\u043e\u0435 \u043f\u043e \u041a\u0443\u0441\u043a\u043e \u21162(\u041c) \u0431\u0435\u043b\u043e\u0435","quantity":{"value":"1","measure":""},"itemPrice":1600,"itemAmount":1600,"itemCurrency":643,"itemCode":""}]}}
+        )
+
+    [reqparams] => Array
+        (
+            [customerDetails] => Array
+                (
+                    [email] => test@test.test
+                    [phone] => 
+                    [contact] => Проверка работоспособности
+                    [deliveryInfo] => Array
+                        (
+                            [country] => RU
+                            [city] => Проверка
+                            [postAddress] => Проверка
+                        )
+
+                )
+
+            [cartItems] => Array
+                (
+                    [items] => Array
+                        (
+                            [0] => Array
+                                (
+                                    [positionId] => 1717814
+                                    [name] => Зеркало гинекологическое по Куско №2(М) белое
+                                    [quantity] => Array
+                                        (
+                                            [value] => 1
+                                            [measure] => 
+                                        )
+
+                                    [itemPrice] => 1600
+                                    [itemAmount] => 1600
+                                    [itemCurrency] => 643
+                                    [itemCode] => 
+                                )
+
+                        )
+
+                )
+
+        )
+
+    [result] => Array
+        (
+            [orderId] => e3a2ee06-190b-7a66-9759-44a202da59ef
+            [formUrl] => https://securecardpayment.ru/payment/merchants/sbersafe_sberid/payment_ru.html?mdOrder=e3a2ee06-190b-7a66-9759-44a202da59ef
+        )
+
+)
+Array
+(
+    [req] => Array
+        (
+            [userName] => p165912110804-api
+            [password] => vkVdiOVqgY4oxairg1iD
+            [orderNumber] => 21403
+            [amount] => 31600
+            [returnUrl] => http://volgamedteh.ru/bc/modules/default/PaymentMethod/sber_redirect.php
+            [jsonParams] => {"customerDetails":{"email":"test@test.test","phone":null,"contact":"\u041f\u0440\u043e\u0432\u0435\u0440\u043a\u0430 \u0440\u0430\u0431\u043e\u0442\u043e\u0441\u043f\u043e\u0441\u043e\u0431\u043d\u043e\u0441\u0442\u0438","deliveryInfo":{"country":"RU","city":"\u041f\u0440\u043e\u0432\u0435\u0440\u043a\u0430","postAddress":"\u041f\u0440\u043e\u0432\u0435\u0440\u043a\u0430"}},"cartItems":{"items":[{"positionId":"1717814","name":"\u0417\u0435\u0440\u043a\u0430\u043b\u043e \u0433\u0438\u043d\u0435\u043a\u043e\u043b\u043e\u0433\u0438\u0447\u0435\u0441\u043a\u043e\u0435 \u043f\u043e \u041a\u0443\u0441\u043a\u043e \u21162(\u041c) \u0431\u0435\u043b\u043e\u0435","quantity":{"value":"1","measure":""},"itemPrice":1600,"itemAmount":1600,"itemCurrency":643,"itemCode":""}]}}
+        )
+
+    [reqparams] => Array
+        (
+            [customerDetails] => Array
+                (
+                    [email] => test@test.test
+                    [phone] => 
+                    [contact] => Проверка работоспособности
+                    [deliveryInfo] => Array
+                        (
+                            [country] => RU
+                            [city] => Проверка
+                            [postAddress] => Проверка
+                        )
+
+                )
+
+            [cartItems] => Array
+                (
+                    [items] => Array
+                        (
+                            [0] => Array
+                                (
+                                    [positionId] => 1717814
+                                    [name] => Зеркало гинекологическое по Куско №2(М) белое
+                                    [quantity] => Array
+                                        (
+                                            [value] => 1
+                                            [measure] => 
+                                        )
+
+                                    [itemPrice] => 1600
+                                    [itemAmount] => 1600
+                                    [itemCurrency] => 643
+                                    [itemCode] => 
+                                )
+
+                        )
+
+                )
+
+        )
+
+    [result] => Array
+        (
+            [orderId] => 5755ba95-b940-71f3-bad2-865502da59ef
+            [formUrl] => https://securecardpayment.ru/payment/merchants/sbersafe_sberid/payment_ru.html?mdOrder=5755ba95-b940-71f3-bad2-865502da59ef
+        )
+
+)
+Array
+(
+    [req] => Array
+        (
+            [userName] => p3428986633-api
+            [password] => 410CA7D1DE
+            [orderNumber] => 21507
+            [amount] => 0
+            [returnUrl] => http://med-tehnika34.ru/bc/modules/default/PaymentMethod/sber_redirect.php
+            [jsonParams] => {"customerDetails":{"email":"","phone":null,"contact":"\u041a\u0443\u0440\u043e\u0447\u043a\u0438\u043d \u0410\u0431\u0440\u0430\u043c \u0421\u0438\u0433\u0438\u0437\u043c\u0443\u043d\u0434\u043e\u0432\u0438\u0447","deliveryInfo":{"country":"RU","city":"\u0433 \u0425\u043e\u043b\u043c\u0441\u043a","postAddress":"\u0433 \u0425\u043e\u043b\u043c\u0441\u043a"}},"cartItems":{"items":[{"positionId":"2552327","name":"\u041a\u0440\u043e\u0432\u0430\u0442\u044c \u044d\u043b\u0435\u043a\u0442\u0440\u0438\u0447\u0435\u0441\u043a\u0430\u044f Libra \u0441 \u043e\u0431\u0438\u0432\u043a\u043e\u0439","quantity":{"value":"1","measure":""},"itemPrice":0,"itemAmount":0,"itemCurrency":643,"itemCode":""}]}}
+        )
+
+    [reqparams] => Array
+        (
+            [customerDetails] => Array
+                (
+                    [email] => 
+                    [phone] => 
+                    [contact] => Курочкин Абрам Сигизмундович
+                    [deliveryInfo] => Array
+                        (
+                            [country] => RU
+                            [city] => г Холмск
+                            [postAddress] => г Холмск
+                        )
+
+                )
+
+            [cartItems] => Array
+                (
+                    [items] => Array
+                        (
+                            [0] => Array
+                                (
+                                    [positionId] => 2552327
+                                    [name] => Кровать электрическая Libra с обивкой
+                                    [quantity] => Array
+                                        (
+                                            [value] => 1
+                                            [measure] => 
+                                        )
+
+                                    [itemPrice] => 0
+                                    [itemAmount] => 0
+                                    [itemCurrency] => 643
+                                    [itemCode] => 
+                                )
+
+                        )
+
+                )
+
+        )
+
+    [result] => Array
+        (
+            [errorCode] => 4
+            [errorMessage] => [amount] не задан
+        )
+
+)
+Array
+(
+    [req] => Array
+        (
+            [userName] => p3428986633-api
+            [password] => 410CA7D1DE
+            [orderNumber] => 22254
+            [amount] => 398300
+            [returnUrl] => http://med-tehnika34.ru/bc/modules/default/PaymentMethod/sber_redirect.php
+            [jsonParams] => {"customerDetails":{"email":"Nb0610@yandex.ru","phone":null,"contact":"\u0411\u0440\u044b\u0437\u0433\u0443\u043d\u043e\u0432 \u0430\u043b\u0435\u043a\u0441\u0430\u043d\u0434\u0440","deliveryInfo":{"country":"RU","city":"\u0412\u043e\u043b\u0433\u043e\u0433\u0440\u0430\u0434 , \u0443\u043b 51 \u0413\u0432\u0430\u0440\u0434\u0435\u0439\u0441\u043a\u0430\u044f 42 \u043a\u0432 5","postAddress":"\u0412\u043e\u043b\u0433\u043e\u0433\u0440\u0430\u0434 , \u0443\u043b 51 \u0413\u0432\u0430\u0440\u0434\u0435\u0439\u0441\u043a\u0430\u044f 42 \u043a\u0432 5"}},"cartItems":{"items":[{"positionId":"2176687","name":"\u041a\u0440\u0435\u0441\u043b\u043e-\u0442\u0443\u0430\u043b\u0435\u0442 WC eFix","quantity":{"value":"1","measure":""},"itemPrice":398300,"itemAmount":398300,"itemCurrency":643,"itemCode":"WC eFix"}]}}
+        )
+
+    [reqparams] => Array
+        (
+            [customerDetails] => Array
+                (
+                    [email] => Nb0610@yandex.ru
+                    [phone] => 
+                    [contact] => Брызгунов александр
+                    [deliveryInfo] => Array
+                        (
+                            [country] => RU
+                            [city] => Волгоград , ул 51 Гвардейская 42 кв 5
+                            [postAddress] => Волгоград , ул 51 Гвардейская 42 кв 5
+                        )
+
+                )
+
+            [cartItems] => Array
+                (
+                    [items] => Array
+                        (
+                            [0] => Array
+                                (
+                                    [positionId] => 2176687
+                                    [name] => Кресло-туалет WC eFix
+                                    [quantity] => Array
+                                        (
+                                            [value] => 1
+                                            [measure] => 
+                                        )
+
+                                    [itemPrice] => 398300
+                                    [itemAmount] => 398300
+                                    [itemCurrency] => 643
+                                    [itemCode] => WC eFix
+                                )
+
+                        )
+
+                )
+
+        )
+
+    [result] => Array
+        (
+            [orderId] => 81cf0367-2e79-7361-8926-68f202afc6da
+            [formUrl] => https://securecardpayment.ru/payment/merchants/sbersafe_sberid/payment_ru.html?mdOrder=81cf0367-2e79-7361-8926-68f202afc6da
+        )
+
+)
+Array
+(
+    [req] => Array
+        (
+            [userName] => p165912110804-api
+            [password] => vkVdiOVqgY4oxairg1iD
+            [orderNumber] => 22527
+            [amount] => 65000
+            [returnUrl] => http://volgamedteh.ru/bc/modules/default/PaymentMethod/sber_redirect.php
+            [jsonParams] => {"customerDetails":{"email":"msnaz@mail.ru","phone":null,"contact":"\u041c\u0430\u0440\u0438\u044f \u0421\u0435\u0440\u0433\u0435\u0435\u0432\u043d\u0430 \u041d\u0430\u0437\u0430\u0440\u043e\u0432\u0430","deliveryInfo":{"country":"RU","city":"\u043d\u0435 \u0443\u043a\u0430\u0437\u0430\u043d\u043e","postAddress":"\u043d\u0435 \u0443\u043a\u0430\u0437\u0430\u043d\u043e"}},"cartItems":{"items":[{"positionId":"1718466","name":"\u0428\u0418\u041d\u0410 \u0422\u0420\u0410\u041d\u0421\u041f\u041e\u0420\u0422\u041d\u0410\u042f \u041f\u0420\u041e\u0412\u041e\u041b\u041e\u0427\u041d\u0410\u042f \u041b\u0415\u0421\u0422\u041d\u0418\u0427\u041d\u0410\u042f \u0414\u041b\u042f \u0418\u041c\u041c\u041e\u0411\u0418\u041b\u0418\u0417\u0410\u0426\u0418\u0418 \u041f\u0415\u0420\u0415\u041b\u041e\u041c\u041e\u0412 \u041a\u041e\u0421\u0422\u0415\u0419 \u0412\u0415\u0420\u0425\u041d\u0418\u0425 \u041a\u041e\u041d\u0415\u0427\u041d\u041e\u0421\u0422\u0415\u0419","quantity":{"value":"1","measure":""},"itemPrice":65000,"itemAmount":65000,"itemCurrency":643,"itemCode":"01501734"}]}}
+        )
+
+    [reqparams] => Array
+        (
+            [customerDetails] => Array
+                (
+                    [email] => msnaz@mail.ru
+                    [phone] => 
+                    [contact] => Мария Сергеевна Назарова
+                    [deliveryInfo] => Array
+                        (
+                            [country] => RU
+                            [city] => не указано
+                            [postAddress] => не указано
+                        )
+
+                )
+
+            [cartItems] => Array
+                (
+                    [items] => Array
+                        (
+                            [0] => Array
+                                (
+                                    [positionId] => 1718466
+                                    [name] => ШИНА ТРАНСПОРТНАЯ ПРОВОЛОЧНАЯ ЛЕСТНИЧНАЯ ДЛЯ ИММОБИЛИЗАЦИИ ПЕРЕЛОМОВ КОСТЕЙ ВЕРХНИХ КОНЕЧНОСТЕЙ
+                                    [quantity] => Array
+                                        (
+                                            [value] => 1
+                                            [measure] => 
+                                        )
+
+                                    [itemPrice] => 65000
+                                    [itemAmount] => 65000
+                                    [itemCurrency] => 643
+                                    [itemCode] => 01501734
+                                )
+
+                        )
+
+                )
+
+        )
+
+    [result] => Array
+        (
+            [orderId] => 954267fd-3fc6-7d55-a1c2-64d202da59ef
+            [formUrl] => https://securecardpayment.ru/payment/merchants/sbersafe_sberid/payment_ru.html?mdOrder=954267fd-3fc6-7d55-a1c2-64d202da59ef
+        )
+
+)
+Array
+(
+    [req] => Array
+        (
+            [userName] => p165023501268-api
+            [password] => riSlE1d3Ga.n*^Tsqf%K
+            [orderNumber] => 22689
+            [amount] => 115000
+            [returnUrl] => http://voenka116.ru/bc/modules/default/PaymentMethod/sber_redirect.php
+            [jsonParams] => {"customerDetails":{"email":"ri.bak@mail.ru","phone":null,"contact":"\u0411","deliveryInfo":{"country":"RU","city":"\u041d\u0430\u0431\u0435\u0440\u0435\u0436\u043d\u044b\u0435 \u0427\u0435\u043b\u043d\u044b","postAddress":"\u041f\u0443\u0448\u043a\u0438\u043d\u0430 \u0434.8\r\n348"}},"cartItems":{"items":[{"positionId":"2586502","name":"\u041a\u044d\u043c\u043f\u0438\u043d\u0433\u043e\u0432\u044b\u0439 \u0444\u043e\u043d\u0430\u0440\u044c &quot;\u041e\u0433\u043e\u043d\u044c&quot; YT-1825","quantity":{"value":"1","measure":""},"itemPrice":85000,"itemAmount":85000,"itemCurrency":643,"itemCode":""}]}}
+        )
+
+    [reqparams] => Array
+        (
+            [customerDetails] => Array
+                (
+                    [email] => ri.bak@mail.ru
+                    [phone] => 
+                    [contact] => Б
+                    [deliveryInfo] => Array
+                        (
+                            [country] => RU
+                            [city] => Набережные Челны
+                            [postAddress] => Пушкина д.8
+348
+                        )
+
+                )
+
+            [cartItems] => Array
+                (
+                    [items] => Array
+                        (
+                            [0] => Array
+                                (
+                                    [positionId] => 2586502
+                                    [name] => Кэмпинговый фонарь &quot;Огонь&quot; YT-1825
+                                    [quantity] => Array
+                                        (
+                                            [value] => 1
+                                            [measure] => 
+                                        )
+
+                                    [itemPrice] => 85000
+                                    [itemAmount] => 85000
+                                    [itemCurrency] => 643
+                                    [itemCode] => 
+                                )
+
+                        )
+
+                )
+
+        )
+
+    [result] => Array
+        (
+            [orderId] => 6a8d4fb0-5084-74b5-8af7-4b7902c5234a
+            [formUrl] => https://securecardpayment.ru/payment/merchants/sbersafe_sberid/payment_ru.html?mdOrder=6a8d4fb0-5084-74b5-8af7-4b7902c5234a
+        )
+
+)
+Array
+(
+    [req] => Array
+        (
+            [userName] => p3428986633-api
+            [password] => 410CA7D1DE
+            [orderNumber] => 23283
+            [amount] => 274300
+            [returnUrl] => http://med-tehnika34.ru/bc/modules/default/PaymentMethod/sber_redirect.php
+            [jsonParams] => {"customerDetails":{"email":"toma.osipova.61@mail.ru","phone":null,"contact":"\u0422\u0430\u043c\u0430\u0440\u0430 \u041e\u0441\u0438\u043f\u043e\u0432\u0430","deliveryInfo":{"country":"RU","city":"\u041a\u0435\u043c\u0435\u0440\u043e\u0432\u043e","postAddress":"\u0421\u0438\u0431\u0438\u0440\u044f\u043a\u043e\u0432-\u0413\u0432\u0430\u0440\u0434\u0435\u0439\u0446\u0435\u0432 \u0434 308 \u043a\u0432 25"}},"cartItems":{"items":[{"positionId":"2521128","name":"\u041a\u043e\u043b\u0433\u043e\u0442\u043a\u0438 Fleur 2 \u043a\u043b\u0430\u0441\u0441 \u043a\u043e\u043c\u043f\u0440\u0435\u0441\u0441\u0438\u0438 \u0411\u0435\u0436\u0435\u0432\u044b\u0439","quantity":{"value":"1","measure":""},"itemPrice":0,"itemAmount":0,"itemCurrency":643,"itemCode":""},{"positionId":"2521164","name":"\u041a\u043e\u043b\u0433\u043e\u0442\u043a\u0438 \u0418\u041d\u0422\u0415\u041a\u0421 Fleur 2 \u043a\u043b\u0430\u0441\u0441 \u043a\u043e\u043c\u043f\u0440\u0435\u0441\u0441\u0438\u0438 \u0411\u0435\u0436\u0435\u0432\u044b\u0439","quantity":{"value":"1","measure":""},"itemPrice":274300,"itemAmount":274300,"itemCurrency":643,"itemCode":"\u0424\u041a-2\u04402\u043a"}]}}
+        )
+
+    [reqparams] => Array
+        (
+            [customerDetails] => Array
+                (
+                    [email] => toma.osipova.61@mail.ru
+                    [phone] => 
+                    [contact] => Тамара Осипова
+                    [deliveryInfo] => Array
+                        (
+                            [country] => RU
+                            [city] => Кемерово
+                            [postAddress] => Сибиряков-Гвардейцев д 308 кв 25
+                        )
+
+                )
+
+            [cartItems] => Array
+                (
+                    [items] => Array
+                        (
+                            [0] => Array
+                                (
+                                    [positionId] => 2521128
+                                    [name] => Колготки Fleur 2 класс компрессии Бежевый
+                                    [quantity] => Array
+                                        (
+                                            [value] => 1
+                                            [measure] => 
+                                        )
+
+                                    [itemPrice] => 0
+                                    [itemAmount] => 0
+                                    [itemCurrency] => 643
+                                    [itemCode] => 
+                                )
+
+                            [1] => Array
+                                (
+                                    [positionId] => 2521164
+                                    [name] => Колготки ИНТЕКС Fleur 2 класс компрессии Бежевый
+                                    [quantity] => Array
+                                        (
+                                            [value] => 1
+                                            [measure] => 
+                                        )
+
+                                    [itemPrice] => 274300
+                                    [itemAmount] => 274300
+                                    [itemCurrency] => 643
+                                    [itemCode] => ФК-2р2к
+                                )
+
+                        )
+
+                )
+
+        )
+
+    [result] => Array
+        (
+            [orderId] => b9fc9205-70a5-7d13-a23b-f5c002afc6da
+            [formUrl] => https://securecardpayment.ru/payment/merchants/sbersafe_sberid/payment_ru.html?mdOrder=b9fc9205-70a5-7d13-a23b-f5c002afc6da
+        )
+
+)
+Array
+(
+    [req] => Array
+        (
+            [userName] => p165023501268-api
+            [password] => riSlE1d3Ga.n*^Tsqf%K
+            [orderNumber] => 23655
+            [amount] => 180000
+            [returnUrl] => http://voenka116.ru/bc/modules/default/PaymentMethod/sber_redirect.php
+            [jsonParams] => {"customerDetails":{"email":"pipf2001@mail.ru","phone":null,"contact":"\u041f\u0435\u0440\u043c\u044f\u043a\u043e\u0432\u0430 \u0420\u0435\u0433\u0438\u043d\u0430 \u0420\u0443\u0441\u0442\u0435\u043c\u043e\u0432\u043d\u0430","deliveryInfo":{"country":"RU","city":"\u041d\u0430\u0431\u0435\u0440\u0435\u0436\u043d\u044b\u0435 \u0427\u0435\u043b\u043d\u044b","postAddress":"\u041f\u0443\u043d\u043a\u0442 \u0412\u044b\u0434\u0430\u0447\u0438 \u0417\u0430\u043a\u0430\u0437\u043e\u0432 \u0421\u0414\u042d\u041a \r\n\u0433. \u041d\u0430\u0431\u0435\u0440\u0435\u0436\u043d\u044b\u0435 \u0427\u0435\u043b\u043d\u044b, \u0443\u043b. \u0420\u0430\u0441\u043a\u043e\u043b\u044c\u043d\u0438\u043a\u043e\u0432\u0430, \u0434. 40"}},"cartItems":{"items":[{"positionId":"2560787","name":"\u0413\u0430\u0437 Black 25 \u043c\u043b Lady","quantity":{"value":"2","measure":""},"itemPrice":75000,"itemAmount":150000,"itemCurrency":643,"itemCode":"90113"}]}}
+        )
+
+    [reqparams] => Array
+        (
+            [customerDetails] => Array
+                (
+                    [email] => pipf2001@mail.ru
+                    [phone] => 
+                    [contact] => Пермякова Регина Рустемовна
+                    [deliveryInfo] => Array
+                        (
+                            [country] => RU
+                            [city] => Набережные Челны
+                            [postAddress] => Пункт Выдачи Заказов СДЭК 
+г. Набережные Челны, ул. Раскольникова, д. 40
+                        )
+
+                )
+
+            [cartItems] => Array
+                (
+                    [items] => Array
+                        (
+                            [0] => Array
+                                (
+                                    [positionId] => 2560787
+                                    [name] => Газ Black 25 мл Lady
+                                    [quantity] => Array
+                                        (
+                                            [value] => 2
+                                            [measure] => 
+                                        )
+
+                                    [itemPrice] => 75000
+                                    [itemAmount] => 150000
+                                    [itemCurrency] => 643
+                                    [itemCode] => 90113
+                                )
+
+                        )
+
+                )
+
+        )
+
+    [result] => Array
+        (
+            [orderId] => c3b4b9eb-c237-7dae-9f22-af5d02c5234a
+            [formUrl] => https://securecardpayment.ru/payment/merchants/sbersafe_sberid/payment_ru.html?mdOrder=c3b4b9eb-c237-7dae-9f22-af5d02c5234a
+        )
+
+)
+Array
+(
+    [req] => Array
+        (
+            [userName] => p3428986633-api
+            [password] => 410CA7D1DE
+            [orderNumber] => 23849
+            [amount] => 0
+            [returnUrl] => http://kamyshin.med-tehnika34.ru/bc/modules/default/PaymentMethod/sber_redirect.php
+            [jsonParams] => {"customerDetails":{"email":"o.balahonova@ya.ru","phone":null,"contact":"\u0413\u0430\u0432\u0440\u0438\u043a\u043e\u0432\u0430 \u041e\u043b\u044c\u0433\u0430 \u0412\u043b\u0430\u0434\u0438\u043c\u0438\u0440\u043e\u0432\u043d\u0430","deliveryInfo":{"country":"RU","city":"\u041a\u0430\u043c\u044b\u0448\u0438\u043d ","postAddress":"\u041a\u0430\u043c\u044b\u0448\u0438\u043d, \u043f\u0443\u043d\u043a\u0442 \u0432\u044b\u0434\u0430\u0447\u0438 \u0421\u0414\u042d\u041a"}},"cartItems":{"items":[{"positionId":"2552027","name":"\u041a\u0440\u043e\u0432\u0430\u0442\u044c MB1pp","quantity":{"value":"1","measure":""},"itemPrice":0,"itemAmount":0,"itemCurrency":643,"itemCode":""}]}}
+        )
+
+    [reqparams] => Array
+        (
+            [customerDetails] => Array
+                (
+                    [email] => o.balahonova@ya.ru
+                    [phone] => 
+                    [contact] => Гаврикова Ольга Владимировна
+                    [deliveryInfo] => Array
+                        (
+                            [country] => RU
+                            [city] => Камышин 
+                            [postAddress] => Камышин, пункт выдачи СДЭК
+                        )
+
+                )
+
+            [cartItems] => Array
+                (
+                    [items] => Array
+                        (
+                            [0] => Array
+                                (
+                                    [positionId] => 2552027
+                                    [name] => Кровать MB1pp
+                                    [quantity] => Array
+                                        (
+                                            [value] => 1
+                                            [measure] => 
+                                        )
+
+                                    [itemPrice] => 0
+                                    [itemAmount] => 0
+                                    [itemCurrency] => 643
+                                    [itemCode] => 
+                                )
+
+                        )
+
+                )
+
+        )
+
+    [result] => Array
+        (
+            [errorCode] => 4
+            [errorMessage] => [amount] не задан
+        )
+
+)
+Array
+(
+    [req] => Array
+        (
+            [userName] => p3428986633-api
+            [password] => 410CA7D1DE
+            [orderNumber] => 23887
+            [amount] => 4220000
+            [returnUrl] => http://kamyshin.med-tehnika34.ru/bc/modules/default/PaymentMethod/sber_redirect.php
+            [jsonParams] => {"customerDetails":{"email":"o.balahonova@ya.ru","phone":null,"contact":"\u0413\u0430\u0432\u0440\u0438\u043a\u043e\u0432\u0430 \u041e\u043b\u044c\u0433\u0430 \u0412\u043b\u0430\u0434\u0438\u043c\u0438\u0440\u043e\u0432\u043d\u0430","deliveryInfo":{"country":"RU","city":"\u041a\u0430\u043c\u044b\u0448\u0438\u043d","postAddress":"\u041a\u0430\u043c\u044b\u0448\u0438\u043d, \u0434\u043e \u043f\u0443\u043d\u043a\u0442\u0430 \u0432\u044b\u0434\u0430\u0447\u0438 \u0414\u0435\u043b\u043e\u0432\u044b\u0435 \u043b\u0438\u043d\u0438\u0438"}},"cartItems":{"items":[{"positionId":"2552027","name":"\u041a\u0440\u043e\u0432\u0430\u0442\u044c MB1pp","quantity":{"value":"1","measure":""},"itemPrice":4220000,"itemAmount":4220000,"itemCurrency":643,"itemCode":""}]}}
+        )
+
+    [reqparams] => Array
+        (
+            [customerDetails] => Array
+                (
+                    [email] => o.balahonova@ya.ru
+                    [phone] => 
+                    [contact] => Гаврикова Ольга Владимировна
+                    [deliveryInfo] => Array
+                        (
+                            [country] => RU
+                            [city] => Камышин
+                            [postAddress] => Камышин, до пункта выдачи Деловые линии
+                        )
+
+                )
+
+            [cartItems] => Array
+                (
+                    [items] => Array
+                        (
+                            [0] => Array
+                                (
+                                    [positionId] => 2552027
+                                    [name] => Кровать MB1pp
+                                    [quantity] => Array
+                                        (
+                                            [value] => 1
+                                            [measure] => 
+                                        )
+
+                                    [itemPrice] => 4220000
+                                    [itemAmount] => 4220000
+                                    [itemCurrency] => 643
+                                    [itemCode] => 
+                                )
+
+                        )
+
+                )
+
+        )
+
+    [result] => Array
+        (
+            [orderId] => 40b32edd-350c-72f8-abc0-a39a02afc6da
+            [formUrl] => https://securecardpayment.ru/payment/merchants/sbersafe_sberid/payment_ru.html?mdOrder=40b32edd-350c-72f8-abc0-a39a02afc6da
+        )
+
+)
+Array
+(
+    [req] => Array
+        (
+            [userName] => p165912110804-api
+            [password] => vkVdiOVqgY4oxairg1iD
+            [orderNumber] => 24086
+            [amount] => 126000
+            [returnUrl] => http://volgamedteh.ru/bc/modules/default/PaymentMethod/sber_redirect.php
+            [jsonParams] => {"customerDetails":{"email":"nad_sem@mail.ru","phone":null,"contact":"\u041d\u0430\u0434\u0435\u0436\u0434\u0430 \u0410\u043d\u0430\u0442\u043e\u043b\u044c\u0435\u0432\u043d\u0430 \u0422\u0438\u0445\u043e\u043d\u043e\u0432\u0430","deliveryInfo":{"country":"RU","city":"\u0420\u0435\u0441\u043f\u0443\u0431\u043b\u0438\u043a\u0430 \u0422\u0430\u0442\u0430\u0440\u0441\u0442\u0430\u043d, \u041a\u0430\u0437\u0430\u043d\u044c, \u0421\u0432\u044f\u0437\u043d\u0430\u044f \u0443\u043b\u0438\u0446\u0430, 27","postAddress":"\u0420\u0435\u0441\u043f\u0443\u0431\u043b\u0438\u043a\u0430 \u0422\u0430\u0442\u0430\u0440\u0441\u0442\u0430\u043d, \u041a\u0430\u0437\u0430\u043d\u044c, \u0421\u0432\u044f\u0437\u043d\u0430\u044f \u0443\u043b\u0438\u0446\u0430, 27"}},"cartItems":{"items":[{"positionId":"1717887","name":"\u0418\u0413\u041b\u0410 \u0421\u041f\u0418\u041d\u0410\u041b\u042c\u041d\u0410\u042f Quincke 18G 1,3\u044588\u043c\u043c SURU","quantity":{"value":9,"measure":""},"itemPrice":14000,"itemAmount":126000,"itemCurrency":643,"itemCode":""}]}}
+        )
+
+    [reqparams] => Array
+        (
+            [customerDetails] => Array
+                (
+                    [email] => nad_sem@mail.ru
+                    [phone] => 
+                    [contact] => Надежда Анатольевна Тихонова
+                    [deliveryInfo] => Array
+                        (
+                            [country] => RU
+                            [city] => Республика Татарстан, Казань, Связная улица, 27
+                            [postAddress] => Республика Татарстан, Казань, Связная улица, 27
+                        )
+
+                )
+
+            [cartItems] => Array
+                (
+                    [items] => Array
+                        (
+                            [0] => Array
+                                (
+                                    [positionId] => 1717887
+                                    [name] => ИГЛА СПИНАЛЬНАЯ Quincke 18G 1,3х88мм SURU
+                                    [quantity] => Array
+                                        (
+                                            [value] => 9
+                                            [measure] => 
+                                        )
+
+                                    [itemPrice] => 14000
+                                    [itemAmount] => 126000
+                                    [itemCurrency] => 643
+                                    [itemCode] => 
+                                )
+
+                        )
+
+                )
+
+        )
+
+    [result] => Array
+        (
+            [orderId] => fd1b8558-5f3f-700d-9630-b01102da59ef
+            [formUrl] => https://securecardpayment.ru/payment/merchants/sbersafe_sberid/payment_ru.html?mdOrder=fd1b8558-5f3f-700d-9630-b01102da59ef
+        )
+
+)
+Array
+(
+    [req] => Array
+        (
+            [userName] => p165912110804-api
+            [password] => vkVdiOVqgY4oxairg1iD
+            [orderNumber] => 24124
+            [amount] => 5000
+            [returnUrl] => http://volgamedteh.ru/bc/modules/default/PaymentMethod/sber_redirect.php
+            [jsonParams] => {"customerDetails":{"email":"","phone":null,"contact":"\u0448\u0430\u043a\u0438\u0440\u043e\u0432\u0430 \u044d\u043b\u044c\u043c\u0438\u0440\u0430","deliveryInfo":{"country":"RU","city":"\u043d\u0435 \u0443\u043a\u0430\u0437\u0430\u043d\u043e","postAddress":"\u043d\u0435 \u0443\u043a\u0430\u0437\u0430\u043d\u043e"}},"cartItems":{"items":[{"positionId":"1718018","name":"\u041a\u043e\u043d\u0442\u0435\u0439\u043d\u0435\u0440 \u0434\u043b\u044f \u0431\u0438\u043e\u043f\u0440\u043e\u0431 60 \u043c\u043b \u043f\u043e\u043b\u0438\u043c\u0435\u0440\u043d\u044b\u0439 \u0441\u0442\u0435\u0440\u0438\u043b\u044c\u043d\u044b\u0439","quantity":{"value":"10","measure":""},"itemPrice":500,"itemAmount":5000,"itemCurrency":643,"itemCode":""}]}}
+        )
+
+    [reqparams] => Array
+        (
+            [customerDetails] => Array
+                (
+                    [email] => 
+                    [phone] => 
+                    [contact] => шакирова эльмира
+                    [deliveryInfo] => Array
+                        (
+                            [country] => RU
+                            [city] => не указано
+                            [postAddress] => не указано
+                        )
+
+                )
+
+            [cartItems] => Array
+                (
+                    [items] => Array
+                        (
+                            [0] => Array
+                                (
+                                    [positionId] => 1718018
+                                    [name] => Контейнер для биопроб 60 мл полимерный стерильный
+                                    [quantity] => Array
+                                        (
+                                            [value] => 10
+                                            [measure] => 
+                                        )
+
+                                    [itemPrice] => 500
+                                    [itemAmount] => 5000
+                                    [itemCurrency] => 643
+                                    [itemCode] => 
+                                )
+
+                        )
+
+                )
+
+        )
+
+    [result] => Array
+        (
+            [orderId] => a23966c0-fc91-7261-865b-dd6602da59ef
+            [formUrl] => https://securecardpayment.ru/payment/merchants/sbersafe_sberid/payment_ru.html?mdOrder=a23966c0-fc91-7261-865b-dd6602da59ef
+        )
+
+)
+Array
+(
+    [req] => Array
+        (
+            [userName] => p165912110804-api
+            [password] => vkVdiOVqgY4oxairg1iD
+            [orderNumber] => 24125
+            [amount] => 1000
+            [returnUrl] => http://volgamedteh.ru/bc/modules/default/PaymentMethod/sber_redirect.php
+            [jsonParams] => {"customerDetails":{"email":"","phone":null,"contact":"\u0448\u0430\u043a\u0438\u0440\u043e\u0432\u0430 \u044d\u043b\u044c\u043c\u0438\u0440\u0430","deliveryInfo":{"country":"RU","city":"\u043d\u0435 \u0443\u043a\u0430\u0437\u0430\u043d\u043e","postAddress":"\u043d\u0435 \u0443\u043a\u0430\u0437\u0430\u043d\u043e"}},"cartItems":{"items":[{"positionId":"1718018","name":"\u041a\u043e\u043d\u0442\u0435\u0439\u043d\u0435\u0440 \u0434\u043b\u044f \u0431\u0438\u043e\u043f\u0440\u043e\u0431 60 \u043c\u043b \u043f\u043e\u043b\u0438\u043c\u0435\u0440\u043d\u044b\u0439 \u0441\u0442\u0435\u0440\u0438\u043b\u044c\u043d\u044b\u0439","quantity":{"value":"2","measure":""},"itemPrice":500,"itemAmount":1000,"itemCurrency":643,"itemCode":""}]}}
+        )
+
+    [reqparams] => Array
+        (
+            [customerDetails] => Array
+                (
+                    [email] => 
+                    [phone] => 
+                    [contact] => шакирова эльмира
+                    [deliveryInfo] => Array
+                        (
+                            [country] => RU
+                            [city] => не указано
+                            [postAddress] => не указано
+                        )
+
+                )
+
+            [cartItems] => Array
+                (
+                    [items] => Array
+                        (
+                            [0] => Array
+                                (
+                                    [positionId] => 1718018
+                                    [name] => Контейнер для биопроб 60 мл полимерный стерильный
+                                    [quantity] => Array
+                                        (
+                                            [value] => 2
+                                            [measure] => 
+                                        )
+
+                                    [itemPrice] => 500
+                                    [itemAmount] => 1000
+                                    [itemCurrency] => 643
+                                    [itemCode] => 
+                                )
+
+                        )
+
+                )
+
+        )
+
+    [result] => Array
+        (
+            [orderId] => 2c348440-50eb-73b3-bc2d-5b4f02da59ef
+            [formUrl] => https://securecardpayment.ru/payment/merchants/sbersafe_sberid/payment_ru.html?mdOrder=2c348440-50eb-73b3-bc2d-5b4f02da59ef
+        )
+
+)
+Array
+(
+    [req] => Array
+        (
+            [userName] => p165912110804-api
+            [password] => vkVdiOVqgY4oxairg1iD
+            [orderNumber] => 24126
+            [amount] => 1400
+            [returnUrl] => http://volgamedteh.ru/bc/modules/default/PaymentMethod/sber_redirect.php
+            [jsonParams] => {"customerDetails":{"email":"","phone":null,"contact":"\u0428\u0430\u043a\u0438\u0440\u043e\u0432\u0430 \u042d\u043b\u044c\u043c\u0438\u0440\u0430 ","deliveryInfo":{"country":"RU","city":"\u043d\u0435 \u0443\u043a\u0430\u0437\u0430\u043d\u043e","postAddress":"\u043d\u0435 \u0443\u043a\u0430\u0437\u0430\u043d\u043e"}},"cartItems":{"items":[{"positionId":"1718017","name":"\u041a\u043e\u043d\u0442\u0435\u0439\u043d\u0435\u0440 \u0434\u043b\u044f \u0431\u0438\u043e\u043f\u0440\u043e\u0431 60 \u043c\u043b \u043f\u043e\u043b\u0438\u043c\u0435\u0440\u043d\u044b\u0439 \u0441\u043e \u0448\u043f\u0430\u0442\u0435\u043b\u0435\u043c, \u0441\u0442\u0435\u0440\u0438\u043b\u044c\u043d\u044b\u0439","quantity":{"value":"2","measure":""},"itemPrice":700,"itemAmount":1400,"itemCurrency":643,"itemCode":""}]}}
+        )
+
+    [reqparams] => Array
+        (
+            [customerDetails] => Array
+                (
+                    [email] => 
+                    [phone] => 
+                    [contact] => Шакирова Эльмира 
+                    [deliveryInfo] => Array
+                        (
+                            [country] => RU
+                            [city] => не указано
+                            [postAddress] => не указано
+                        )
+
+                )
+
+            [cartItems] => Array
+                (
+                    [items] => Array
+                        (
+                            [0] => Array
+                                (
+                                    [positionId] => 1718017
+                                    [name] => Контейнер для биопроб 60 мл полимерный со шпателем, стерильный
+                                    [quantity] => Array
+                                        (
+                                            [value] => 2
+                                            [measure] => 
+                                        )
+
+                                    [itemPrice] => 700
+                                    [itemAmount] => 1400
+                                    [itemCurrency] => 643
+                                    [itemCode] => 
+                                )
+
+                        )
+
+                )
+
+        )
+
+    [result] => Array
+        (
+            [orderId] => 25bb81d2-e46a-726e-a5e1-bb6902da59ef
+            [formUrl] => https://securecardpayment.ru/payment/merchants/sbersafe_sberid/payment_ru.html?mdOrder=25bb81d2-e46a-726e-a5e1-bb6902da59ef
+        )
+
+)
+Array
+(
+    [req] => Array
+        (
+            [userName] => p165023501268-api
+            [password] => riSlE1d3Ga.n*^Tsqf%K
+            [orderNumber] => 24224
+            [amount] => 280000
+            [returnUrl] => http://voenka116.ru/bc/modules/default/PaymentMethod/sber_redirect.php
+            [jsonParams] => {"customerDetails":{"email":"","phone":null,"contact":"\u041d\u0438\u043a\u0438\u0442\u0430","deliveryInfo":{"country":"RU","city":"\u041c\u043e\u0441\u043a\u0432\u0430","postAddress":"125504, \u041c\u043e\u0441\u043a\u0432\u0430, \u0417\u0430\u043f\u0430\u0434\u043d\u043e\u0435 \u0414\u0435\u0433\u0443\u043d\u0438\u043d\u043e \u0440\u0430\u0439\u043e\u043d, \u0418\u043b\u044c\u043c\u0435\u043d\u0441\u043a\u0438\u0439 \u043f\u0440\u043e\u0435\u0437\u0434 17,\u043a2. \u041f\u0443\u043d\u043a\u0442 \u0432\u044b\u0434\u0430\u0447\u0438 \u0421\u0414\u042d\u041a"}},"cartItems":{"items":[{"positionId":"2586043","name":"\u0422\u0435\u043b\u0435\u0441\u043a\u043e\u043f\u0438\u0447\u0435\u0441\u043a\u0430\u044f \u0434\u0443\u0431\u0438\u043d\u043a\u0430 \u0430\u0432\u0442\u043e\u043c\u0430\u0442\u0438\u0447\u0435\u0441\u043a\u0430\u044f 52\u0441\u043c","quantity":{"value":"1","measure":""},"itemPrice":250000,"itemAmount":250000,"itemCurrency":643,"itemCode":""}]}}
+        )
+
+    [reqparams] => Array
+        (
+            [customerDetails] => Array
+                (
+                    [email] => 
+                    [phone] => 
+                    [contact] => Никита
+                    [deliveryInfo] => Array
+                        (
+                            [country] => RU
+                            [city] => Москва
+                            [postAddress] => 125504, Москва, Западное Дегунино район, Ильменский проезд 17,к2. Пункт выдачи СДЭК
+                        )
+
+                )
+
+            [cartItems] => Array
+                (
+                    [items] => Array
+                        (
+                            [0] => Array
+                                (
+                                    [positionId] => 2586043
+                                    [name] => Телескопическая дубинка автоматическая 52см
+                                    [quantity] => Array
+                                        (
+                                            [value] => 1
+                                            [measure] => 
+                                        )
+
+                                    [itemPrice] => 250000
+                                    [itemAmount] => 250000
+                                    [itemCurrency] => 643
+                                    [itemCode] => 
+                                )
+
+                        )
+
+                )
+
+        )
+
+    [result] => Array
+        (
+            [orderId] => f916de32-b937-7f60-8ce1-7ba802c5234a
+            [formUrl] => https://securecardpayment.ru/payment/merchants/sbersafe_sberid/payment_ru.html?mdOrder=f916de32-b937-7f60-8ce1-7ba802c5234a
+        )
+
+)
+Array
+(
+    [req] => Array
+        (
+            [userName] => p165023501268-api
+            [password] => riSlE1d3Ga.n*^Tsqf%K
+            [orderNumber] => 25247
+            [amount] => 280000
+            [returnUrl] => http://voenka116.ru/bc/modules/default/PaymentMethod/sber_redirect.php
+            [jsonParams] => {"customerDetails":{"email":"po100ykoff@yandex.ru","phone":null,"contact":"\u041f\u043e\u0441\u0442\u043e\u0439\u043a\u043e \u041e\u043b\u0435\u0433 \u0412\u0438\u0442\u0430\u043b\u044c\u0435\u0432\u0438\u0447","deliveryInfo":{"country":"RU","city":"\u041d\u043e\u0432\u043e\u043a\u0443\u0437\u043d\u0435\u0446\u043a","postAddress":"\u041a\u0435\u043c\u0435\u0440\u043e\u0432\u0441\u043a\u0430\u044f \u043e\u0431\u043b\u0430\u0441\u0442\u044c.\u0433.\u041d\u043e\u0432\u043e\u043a\u0443\u0437\u043d\u0435\u0446\u043a;\u0443\u043b.\u0422\u043e\u0440\u0435\u0437\u0430 86\u0410 \u043a\u0432.21 \u0438\u043d\u0434\u0435\u043a\u0441 654059"}},"cartItems":{"items":[{"positionId":"2586043","name":"\u0422\u0435\u043b\u0435\u0441\u043a\u043e\u043f\u0438\u0447\u0435\u0441\u043a\u0430\u044f \u0434\u0443\u0431\u0438\u043d\u043a\u0430 \u0430\u0432\u0442\u043e\u043c\u0430\u0442\u0438\u0447\u0435\u0441\u043a\u0430\u044f 52\u0441\u043c","quantity":{"value":"1","measure":""},"itemPrice":250000,"itemAmount":250000,"itemCurrency":643,"itemCode":""}]}}
+        )
+
+    [reqparams] => Array
+        (
+            [customerDetails] => Array
+                (
+                    [email] => po100ykoff@yandex.ru
+                    [phone] => 
+                    [contact] => Постойко Олег Витальевич
+                    [deliveryInfo] => Array
+                        (
+                            [country] => RU
+                            [city] => Новокузнецк
+                            [postAddress] => Кемеровская область.г.Новокузнецк;ул.Тореза 86А кв.21 индекс 654059
+                        )
+
+                )
+
+            [cartItems] => Array
+                (
+                    [items] => Array
+                        (
+                            [0] => Array
+                                (
+                                    [positionId] => 2586043
+                                    [name] => Телескопическая дубинка автоматическая 52см
+                                    [quantity] => Array
+                                        (
+                                            [value] => 1
+                                            [measure] => 
+                                        )
+
+                                    [itemPrice] => 250000
+                                    [itemAmount] => 250000
+                                    [itemCurrency] => 643
+                                    [itemCode] => 
+                                )
+
+                        )
+
+                )
+
+        )
+
+    [result] => Array
+        (
+            [orderId] => 7c8fb6e4-cd4e-7af2-bf0c-308902c5234a
+            [formUrl] => https://securecardpayment.ru/payment/merchants/sbersafe_sberid/payment_ru.html?mdOrder=7c8fb6e4-cd4e-7af2-bf0c-308902c5234a
+        )
+
+)
+Array
+(
+    [req] => Array
+        (
+            [userName] => p165023501268-api
+            [password] => riSlE1d3Ga.n*^Tsqf%K
+            [orderNumber] => 25251
+            [amount] => 280000
+            [returnUrl] => http://voenka116.ru/bc/modules/default/PaymentMethod/sber_redirect.php
+            [jsonParams] => {"customerDetails":{"email":"Vlad.saverchenko@gmail.com","phone":null,"contact":"\u0421\u0430\u0432\u0435\u0440\u0447\u0435\u043d\u043a\u043e \u0412\u043b\u0430\u0434\u0438\u0441\u043b\u0430\u0432 \u0421\u0435\u0440\u0433\u0435\u0435\u0432\u0438\u0447 ","deliveryInfo":{"country":"RU","city":"\u041d\u043e\u044f\u0431\u0440\u044c\u0441\u043a ","postAddress":"629810, \u041d\u043e\u044f\u0431\u0440\u044c\u0441\u043a, \u0443\u043b. \u0418\u0437\u044b\u0441\u043a\u0430\u0442\u0435\u043b\u0435\u0439 32\u0410, \u043a\u0432. 18"}},"cartItems":{"items":[{"positionId":"2586043","name":"\u0422\u0435\u043b\u0435\u0441\u043a\u043e\u043f\u0438\u0447\u0435\u0441\u043a\u0430\u044f \u0434\u0443\u0431\u0438\u043d\u043a\u0430 \u0430\u0432\u0442\u043e\u043c\u0430\u0442\u0438\u0447\u0435\u0441\u043a\u0430\u044f 52\u0441\u043c","quantity":{"value":"1","measure":""},"itemPrice":250000,"itemAmount":250000,"itemCurrency":643,"itemCode":""}]}}
+        )
+
+    [reqparams] => Array
+        (
+            [customerDetails] => Array
+                (
+                    [email] => Vlad.saverchenko@gmail.com
+                    [phone] => 
+                    [contact] => Саверченко Владислав Сергеевич 
+                    [deliveryInfo] => Array
+                        (
+                            [country] => RU
+                            [city] => Ноябрьск 
+                            [postAddress] => 629810, Ноябрьск, ул. Изыскателей 32А, кв. 18
+                        )
+
+                )
+
+            [cartItems] => Array
+                (
+                    [items] => Array
+                        (
+                            [0] => Array
+                                (
+                                    [positionId] => 2586043
+                                    [name] => Телескопическая дубинка автоматическая 52см
+                                    [quantity] => Array
+                                        (
+                                            [value] => 1
+                                            [measure] => 
+                                        )
+
+                                    [itemPrice] => 250000
+                                    [itemAmount] => 250000
+                                    [itemCurrency] => 643
+                                    [itemCode] => 
+                                )
+
+                        )
+
+                )
+
+        )
+
+    [result] => Array
+        (
+            [orderId] => f0c45e20-0c82-7eae-a7c3-41a202c5234a
+            [formUrl] => https://securecardpayment.ru/payment/merchants/sbersafe_sberid/payment_ru.html?mdOrder=f0c45e20-0c82-7eae-a7c3-41a202c5234a
+        )
+
+)
+Array
+(
+    [req] => Array
+        (
+            [userName] => p312009319390-api
+            [password] => s3XqiAjRbzaK
+            [orderNumber] => 25571
+            [amount] => 266000
+            [returnUrl] => http://klevver.ru/bc/modules/default/PaymentMethod/sber_redirect.php
+            [jsonParams] => {"customerDetails":{"email":"","phone":null,"contact":"\u041d\u0435\u043c\u043e\u0432 \u0410. \u0418. ","deliveryInfo":{"country":"RU","city":"\u0418\u0441\u0442\u0440\u0430","postAddress":"\u0418\u0441\u0442\u0440\u0430"}},"cartItems":{"items":[{"positionId":"3051857","name":"\u0423\u0433\u043b\u043e\u0432\u0430\u044f \u043f\u0430\u043d\u0435\u043b\u044c (\u0449\u0435\u043a\u0430) \u043a\u0430\u0431\u0438\u043d\u044b, \u043f\u0440\u0430\u0432\u0430\u044f MITSUBISHI FUSO FIGHTER","quantity":{"value":"1","measure":""},"itemPrice":266000,"itemAmount":266000,"itemCurrency":643,"itemCode":"MB07-0700-01"}]}}
+        )
+
+    [reqparams] => Array
+        (
+            [customerDetails] => Array
+                (
+                    [email] => 
+                    [phone] => 
+                    [contact] => Немов А. И. 
+                    [deliveryInfo] => Array
+                        (
+                            [country] => RU
+                            [city] => Истра
+                            [postAddress] => Истра
+                        )
+
+                )
+
+            [cartItems] => Array
+                (
+                    [items] => Array
+                        (
+                            [0] => Array
+                                (
+                                    [positionId] => 3051857
+                                    [name] => Угловая панель (щека) кабины, правая MITSUBISHI FUSO FIGHTER
+                                    [quantity] => Array
+                                        (
+                                            [value] => 1
+                                            [measure] => 
+                                        )
+
+                                    [itemPrice] => 266000
+                                    [itemAmount] => 266000
+                                    [itemCurrency] => 643
+                                    [itemCode] => MB07-0700-01
+                                )
+
+                        )
+
+                )
+
+        )
+
+    [result] => Array
+        (
+            [orderId] => de913394-c180-7798-ba8f-287502a05e19
+            [formUrl] => https://securecardpayment.ru/payment/merchants/sbersafe_sberid/payment_ru.html?mdOrder=de913394-c180-7798-ba8f-287502a05e19
+        )
+
+)
+Array
+(
+    [req] => Array
+        (
+            [userName] => p165023501268-api
+            [password] => riSlE1d3Ga.n*^Tsqf%K
+            [orderNumber] => 25861
+            [amount] => 30000
+            [returnUrl] => http://voenka116.ru/bc/modules/default/PaymentMethod/sber_redirect.php
+            [jsonParams] => {"customerDetails":{"email":"po100ykoff@yandex.ru","phone":null,"contact":"\u041f\u043e\u0441\u0442\u043e\u0439\u043a\u043e \u041e\u043b\u0435\u0433 \u0412\u0438\u0442\u0430\u043b\u044c\u0435\u0432\u0438\u0447","deliveryInfo":{"country":"RU","city":"\u041d\u043e\u0432\u043e\u043a\u0443\u0437\u043d\u0435\u0446\u043a","postAddress":"\u041a\u0435\u043c\u0435\u0440\u043e\u0432\u0441\u043a\u0430\u044f \u043e\u0431\u043b\u0430\u0441\u0442\u044c.\u0433.\u041d\u043e\u0432\u043e\u043a\u0443\u0437\u043d\u0435\u0446\u043a;\u0443\u043b.\u0422\u043e\u0440\u0435\u0437\u0430 86\u0410 \u043a\u0432.21 \u0438\u043d\u0434\u0435\u043a\u0441 654059"}},"cartItems":{"items":[{"positionId":"2586043","name":"\u0422\u0435\u043b\u0435\u0441\u043a\u043e\u043f\u0438\u0447\u0435\u0441\u043a\u0430\u044f \u0434\u0443\u0431\u0438\u043d\u043a\u0430 \u0430\u0432\u0442\u043e\u043c\u0430\u0442\u0438\u0447\u0435\u0441\u043a\u0430\u044f 52\u0441\u043c","quantity":{"value":"1","measure":""},"itemPrice":0,"itemAmount":0,"itemCurrency":643,"itemCode":""}]}}
+        )
+
+    [reqparams] => Array
+        (
+            [customerDetails] => Array
+                (
+                    [email] => po100ykoff@yandex.ru
+                    [phone] => 
+                    [contact] => Постойко Олег Витальевич
+                    [deliveryInfo] => Array
+                        (
+                            [country] => RU
+                            [city] => Новокузнецк
+                            [postAddress] => Кемеровская область.г.Новокузнецк;ул.Тореза 86А кв.21 индекс 654059
+                        )
+
+                )
+
+            [cartItems] => Array
+                (
+                    [items] => Array
+                        (
+                            [0] => Array
+                                (
+                                    [positionId] => 2586043
+                                    [name] => Телескопическая дубинка автоматическая 52см
+                                    [quantity] => Array
+                                        (
+                                            [value] => 1
+                                            [measure] => 
+                                        )
+
+                                    [itemPrice] => 0
+                                    [itemAmount] => 0
+                                    [itemCurrency] => 643
+                                    [itemCode] => 
+                                )
+
+                        )
+
+                )
+
+        )
+
+    [result] => Array
+        (
+            [orderId] => b768634f-ed6c-7366-97d8-128102c5234a
+            [formUrl] => https://securecardpayment.ru/payment/merchants/sbersafe_sberid/payment_ru.html?mdOrder=b768634f-ed6c-7366-97d8-128102c5234a
+        )
+
+)
+Array
+(
+    [req] => Array
+        (
+            [userName] => p3428986633-api
+            [password] => 410CA7D1DE
+            [orderNumber] => 25958
+            [amount] => 208800
+            [returnUrl] => http://med-tehnika34.ru/bc/modules/default/PaymentMethod/sber_redirect.php
+            [jsonParams] => {"customerDetails":{"email":"selivanoval688@gmail.com","phone":null,"contact":"\u0421\u0435\u043c\u0435\u0440\u0438\u043a\u043e\u0432\u0430 \u041b\u0430\u0440\u0438\u0441\u0430 \u0410\u043d\u0430\u0442\u043e\u043b\u044c\u0435\u0432\u043d\u0430","deliveryInfo":{"country":"RU","city":"\u041b\u0438\u0444\u0442","postAddress":"\u0420\u043e\u0441\u0441\u0438\u044f, \u0412\u043e\u043b\u0433\u043e\u0433\u0440\u0430\u0434, \u0411\u043e\u0433\u0434\u0430\u043d\u043e\u0432\u0430 25 \u043a\u0432. 706"}},"cartItems":{"items":[{"positionId":"2272033","name":"\u0413\u043b\u044e\u043a\u043e\u043c\u0435\u0442\u0440 \u0421\u0430\u0442\u0435\u043b\u043b\u0438\u0442 \u042d\u043a\u0441\u043f\u0440\u0435\u0441\u0441","quantity":{"value":"1","measure":""},"itemPrice":208800,"itemAmount":208800,"itemCurrency":643,"itemCode":""}]}}
+        )
+
+    [reqparams] => Array
+        (
+            [customerDetails] => Array
+                (
+                    [email] => selivanoval688@gmail.com
+                    [phone] => 
+                    [contact] => Семерикова Лариса Анатольевна
+                    [deliveryInfo] => Array
+                        (
+                            [country] => RU
+                            [city] => Лифт
+                            [postAddress] => Россия, Волгоград, Богданова 25 кв. 706
+                        )
+
+                )
+
+            [cartItems] => Array
+                (
+                    [items] => Array
+                        (
+                            [0] => Array
+                                (
+                                    [positionId] => 2272033
+                                    [name] => Глюкометр Сателлит Экспресс
+                                    [quantity] => Array
+                                        (
+                                            [value] => 1
+                                            [measure] => 
+                                        )
+
+                                    [itemPrice] => 208800
+                                    [itemAmount] => 208800
+                                    [itemCurrency] => 643
+                                    [itemCode] => 
+                                )
+
+                        )
+
+                )
+
+        )
+
+    [result] => Array
+        (
+            [orderId] => c593ef6a-7ad0-7005-b4bf-768802afc6da
+            [formUrl] => https://securecardpayment.ru/payment/merchants/sbersafe_sberid/payment_ru.html?mdOrder=c593ef6a-7ad0-7005-b4bf-768802afc6da
+        )
+
+)
+Array
+(
+    [req] => Array
+        (
+            [userName] => p165023501268-api
+            [password] => riSlE1d3Ga.n*^Tsqf%K
+            [orderNumber] => 25988
+            [amount] => 210000
+            [returnUrl] => http://voenka116.ru/bc/modules/default/PaymentMethod/sber_redirect.php
+            [jsonParams] => {"customerDetails":{"email":"dima.k68@mail.ru","phone":null,"contact":"\u041a\u0440\u0443\u043f\u043a\u0438\u043d \u0414\u043c\u0438\u0442\u0440\u0438\u0439 \u0411\u043e\u0440\u0438\u0441\u043e\u0432\u0438\u0447","deliveryInfo":{"country":"RU","city":"\u041f\u0435\u0440\u043c\u044c","postAddress":"\u0433 \u041f\u0435\u0440\u043c\u044c, \u0443\u043b \u0413\u0440\u0438\u0431\u043e\u0435\u0434\u043e\u0432\u0430 72"}},"cartItems":{"items":[{"positionId":"2573240","name":"\u042d\u043b\u0435\u043a\u0442\u0440\u043e\u0448\u043e\u043a\u0435\u0440 LDL-X4","quantity":{"value":"1","measure":""},"itemPrice":180000,"itemAmount":180000,"itemCurrency":643,"itemCode":""}]}}
+        )
+
+    [reqparams] => Array
+        (
+            [customerDetails] => Array
+                (
+                    [email] => dima.k68@mail.ru
+                    [phone] => 
+                    [contact] => Крупкин Дмитрий Борисович
+                    [deliveryInfo] => Array
+                        (
+                            [country] => RU
+                            [city] => Пермь
+                            [postAddress] => г Пермь, ул Грибоедова 72
+                        )
+
+                )
+
+            [cartItems] => Array
+                (
+                    [items] => Array
+                        (
+                            [0] => Array
+                                (
+                                    [positionId] => 2573240
+                                    [name] => Электрошокер LDL-X4
+                                    [quantity] => Array
+                                        (
+                                            [value] => 1
+                                            [measure] => 
+                                        )
+
+                                    [itemPrice] => 180000
+                                    [itemAmount] => 180000
+                                    [itemCurrency] => 643
+                                    [itemCode] => 
+                                )
+
+                        )
+
+                )
+
+        )
+
+    [result] => Array
+        (
+            [orderId] => 313b2cf2-a703-7249-a516-a79a02c5234a
+            [formUrl] => https://securecardpayment.ru/payment/merchants/sbersafe_sberid/payment_ru.html?mdOrder=313b2cf2-a703-7249-a516-a79a02c5234a
+        )
+
+)
+Array
+(
+    [req] => Array
+        (
+            [userName] => p3428986633-api
+            [password] => 410CA7D1DE
+            [orderNumber] => 25999
+            [amount] => 99000
+            [returnUrl] => http://med-tehnika34.ru/bc/modules/default/PaymentMethod/sber_redirect.php
+            [jsonParams] => {"customerDetails":{"email":"Espero777nikolaeva@yandex.ru","phone":null,"contact":"\u041d\u0438\u043a\u043e\u043b\u0430\u0435\u0432\u0430 \u0414\u0430\u0440\u044c\u044f \u042e\u0440\u044c\u0435\u0432\u043d\u0430","deliveryInfo":{"country":"RU","city":"\u0412\u043e\u043b\u0433\u043e\u0433\u0440\u0430\u0434 ","postAddress":"\u0428\u0435\u043a\u0441\u043d\u0438\u043d\u0441\u043a\u0430\u044f 7-77 "}},"cartItems":{"items":[{"positionId":"2437760","name":"\u0424\u0438\u043a\u0441\u0430\u0442\u043e\u0440 \u043a\u043e\u043b\u0435\u043d\u043d\u043e\u0433\u043e \u0441\u0443\u0441\u0442\u0430\u0432\u0430 F 1259","quantity":{"value":"1","measure":""},"itemPrice":99000,"itemAmount":99000,"itemCurrency":643,"itemCode":"F 1259"}]}}
+        )
+
+    [reqparams] => Array
+        (
+            [customerDetails] => Array
+                (
+                    [email] => Espero777nikolaeva@yandex.ru
+                    [phone] => 
+                    [contact] => Николаева Дарья Юрьевна
+                    [deliveryInfo] => Array
+                        (
+                            [country] => RU
+                            [city] => Волгоград 
+                            [postAddress] => Шекснинская 7-77 
+                        )
+
+                )
+
+            [cartItems] => Array
+                (
+                    [items] => Array
+                        (
+                            [0] => Array
+                                (
+                                    [positionId] => 2437760
+                                    [name] => Фиксатор коленного сустава F 1259
+                                    [quantity] => Array
+                                        (
+                                            [value] => 1
+                                            [measure] => 
+                                        )
+
+                                    [itemPrice] => 99000
+                                    [itemAmount] => 99000
+                                    [itemCurrency] => 643
+                                    [itemCode] => F 1259
+                                )
+
+                        )
+
+                )
+
+        )
+
+    [result] => Array
+        (
+            [orderId] => bf59f3f1-4860-7f63-b43b-278002afc6da
+            [formUrl] => https://securecardpayment.ru/payment/merchants/sbersafe_sberid/payment_ru.html?mdOrder=bf59f3f1-4860-7f63-b43b-278002afc6da
+        )
+
+)
+Array
+(
+    [req] => Array
+        (
+            [userName] => p165023501268-api
+            [password] => riSlE1d3Ga.n*^Tsqf%K
+            [orderNumber] => 26120
+            [amount] => 95000
+            [returnUrl] => http://voenka116.ru/bc/modules/default/PaymentMethod/sber_redirect.php
+            [jsonParams] => {"customerDetails":{"email":"","phone":null,"contact":"\u042e\u0440\u043a\u0438\u043d \u0410\u0440\u0442\u0435\u043c \u0415\u0432\u0433\u0435\u043d\u044c\u0435\u0432\u0438\u0447","deliveryInfo":{"country":"RU","city":"\u0433. \u0421\u044b\u043a\u0442\u044b\u0432\u043a\u0430\u0440","postAddress":"167026, \u0420\u0435\u0441\u043f\u0443\u0431\u043b\u0438\u043a\u0430 \u041a\u043e\u043c\u0438,\u0433 \u0421\u044b\u043a\u0442\u044b\u0432\u043a\u0430\u0440,\u042d\u0436\u0432\u0438\u043d\u0441\u043a\u0438\u0439 \u0440\u0430\u0439\u043e\u043d"}},"cartItems":{"items":[{"positionId":"2560345","name":"\u0420\u0435\u043c\u0435\u043d\u044c &quot;Cobra&quot; \u0442\u0430\u043a\u0442\u0438\u0447\u0435\u0441\u043a\u0438\u0439","quantity":{"value":"1","measure":""},"itemPrice":65000,"itemAmount":65000,"itemCurrency":643,"itemCode":"80176"}]}}
+        )
+
+    [reqparams] => Array
+        (
+            [customerDetails] => Array
+                (
+                    [email] => 
+                    [phone] => 
+                    [contact] => Юркин Артем Евгеньевич
+                    [deliveryInfo] => Array
+                        (
+                            [country] => RU
+                            [city] => г. Сыктывкар
+                            [postAddress] => 167026, Республика Коми,г Сыктывкар,Эжвинский район
+                        )
+
+                )
+
+            [cartItems] => Array
+                (
+                    [items] => Array
+                        (
+                            [0] => Array
+                                (
+                                    [positionId] => 2560345
+                                    [name] => Ремень &quot;Cobra&quot; тактический
+                                    [quantity] => Array
+                                        (
+                                            [value] => 1
+                                            [measure] => 
+                                        )
+
+                                    [itemPrice] => 65000
+                                    [itemAmount] => 65000
+                                    [itemCurrency] => 643
+                                    [itemCode] => 80176
+                                )
+
+                        )
+
+                )
+
+        )
+
+    [result] => Array
+        (
+            [orderId] => e9dd33e9-afcf-7831-b3d8-3f0602c5234a
+            [formUrl] => https://securecardpayment.ru/payment/merchants/sbersafe_sberid/payment_ru.html?mdOrder=e9dd33e9-afcf-7831-b3d8-3f0602c5234a
+        )
+
+)
+Array
+(
+    [req] => Array
+        (
+            [userName] => p165912110804-api
+            [password] => vkVdiOVqgY4oxairg1iD
+            [orderNumber] => 26575
+            [amount] => 900
+            [returnUrl] => http://volgamedteh.ru/bc/modules/default/PaymentMethod/sber_redirect.php
+            [jsonParams] => {"customerDetails":{"email":"","phone":null,"contact":"\u0428\u0430\u043a\u0438\u0440\u043e\u0432\u0430 \u042d\u043b\u044c\u043c\u0438\u0440\u0430 \u0424\u0438\u0434\u0430\u0438\u043b\u0435\u0432\u043d\u0430 ","deliveryInfo":{"country":"RU","city":"\u043d\u0435 \u0443\u043a\u0430\u0437\u0430\u043d\u043e","postAddress":"\u043d\u0435 \u0443\u043a\u0430\u0437\u0430\u043d\u043e"}},"cartItems":{"items":[{"positionId":"1718017","name":"\u041a\u043e\u043d\u0442\u0435\u0439\u043d\u0435\u0440 \u0434\u043b\u044f \u0431\u0438\u043e\u043f\u0440\u043e\u0431 60 \u043c\u043b \u043f\u043e\u043b\u0438\u043c\u0435\u0440\u043d\u044b\u0439 \u0441\u043e \u0448\u043f\u0430\u0442\u0435\u043b\u0435\u043c, \u0441\u0442\u0435\u0440\u0438\u043b\u044c\u043d\u044b\u0439","quantity":{"value":"1","measure":""},"itemPrice":900,"itemAmount":900,"itemCurrency":643,"itemCode":""}]}}
+        )
+
+    [reqparams] => Array
+        (
+            [customerDetails] => Array
+                (
+                    [email] => 
+                    [phone] => 
+                    [contact] => Шакирова Эльмира Фидаилевна 
+                    [deliveryInfo] => Array
+                        (
+                            [country] => RU
+                            [city] => не указано
+                            [postAddress] => не указано
+                        )
+
+                )
+
+            [cartItems] => Array
+                (
+                    [items] => Array
+                        (
+                            [0] => Array
+                                (
+                                    [positionId] => 1718017
+                                    [name] => Контейнер для биопроб 60 мл полимерный со шпателем, стерильный
+                                    [quantity] => Array
+                                        (
+                                            [value] => 1
+                                            [measure] => 
+                                        )
+
+                                    [itemPrice] => 900
+                                    [itemAmount] => 900
+                                    [itemCurrency] => 643
+                                    [itemCode] => 
+                                )
+
+                        )
+
+                )
+
+        )
+
+    [result] => Array
+        (
+            [orderId] => 66fccadb-095c-7009-a40b-39fb02da59ef
+            [formUrl] => https://securecardpayment.ru/payment/merchants/sbersafe_sberid/payment_ru.html?mdOrder=66fccadb-095c-7009-a40b-39fb02da59ef
+        )
+
+)
+Array
+(
+    [req] => Array
+        (
+            [userName] => p165023501268-api
+            [password] => riSlE1d3Ga.n*^Tsqf%K
+            [orderNumber] => 26684
+            [amount] => 70000
+            [returnUrl] => http://voenka116.ru/bc/modules/default/PaymentMethod/sber_redirect.php
+            [jsonParams] => {"customerDetails":{"email":"","phone":null,"contact":"\u041c\u044f\u0441\u043e\u0435\u0434\u043e\u0432 \u0421\u0442\u0430\u043d\u0438\u0441\u043b\u0430\u0432 \u0410\u043b\u0435\u043a\u0441\u0430\u043d\u0434\u0440\u043e\u0432\u0438\u0447","deliveryInfo":{"country":"RU","city":"\u043d\u0435 \u0443\u043a\u0430\u0437\u0430\u043d\u043e","postAddress":"\u043d\u0435 \u0443\u043a\u0430\u0437\u0430\u043d\u043e"}},"cartItems":{"items":[{"positionId":"2560762","name":"\u0421\u0443\u0445\u043e\u0439 \u043f\u0430\u0435\u043a &quot;\u0410\u0440\u043c\u0438\u044f \u0420\u043e\u0441\u0441\u0438\u0438&quot;, \u0441\u0440\u043e\u043a \u0434\u043e 06,2024","quantity":{"value":"1","measure":""},"itemPrice":70000,"itemAmount":70000,"itemCurrency":643,"itemCode":"50111"}]}}
+        )
+
+    [reqparams] => Array
+        (
+            [customerDetails] => Array
+                (
+                    [email] => 
+                    [phone] => 
+                    [contact] => Мясоедов Станислав Александрович
+                    [deliveryInfo] => Array
+                        (
+                            [country] => RU
+                            [city] => не указано
+                            [postAddress] => не указано
+                        )
+
+                )
+
+            [cartItems] => Array
+                (
+                    [items] => Array
+                        (
+                            [0] => Array
+                                (
+                                    [positionId] => 2560762
+                                    [name] => Сухой паек &quot;Армия России&quot;, срок до 06,2024
+                                    [quantity] => Array
+                                        (
+                                            [value] => 1
+                                            [measure] => 
+                                        )
+
+                                    [itemPrice] => 70000
+                                    [itemAmount] => 70000
+                                    [itemCurrency] => 643
+                                    [itemCode] => 50111
+                                )
+
+                        )
+
+                )
+
+        )
+
+    [result] => Array
+        (
+            [orderId] => 2b95c821-f445-7721-94d7-1c4f02c5234a
+            [formUrl] => https://securecardpayment.ru/payment/merchants/sbersafe_sberid/payment_ru.html?mdOrder=2b95c821-f445-7721-94d7-1c4f02c5234a
+        )
+
+)
+Array
+(
+    [req] => Array
+        (
+            [userName] => p312009319390-api
+            [password] => s3XqiAjRbzaK
+            [orderNumber] => 27025
+            [amount] => 367500
+            [returnUrl] => http://klevver.ru/bc/modules/default/PaymentMethod/sber_redirect.php
+            [jsonParams] => {"customerDetails":{"email":"","phone":null,"contact":"\u0414\u043c\u0438\u0442\u0440\u0438\u0439 ","deliveryInfo":{"country":"RU","city":"\u043d\u0435 \u0443\u043a\u0430\u0437\u0430\u043d\u043e","postAddress":"\u043d\u0435 \u0443\u043a\u0430\u0437\u0430\u043d\u043e"}},"cartItems":{"items":[{"positionId":"2737523","name":"\u0423\u0433\u043e\u043b \u0431\u0430\u043c\u043f\u0435\u0440\u0430, \u043f\u0440\u0430\u0432\u044b\u0439 MITSUBISHI Fuso Canter (\u0422\u0430\u0439\u0432\u0430\u043d\u044c)","quantity":{"value":"1","measure":""},"itemPrice":367500,"itemAmount":367500,"itemCurrency":643,"itemCode":"MK617991"}]}}
+        )
+
+    [reqparams] => Array
+        (
+            [customerDetails] => Array
+                (
+                    [email] => 
+                    [phone] => 
+                    [contact] => Дмитрий 
+                    [deliveryInfo] => Array
+                        (
+                            [country] => RU
+                            [city] => не указано
+                            [postAddress] => не указано
+                        )
+
+                )
+
+            [cartItems] => Array
+                (
+                    [items] => Array
+                        (
+                            [0] => Array
+                                (
+                                    [positionId] => 2737523
+                                    [name] => Угол бампера, правый MITSUBISHI Fuso Canter (Тайвань)
+                                    [quantity] => Array
+                                        (
+                                            [value] => 1
+                                            [measure] => 
+                                        )
+
+                                    [itemPrice] => 367500
+                                    [itemAmount] => 367500
+                                    [itemCurrency] => 643
+                                    [itemCode] => MK617991
+                                )
+
+                        )
+
+                )
+
+        )
+
+    [result] => Array
+        (
+            [orderId] => 0ca4ab36-f71c-7846-a49e-6c5702a05e19
+            [formUrl] => https://securecardpayment.ru/payment/merchants/sbersafe_sberid/payment_ru.html?mdOrder=0ca4ab36-f71c-7846-a49e-6c5702a05e19
+        )
+
+)
+Array
+(
+    [req] => Array
+        (
+            [userName] => p165912110804-api
+            [password] => vkVdiOVqgY4oxairg1iD
+            [orderNumber] => 27054
+            [amount] => 150000
+            [returnUrl] => http://volgamedteh.ru/bc/modules/default/PaymentMethod/sber_redirect.php
+            [jsonParams] => {"customerDetails":{"email":"German460@gmail.com","phone":null,"contact":"\u041b\u0430\u0437\u0430\u0440\u0435\u0432 \u0413\u0435\u0440\u043c\u0430\u043d \u0418\u0433\u043e\u0440\u0435\u0432\u0438\u0447 ","deliveryInfo":{"country":"RU","city":"\u043d\u0435 \u0443\u043a\u0430\u0437\u0430\u043d\u043e","postAddress":"\u043d\u0435 \u0443\u043a\u0430\u0437\u0430\u043d\u043e"}},"cartItems":{"items":[{"positionId":"1717943","name":"\u041a\u0430\u0442\u0435\u0442\u0435\u0440 \u043c\u043e\u0447\u0435\u0442\u043e\u0447\u043d\u0438\u043a\u043e\u0432\u044b\u0439 \u211610  L=700 \u0441\u0442\u0435\u0440\u0438\u043b\u044c\u043d\u044b\u0439","quantity":{"value":"5","measure":""},"itemPrice":30000,"itemAmount":150000,"itemCurrency":643,"itemCode":""}]}}
+        )
+
+    [reqparams] => Array
+        (
+            [customerDetails] => Array
+                (
+                    [email] => German460@gmail.com
+                    [phone] => 
+                    [contact] => Лазарев Герман Игоревич 
+                    [deliveryInfo] => Array
+                        (
+                            [country] => RU
+                            [city] => не указано
+                            [postAddress] => не указано
+                        )
+
+                )
+
+            [cartItems] => Array
+                (
+                    [items] => Array
+                        (
+                            [0] => Array
+                                (
+                                    [positionId] => 1717943
+                                    [name] => Катетер мочеточниковый №10  L=700 стерильный
+                                    [quantity] => Array
+                                        (
+                                            [value] => 5
+                                            [measure] => 
+                                        )
+
+                                    [itemPrice] => 30000
+                                    [itemAmount] => 150000
+                                    [itemCurrency] => 643
+                                    [itemCode] => 
+                                )
+
+                        )
+
+                )
+
+        )
+
+    [result] => Array
+        (
+            [orderId] => 1642992b-c030-7230-915f-e76902da59ef
+            [formUrl] => https://securecardpayment.ru/payment/merchants/sbersafe_sberid/payment_ru.html?mdOrder=1642992b-c030-7230-915f-e76902da59ef
+        )
+
+)
+Array
+(
+    [req] => Array
+        (
+            [userName] => p165912110804-api
+            [password] => vkVdiOVqgY4oxairg1iD
+            [orderNumber] => 27127
+            [amount] => 900
+            [returnUrl] => http://volgamedteh.ru/bc/modules/default/PaymentMethod/sber_redirect.php
+            [jsonParams] => {"customerDetails":{"email":"Shef0901@mail.ru","phone":null,"contact":"\u0428\u0430\u043a\u0438\u0440\u043e\u0432\u0430 \u042d\u043b\u044c\u043c\u0438\u0440\u0430 ","deliveryInfo":{"country":"RU","city":"\u043d\u0435 \u0443\u043a\u0430\u0437\u0430\u043d\u043e","postAddress":"\u043d\u0435 \u0443\u043a\u0430\u0437\u0430\u043d\u043e"}},"cartItems":{"items":[{"positionId":"1718017","name":"\u041a\u043e\u043d\u0442\u0435\u0439\u043d\u0435\u0440 \u0434\u043b\u044f \u0431\u0438\u043e\u043f\u0440\u043e\u0431 60 \u043c\u043b \u043f\u043e\u043b\u0438\u043c\u0435\u0440\u043d\u044b\u0439 \u0441\u043e \u0448\u043f\u0430\u0442\u0435\u043b\u0435\u043c, \u0441\u0442\u0435\u0440\u0438\u043b\u044c\u043d\u044b\u0439","quantity":{"value":"1","measure":""},"itemPrice":900,"itemAmount":900,"itemCurrency":643,"itemCode":""}]}}
+        )
+
+    [reqparams] => Array
+        (
+            [customerDetails] => Array
+                (
+                    [email] => Shef0901@mail.ru
+                    [phone] => 
+                    [contact] => Шакирова Эльмира 
+                    [deliveryInfo] => Array
+                        (
+                            [country] => RU
+                            [city] => не указано
+                            [postAddress] => не указано
+                        )
+
+                )
+
+            [cartItems] => Array
+                (
+                    [items] => Array
+                        (
+                            [0] => Array
+                                (
+                                    [positionId] => 1718017
+                                    [name] => Контейнер для биопроб 60 мл полимерный со шпателем, стерильный
+                                    [quantity] => Array
+                                        (
+                                            [value] => 1
+                                            [measure] => 
+                                        )
+
+                                    [itemPrice] => 900
+                                    [itemAmount] => 900
+                                    [itemCurrency] => 643
+                                    [itemCode] => 
+                                )
+
+                        )
+
+                )
+
+        )
+
+    [result] => Array
+        (
+            [orderId] => af50c185-90c8-7716-8675-670b02da59ef
+            [formUrl] => https://securecardpayment.ru/payment/merchants/sbersafe_sberid/payment_ru.html?mdOrder=af50c185-90c8-7716-8675-670b02da59ef
+        )
+
+)
+Array
+(
+    [req] => Array
+        (
+            [userName] => p165912110804-api
+            [password] => vkVdiOVqgY4oxairg1iD
+            [orderNumber] => 27239
+            [amount] => 900
+            [returnUrl] => http://volgamedteh.ru/bc/modules/default/PaymentMethod/sber_redirect.php
+            [jsonParams] => {"customerDetails":{"email":"Shef0901@mail.ru","phone":null,"contact":"\u0428\u0430\u043a\u0438\u0440\u043e\u0432\u0430 \u042d\u043b\u044c\u043c\u0438\u0440\u0430 ","deliveryInfo":{"country":"RU","city":"\u043d\u0435 \u0443\u043a\u0430\u0437\u0430\u043d\u043e","postAddress":"\u043d\u0435 \u0443\u043a\u0430\u0437\u0430\u043d\u043e"}},"cartItems":{"items":[{"positionId":"1718017","name":"\u041a\u043e\u043d\u0442\u0435\u0439\u043d\u0435\u0440 \u0434\u043b\u044f \u0431\u0438\u043e\u043f\u0440\u043e\u0431 60 \u043c\u043b \u043f\u043e\u043b\u0438\u043c\u0435\u0440\u043d\u044b\u0439 \u0441\u043e \u0448\u043f\u0430\u0442\u0435\u043b\u0435\u043c, \u0441\u0442\u0435\u0440\u0438\u043b\u044c\u043d\u044b\u0439","quantity":{"value":"1","measure":""},"itemPrice":900,"itemAmount":900,"itemCurrency":643,"itemCode":""}]}}
+        )
+
+    [reqparams] => Array
+        (
+            [customerDetails] => Array
+                (
+                    [email] => Shef0901@mail.ru
+                    [phone] => 
+                    [contact] => Шакирова Эльмира 
+                    [deliveryInfo] => Array
+                        (
+                            [country] => RU
+                            [city] => не указано
+                            [postAddress] => не указано
+                        )
+
+                )
+
+            [cartItems] => Array
+                (
+                    [items] => Array
+                        (
+                            [0] => Array
+                                (
+                                    [positionId] => 1718017
+                                    [name] => Контейнер для биопроб 60 мл полимерный со шпателем, стерильный
+                                    [quantity] => Array
+                                        (
+                                            [value] => 1
+                                            [measure] => 
+                                        )
+
+                                    [itemPrice] => 900
+                                    [itemAmount] => 900
+                                    [itemCurrency] => 643
+                                    [itemCode] => 
+                                )
+
+                        )
+
+                )
+
+        )
+
+    [result] => Array
+        (
+            [orderId] => 8638728e-19da-7e8b-a483-ba2602da59ef
+            [formUrl] => https://securecardpayment.ru/payment/merchants/sbersafe_sberid/payment_ru.html?mdOrder=8638728e-19da-7e8b-a483-ba2602da59ef
+        )
+
+)
+Array
+(
+    [req] => Array
+        (
+            [userName] => p165912110804-api
+            [password] => vkVdiOVqgY4oxairg1iD
+            [orderNumber] => 27468
+            [amount] => 900
+            [returnUrl] => http://volgamedteh.ru/bc/modules/default/PaymentMethod/sber_redirect.php
+            [jsonParams] => {"customerDetails":{"email":"Shef0901@mail.ru","phone":null,"contact":"\u0428\u0430\u043a\u0438\u0440\u043e\u0432\u0430 \u042d\u043b\u044c\u043c\u0438\u0440\u0430 ","deliveryInfo":{"country":"RU","city":"\u043d\u0435 \u0443\u043a\u0430\u0437\u0430\u043d\u043e","postAddress":"\u043d\u0435 \u0443\u043a\u0430\u0437\u0430\u043d\u043e"}},"cartItems":{"items":[{"positionId":"1718017","name":"\u041a\u043e\u043d\u0442\u0435\u0439\u043d\u0435\u0440 \u0434\u043b\u044f \u0431\u0438\u043e\u043f\u0440\u043e\u0431 60 \u043c\u043b \u043f\u043e\u043b\u0438\u043c\u0435\u0440\u043d\u044b\u0439 \u0441\u043e \u0448\u043f\u0430\u0442\u0435\u043b\u0435\u043c, \u0441\u0442\u0435\u0440\u0438\u043b\u044c\u043d\u044b\u0439","quantity":{"value":"1","measure":""},"itemPrice":900,"itemAmount":900,"itemCurrency":643,"itemCode":""}]}}
+        )
+
+    [reqparams] => Array
+        (
+            [customerDetails] => Array
+                (
+                    [email] => Shef0901@mail.ru
+                    [phone] => 
+                    [contact] => Шакирова Эльмира 
+                    [deliveryInfo] => Array
+                        (
+                            [country] => RU
+                            [city] => не указано
+                            [postAddress] => не указано
+                        )
+
+                )
+
+            [cartItems] => Array
+                (
+                    [items] => Array
+                        (
+                            [0] => Array
+                                (
+                                    [positionId] => 1718017
+                                    [name] => Контейнер для биопроб 60 мл полимерный со шпателем, стерильный
+                                    [quantity] => Array
+                                        (
+                                            [value] => 1
+                                            [measure] => 
+                                        )
+
+                                    [itemPrice] => 900
+                                    [itemAmount] => 900
+                                    [itemCurrency] => 643
+                                    [itemCode] => 
+                                )
+
+                        )
+
+                )
+
+        )
+
+    [result] => Array
+        (
+            [orderId] => baf1be1e-537f-7d8a-8ad4-28c802da59ef
+            [formUrl] => https://securecardpayment.ru/payment/merchants/sbersafe_sberid/payment_ru.html?mdOrder=baf1be1e-537f-7d8a-8ad4-28c802da59ef
+        )
+
+)
+Array
+(
+    [req] => Array
+        (
+            [userName] => p3428986633-api
+            [password] => 410CA7D1DE
+            [orderNumber] => 27518
+            [amount] => 216000
+            [returnUrl] => http://med-tehnika34.ru/bc/modules/default/PaymentMethod/sber_redirect.php
+            [jsonParams] => {"customerDetails":{"email":"ignatencko.anuta@yandex.ru","phone":null,"contact":"\u041c\u0443\u0440\u0430\u0448\u043a\u0438\u043d\u0430 \u0410\u043d\u043d\u0430 \u0410\u043b\u0435\u043a\u0441\u0430\u043d\u0434\u0440\u043e\u0432\u043d\u0430 ","deliveryInfo":{"country":"RU","city":"\u0412\u043e\u043b\u0433\u043e\u0433\u0440\u0430\u0434","postAddress":"\u0423\u043b. 35-\u0439 \u0413\u0432\u0430\u0440\u0434\u0435\u0439\u0441\u043a\u043e\u0439, \u0434. 48, \u043a\u0432. 89"}},"cartItems":{"items":[{"positionId":"2944655","name":"\u0420\u0435\u0446\u0438\u0440\u043a\u0443\u043b\u044f\u0442\u043e\u0440 \u0432\u043e\u0437\u0434\u0443\u0445\u0430 \u0443\u043b\u044c\u0442\u0440\u0430\u0444\u0438\u043e\u043b\u0435\u0442\u043e\u0432\u044b\u0439 \u041e\u0412\u0423-01 \u0421\u043e\u043b\u043d\u0435\u0447\u043d\u044b\u0439 \u0431\u0440\u0438\u0437","quantity":{"value":"1","measure":""},"itemPrice":216000,"itemAmount":216000,"itemCurrency":643,"itemCode":""}]}}
+        )
+
+    [reqparams] => Array
+        (
+            [customerDetails] => Array
+                (
+                    [email] => ignatencko.anuta@yandex.ru
+                    [phone] => 
+                    [contact] => Мурашкина Анна Александровна 
+                    [deliveryInfo] => Array
+                        (
+                            [country] => RU
+                            [city] => Волгоград
+                            [postAddress] => Ул. 35-й Гвардейской, д. 48, кв. 89
+                        )
+
+                )
+
+            [cartItems] => Array
+                (
+                    [items] => Array
+                        (
+                            [0] => Array
+                                (
+                                    [positionId] => 2944655
+                                    [name] => Рециркулятор воздуха ультрафиолетовый ОВУ-01 Солнечный бриз
+                                    [quantity] => Array
+                                        (
+                                            [value] => 1
+                                            [measure] => 
+                                        )
+
+                                    [itemPrice] => 216000
+                                    [itemAmount] => 216000
+                                    [itemCurrency] => 643
+                                    [itemCode] => 
+                                )
+
+                        )
+
+                )
+
+        )
+
+    [result] => Array
+        (
+            [orderId] => fa9e150d-152a-7ea7-8e3c-76ed02afc6da
+            [formUrl] => https://securecardpayment.ru/payment/merchants/sbersafe_sberid/payment_ru.html?mdOrder=fa9e150d-152a-7ea7-8e3c-76ed02afc6da
+        )
+
+)
+Array
+(
+    [req] => Array
+        (
+            [userName] => p165023501268-api
+            [password] => riSlE1d3Ga.n*^Tsqf%K
+            [orderNumber] => 27631
+            [amount] => 165000
+            [returnUrl] => http://voenka116.ru/bc/modules/default/PaymentMethod/sber_redirect.php
+            [jsonParams] => {"customerDetails":{"email":"av107646@gmail.com","phone":null,"contact":"\u0414\u0430\u043d\u0438\u043b\u0430","deliveryInfo":{"country":"RU","city":"\u041d\u0430\u0431\u0435\u0440\u0435\u0436\u043d\u044b\u0435 \u0447\u0435\u043b\u043d\u044b","postAddress":"\u043f\u0440\u043e\u0441\u043f\u0435\u043a\u0442 \u0412\u0430\u0445\u0438\u0442\u043e\u0432\u0430, \u0434\u043e\u043c 22, 396 \u043a\u0432\u0430\u0440\u0442\u0438\u0440\u0430, 9 \u043f\u043e\u0434\u044a\u0435\u0437\u0434"}},"cartItems":{"items":[{"positionId":"2560787","name":"\u0413\u0430\u0437 Black 25 \u043c\u043b Lady","quantity":{"value":"1","measure":""},"itemPrice":75000,"itemAmount":75000,"itemCurrency":643,"itemCode":"90113"},{"positionId":"2560781","name":"\u0413\u0430\u0437\u043e\u0432\u044b\u0439 \u0431\u0430\u043b\u043b\u043e\u043d\u0447\u0438\u043a \u00ab\u0428\u043f\u0430\u0433\u0430\u00bb, 75 \u043c\u043b","quantity":{"value":"1","measure":""},"itemPrice":70000,"itemAmount":70000,"itemCurrency":643,"itemCode":""}]}}
+        )
+
+    [reqparams] => Array
+        (
+            [customerDetails] => Array
+                (
+                    [email] => av107646@gmail.com
+                    [phone] => 
+                    [contact] => Данила
+                    [deliveryInfo] => Array
+                        (
+                            [country] => RU
+                            [city] => Набережные челны
+                            [postAddress] => проспект Вахитова, дом 22, 396 квартира, 9 подъезд
+                        )
+
+                )
+
+            [cartItems] => Array
+                (
+                    [items] => Array
+                        (
+                            [0] => Array
+                                (
+                                    [positionId] => 2560787
+                                    [name] => Газ Black 25 мл Lady
+                                    [quantity] => Array
+                                        (
+                                            [value] => 1
+                                            [measure] => 
+                                        )
+
+                                    [itemPrice] => 75000
+                                    [itemAmount] => 75000
+                                    [itemCurrency] => 643
+                                    [itemCode] => 90113
+                                )
+
+                            [1] => Array
+                                (
+                                    [positionId] => 2560781
+                                    [name] => Газовый баллончик «Шпага», 75 мл
+                                    [quantity] => Array
+                                        (
+                                            [value] => 1
+                                            [measure] => 
+                                        )
+
+                                    [itemPrice] => 70000
+                                    [itemAmount] => 70000
+                                    [itemCurrency] => 643
+                                    [itemCode] => 
+                                )
+
+                        )
+
+                )
+
+        )
+
+    [result] => Array
+        (
+            [orderId] => ad64593f-51f4-70ae-9064-f39d02c5234a
+            [formUrl] => https://securecardpayment.ru/payment/merchants/sbersafe_sberid/payment_ru.html?mdOrder=ad64593f-51f4-70ae-9064-f39d02c5234a
+        )
+
+)
+Array
+(
+    [req] => Array
+        (
+            [userName] => p165023501268-api
+            [password] => riSlE1d3Ga.n*^Tsqf%K
+            [orderNumber] => 27734
+            [amount] => 4200000
+            [returnUrl] => http://voenka116.ru/bc/modules/default/PaymentMethod/sber_redirect.php
+            [jsonParams] => {"customerDetails":{"email":"","phone":null,"contact":"\u0414\u0436\u043e\u043d \u0421\u0438\u043b\u044c\u0432\u0435\u0440","deliveryInfo":{"country":"RU","city":"\u043d\u0435 \u0443\u043a\u0430\u0437\u0430\u043d\u043e","postAddress":"\u043d\u0435 \u0443\u043a\u0430\u0437\u0430\u043d\u043e"}},"cartItems":{"items":[{"positionId":"2572896","name":"\u041f\u0430\u0440\u043a\u0430 \u043c\u0435\u043c\u0431\u0440\u0430\u043d\u0430, \u043c\u043e\u0445","quantity":{"value":"3","measure":""},"itemPrice":1350000,"itemAmount":4050000,"itemCurrency":643,"itemCode":""},{"positionId":"2586201","name":"\u0411\u0430\u043b\u0430\u043a\u043b\u0430\u0432\u0430 \u0444\u043b\u0438\u0441\u043e\u0432\u0430\u044f 1 \u043e\u0442\u0432\u0435\u0440\u0441\u0442\u0438\u0435 (\u0427\u0435\u0440\u043d\u0430\u044f)","quantity":{"value":"3","measure":""},"itemPrice":50000,"itemAmount":150000,"itemCurrency":643,"itemCode":""}]}}
+        )
+
+    [reqparams] => Array
+        (
+            [customerDetails] => Array
+                (
+                    [email] => 
+                    [phone] => 
+                    [contact] => Джон Сильвер
+                    [deliveryInfo] => Array
+                        (
+                            [country] => RU
+                            [city] => не указано
+                            [postAddress] => не указано
+                        )
+
+                )
+
+            [cartItems] => Array
+                (
+                    [items] => Array
+                        (
+                            [0] => Array
+                                (
+                                    [positionId] => 2572896
+                                    [name] => Парка мембрана, мох
+                                    [quantity] => Array
+                                        (
+                                            [value] => 3
+                                            [measure] => 
+                                        )
+
+                                    [itemPrice] => 1350000
+                                    [itemAmount] => 4050000
+                                    [itemCurrency] => 643
+                                    [itemCode] => 
+                                )
+
+                            [1] => Array
+                                (
+                                    [positionId] => 2586201
+                                    [name] => Балаклава флисовая 1 отверстие (Черная)
+                                    [quantity] => Array
+                                        (
+                                            [value] => 3
+                                            [measure] => 
+                                        )
+
+                                    [itemPrice] => 50000
+                                    [itemAmount] => 150000
+                                    [itemCurrency] => 643
+                                    [itemCode] => 
+                                )
+
+                        )
+
+                )
+
+        )
+
+    [result] => Array
+        (
+            [orderId] => 4c0f430e-e33e-74a1-9410-68f602c5234a
+            [formUrl] => https://securecardpayment.ru/payment/merchants/sbersafe_sberid/payment_ru.html?mdOrder=4c0f430e-e33e-74a1-9410-68f602c5234a
+        )
+
+)
+Array
+(
+    [req] => Array
+        (
+            [userName] => p165023501268-api
+            [password] => riSlE1d3Ga.n*^Tsqf%K
+            [orderNumber] => 27974
+            [amount] => 480000
+            [returnUrl] => http://voenka116.ru/bc/modules/default/PaymentMethod/sber_redirect.php
+            [jsonParams] => {"customerDetails":{"email":"kiselevds.84@yandex.ru","phone":null,"contact":"\u041d\u0438\u043a\u0438\u0442\u0438\u043d \u0421\u0435\u0440\u0433\u0435\u0439 \u0410\u043b\u0435\u043a\u0441\u0430\u043d\u0434\u0440\u043e\u0432\u0438\u0447","deliveryInfo":{"country":"RU","city":"\u0428\u0435\u0431\u0435\u043a\u0438\u043d\u043e","postAddress":"309290,\u0411\u0435\u043b\u0433\u043e\u0440\u043e\u0434\u0441\u043a\u0430\u044f \u043e\u0431\u043b. \u0433\u043e\u0440\u043e\u0434 \u0428\u0435\u0431\u0435\u043a\u0438\u043d\u043e, \u0426\u0435\u043d\u0442\u0440\u0430\u043b\u044c\u043d\u0430\u044f \u043f\u043b\u043e\u0449\u0430\u0434\u044c, \u0434\u043e\u043c 5"}},"cartItems":{"items":[{"positionId":"2573292","name":"\u0410\u0440\u043c\u0435\u0439\u0441\u043a\u0438\u0439 \u043d\u0435\u0441\u0435\u0441\u0441\u0435\u0440","quantity":{"value":"1","measure":""},"itemPrice":450000,"itemAmount":450000,"itemCurrency":643,"itemCode":""}]}}
+        )
+
+    [reqparams] => Array
+        (
+            [customerDetails] => Array
+                (
+                    [email] => kiselevds.84@yandex.ru
+                    [phone] => 
+                    [contact] => Никитин Сергей Александрович
+                    [deliveryInfo] => Array
+                        (
+                            [country] => RU
+                            [city] => Шебекино
+                            [postAddress] => 309290,Белгородская обл. город Шебекино, Центральная площадь, дом 5
+                        )
+
+                )
+
+            [cartItems] => Array
+                (
+                    [items] => Array
+                        (
+                            [0] => Array
+                                (
+                                    [positionId] => 2573292
+                                    [name] => Армейский несессер
+                                    [quantity] => Array
+                                        (
+                                            [value] => 1
+                                            [measure] => 
+                                        )
+
+                                    [itemPrice] => 450000
+                                    [itemAmount] => 450000
+                                    [itemCurrency] => 643
+                                    [itemCode] => 
+                                )
+
+                        )
+
+                )
+
+        )
+
+    [result] => Array
+        (
+            [orderId] => 0eee80d1-3a56-7fb3-8a88-81a702c5234a
+            [formUrl] => https://securecardpayment.ru/payment/merchants/sbersafe_sberid/payment_ru.html?mdOrder=0eee80d1-3a56-7fb3-8a88-81a702c5234a
+        )
+
+)
+Array
+(
+    [req] => Array
+        (
+            [userName] => p165912110804-api
+            [password] => vkVdiOVqgY4oxairg1iD
+            [orderNumber] => 28070
+            [amount] => 29000
+            [returnUrl] => http://volgamedteh.ru/bc/modules/default/PaymentMethod/sber_redirect.php
+            [jsonParams] => {"customerDetails":{"email":"shef0901@mail.ru","phone":null,"contact":"\u0428\u0430\u043a\u0438\u0440\u043e\u0432\u0430 \u042d\u043b\u044c\u043c\u0438\u0440\u0430 ","deliveryInfo":{"country":"RU","city":"\u043d\u0435 \u0443\u043a\u0430\u0437\u0430\u043d\u043e","postAddress":"\u043d\u0435 \u0443\u043a\u0430\u0437\u0430\u043d\u043e"}},"cartItems":{"items":[{"positionId":"2507914","name":"\u041f\u0438\u043d\u0446\u0435\u0442 \u0430\u043d\u0430\u0442\u043e\u043c\u0438\u0447\u0435\u0441\u043a\u0438\u0439 200\u043c\u043c (J-16-025)","quantity":{"value":"1","measure":""},"itemPrice":29000,"itemAmount":29000,"itemCurrency":643,"itemCode":""}]}}
+        )
+
+    [reqparams] => Array
+        (
+            [customerDetails] => Array
+                (
+                    [email] => shef0901@mail.ru
+                    [phone] => 
+                    [contact] => Шакирова Эльмира 
+                    [deliveryInfo] => Array
+                        (
+                            [country] => RU
+                            [city] => не указано
+                            [postAddress] => не указано
+                        )
+
+                )
+
+            [cartItems] => Array
+                (
+                    [items] => Array
+                        (
+                            [0] => Array
+                                (
+                                    [positionId] => 2507914
+                                    [name] => Пинцет анатомический 200мм (J-16-025)
+                                    [quantity] => Array
+                                        (
+                                            [value] => 1
+                                            [measure] => 
+                                        )
+
+                                    [itemPrice] => 29000
+                                    [itemAmount] => 29000
+                                    [itemCurrency] => 643
+                                    [itemCode] => 
+                                )
+
+                        )
+
+                )
+
+        )
+
+    [result] => 
+)

@@ -1,0 +1,62 @@
+<?php /* Служебная часть */
+for ($f_RowNum = 0; $f_RowNum < $rowCount; $f_RowNum++) {
+    if($fetch_row[$f_RowNum] instanceof Iterator) {
+        extract($fetch_row[$f_RowNum]->to_array(), EXTR_PREFIX_ALL, "f");
+    } else {
+        extract($fetch_row[$f_RowNum], EXTR_PREFIX_ALL, "f");
+    }
+    foreach($iteration_RecordTemplate[$f_RowNum] as $value) {
+        extract($value);
+    }
+    eval($cc_env["convert2txt"]);
+    ob_start();
+/* Конец служебной части */?>
+
+<?
+  $fields = array(
+    "isTitle" => $isTitle,
+    "block_id" => $block_id,
+    "sub" => $sub,
+    "cc" => $cc,
+    "classID" => $classID,
+    "nc_ctpl" => $nc_ctpl,
+    "fullLink" => $fullLink,
+    "editLink" => $editLink,
+    "AdminButtons" => $f_AdminButtons,
+    "image_default" => $image_default,
+    "fastprew" => $fastprew,
+    "current_sub" => $current_sub,
+    "current_cc" => $current_cc,
+    "current_catalogue" => $current_catalogue,
+    "template" => $template,
+    "RowID" => $f_RowID,
+    "Checked" => $f_Checked,
+    "recNum" => $f_recNum,
+    "name" => $f_name,
+    "adres" => $f_adres,
+    "phones" => $f_phones,
+    "fax" => $f_fax,
+    "time" => $f_time,
+    "email" => $f_email,
+    "site" => $f_site,
+    "skype" => $f_skype,
+    "icq" => $f_icq,
+    "map" => $f_map,
+    "msg" => $msg,
+    "photo" => $f_photo->records,
+    "citytarget" => $f_citytarget,
+    "targetcode" => $f_targetcode,
+    "targetphone" => $f_targetphone,
+    "soc_show" => $f_soc_show,
+    "type" => $template_block
+  );
+
+  $class2012 = new Class2012($fields);
+  echo $class2012->getContact();
+
+?>
+
+<?php /* Служебная часть */
+    echo nc_finishing_RecordTemplate(ob_get_clean(), $inside_admin, $classID, $f_RowID, $parent_message, $cc, $cc_env["Class_Name"], $no_cache_marks);
+}
+/* Конец служебной части */?>

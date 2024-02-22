@@ -1,0 +1,28 @@
+<!-- FormPrefix --><?= $f_AdminCommon; ?><!-- /FormPrefix -->
+
+<!-- RecordTemplate --><div class="contacts-object accent-separator tpl-text-default"><?= $f_AdminButtons; ?>
+    <?php if ($admin_mode || $f_Address): ?>
+        <div class="contacts-object-accent tpl-text-header1">
+            <div class="contacts-item"><?= nc_edit_inline("Address", $f_RowID, $cc_env['Sub_Class_ID']); ?></div>
+        </div>
+    <?php endif; ?>
+    <?php if ($admin_mode || $f_Phone || $f_Email): ?>
+        <div class="contacts-object-items">
+            <div class="contacts-item"><?= nc_edit_inline("Phone", $f_RowID, $cc_env['Sub_Class_ID']); ?></div>
+            <div class="contacts-item"><a href="mailto:<?= $f_Email; ?>"><?= nc_edit_inline("Email", $f_RowID,
+                        $cc_env['Sub_Class_ID']); ?></a></div>
+        </div>
+    <?php endif; ?>
+    <?php if ($admin_mode || $f_Social): ?>
+        <div class="contacts-object-socials">
+            <?php if ($admin_mode): ?> <?= nc_edit_inline('Social', $f_RowID, $cc_env['Sub_Class_ID']); ?>
+            <?php else: ?> <?= nc_social_icons($f_Social,
+                "<a href='%URL' class='contacts-object-socials-social' title='%NAME' target='_blank'>%ICON</a>"); ?>
+            <?php endif; ?>
+        </div>
+    <?php endif; ?>
+</div><!-- /RecordTemplate -->
+
+<!-- FormSuffix --><?php if ($totRows > $recNum): ?>
+  <?= nc_browse_messages($cc_env, 10); ?>
+<?php endif; ?><!-- /FormSuffix -->

@@ -1,0 +1,14 @@
+{
+    "order_statuses": {
+        "name":"",
+        "row": [
+            {
+                "name": "lists_order_status_email_template",
+                "label": "Письма изменения статусов",
+                "type": "multi_line",
+                "type_old": "11",
+                "colline": "height"
+            }
+        ]
+    }
+}

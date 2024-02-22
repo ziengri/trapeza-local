@@ -1,0 +1,70 @@
+<?=($inside_admin ? $f_AdminCommon : (!$is404 ? addObjBut($addLink,$isTitle) : ""))?>
+
+<?=($totRows ? "<div class='text-items txt'>" : NULL)?>
+
+<?php 
+	global $db, $catalogue;
+
+	$query = "SELECT * FROM Message2091 WHERE Catalogue_ID = '{$catalogue}' AND Checked = '1'";
+	$campsArr = $db->get_results($query,ARRAY_A);
+    foreach ($campsArr as $k => $v) {
+        $moArr[$k] = $v['mo'];
+        $shiftArr[$k] = $v['shift'];
+    }
+?>
+<div class="filters filter_buttons">
+    <!--
+    <div class="filter filter_execute">
+        <button>Применить фильтры</button>
+    </div>
+    -->
+    <?php  if ($_GET['mo']!="" || $_GET['name']!="" || $_GET['shift']!="" || $_GET['date']!="") { ?>
+    <div class="filter filter_clear">
+        <button>Очистить фильтры</button>
+    </div>
+	<?php  } ?>
+</div>
+<div class="filters table_filters">
+        <div class="filter filter_mo input-field">
+            <select class="select select_mo">
+                <?php 
+                    $selmo = $_GET['mo'];
+                    $opt = "<option value=''>Выберите округ</option>";
+                    $moArr = array_unique($moArr);
+                    foreach ($moArr as $k => $v) {
+                        $opt .= "<option ".($selmo == $v ? 'selected=\'selected\'':'')." value='{$v}'>{$v}</option>";
+                    }
+                    echo $opt;
+                ?>
+            </select>
+        </div>
+        <div class="filter filter_cname input-field">
+            <input type="text" name="" placeholder="Название" value="<?=$_GET['name'] ? $_GET['name']:'' ?>">
+        </div>
+        <div class="filter filter_shift input-field">
+            <select class="select select_shift">
+                <?php 
+                    $selshift = $_GET['shift'];
+                    $opt = "<option value=''>Выберите смену</option>";
+                    $shiftArr = array_unique($shiftArr);
+                    foreach ($shiftArr as $k => $v) {
+                        $opt .= "<option ".($selshift == $v ? 'selected=\'selected\'':'')." value='{$v}'>{$v}</option>";
+                    }
+                    echo $opt;
+                ?>
+            </select>
+        </div>
+        <div class="filter filter_date input-field">
+            <input id="datepicker" class="date" type="text" name="" placeholder="Начало смены" value="<?=$_GET['date'] ? $_GET['date']:'' ?>">
+        </div>
+</div>
+<table class='table table_campslist'>
+    <thead>
+        <tr>
+            <th class='th th_mo'>Округ</th>
+            <th class='th th_cname'>Название</th>
+            <th class='th th_shift'>Смена</th>
+            <th class='th th_date'>Дата смены</th>
+        </tr>
+    </thead>
+    <tbody>

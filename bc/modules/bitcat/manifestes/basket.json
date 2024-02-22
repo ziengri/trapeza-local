@@ -1,0 +1,30 @@
+{
+    "basket": {
+        "name": "Корзина",
+        "row": [
+            {
+                "name": "cartListType",
+                "label": "Отображение способа Доставки и Оплаты",
+                "type": "select",
+                "colline": 3,
+                "data": {
+                    "cartlistype-1": "Списки",
+                    "cartlistype-2": "Радио-кнопки"
+                }
+            },
+            {
+                "name": "cartusertype",
+                "label": "Тип пользователя<br>(физ. и юр. лицо)",
+                "type": "checkbox",
+                "colline": 3
+            },
+            {
+                "name": "cartForm",
+                "label": "Поля корзины",
+                "type": "textarea",
+                "colline": "height",
+                "type_old": "15"
+            }
+        ]
+    }
+}

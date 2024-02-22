@@ -1,0 +1,50 @@
+<?php 
+$connectTemplate = $DOCUMENT_ROOT.$pathInc2."/template/{$classID}/templateAdd/AddActionTemplate.html";
+if($current_catalogue['customCode'] && file_exists($connectTemplate)){
+  include($connectTemplate);
+}else{
+
+clearCache($classID,$sub);
+
+global $setting, $settingCont, $bitcat;
+if (!$settingCont) $settingCont = $db->get_row("select a.*, a.Message_ID as mesid from Message2024 as a, Subdivision as b where b.Catalogue_ID = '$catalogue' AND a.Subdivision_ID=b.Subdivision_ID order by a.Created limit 0,1", ARRAY_A);
+
+
+if ($admdate[0] && $admdate[1] && $admdate[2] && $current_user['PermissionGroup_ID']==1) {
+    $db->query("update Message{$classID} set Checked = '1', Created = '".$admdate[2]."-".$admdate[1]."-".$admdate[0]." ".$admdate[3].":".$admdate[4].":23' where Message_ID = '{$message}'");
+}
+
+if($inside_admin) {
+    ob_end_clean();
+    header('Location: '.$goBackLink.'&inside_admin=1');
+    exit;
+}
+
+
+$checkedLink = "http://{$_SERVER['HTTP_HOST']}{$current_sub['Hidden_URL']}checked_{$current_cc['EnglishName']}_{$message}.html";
+$editLink = "http://{$_SERVER['HTTP_HOST']}{$current_sub['Hidden_URL']}edit_{$current_cc['EnglishName']}_{$message}.html";
+$deleteLink = "http://{$_SERVER['HTTP_HOST']}{$current_sub['Hidden_URL']}delete_{$current_cc['EnglishName']}_{$message}.html";
+
+$Text = "Имя: $f_name<br>
+Текст отзыва: $f_textt<br><br>
+Включить: <a href='{$checkedLink}'>{$checkedLink}</a><br>
+Ответить на сайте и включить: <a href='{$editLink}'>{$editLink}</a><br> 
+Удалить: <a href='{$deleteLink}'>{$deleteLink}</a>";
+
+if (!$bitcat) {
+  $toemailArr =  explode(",", ($cc_settings['EmailTo'] ? $cc_settings['EmailTo'] : ($setting['email'] ? $setting['email'] : $system_env['SpamFromEmail'])));
+  $toemail = $toemailArr[0];
+  
+  $frommail = ($f_Email ?: getDomenMail());
+  $mailer = new CMIMEMail();
+  $mailer->mailbody(strip_tags($Text),$Text);
+  $mailer->send($toemail, $frommail, $frommail, "Отзыв на сайте {$current_catalogue['Catalogue_Name']}", $current_catalogue['Catalogue_Name']);
+}
+
+$text = $setting_texts['review_result']['checked'] ? $setting_texts['review_result']['name'] : "Отзыв отправлен. Он будет опубликован после проверки администратором.";
+echo json_encode(ARRAY(
+    "title" => getLangWord('title_thank',"Спасибо!"),
+    "succes" => getLangWord('sucForm', $text),
+));
+}
+?>

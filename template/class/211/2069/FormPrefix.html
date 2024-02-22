@@ -1,0 +1,330 @@
+<script src="/b/autoholding/jquery.tablesorter.min.js"></script>
+<?php  if($current_sub['Hidden_URL'] == '/catalog/partcomsys/') :?>
+<div id="pc_form">
+	<input id="pc_value" placeholder="Введите артикул" />
+	<button id="pc_search">Поиск</button>
+</div>
+<?php endif;?>
+<div id="pc_result"></div>
+
+<script>
+$(document).ready(function(){
+	if (location.search.indexOf('find') != -1) {
+		var find = window.location.search.match(/find=+[^&]+/), pc_value = (find ? find[0].replace('find=','') : '');
+		if (pc_value) getCatalogs(pc_value);
+	}
+	$('#pc_search').on('click', function(){
+		pc_value = $('#pc_value').val();
+		window.location.search = 'find='+pc_value;
+		if (pc_value) getCatalogs(pc_value);
+
+	});
+	$(window).resize(function(){
+		heightMainTable();
+	});
+});
+
+function getCatalogs(pc_value)//получение каталогов товаров
+{
+	load.itemLoad($('#pc_result'),"start");
+	$.ajax({
+		url:'/catalog/partcomsys?isNaked=1&pc_value='+pc_value,
+		success:function(data) {
+			if (data.indexOf('Не найдено') == (-1) || $('.no-obj').length > 0) {
+				$('#pc_result').html(data);
+			}
+			load.itemLoad($('#pc_result'),"end");
+		}
+	});
+}
+function pc_get_vendors(arg)//получение списка товаров
+{
+	load.itemLoad($('#pc_result'),"start");
+	pc_value = window.location.search.match(/find=+[^&]+/)[0].replace('find=','');
+	$.ajax({
+		url:'/catalog/partcomsys?isNaked=1&pc_value='+pc_value+'&pc_vendor='+arg,
+		success:function(data){
+			$('#pc_result').html(data);
+			load.itemLoad($('#pc_result'),"end");
+			heightMainTable();
+		}
+	});
+}
+function pc_add_to_cart(pc_value, pc_vendor, pc_sklad, name, item)//добавление в корзину
+{
+	load.itemLoad($('#pc_result'),"start");
+	$.ajax({
+		url:'/catalog/partcomsys?isNaked=1&pc_value='+pc_value+'&pc_vendor='+pc_vendor+'&pc_sklad='+pc_sklad,
+		success:function(data){
+			if (data.indexOf('добавлен')!=-1) {
+				$('#baton_'+pc_value+'_'+pc_sklad).html('В корзине');
+				$.ajax({
+					url:'/cart/?nc_ctpl=2006&isNaked=1',
+					success:function(data){
+						$('.smallcart>article>div').html(data);
+					}
+				});
+				$('#notification .alert > div').html('Товар '+name+' добавлен в корзину!');
+				$('#notification .alert').fadeIn(700,function(){closealert();});
+				load.itemLoad($('#pc_result'),"end");
+				$(item).parent().html("<span class='incard'><a href='/cart/'>В корзине</a><span>");
+			} else {
+				alert(data);
+				load.itemLoad($('#pc_result'),"end");
+			}
+		}
+	});
+}
+$('body').on('click','.part-incart',function(){
+	var params = JSON.parse($(this).attr('data-params'));
+	pc_add_to_cart(params.art,params.venodr,params.sklad,params.name,this);
+});
+
+$('body').on('click','.other-items .pc_show',function(){ /*гармошка*/
+	var item = $(this).next().find('.hide-table');
+	if (!item.hasClass('active')) {
+		item.animate({height:item.find('table').height()},300);
+        item.addClass('active');
+	} else {
+        item.animate({height:0},300);
+        item.removeClass('active');
+    }
+});
+$('body').on('click','.main-hider',function(){
+	var btn = $(this), status = (btn.hasClass('opener') ? 'closer' : 'opener');
+
+	wraper.animate({
+		height:(status == 'opener' ? wraper.attr('data-height') : wraper.find('table').height())
+	},300);	
+	btn.removeClass('closer opener');
+	btn.addClass(status);
+	btn.text((status == 'opener' ? 'Показать все' : 'Скрыть'));
+});
+//сортировка таблиц
+$('body').on('click','th .sort',function(){ 
+	var btn = $(this),
+		all_btn = btn.parents('tr').find('i'),
+		sortBy = btn.hasClass('upper') ? 'lower' : 'upper',
+		num = btn.parents('tr').find('th').index(btn.parent()),
+		tr = btn.parents('table').find('tbody tr'),
+		tbody = '';
+
+	all_btn.removeClass('upper lower');
+	btn.addClass(sortBy);
+
+	tr.sort(function(a,b){
+		var fr = $(a).find('td:eq('+num+')').text(), fr = (fr ? +fr.replace(/[^\d]+/,'') : 0),
+			sc = $(b).find('td:eq('+num+')').text(), sc = (sc ? +sc.replace(/[^\d]+/,'') : 0);
+		if (fr > sc) return (sortBy == 'upper' ? 1 : -1);
+		if (fr < sc) return (sortBy == 'upper' ? -1 : 1);
+		return 0;
+	});
+	tr.each(function(){
+		tbody += '<tr>'+$(this).html()+'</tr>';
+	});
+	btn.parents('table').find('tbody').html(tbody);
+});
+
+function heightMainTable(){
+	wraper = $('#pc_result .Originals .table-wraper');
+	var h = 0,	
+		table = wraper.find('table');
+	if (table.find('tr').length > 7) {
+		for (i = 0; i<7; i++){
+			h += table.find('tbody tr').eq(i).height();
+		}
+		h += table.find('thead').height();
+		if (!wraper.next().hasClass('main-hider')) wraper.after('<span class="main-hider opener">Показать все</span>');	
+		wraper.attr('data-height',h);
+		wraper.height(h);
+	}
+}
+
+</script>
+<style>
+.hide-table{
+	height: 0;
+	overflow-y: hidden;
+}
+.other-items .pc_show{
+	cursor: pointer;
+}
+.no-obj{
+	display: none;
+}
+.pc_span {
+	text-decoration:underline;
+	cursor:pointer;
+	color:#323232;
+}
+#center .container_12 .grid_9{
+    width: 100%;
+}
+#pc_result th,#pc_result td, #pc_result td *{
+	white-space: nowrap;
+	text-align: center;
+}
+#pc_result th{
+	width: 33%;
+}
+#pc_result th:first-child, #pc_result td:first-child{
+	width:60%;
+	text-align: left;
+	white-space: normal;
+}
+#pc_result #_pc_table th,#pc_result #_pc_table td{
+	width: unset;
+}
+.pc_show {
+   color: #f1f1f1;
+    background: #3e3e3e;
+    padding: 10px 15px;
+    margin: 5px auto;
+}
+.pc_tabler button {
+    width: 100%;
+    border: 0;
+    color: #fff;
+    background: #d5031e;
+    white-space: nowrap;
+    padding: 8px 10px;
+}
+#pc_form {
+	width: 100%;
+    font-size: 0;
+    margin-top:10px;
+}
+#pc_value {
+	width: 75%;
+    height: 40px;
+    padding: 5px 10px;
+    margin: 0;
+    border: 1px solid #263a62;
+}
+#pc_search {
+	width: 25%;
+    height: 40px;
+    margin: 0;
+    border: 0;
+    color: #fff;
+    background: #d82130;
+}
+#pc_result {
+	margin-top:10px;
+	overflow: hidden;
+	position: relative;
+	min-height: 40px;
+}
+#pc_result .table_item{
+	cursor: pointer;
+}
+#pc_result>table {
+	background: #fff;
+	border-collapse: collapse;
+	text-align: left;
+	width:100%;
+}
+#pc_result>table thead tr {
+	background-color: rgba(130,134,142,.2);
+	color: #27232a;
+}
+
+#pc_result th>.sort{
+	position:relative;
+	cursor: pointer;
+}
+#pc_result th>.sort::before,#pc_result th>.sort::after{
+	font-style: normal;
+    display: block;
+    color: #000;
+    position: absolute;
+    left: -11px;
+    font-size: 7px;
+    font-family: 'krz-font';
+}
+#pc_result th>.sort::before{
+	content: "\e943";
+	top:0px;
+}
+#pc_result th>.sort::after{
+	content: "\e941";
+	bottom:0px;
+}
+#pc_result th>.sort.upper::before{
+	opacity: 0;
+}
+#pc_result th>.sort.lower::after{
+	opacity: 0;
+}
+#pc_result .pc_tabler td{
+	width: 100%;
+}
+#pc_result table .td_name{
+	text-align: left;
+	white-space: normal;
+}
+#pc_result .table-wraper{
+	overflow-x: auto;
+	overflow-y: hidden;
+	display: inline-block;
+	width: 100%;
+}
+.pc_all {
+    background: #263a62;;
+    width: 200px;
+    position: relative;
+    left: calc(100% - 200px);
+    color: #fff;
+    text-align: center;
+    padding: 5px;
+    border-radius: 0px 0px 5px 5px;
+    cursor:pointer;
+}
+#_pc_table .td_name{
+	text-align: left;
+}
+.pc_span_sklad {
+    background: #72ae4c;
+    color: #fff;
+    border-radius: 10px;
+    padding: 0 5px;
+}
+.main-hider{
+	margin:5px 0 10px;
+	padding-left: 5px;
+	display: inline-block;
+	cursor: pointer;
+}
+.main-hider.opener::before, .main-hider.closer::before{
+    border: 1px solid #000;
+    border-radius: 10px;
+    display: inline-block;
+    text-align: center;
+    width: 18px;
+    height: 18px;
+    position: relative;
+    left: -2px;
+    top: -2px;
+}
+.main-hider.closer::before{
+	content: '-';
+}
+.main-hider.opener::before{
+	content: '+';
+}
+.pc_show .vendor{
+	width: 60%;
+	display: inline-block;
+	text-align: left;
+}
+.pc_show .art, .pc_show .price,.pc_show .nal{
+	width: 12%;
+	display: inline-block;
+	text-align: left;
+} 
+.pc_show .nal>span{
+	padding: 3px 10px;
+    background-color: green;
+    border-radius: 15px;
+}
+</style>

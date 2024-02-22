@@ -1,0 +1,22 @@
+<?php 
+global $setting;
+if (!$inside_admin) actionObject($classID, $message, $f_Checked, $Checked);
+
+$bitcat = new bc();
+$bitcat->init_bc('savecss');
+
+
+if($inside_admin) {
+    ob_end_clean();
+    header('Location: '.$goBackLink.'&inside_admin=1');
+    exit;
+} else { 
+    echo json_encode(ARRAY(
+        "title" => "ОК",
+        "succes" => "Зона $message изменена",
+        "reloadtab" => 1,
+        "modal" => "close",
+        "reload" => $settblk ? 1 : 0  
+    ));
+}
+?>

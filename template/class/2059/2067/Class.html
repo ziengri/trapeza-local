@@ -1,0 +1,23 @@
+<!-- FormPrefix --><div class="v-title">
+	<div class="form-add">
+		<a href="<?=$addLink?>?isNaked=1" class="add-btn" title="Добавление формы" data-rel="lightcase" data-lc-options='{"maxWidth":850,"groupClass":"modal-nopaddding modal-edit-filter"}'>Добавить форму</a>
+	</div>
+</div>
+	<div class="v-body v-body-form">
+		<?php  if (!$totRows) { ?> <div class='v-line center nobefore'><div class='v-inline'>Нет ни одной формы</div></div> <?php  } ?><!-- /FormPrefix -->
+
+<!-- RecordTemplate --><div class="v-line">
+    <div class="v-inline v-line-name">
+        <span><?=$f_RowID.'.'?></span> <?=$f_name?> <span></span>
+    </div>
+    <div class="v-line-param">
+        <div class="v-first"></div>
+        <div class="v-second">
+            <a href="<?=$current_sub[Hidden_URL].'?isNaked=1&dev=1&msg='.$f_RowID?>" class="v-demo" title="Форма #<?=$f_RowID?> <?=$f_name?>" data-rel="lightcase" data-lc-options='{"maxWidth":650,"groupClass":"modal-nopadding modal-demoform"}'>Просмотр</a>
+            <a href="<?=$editLink?>?isNaked=1&panel=1" class="v-setting" title="Изменение формы" data-rel="lightcase" data-lc-options='{"maxWidth":850,"groupClass":"modal-nopaddding modal-edit modal-edit-filter"}'></a>
+            <a title='Удалить форму?<?=($f_name ? "<br>\"$f_name\"" : "")?>' data-rel='lightcase' data-lc-options='{"maxWidth":500,"showTitle":false}' data-confirm-success='{"succes": 1,"modal":"close","reloadtab":1}' data-confirm-href='<?=$dropLink?>' href='#сonfirm-actions' class='v-remove'></a>
+        </div>
+    </div>
+</div><!-- /RecordTemplate -->
+
+<!-- FormSuffix --></div><!-- /FormSuffix -->

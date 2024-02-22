@@ -1,0 +1,26 @@
+
+
+Неудалось получить id бота.
+id: 1
+Сообщение от базы данных: 0.
+SQL-запрос: SELECT `Message_ID` FROM Message2246 WHERE `user_name` = 'order_info_provider_bot'
+
+Неудалось получить id бота.
+id: 1
+Сообщение от базы данных: 0.
+SQL-запрос: SELECT `Message_ID` FROM Message2246 WHERE `user_name` = 'order_info_provider_bot'
+
+Неудалось получить id бота.
+id: 1
+Сообщение от базы данных: 0.
+SQL-запрос: SELECT `Message_ID` FROM Message2246 WHERE `user_name` = 'order_info_provider_bot'
+
+Неудалось получить id бота.
+id: 1
+Сообщение от базы данных: 0.
+SQL-запрос: SELECT `Message_ID` FROM Message2246 WHERE `user_name` = 'order_info_provider_bot'
+
+Неудалось получить id бота.
+id: 1
+Сообщение от базы данных: 0.
+SQL-запрос: SELECT `Message_ID` FROM Message2246 WHERE `user_name` = 'order_info_provider_bot'

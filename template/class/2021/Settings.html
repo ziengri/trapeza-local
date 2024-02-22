@@ -1,0 +1,104 @@
+<?php
+
+global $bitcat, $mainpage, $pathDom, $setting, $AUTH_USER_ID, $current_sub, $db, $catalogue;
+
+if ($current_catalogue['customCode']) {
+    global $pathInc2;
+    $includeClass = null;
+    $thisFile = $DOCUMENT_ROOT . $pathInc2 . "/template/class/{$classID}/Settings.html";
+    $thisFile2 = $DOCUMENT_ROOT . $pathInc2 . "/template/{$classID}/template/Settings.html";
+    if (file_exists($thisFile)) {
+        $includeClass = 1;
+    } elseif (file_exists($thisFile2)) {
+        $includeClass = 2;
+    }
+}
+
+if ($includeClass == 1) {
+    include($thisFile);
+} elseif ($includeClass == 2) {
+    include($thisFile2);
+} else { # ############ START ##########
+    # видимость скрытых для админа
+    if (!$isTitle && ($bitcat || $bitLoadMore)) {
+        $ignore_check = 1;
+    }
+
+    # все на главной странице каталога
+    if ($allItem) {
+        $ignore_sub = 1;
+        $ignore_cc = 1;
+    }
+
+    if ($rand) {
+        $query_order = "RAND()";
+    }
+
+
+    $f_photo_tpl = array(
+        'record' => "%Preview%"
+    );
+    
+    # поиск по тэгу
+    if (!empty($tag)) {
+        if (!$idList = getObjectIdsHasTag($classID, $tag)) {
+            header("HTTP/1.0 404 Not Found");
+            $idList = [0];
+        }
+        $query_where .= $query_where ? ' AND ' : '';
+        $query_where .= sprintf("a.`Message_ID` IN (%s)", implode(',', $idList));
+    }
+
+    # аналогичные товары
+    if ($getportfolio) {
+        $ignore_sub = $ignore_cc = 1;
+        $portfolioArr = explode(",", $getportfolio);
+        if ($portfolioArr) {
+            foreach ($portfolioArr as $pr) {
+                $prtfoliosql .= ($prtfoliosql ? " OR " : null) . "a.Message_ID = '" . trim($pr) . "'";
+            }
+            if ($prtfoliosql) {
+                $ignore_sub = $ignore_cc = $ignore_calc = 1;
+                $query_where .= ($query_where ? " AND " : null) . "($prtfoliosql)";
+            }
+        }
+    }
+    # подразделы как фильтр
+    if ($current_sub['filtermenu']) {
+        $filtermenu = $db->get_var("SELECT filtermenu FROM Subdivision WHERE Subdivision_ID = {$current_sub['Subdivision_ID']}");
+        if ($filtermenu) {
+            $childs = $db->get_col("SELECT Subdivision_ID FROM Subdivision WHERE Parent_Sub_ID = {$current_sub['Subdivision_ID']}");
+            $childs[] = $current_sub['Subdivision_ID'];
+            if ($childs) {
+                $ignore_sub = $ignore_cc = 1;
+                $query_where .= ($query_where ? " AND " : null) . "a.Subdivision_ID IN (" . implode(", ", $childs) . ")";
+            }
+        }
+    }
+
+    if (!empty($msg)) {
+        $query_where .= $query_where ? ' AND ' : '';
+        $query_where .= "a.`Message_ID` IN ({$msg})";
+    }
+
+    # size items in sub
+    if (isJson($current_sub['settingsSub'])) {
+        $settingsSub = orderArray($current_sub['settingsSub']);
+    }
+    # object fit
+    if ($sizehave && $sizeitem_fit) {
+        $imagefit = $sizeitem_fit;
+    } elseif ($settingsSub["sizehave"] && $settingsSub["sizeitem_fit"]) {
+        $imagefit = $settingsSub["sizeitem_fit"];
+    } else {
+        $imagefit = $setting["size" . $classID . "_fit"];
+    }
+    $image_default = image_fit($imagefit);
+
+    # принять значение и ывдать выборку тут, вывод в конкретном объекте
+
+    # targeting content
+    $query_where .= targeting($query_where);
+    #language
+    $query_where = getLangQuery($query_where);
+} # ############ END ##########

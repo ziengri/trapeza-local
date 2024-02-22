@@ -1,0 +1,31 @@
+<?php 
+global $setting;
+actionObject($classID, $message, $f_Checked, $Checked);
+
+if (!$inside_admin) objsys($bc_objsys,$classID,$message);
+clearCache($classID,$sub);
+
+@require_once($INCLUDE_FOLDER."classes/nc_imagetransform.class.php");
+
+if ($_FILES['f_banner'][size] != 0 ) {
+  $photo_path = $DOCUMENT_ROOT.nc_file_path($classID, $message,'banner', "");
+  $imsize = getimagesize($photo_path);
+  $ww = 600;  $hh = 600;
+  if ($photo_path) {
+    if ($ww<$imsize[0] || $hh<$imsize[1]) nc_ImageTransform::imgResize($photo_path,$photo_path,$ww,$hh, 0, 'jpg', 95, $message, 'banner');
+  }
+}
+
+if($inside_admin) {
+    ob_end_clean();
+    header('Location: '.$goBackLink.'&inside_admin=1');
+    exit;
+} else { 
+    echo json_encode(ARRAY(
+        "title" => "ОК",
+        "modal" => "close",
+        "reload" => "1",
+        "succes" =>  NETCAT_MODERATION_MSG_OBJCHANGED
+    ));
+}
+?>

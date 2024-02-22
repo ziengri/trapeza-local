@@ -1,0 +1,16 @@
+<?php  if (!$isTitle && $bitcat) {?>
+  <table class='table-order'>
+      <thead>
+          <tr>
+              <th class="t-num">№</th>
+              <th class="t-date">Дата</th>
+              <th class="t-client">ФИО</th>
+              <th class="t-phone">Телефон</th>
+              <?=(!$zayav ? "<th class='t-email'>Время</th>" : NULL)?>
+              <th class="t-city">Город</th>
+          </tr>
+      </thead>
+      <tbody>
+<?php  }else{
+  echo $addForm;
+} ?>

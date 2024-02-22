@@ -1,0 +1,139 @@
+{
+    "superadmin_setting": {
+        "name": "РАСШИРЕННЫЕ НАСТРОЙКИ",
+        "row": [
+            {
+                "name": "sitewidth",
+                "label": "Ширина сайта 1200px",
+                "type": "checkbox",
+                "colline": 2
+            },
+            {
+                "name": "notmobile",
+                "label": "Отключить мобильную версию",
+                "type": "checkbox",
+                "colline": 2
+            },
+            {
+                "name": "nophoto",
+                "label": "Картинка заглушка",
+                "type": "file",
+                "colline": 2
+            },
+            {
+                "name": "waterPosition",
+                "label": "Расположение водяного знака",
+                "type": "select",
+                "colline": 2,
+                "data": {
+                    "5": "по центру",
+                    "1": "левый верхний угол",
+                    "2": "правый верхний угол",
+                    "3": "левый нижний угол",
+                    "4": "правый нижний угол"
+                }
+            },
+            {
+                "name": "сolorscheme",
+                "label": "Цветовые схемы",
+                "type": "checkbox",
+                "colline": 4
+            },
+            {
+                "name": "powerdesign",
+                "label": "Дизайн",
+                "type": "checkbox",
+                "colline": 4
+            },
+            {
+                "name": "powerseo",
+                "label": "SEO",
+                "type": "checkbox",
+                "colline": 4
+            },
+            {
+                "name": "powerseo_super",
+                "label": "SEO расширенный <br> (Только для клиентов с активным договором на продвижении!)",
+                "type": "checkbox",
+                "colline": 4
+            },
+            {
+                "name": "seo_unique_item_list",
+                "label": "Уникальные товаров во внутряке карточки (для сео)",
+                "type": "checkbox",
+                "colline": 4
+            },
+            {
+                "name": "payWithConfirm",
+                "label": "Онлайн оплаты с подтверждением",
+                "type": "checkbox",
+                "colline": 4
+            },
+            {
+                "name": "priorityInOtherSub",
+                "label": "Приоритет товаров в нескольких разделах",
+                "type": "checkbox",
+                "colline": 4
+            }
+            ,
+            {
+                "name": "popup_window",
+                "label": "Всплывающие окна",
+                "type": "checkbox",
+                "colline": 4
+            },
+            {
+                "name": "dolyami_service",
+                "label": "Включение сервиса оплаты ДОЛЯМИ",
+                "type": "checkbox",
+                "colline": 2
+            }
+            
+        ]
+    },
+    "devlintarget": {
+        "name": "ДЕЛОВЫЕ ЛИНИИ",
+        "row": [
+            {
+                "name": "devlintarget",
+                "label": "Деловые линии",
+                "type": "checkbox",
+                "colline": 2
+            },
+            {
+                "name": "devlinday",
+                "label": "Деловые линии (кол-во дней - доставка)",
+                "type": "checkbox",
+                "colline": 2
+            },
+            {
+                "name": "devlinkKey",
+                "label": "Деловые линии (ключ API)",
+                "type": "text",
+                "colline": 2
+            }
+        ]
+    },
+    "price_and_discount": {
+        "name": "ЦЕНЫ / СКИДКИ",
+        "row": [
+            {
+                "name": "registrationSale",
+                "label": "Персональная скидка после рег-ции",
+                "type": "select",
+                "colline": 2,
+                "data": {
+                    "": "Выключено",
+                    "1": "Вывести доступную цену",
+                    "2": "У этого товара есть оптовая цена (для всех товаров)"
+                }
+            },
+            {
+                "name": "freedelivery",
+                "label": "Бесплатная доставка при наборе суммы",
+                "type": "checkbox",
+                "colline": 2
+            }
+        ]
+    }
+}

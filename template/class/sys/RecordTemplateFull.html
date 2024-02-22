@@ -1,0 +1,153 @@
+<?php
+
+if ($current_catalogue['customCode']) {
+  GLOBAL $pathInc2;
+    $includeClass = NULL;
+  $thisFile = $DOCUMENT_ROOT.$pathInc2."/template/class/sys/RecordTemplateFull.html";
+  if (file_exists($thisFile)) $includeClass = 1;
+}
+
+if ($includeClass==1) { include($thisFile); } else {
+
+//if ($message!=$AUTH_USER_ID && $AUTH_USER_ID>2) header("Location: {$current_sub[Hidden_URL]}{$current_cc[EnglishName]}_{$AUTH_USER_ID}.html");
+//$refdiscont = $db->get_var("select count(User_ID) as cnt from User where refdiscont LIKE '$f_refcode'");
+
+
+$cart = $db->get_row("select Subdivision_ID as sub, Sub_Class_ID as cc from Sub_Class where EnglishName = 'cart' AND Class_ID = '2005' AND Catalogue_ID = '$catalogue'",ARRAY_A);
+$newsPartner = isSub('/profile/news/');
+$blockId = $db->get_var("select Message_ID from Message2016 where sub = '{$newsPartner[sub]}'");
+if ($blockId) $partnerNewsHtml = s_list_class(27,28,"&blockId={$blockId}");
+?>
+
+<div id="profile-page">
+	<ul class="tabs tabs-hash">
+		<li class="tab"><a href="#user1" <?=($curPos ? "" : "class='active'")?>><?=getLangWord('profile_page_profile','Профиль')?></a></li>
+		<li class="tab"><a href="#user2" <?=($curPos ? "class='active'" : "")?>><?=getLangWord('profile_page_orders','Мои заказы')?></a></li>
+		<li class="tab"><a href="#user3"><?=getLangWord('profile_page_password','Пароль')?></a></li>
+		<a href='/bc/modules/auth/?logoff=1&REQUESTED_FROM=/&REQUESTED_BY=<?=$REQUEST_METHOD?>' class="logoutvk"><?=getLangWord('profile_page_logout','Выйти')?></a>
+	</ul>
+
+	<div class='tabs-body'>
+		<div id="user1" <?=($curPos ? "class='none'" : "")?>>
+			<img src='<?=(file_exists($DOCUMENT_ROOT.$f_ForumAvatar_url) ? $f_ForumAvatar : $nc_core->SUB_FOLDER.$cc_settings['NoAvatarImg']) ?>' style='margin-bottom: 13px;'>
+			<div class='userModifyLink'>
+				<?php  if ($noIam) {
+						if ($pm_allow11) { ?>
+							<a href='<?= nc_auth_messages_url($f_RowID) ?>'>Личное сообщение</a>
+						<?php  }
+						if ($friend_allow) {
+							if (nc_auth_is_friend($f_RowID)) { ?>
+										<a href='<?= nc_auth_drop_rel_url($f_RowID) ?>'>Убрать из друзей</a><?php  } else { ?>
+										<a href='<?= nc_auth_add_to_friend_url($f_RowID) ?>'>Добавить в друзья</a> <?php
+						}
+						if ($banned_allow) {
+							if (nc_auth_is_banned($f_RowID)) { ?>
+								<a href='<?= nc_auth_drop_rel_url($f_RowID) ?>'>Убрать из врагов</a><?php  } else { ?>
+								<a href='<?= nc_auth_add_to_banned_url($f_RowID) ?>'>Добавить во враги</a><?php
+							}
+						}
+					}
+				} ?>
+				<a href='/profile/modify/edit_modify_<?=$AUTH_USER_ID?>.html?isNaked=1' title='<?=getLangWord('profile_page_edit','Изменение анкеты')?>' class='btn-strt-a' data-rel="lightcase" data-lc-options='{"groupClass":"modal-edit modal-edit-profile"}'><span><?=getLangWord('profile_page_edit','Изменение анкеты')?></span></a>
+			</div>
+
+			<table class="pr_table">
+
+
+                 <tr>
+                    <td><?=getLangWord('profile_page_status','Статус')?>:</td>
+                    <td><?php  if (nc_auth_is_online($f_RowID)) { ?><span style='color:#090'><?=getLangWord('profile_page_online','онлайн')?></span><?php  } else { ?><span style='color:#900'><?=getLangWord('profile_page_offline','не в сети')?></span><?php  } ?></td>
+                </tr>
+                <tr class='grey'>
+                    <td><?=getLangWord('profile_page_regdate','Дата регистрации')?>:</td>
+                    <td><?= $f_Created_day.".".$f_Created_month.".".$f_Created_year." - ".$f_Created_hours.":".$f_Created_minutes ?></td>
+                </tr>
+
+                <? if ($f_refdiscont>0) { ?>
+                <tr class=''>
+                    <td>Размер скидки:</td>
+                    <td><b><?=$f_refdiscont?></b></td>
+                </tr>
+                <? } ?>
+ 
+                <tr class=''>
+                    <td>E-mail:</td>
+                    <td><b><?=($AUTH_USER_ID<=2 ? $f_Email : getLangWord('profile_page_email_hidden','скрыт'))?></b></td>
+                </tr>
+                <tr class='grey'>
+                    <td><?=getLangWord('profile_page_phone','Телефон')?>:</td>
+                    <td><b><?=$f_phone?></b></td>
+                </tr>
+                <tr class=''>
+                    <td><?=getLangWord('profile_page_city','Город')?>:</td>
+                    <td><b><?=$f_city?></b></td>
+                </tr>
+                <tr class='grey'>
+                    <td><?=getLangWord('profile_page_adress','Адрес')?>:</td>
+                    <td><b><?=$f_adres?></b></td>
+                </tr>
+                <?=($f_inn ? "<tr class=''>
+                    <td>".getLangWord('profile_page_ITN','ИНН')."</td>
+                    <td><b>$f_inn</b></td>
+                </tr>" : NULL)?>
+                <?=($f_kpp ? "<tr class=''>
+                    <td>".getLangWord('profile_page_TRRC','КПП')."</td>
+                    <td><b>$f_kpp</b></td>
+                </tr>" : NULL)?>
+                <?=($f_company ? "<tr class=''>
+                    <td>".getLangWord('profile_page_organization','Организация')."</td>
+                    <td><b>$f_org $f_company</b></td>
+                </tr>" : NULL)?>
+
+
+
+                <tr>
+                    <td><?=getLangWord('profile_page_docs','Документы')?>:</td>
+                    <td>
+                    <?=(file_exists($DOCUMENT_ROOT.$f_karta_url) ? "<div><a href='$f_karta_url'>$f_karta_name</a></div>" : NULL)?>
+                    <?=(file_exists($DOCUMENT_ROOT.$f_file_url) ? "<div><a href='$f_file_url'>$f_file_name</a></div>" : NULL)?>
+					<?=(!file_exists($DOCUMENT_ROOT.$f_karta_url) && !file_exists($DOCUMENT_ROOT.$f_file_url) ? "<div>".getLangWord('profile_page_no_dosc','нет загруженных документов')."</div>" : NULL)?>
+                    </td>
+                </tr>
+
+			</table>
+		</div>
+
+		<div id="user2" <?=($curPos ? "" : "class='none'")?>>
+			<h2><?=getLangWord('profile_page_orders_history','История заказов')?></h2>
+			<div class="text-min"><?=($setting_texts['history_text']['name'] ? $setting_texts['history_text']['name'] : getLangWord('profile_page_orders_history_undertext','Здесь вы можете найти все заказы, которые вы когда-либо осуществляли в нашем магазине'))?>.</div>
+            <?=nc_objects_list($cart[sub],$cart[cc],"user=$message&nc_ctpl=2028&recNum=20&curPos=$curPos")?>
+		</div>
+
+		<div id="user3" class='none'>
+            <?=$nc_auth->change_password_form()?>
+		</div>
+		<?php  if (trim($partnerNewsHtml)) { ?> <div id="user4" class='none'><?=$partnerNewsHtml?></div> <?php  } ?>
+
+	</div>
+	
+	<? if ($AUTH_USER_ID && $deviceID) { ?>
+	<div class='deleteProfile'>
+		<a 
+			title="Удалить личный кабинет и ваши персональные данные" 
+			onclick="deleteCurrentUser(); return false;" href='#'
+			class='btn-strt-a'
+		>
+			<span>Удалить личный кабинет<br>и персональные данные</span>
+		</a>
+	</div>
+	<? } ?>
+	
+</div>
+
+<div class=clear></div>
+
+
+
+<?php  if ($setting[partnerCode] && $f_refcode) {
+    echo "".nc_objects_list($cart[sub],$cart[cc],"user=$message&nc_ctpl=2028&refcode=$f_refcode&recNum=100");
+}
+
+} ##### END ####
+
+

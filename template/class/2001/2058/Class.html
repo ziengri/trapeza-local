@@ -1,0 +1,43 @@
+<!-- FormPrefix --><?php 
+	if ($_COOKIE['myviews']) {
+		foreach(array_reverse(explode("-",$_COOKIE[myviews])) as $item) {
+			$ii++;
+	        if($ii>16 || !is_numeric($item)) continue;
+
+			# объект товара
+			if ($item) $itemObject = Class2001::getItemById($item);
+			if(!$itemObject) continue;
+
+
+			$tovView[] = "<div class='u_wached_item'>
+						        <div class='u_wached_item_sec'>
+						            <div class='u_wached_img'>{$itemObject->photoMain}</div>
+						            <div class='u_wached_data'>
+							            <div class='u_wached_title'>{$itemObject->link}</div>
+								        <div class='u_wached_price'>{$itemObject->pricePrefix} {$itemObject->priceHtml}</div>
+						            </div>
+						        </div>
+							</div>";
+		}
+	}
+	$rnum = $recNum ? $recNum : 4;
+?>
+
+<?php  if ($tovView) { ?>
+	<div class="u_wached block_slide u_wached_type2 <?=(count($tovView)<=$rnum ? "mincount": "")?> <?=($ii>4 ? "block_slide_scroll": "")?>" data-recnum="<?=$rnum?>" >
+		<div class="u_wached_items">
+			<?=implode("",$tovView)?>
+		</div>
+	</div>
+	<?php  if(count($tovView) >= $rnum && false) { ?>
+		<div class="u_wached_btns">
+			<a href="" class="i_down block_slide_next"></a>
+			<a href="" class="i_up block_slide_prev"></a>
+		</div>
+	<?php  } ?>
+<?php  } ?>
+<!-- /FormPrefix -->
+
+<!-- RecordTemplate --><!-- /RecordTemplate -->
+
+<!-- FormSuffix --><!-- /FormSuffix -->

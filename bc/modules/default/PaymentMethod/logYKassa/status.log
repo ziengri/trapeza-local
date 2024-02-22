@@ -1,0 +1,997 @@
+Array
+(
+    [time] => 20220202 13:49:10
+    [result] => Array
+        (
+            [id] => 298c74a0-000f-5000-a000-18684c104ff4
+            [status] => succeeded
+            [amount] => Array
+                (
+                    [value] => 1.00
+                    [currency] => RUB
+                )
+
+            [income_amount] => Array
+                (
+                    [value] => 0.96
+                    [currency] => RUB
+                )
+
+            [description] => Заказ №2416 в магазине Секс-шоп Y not в Москве
+            [recipient] => Array
+                (
+                    [account_id] => 845180
+                    [gateway_id] => 1900098
+                )
+
+            [payment_method] => Array
+                (
+                    [type] => bank_card
+                    [id] => 298c74a0-000f-5000-a000-18684c104ff4
+                    [saved] => 
+                    [title] => Bank card *3931
+                    [card] => Array
+                        (
+                            [first6] => 427662
+                            [last4] => 3931
+                            [expiry_year] => 2023
+                            [expiry_month] => 06
+                            [card_type] => Visa
+                            [issuer_country] => RU
+                            [issuer_name] => Sberbank Of Russia
+                        )
+
+                )
+
+            [captured_at] => 2022-02-02T10:48:50.021Z
+            [created_at] => 2022-02-02T10:45:52.800Z
+            [test] => 
+            [refunded_amount] => Array
+                (
+                    [value] => 0.00
+                    [currency] => RUB
+                )
+
+            [paid] => 1
+            [refundable] => 1
+            [receipt_registration] => pending
+            [metadata] => Array
+                (
+                )
+
+            [authorization_details] => Array
+                (
+                    [rrn] => 34304759672
+                    [auth_code] => 231029
+                    [three_d_secure] => Array
+                        (
+                            [applied] => 1
+                        )
+
+                )
+
+        )
+
+)
+Array
+(
+    [time] => 20220202 13:54:47
+    [result] => Array
+        (
+            [id] => 298c7641-000f-5000-9000-172163291cbe
+            [status] => succeeded
+            [amount] => Array
+                (
+                    [value] => 1.00
+                    [currency] => RUB
+                )
+
+            [income_amount] => Array
+                (
+                    [value] => 0.96
+                    [currency] => RUB
+                )
+
+            [description] => Заказ №2417 в магазине Секс-шоп Y not в Москве
+            [recipient] => Array
+                (
+                    [account_id] => 845180
+                    [gateway_id] => 1900098
+                )
+
+            [payment_method] => Array
+                (
+                    [type] => bank_card
+                    [id] => 298c7641-000f-5000-9000-172163291cbe
+                    [saved] => 
+                    [title] => Bank card *3931
+                    [card] => Array
+                        (
+                            [first6] => 427662
+                            [last4] => 3931
+                            [expiry_year] => 2023
+                            [expiry_month] => 06
+                            [card_type] => Visa
+                            [issuer_country] => RU
+                            [issuer_name] => Sberbank Of Russia
+                        )
+
+                )
+
+            [captured_at] => 2022-02-02T10:54:03.595Z
+            [created_at] => 2022-02-02T10:52:49.074Z
+            [test] => 
+            [refunded_amount] => Array
+                (
+                    [value] => 0.00
+                    [currency] => RUB
+                )
+
+            [paid] => 1
+            [refundable] => 1
+            [receipt_registration] => succeeded
+            [metadata] => Array
+                (
+                )
+
+            [authorization_details] => Array
+                (
+                    [rrn] => 34304913004
+                    [auth_code] => 238029
+                    [three_d_secure] => Array
+                        (
+                            [applied] => 1
+                        )
+
+                )
+
+        )
+
+)
+Array
+(
+    [time] => 20220202 14:01:59
+    [result] => Array
+        (
+            [id] => 298c7825-000f-5000-9000-1775a62cc4fe
+            [status] => succeeded
+            [amount] => Array
+                (
+                    [value] => 1.00
+                    [currency] => RUB
+                )
+
+            [income_amount] => Array
+                (
+                    [value] => 0.96
+                    [currency] => RUB
+                )
+
+            [description] => Заказ №2418 в магазине Секс-шоп Y not в Москве
+            [recipient] => Array
+                (
+                    [account_id] => 845180
+                    [gateway_id] => 1900098
+                )
+
+            [payment_method] => Array
+                (
+                    [type] => bank_card
+                    [id] => 298c7825-000f-5000-9000-1775a62cc4fe
+                    [saved] => 
+                    [title] => Bank card *3931
+                    [card] => Array
+                        (
+                            [first6] => 427662
+                            [last4] => 3931
+                            [expiry_year] => 2023
+                            [expiry_month] => 06
+                            [card_type] => Visa
+                            [issuer_country] => RU
+                            [issuer_name] => Sberbank Of Russia
+                        )
+
+                )
+
+            [captured_at] => 2022-02-02T11:01:53.450Z
+            [created_at] => 2022-02-02T11:00:53.057Z
+            [test] => 
+            [refunded_amount] => Array
+                (
+                    [value] => 0.00
+                    [currency] => RUB
+                )
+
+            [paid] => 1
+            [refundable] => 1
+            [receipt_registration] => pending
+            [metadata] => Array
+                (
+                )
+
+            [authorization_details] => Array
+                (
+                    [rrn] => 34305138602
+                    [auth_code] => 253834
+                    [three_d_secure] => Array
+                        (
+                            [applied] => 1
+                        )
+
+                )
+
+        )
+
+)
+Array
+(
+    [time] => 20220202 14:10:41
+    [result] => Array
+        (
+            [id] => 298c7a4a-000f-5000-9000-16f84d75f3c0
+            [status] => pending
+            [amount] => Array
+                (
+                    [value] => 311.00
+                    [currency] => RUB
+                )
+
+            [description] => Заказ №2420 в магазине Секс-шоп Y not в Москве
+            [recipient] => Array
+                (
+                    [account_id] => 845180
+                    [gateway_id] => 1900098
+                )
+
+            [created_at] => 2022-02-02T11:10:02.504Z
+            [confirmation] => Array
+                (
+                    [type] => redirect
+                    [confirmation_url] => https://yoomoney.ru/checkout/payments/v2/contract?orderId=298c7a4a-000f-5000-9000-16f84d75f3c0
+                )
+
+            [test] => 
+            [paid] => 
+            [refundable] => 
+            [metadata] => Array
+                (
+                )
+
+        )
+
+)
+Array
+(
+    [time] => 20220202 14:12:57
+    [result] => Array
+        (
+            [id] => 298c7a9f-000f-5000-8000-19426f5a531e
+            [status] => succeeded
+            [amount] => Array
+                (
+                    [value] => 11.00
+                    [currency] => RUB
+                )
+
+            [income_amount] => Array
+                (
+                    [value] => 10.61
+                    [currency] => RUB
+                )
+
+            [description] => Заказ №2421 в магазине Секс-шоп Y not в Москве
+            [recipient] => Array
+                (
+                    [account_id] => 845180
+                    [gateway_id] => 1900098
+                )
+
+            [payment_method] => Array
+                (
+                    [type] => bank_card
+                    [id] => 298c7a9f-000f-5000-8000-19426f5a531e
+                    [saved] => 
+                    [title] => Bank card *3931
+                    [card] => Array
+                        (
+                            [first6] => 427662
+                            [last4] => 3931
+                            [expiry_year] => 2023
+                            [expiry_month] => 06
+                            [card_type] => Visa
+                            [issuer_country] => RU
+                            [issuer_name] => Sberbank Of Russia
+                        )
+
+                )
+
+            [captured_at] => 2022-02-02T11:12:20.841Z
+            [created_at] => 2022-02-02T11:11:28.014Z
+            [test] => 
+            [refunded_amount] => Array
+                (
+                    [value] => 0.00
+                    [currency] => RUB
+                )
+
+            [paid] => 1
+            [refundable] => 1
+            [receipt_registration] => succeeded
+            [metadata] => Array
+                (
+                )
+
+            [authorization_details] => Array
+                (
+                    [rrn] => 34305430863
+                    [auth_code] => 258808
+                    [three_d_secure] => Array
+                        (
+                            [applied] => 1
+                        )
+
+                )
+
+        )
+
+)
+Array
+(
+    [time] => 20220202 14:16:02
+    [result] => Array
+        (
+            [id] => 298c7432-000f-5000-a000-1adf8b34ee56
+            [status] => pending
+            [amount] => Array
+                (
+                    [value] => 1.00
+                    [currency] => RUB
+                )
+
+            [description] => Заказ №2415 в магазине Секс-шоп Y not в Москве
+            [recipient] => Array
+                (
+                    [account_id] => 845180
+                    [gateway_id] => 1900098
+                )
+
+            [created_at] => 2022-02-02T10:44:02.195Z
+            [confirmation] => Array
+                (
+                    [type] => redirect
+                    [confirmation_url] => https://yoomoney.ru/checkout/payments/v2/contract?orderId=298c7432-000f-5000-a000-1adf8b34ee56
+                )
+
+            [test] => 
+            [paid] => 
+            [refundable] => 
+            [metadata] => Array
+                (
+                )
+
+        )
+
+)
+Array
+(
+    [time] => 20220202 14:16:02
+    [result] => Array
+        (
+            [id] => 298c7a4a-000f-5000-9000-16f84d75f3c0
+            [status] => pending
+            [amount] => Array
+                (
+                    [value] => 311.00
+                    [currency] => RUB
+                )
+
+            [description] => Заказ №2420 в магазине Секс-шоп Y not в Москве
+            [recipient] => Array
+                (
+                    [account_id] => 845180
+                    [gateway_id] => 1900098
+                )
+
+            [created_at] => 2022-02-02T11:10:02.504Z
+            [confirmation] => Array
+                (
+                    [type] => redirect
+                    [confirmation_url] => https://yoomoney.ru/checkout/payments/v2/contract?orderId=298c7a4a-000f-5000-9000-16f84d75f3c0
+                )
+
+            [test] => 
+            [paid] => 
+            [refundable] => 
+            [metadata] => Array
+                (
+                )
+
+        )
+
+)
+Array
+(
+    [time] => 20220202 14:46:44
+    [result] => Array
+        (
+            [id] => 298c81a8-000f-5000-a000-17125e4e9bab
+            [status] => succeeded
+            [amount] => Array
+                (
+                    [value] => 327.00
+                    [currency] => RUB
+                )
+
+            [income_amount] => Array
+                (
+                    [value] => 315.55
+                    [currency] => RUB
+                )
+
+            [description] => Заказ №2422 в магазине Секс-шоп Y not в Москве
+            [recipient] => Array
+                (
+                    [account_id] => 845180
+                    [gateway_id] => 1900098
+                )
+
+            [payment_method] => Array
+                (
+                    [type] => bank_card
+                    [id] => 298c81a8-000f-5000-a000-17125e4e9bab
+                    [saved] => 
+                    [title] => Bank card *1825
+                    [card] => Array
+                        (
+                            [first6] => 552186
+                            [last4] => 1825
+                            [expiry_year] => 2023
+                            [expiry_month] => 02
+                            [card_type] => MasterCard
+                            [issuer_country] => RU
+                            [issuer_name] => Joint Stock Company "Alfa-Bank"
+                        )
+
+                )
+
+            [captured_at] => 2022-02-02T11:44:40.284Z
+            [created_at] => 2022-02-02T11:41:28.741Z
+            [test] => 
+            [refunded_amount] => Array
+                (
+                    [value] => 0.00
+                    [currency] => RUB
+                )
+
+            [paid] => 1
+            [refundable] => 1
+            [receipt_registration] => succeeded
+            [metadata] => Array
+                (
+                )
+
+            [authorization_details] => Array
+                (
+                    [rrn] => 34306292024
+                    [auth_code] => 9SB0HA
+                    [three_d_secure] => Array
+                        (
+                            [applied] => 1
+                        )
+
+                )
+
+        )
+
+)
+Array
+(
+    [time] => 20220202 15:16:02
+    [result] => Array
+        (
+            [id] => 298c7432-000f-5000-a000-1adf8b34ee56
+            [status] => canceled
+            [amount] => Array
+                (
+                    [value] => 1.00
+                    [currency] => RUB
+                )
+
+            [description] => Заказ №2415 в магазине Секс-шоп Y not в Москве
+            [recipient] => Array
+                (
+                    [account_id] => 845180
+                    [gateway_id] => 1900098
+                )
+
+            [created_at] => 2022-02-02T10:44:02.195Z
+            [test] => 
+            [paid] => 
+            [refundable] => 
+            [metadata] => Array
+                (
+                )
+
+            [cancellation_details] => Array
+                (
+                    [party] => yoo_money
+                    [reason] => expired_on_confirmation
+                )
+
+        )
+
+)
+Array
+(
+    [time] => 20220202 15:16:02
+    [result] => Array
+        (
+            [id] => 298c7a4a-000f-5000-9000-16f84d75f3c0
+            [status] => canceled
+            [amount] => Array
+                (
+                    [value] => 311.00
+                    [currency] => RUB
+                )
+
+            [description] => Заказ №2420 в магазине Секс-шоп Y not в Москве
+            [recipient] => Array
+                (
+                    [account_id] => 845180
+                    [gateway_id] => 1900098
+                )
+
+            [created_at] => 2022-02-02T11:10:02.504Z
+            [test] => 
+            [paid] => 
+            [refundable] => 
+            [metadata] => Array
+                (
+                )
+
+            [cancellation_details] => Array
+                (
+                    [party] => yoo_money
+                    [reason] => expired_on_confirmation
+                )
+
+        )
+
+)
+Array
+(
+    [time] => 20220202 15:30:59
+    [result] => Array
+        (
+            [id] => 298c8cf6-000f-5000-8000-12380725ee5f
+            [status] => succeeded
+            [amount] => Array
+                (
+                    [value] => 78.00
+                    [currency] => RUB
+                )
+
+            [income_amount] => Array
+                (
+                    [value] => 75.27
+                    [currency] => RUB
+                )
+
+            [description] => Заказ №2423 в магазине Секс-шоп Y not в Москве
+            [recipient] => Array
+                (
+                    [account_id] => 845180
+                    [gateway_id] => 1900098
+                )
+
+            [payment_method] => Array
+                (
+                    [type] => bank_card
+                    [id] => 298c8cf6-000f-5000-8000-12380725ee5f
+                    [saved] => 
+                    [title] => Bank card *1825
+                    [card] => Array
+                        (
+                            [first6] => 552186
+                            [last4] => 1825
+                            [expiry_year] => 2023
+                            [expiry_month] => 02
+                            [card_type] => MasterCard
+                            [issuer_country] => RU
+                            [issuer_name] => Joint Stock Company "Alfa-Bank"
+                        )
+
+                )
+
+            [captured_at] => 2022-02-02T12:30:51.445Z
+            [created_at] => 2022-02-02T12:29:42.098Z
+            [test] => 
+            [refunded_amount] => Array
+                (
+                    [value] => 0.00
+                    [currency] => RUB
+                )
+
+            [paid] => 1
+            [refundable] => 1
+            [receipt_registration] => pending
+            [metadata] => Array
+                (
+                )
+
+            [authorization_details] => Array
+                (
+                    [rrn] => 34307503291
+                    [auth_code] => 7VK71B
+                    [three_d_secure] => Array
+                        (
+                            [applied] => 1
+                        )
+
+                )
+
+        )
+
+)
+Array
+(
+    [time] => 20220215 20:16:02
+    [result] => Array
+        (
+            [id] => 299dec24-000f-5000-a000-19e0e68a6236
+            [status] => pending
+            [amount] => Array
+                (
+                    [value] => 1841.00
+                    [currency] => RUB
+                )
+
+            [description] => Заказ №2639 в магазине Секс-шоп Y not в Москве
+            [recipient] => Array
+                (
+                    [account_id] => 845180
+                    [gateway_id] => 1900098
+                )
+
+            [created_at] => 2022-02-15T16:44:20.475Z
+            [confirmation] => Array
+                (
+                    [type] => redirect
+                    [confirmation_url] => https://yoomoney.ru/checkout/payments/v2/contract?orderId=299dec24-000f-5000-a000-19e0e68a6236
+                )
+
+            [test] => 
+            [paid] => 
+            [refundable] => 
+            [metadata] => Array
+                (
+                )
+
+        )
+
+)
+Array
+(
+    [time] => 20220215 21:16:03
+    [result] => Array
+        (
+            [id] => 299dec24-000f-5000-a000-19e0e68a6236
+            [status] => canceled
+            [amount] => Array
+                (
+                    [value] => 1841.00
+                    [currency] => RUB
+                )
+
+            [description] => Заказ №2639 в магазине Секс-шоп Y not в Москве
+            [recipient] => Array
+                (
+                    [account_id] => 845180
+                    [gateway_id] => 1900098
+                )
+
+            [created_at] => 2022-02-15T16:44:20.475Z
+            [test] => 
+            [paid] => 
+            [refundable] => 
+            [metadata] => Array
+                (
+                )
+
+            [cancellation_details] => Array
+                (
+                    [party] => yoo_money
+                    [reason] => expired_on_confirmation
+                )
+
+        )
+
+)
+Array
+(
+    [time] => 20220216 19:16:01
+    [result] => Array
+        (
+            [id] => 299f2bc5-000f-5000-8000-15d1f5b13c6e
+            [status] => pending
+            [amount] => Array
+                (
+                    [value] => 872.00
+                    [currency] => RUB
+                )
+
+            [description] => Заказ №2653 в магазине Секс-шоп Y not в Москве
+            [recipient] => Array
+                (
+                    [account_id] => 845180
+                    [gateway_id] => 1900098
+                )
+
+            [created_at] => 2022-02-16T15:28:05.660Z
+            [confirmation] => Array
+                (
+                    [type] => redirect
+                    [confirmation_url] => https://yoomoney.ru/checkout/payments/v2/contract?orderId=299f2bc5-000f-5000-8000-15d1f5b13c6e
+                )
+
+            [test] => 
+            [paid] => 
+            [refundable] => 
+            [metadata] => Array
+                (
+                )
+
+        )
+
+)
+Array
+(
+    [time] => 20220216 20:16:02
+    [result] => Array
+        (
+            [id] => 299f2bc5-000f-5000-8000-15d1f5b13c6e
+            [status] => canceled
+            [amount] => Array
+                (
+                    [value] => 872.00
+                    [currency] => RUB
+                )
+
+            [description] => Заказ №2653 в магазине Секс-шоп Y not в Москве
+            [recipient] => Array
+                (
+                    [account_id] => 845180
+                    [gateway_id] => 1900098
+                )
+
+            [created_at] => 2022-02-16T15:28:05.660Z
+            [test] => 
+            [paid] => 
+            [refundable] => 
+            [metadata] => Array
+                (
+                )
+
+            [cancellation_details] => Array
+                (
+                    [party] => yoo_money
+                    [reason] => expired_on_confirmation
+                )
+
+        )
+
+)
+Array
+(
+    [time] => 20220228 18:16:01
+    [result] => Array
+        (
+            [id] => 29aef36f-000f-5000-9000-1b728cef5d46
+            [status] => pending
+            [amount] => Array
+                (
+                    [value] => 5881.00
+                    [currency] => RUB
+                )
+
+            [description] => Заказ №2889 в магазине Секс-шоп Y not в Москве
+            [recipient] => Array
+                (
+                    [account_id] => 845180
+                    [gateway_id] => 1900098
+                )
+
+            [created_at] => 2022-02-28T14:43:59.387Z
+            [confirmation] => Array
+                (
+                    [type] => redirect
+                    [confirmation_url] => https://yoomoney.ru/checkout/payments/v2/contract?orderId=29aef36f-000f-5000-9000-1b728cef5d46
+                )
+
+            [test] => 
+            [paid] => 
+            [refundable] => 
+            [metadata] => Array
+                (
+                )
+
+        )
+
+)
+Array
+(
+    [time] => 20220228 19:16:02
+    [result] => Array
+        (
+            [id] => 29aef36f-000f-5000-9000-1b728cef5d46
+            [status] => canceled
+            [amount] => Array
+                (
+                    [value] => 5881.00
+                    [currency] => RUB
+                )
+
+            [description] => Заказ №2889 в магазине Секс-шоп Y not в Москве
+            [recipient] => Array
+                (
+                    [account_id] => 845180
+                    [gateway_id] => 1900098
+                )
+
+            [created_at] => 2022-02-28T14:43:59.387Z
+            [test] => 
+            [paid] => 
+            [refundable] => 
+            [metadata] => Array
+                (
+                )
+
+            [cancellation_details] => Array
+                (
+                    [party] => yoo_money
+                    [reason] => expired_on_confirmation
+                )
+
+        )
+
+)
+Array
+(
+    [time] => 20220307 21:16:02
+    [result] => Array
+        (
+            [id] => 29b852d9-000f-5000-9000-1cca17f0909f
+            [status] => canceled
+            [amount] => Array
+                (
+                    [value] => 3965.00
+                    [currency] => RUB
+                )
+
+            [description] => Заказ №3027 в магазине Секс-шоп Y not в Москве
+            [recipient] => Array
+                (
+                    [account_id] => 845180
+                    [gateway_id] => 1900098
+                )
+
+            [payment_method] => Array
+                (
+                    [type] => bank_card
+                    [id] => 29b852d9-000f-5000-9000-1cca17f0909f
+                    [saved] => 
+                    [title] => Bank card *4552
+                    [card] => Array
+                        (
+                            [first6] => 555947
+                            [last4] => 4552
+                            [expiry_year] => 2025
+                            [expiry_month] => 10
+                            [card_type] => MasterCard
+                            [issuer_country] => RU
+                            [issuer_name] => JOINT STOCK COMPANY "ALFA-BANK"
+                        )
+
+                )
+
+            [created_at] => 2022-03-07T17:21:29.629Z
+            [test] => 
+            [paid] => 
+            [refundable] => 
+            [metadata] => Array
+                (
+                )
+
+            [cancellation_details] => Array
+                (
+                    [party] => payment_network
+                    [reason] => payment_method_limit_exceeded
+                )
+
+            [authorization_details] => Array
+                (
+                    [three_d_secure] => Array
+                        (
+                            [applied] => 1
+                        )
+
+                )
+
+        )
+
+)
+Array
+(
+    [time] => 20220309 16:43:35
+    [result] => Array
+        (
+            [id] => 29bac23d-000f-5000-9000-141347806324
+            [status] => succeeded
+            [amount] => Array
+                (
+                    [value] => 3905.00
+                    [currency] => RUB
+                )
+
+            [income_amount] => Array
+                (
+                    [value] => 3768.32
+                    [currency] => RUB
+                )
+
+            [description] => Заказ №3061 в магазине Секс-шоп Y not в Москве
+            [recipient] => Array
+                (
+                    [account_id] => 845180
+                    [gateway_id] => 1900098
+                )
+
+            [payment_method] => Array
+                (
+                    [type] => bank_card
+                    [id] => 29bac23d-000f-5000-9000-141347806324
+                    [saved] => 
+                    [title] => Bank card *4552
+                    [card] => Array
+                        (
+                            [first6] => 555947
+                            [last4] => 4552
+                            [expiry_year] => 2025
+                            [expiry_month] => 10
+                            [card_type] => MasterCard
+                            [issuer_country] => RU
+                            [issuer_name] => JOINT STOCK COMPANY "ALFA-BANK"
+                        )
+
+                )
+
+            [captured_at] => 2022-03-09T13:43:20.446Z
+            [created_at] => 2022-03-09T13:41:17.962Z
+            [test] => 
+            [refunded_amount] => Array
+                (
+                    [value] => 0.00
+                    [currency] => RUB
+                )
+
+            [paid] => 1
+            [refundable] => 1
+            [receipt_registration] => pending
+            [metadata] => Array
+                (
+                )
+
+            [authorization_details] => Array
+                (
+                    [rrn] => 206813978310
+                    [auth_code] => 2F06RW
+                    [three_d_secure] => Array
+                        (
+                            [applied] => 1
+                        )
+
+                )
+
+        )
+
+)

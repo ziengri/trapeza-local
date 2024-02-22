@@ -1,0 +1,11 @@
+<?php 
+include("cond.php");
+
+if ($f_cachetime>0 && $f_iscache) {
+	$f_lastcache = time()+$f_cachetime*60;
+} else {
+	$f_lastcache = "";
+	$f_cachetime = "";
+}
+
+?>

@@ -1,0 +1,17 @@
+<?php
+global $bitcat, $db;
+
+
+# авторизация
+if($AUTH_USER_ID){
+	if($_SERVER['REMOTE_ADDR']=='31.13.133.138' || $_SERVER['REMOTE_ADDR']=='31.13.133.22' || $_SERVER['REMOTE_ADDR']=='149.126.23.234' || $_SERVER['REMOTE_ADDR']=='178.206.233.83') $office = 1;
+	if ($current_user['superadmin']==1) {
+		$bitcat = 1;
+	}else{
+		Unauthorize();
+		header("Location: http://".$HTTP_HOST);
+	}
+}
+
+
+?>

@@ -1,0 +1,71 @@
+<?php 
+if ($f_excel_url) {
+	flush(); ob_flush();
+	// if ($f_updateprice) $updateprice = $f_updateprice;
+ //    if (!$f_ccc && $f_ssub) $f_ccc = $db->get_var("select Sub_Class_ID from Sub_Class where Class_ID = '2001' AND Subdivision_ID = '$f_ssub' limit 0,1");
+	// $r = excelPrice($message, ($f_excel_url ? $f_excel_url : $f_url), round($f_list-1), $f_class, $f_firsthead, $f_parent, $f_gr, $f_pole, $f_startcol, "$updateprice", "$f_ssub", "$f_ccc", "$f_ncctpl", $f_currency, $f_spacesub);
+
+    # механизм выгрузки
+    global $db, $curSub, $curCC, $reslt, $DOCUMENT_ROOT, $DOCUMENT_ROOT1, $catalogue, $pathInc, $rara2, $setting, $space;
+    $logPath = $DOCUMENT_ROOT.$pathInc.'/files/logDelivery.txt';
+    require_once $DOCUMENT_ROOT1.'/PHPExcel/reader.php';
+    $classId = 2092;
+    $data = new Spreadsheet_Excel_Reader();
+    $data->setOutputEncoding('utf-8');
+    $data->setUTFEncoder('mb');
+    $data->read($DOCUMENT_ROOT.$f_excel_url);
+    $start = $priority = 0;
+    $startKey = $startColumn = $groupCol = 1;
+    file_put_contents($logPath, 'старт');
+    $sheetId = $f_list-1;
+    if ($data->sheets[$sheetId]['numRows']>1) {
+        $reslt .= "\nСтроки найдены!";
+        # выключение текущего листа
+        $db->query("update Message{$classId} set Checked = '0' where Catalogue_ID='$catalogue' AND Subdivision_ID='$curSub'");
+        reslt .= "\nВыключение текущих объектов";
+        for ($i = 1; $i<=$data->sheets[$sheetId]['numRows']; $i++)  {
+            $priority++;
+            $city = $data->sheets[$sheetId]['cells'][$i][2];
+            $city = strpos($city, "*") ? substr($city, 0, -1) : $city;
+            $price = $data->sheets[$sheetId]['cells'][$i][3];
+            if ($city && $price && $start) {
+                $row = $db->get_row("select Message_ID as id, Checked, city, price from Message{$classId} where city ='$city' AND Catalogue_ID = '$catalogue'");
+                if(!$row->id) {
+                    $db->query("insert into Message{$classId}(city,price,Catalogue_ID,Subdivision_ID,Sub_Class_ID,Priority) VALUES('$city','$price','$catalogue','$f_ssub','$f_ccc','$priority')");
+                    $reslt .= "\ninsert into Message{$classId}(city,price,Catalogue_ID,Subdivision_ID,Sub_Class_ID,Priority) VALUES('$city','$price','$catalogue','$f_ssub','$f_ccc','$priority')";
+                }
+                else {
+                    $db->query("update Message{$classId} set city = '$city', price = '$price', Catalogue_ID = '$catalogue', Subdivision_ID = '$f_ssub', Sub_Class_ID = '$f_ccc', Priority = '$priority', Checked = '1' where city = '$city' AND Catalogue_ID = '$catalogue'");
+                    $reslt .= "\nupdate Message{$classId} set city = '$city', price = '$price', Catalogue_ID = '$catalogue', Subdivision_ID = '$f_ssub', Sub_Class_ID = '$f_ccc', Priority = '$priority', Checked = '1' where city = '$city' AND Catalogue_ID = '$catalogue'";
+                }
+                $start++;
+            }
+            else {
+                $reslt .= "\nСтроки не найдены (cells)!";
+            }
+            # старт после нахождения строки:
+            if (mb_stristr($data->sheets[$sheetId]['cells'][$i][$startColumn],$startKey) || mb_stristr($data->sheets[$sheetId]['cells'][$i][$groupCol],$startKey)) { $start=1; $reslt .= "<p>Шапка найдена</p>"; }
+        }
+        file_put_contents($logPath, $reslt, FILE_APPEND);
+    }else{
+        $reslt .= "\nСТРОКИ НЕ НАЙДЕНЫ!";
+    }
+    file_put_contents($logPath, $reslt, FILE_APPEND);
+    file_put_contents($logPath, '\nконец', FILE_APPEND);
+}
+exit;
+
+if($inside_admin) {
+    ob_end_clean();
+    header('Location: '.$goBackLink.'&inside_admin=1');
+    exit;
+} else { 
+    echo json_encode(ARRAY(
+        "title" => "ОК",
+        "succes" =>  "Закачан ".$r,
+        "reloadtab" => 1,
+        "modal" => "close",
+        "sdf" => $message
+    ));
+}
+?>
