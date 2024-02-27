@@ -2,7 +2,7 @@
 
 namespace App\modules\Korzilla\Subdivision\Contracts;
 
-use App\modules\Korzilla\Subdivision\Values\DTO\SubdivisionDataDTO;
+use App\modules\Korzilla\Subdivision\Values\Outputs\SubdivisionSetOutput;
 
 interface SubdivisionGetRootTaskContract
 {
@@ -11,7 +11,7 @@ interface SubdivisionGetRootTaskContract
      *
      * @param int $catalogueId
      * @param string|null $typePrefix
-     * @return SubdivisionDataDTO|null
+     * @return SubdivisionSetOutput|null
      */
-    public function run(int $catalogueId, int $subdivisionId = null): SubdivisionDataDTO;
+    public function run(int $catalogueId, int $subdivisionId = null): SubdivisionSetOutput;
 }

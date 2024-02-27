@@ -2,17 +2,27 @@
 
 namespace App\modules\Korzilla\Subdivision\Values\Outputs;
 
-class SubdivisionSetOutput
+use App\modules\Korzilla\Subdivision\Models\SubdivisionModel;
+use Exception;
+
+class SubdivisionSetOutput extends SubdivisionModel
 {   
-    /** @var int*/
-    public $subdivisionId;
+    /** @var int */
+    public $subClassId; 
 
-    /** @var int*/
-    public $subClassId;
+    //? Может ли быть null?
+    public static function fromModel(SubdivisionModel $model,int $subClassId): self
+    {
+        $self= new self();
 
-    /** @var string*/
-    public $hiddenUrl;
-
-    /** @var string*/
-    public $сode1C;
+        foreach ($model as $key => $value) {
+            $self->$key = $value;
+        }
+        if (!$subClassId) {
+            throw new Exception("subClassId can`t be null in SubdivisionSetOutput", 1);
+            
+        }
+        $self->subClassId = $subClassId;
+        return $self;
+    }
 }

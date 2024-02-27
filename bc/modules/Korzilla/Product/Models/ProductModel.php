@@ -39,7 +39,6 @@ class ProductModel extends Model
   /** @var int */
   public $Parent_Message_ID = 0;
 
-  //TODO ПЕРЕНЕСТИ СБОРКУ В ACTION или в test.php
   /**
    * @var \DateTime
    */
@@ -96,7 +95,8 @@ class ProductModel extends Model
   /** @var string|null */
   public $art = null;
 
-  /** @var string|null  Код товара с выгрузки*/
+  /** Код товара с выгрузки
+   *  @var string|null  */
   public $code = null;
 
   /** @var string|null */

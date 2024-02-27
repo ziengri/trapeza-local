@@ -215,7 +215,7 @@ class PaymentMethod
             $payment = [
                 'amount' => ['value' => $sum, 'currency' => 'RUB'],
                 'confirmation' => ['type' => 'redirect', 'return_url' => "http://{$_SERVER['HTTP_HOST']}/bc/modules/default/PaymentMethod/ykassa_redirect.php?message={$this->message}"],
-                'capture' => true,
+                'capture' => true,  
                 'description' => strtr("Заказ №{$this->message} в магазине {$this->current_catalogue['Catalogue_Name']}", $zamen),
                 'receipt' => [
                     'id' => $this->message,

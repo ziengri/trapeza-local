@@ -1,8 +1,8 @@
 <?php
 
 namespace App\modules\Korzilla\Subdivision\Contracts;
-use App\modules\Korzilla\Subdivision\Values\DTO\SubdivisionDataDTO;
 use App\modules\Korzilla\Subdivision\Values\Inputs\SubdivisionSetInput;
+use App\modules\Korzilla\Subdivision\Values\Outputs\SubdivisionSetOutput;
 
 interface SubdivisionCreateTaskContract
 {
@@ -11,11 +11,11 @@ interface SubdivisionCreateTaskContract
      * Создание раздела и инфоблока
      *
      * @param SubdivisionSetInput $input
-     * @param SubdivisionDataDTO $parentSubdivision
+     * @param SubdivisionSetOutput $parentSubdivision
      * @param int $catalogueId
-     * @return SubdivisionDataDTO
+     * @return SubdivisionSetOutput
      */
-    public function run(SubdivisionSetInput $input,SubdivisionDataDTO $parentSubdivision,int $catalogueId) : SubdivisionDataDTO;
+    public function run(SubdivisionSetInput $input,SubdivisionSetOutput $parentSubdivision,int $catalogueId) : SubdivisionSetOutput;
         
     
 }

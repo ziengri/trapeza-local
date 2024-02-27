@@ -37,25 +37,40 @@ class ProductUploadAction
     /**
      * Undocumented function
      *
-     * @param ProductSetInput $input
+     * @param ProductSetInput[] $input
      * @return ProductSetOutput[]
      */
-    public function run(ProductSetInput $input, string $import_source): array
+    public function run(array $input, string $import_source): array
     {
         $timeExport = time();
+        foreach ($input as $key => $product) {
+            $exsistingProduct = $this->checkProductExist($product, $import_source);
 
-        $exsistingProduct = $this->checkProductExist($input, $import_source);
-
-        //Если не существует товара в БД
-        if ($exsistingProduct === false) {
-            $this->create($input, $timeExport, $import_source);
-        } else {
-            $this->update($input, $exsistingProduct, $timeExport, $import_source);
+            //Если не существует товара в БД
+            if ($exsistingProduct === false) {
+                $this->create($product, $timeExport, $import_source);
+            } else {
+                $this->update($product, $exsistingProduct, $timeExport, $import_source);
+            }
         }
+
+        $this->after($timeExport,$import_source);
 
         return $this->productSetOutput;
 
 
+    }
+
+    public function after(int $timeExport,string $import_source = null) {
+        $sql = "UPDATE `Message2001`
+        SET `Checked` = 0
+        WHERE `timestamp_export` != $timeExport" . ($import_source? " AND `import_source` = '$import_source' ":"");
+        $this->db->query($sql);
+
+        if((bool) $this->db->is_error){
+            throw new \Exception($this->db->last_error);
+            //! Переписать на логирование и вывод ошибки
+        }
     }
 
     /**
@@ -69,7 +84,9 @@ class ProductUploadAction
         $newProduct = new ProductModel();
 
         foreach ($productInput as $key => $value) {
-            if($value == FieldNotSet::CONSTANT){
+            echo $key . " = " . $value;
+            if($value === FieldNotSet::CONSTANT){
+                echo $key . " NOT SET";
                 continue;
             }
             $newProduct->$key = $value;
@@ -80,11 +97,15 @@ class ProductUploadAction
         $newProduct->Subdivision_ID = $productInput->Subdivision_ID;
         $newProduct->Keyword =  encodestring(trim($productInput->name)." ".trim(($productInput->art2 ? $productInput->art2 : $productInput->art)),1);
         $newProduct->name = $productInput->name;
+        $newProduct->LastUpdated = date('Y-m-d H:i:s');
+        $newProduct->Created = date('Y-m-d H:i:s');
+
+
         $newProduct->import_source = $import_source;
         $newProduct->timestamp_export = $timeExport;
 
         if(!$this->productRepository->save($newProduct)){
-            throw new \Exception($this->db->last_query);
+            throw new \Exception($this->db->last_error);
             //! Переписать на логирование и вывод ошибки
         }
 

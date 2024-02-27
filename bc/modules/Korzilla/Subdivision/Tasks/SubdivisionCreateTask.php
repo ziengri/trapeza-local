@@ -7,8 +7,8 @@ use App\modules\Korzilla\Subdivision\Data\Repositories\SubClassRepository;
 use App\modules\Korzilla\Subdivision\Data\Repositories\SubdivisionRepository;
 use App\modules\Korzilla\Subdivision\Models\SubClassModel;
 use App\modules\Korzilla\Subdivision\Models\SubdivisionModel;
-use App\modules\Korzilla\Subdivision\Values\DTO\SubdivisionDataDTO;
 use App\modules\Korzilla\Subdivision\Values\Inputs\SubdivisionSetInput;
+use App\modules\Korzilla\Subdivision\Values\Outputs\SubdivisionSetOutput;
 use App\modules\Ship\Parent\Tasks\Task;
 use Exception;
 
@@ -38,11 +38,11 @@ class SubdivisionCreateTask extends Task implements SubdivisionCreateTaskContrac
      * Создание раздела и инфоблока
      *
      * @param SubdivisionSetInput $input
-     * @param SubdivisionDataDTO $parentSubdivision
+     * @param SubdivisionSetOutput $parentSubdivision
      * @param int $catalogueId
-     * @return SubdivisionDataDTO
+     * @return SubdivisionSetOutput
      */
-    public function run(SubdivisionSetInput $input,SubdivisionDataDTO $parentSubdivision,int $catalogueId): SubdivisionDataDTO{
+    public function run(SubdivisionSetInput $input,SubdivisionSetOutput $parentSubdivision,int $catalogueId): SubdivisionSetOutput{
         // echo "<br>CREATE<br>";
         $newSubdivisionModel = new SubdivisionModel();
 
@@ -73,6 +73,6 @@ class SubdivisionCreateTask extends Task implements SubdivisionCreateTaskContrac
         if(!$this->subClassRepository->save($newSubClass)){
             throw new Exception($this->subClassRepository->getLastError(), 1);                
         };
-        return SubdivisionDataDTO::fromModel($newSubdivisionModel,$newSubClass->Sub_Class_ID);
+        return SubdivisionSetOutput::fromModel($newSubdivisionModel,$newSubClass->Sub_Class_ID);
     }
 }

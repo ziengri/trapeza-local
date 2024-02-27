@@ -3,8 +3,8 @@
 namespace App\modules\Korzilla\Subdivision\Contracts;
 
 use App\modules\Korzilla\Subdivision\Models\SubdivisionModel;
-use App\modules\Korzilla\Subdivision\Values\DTO\SubdivisionDataDTO;
 use App\modules\Korzilla\Subdivision\Values\Inputs\SubdivisionSetInput;
+use App\modules\Korzilla\Subdivision\Values\Outputs\SubdivisionSetOutput;
 
 interface SubdivisionUpdateTaskContract
 {
@@ -12,10 +12,10 @@ interface SubdivisionUpdateTaskContract
      * Обновление раздела
      *
      * @param SubdivisionSetInput $input
-     * @param SubdivisionDataDTO $parentSubdivision
+     * @param SubdivisionSetOutput $parentSubdivision
      * @param SubdivisionModel $updateModel
 
-     * @return SubdivisionDataDTO
+     * @return SubdivisionSetOutput
      */
-    public function run(SubdivisionSetInput $input,SubdivisionDataDTO $parentSubdivision,SubdivisionModel $updateModel): SubdivisionDataDTO;
+    public function run(SubdivisionSetInput $input,SubdivisionSetOutput $parentSubdivision,SubdivisionModel $updateModel): SubdivisionSetOutput;
 }

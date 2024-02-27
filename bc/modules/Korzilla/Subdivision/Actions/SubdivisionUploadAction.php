@@ -10,7 +10,7 @@ use App\modules\Korzilla\Subdivision\Contracts\SubdivisionUpdateTaskContract;
 use App\modules\Korzilla\Subdivision\Data\Repositories\SubClassRepository;
 use App\modules\Korzilla\Subdivision\Data\Repositories\SubdivisionRepository;
 use App\modules\Korzilla\Subdivision\Models\SubdivisionModel;
-use App\modules\Korzilla\Subdivision\Values\DTO\SubdivisionDataDTO;
+use App\modules\Korzilla\Subdivision\Values\DTO\SubdivisionRootDTO;
 use App\modules\Korzilla\Subdivision\Values\Inputs\SubdivisionSetInput;
 use App\modules\Korzilla\Subdivision\Values\Outputs\SubdivisionSetOutput;
 use Exception;
@@ -31,7 +31,7 @@ class SubdivisionUploadAction
 
     /**
      *  Раздел куда будет выгружаться новые разделы 
-     *  @var SubdivisionDataDTO */
+     *  @var SubdivisionSetOutput */
     private $rootSubdivision;
 
     /** @var SubdivisionModel[] */
@@ -88,8 +88,6 @@ class SubdivisionUploadAction
         $this->subdivisionSortTask =    $subdivisionSortTask;
         $this->subdivisionCreateTask =  $subdivisionCreateTask;
         $this->subdivisionUpdateTask =  $subdivisionUpdateTask;
-
-
     }
 
     /**
@@ -100,7 +98,7 @@ class SubdivisionUploadAction
      * @return array{'внешний_ключ_раздела': SubdivisionSetOutput}
      */
     public function run(array $input, int $subdivisionId = null)
-    { 
+    {
 
         $this->allSubdivision = $this->subdivisionGetAllTask->run($this->catalogueId);
 
@@ -112,7 +110,7 @@ class SubdivisionUploadAction
 
         foreach ($sortedSubdivisionSetInputs as $subdivisionSetInput) {
 
-            /** @var SubdivisionDataDTO $parentSubdivision */
+            /** @var SubdivisionSetOutput $parentSubdivision */
             $parentSubdivision = $this->getParent($subdivisionSetInput);
 
 
@@ -137,16 +135,14 @@ class SubdivisionUploadAction
                     $this->catalogueId
                 );
             }
-
         }
 
         return $this->subdivisionSetOutput;
-
     }
 
 
 
-    public function getParent(SubdivisionSetInput $input)
+    private function getParent(SubdivisionSetInput $input)
     {
         if (isset($this->subdivisionSetOutput[$input->parentId])) {
             return $this->subdivisionSetOutput[$input->parentId];
@@ -154,11 +150,4 @@ class SubdivisionUploadAction
             return $this->rootSubdivision;
         }
     }
-
-
 }
-
-
-
-
-

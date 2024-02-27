@@ -7,7 +7,8 @@ use App\modules\Korzilla\Subdivision\Data\Repositories\SubClassRepository;
 use App\modules\Korzilla\Subdivision\Data\Repositories\SubdivisionRepository;
 use App\modules\Korzilla\Subdivision\Models\SubClassModel;
 use App\modules\Korzilla\Subdivision\Models\SubdivisionModel;
-use App\modules\Korzilla\Subdivision\Values\DTO\SubdivisionDataDTO;
+use App\modules\Korzilla\Subdivision\Values\DTO\SubdivisionRootDTO;
+use App\modules\Korzilla\Subdivision\Values\Outputs\SubdivisionSetOutput;
 use App\modules\Ship\Parent\Tasks\Task;
 
 class SubdivisionGetRootTask extends Task implements SubdivisionGetRootTaskContract
@@ -29,9 +30,9 @@ class SubdivisionGetRootTask extends Task implements SubdivisionGetRootTaskContr
      *
      * @param integer $catalogueId
      * @param string|null $typePrefix
-     * @return SubdivisionDataDTO|null
+     * @return SubdivisionSetOutput|null
      */
-    public function run(int $catalogueId, int $subdivisionId = null) : SubdivisionDataDTO
+    public function run(int $catalogueId, int $subdivisionId = null): SubdivisionSetOutput
     {
         $queryWhere = [];
 
@@ -60,9 +61,6 @@ class SubdivisionGetRootTask extends Task implements SubdivisionGetRootTaskContr
             throw new \Exception("Родительский инфоблок не найден");
         }
 
-        return SubdivisionDataDTO::fromModel($subDivision, $subClass->Sub_Class_ID);
-
-
+        return SubdivisionSetOutput::fromModel($subDivision, $subClass->Sub_Class_ID);
     }
 }
-

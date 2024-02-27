@@ -1,15 +1,23 @@
 <?php
 
+// class A
+// {
+//     public const NOT = INF;
+// }
+
+
+// $b = A::NOT;
+
+// var_dump($b);
+// var_dump($b === A::NOT);
+
+// exit();
 use App\modules\Korzilla\Product\Providers\ProductProvider;
 use App\modules\Korzilla\Product\Values\Inputs\ProductSetInput;
 use App\modules\Korzilla\Product\Values\Outputs\ProductSetOutput;
-use App\modules\Korzilla\Subdivision\Data\Repositories\SubClassRepository;
 use App\modules\Korzilla\Subdivision\Providers\SubdivisionProvider;
-use App\modules\Korzilla\Subdivision\Data\Repositories\SubdivisionRepository;
-use App\modules\Korzilla\Subdivision\Tasks\SubdivisionGetAllTask;
-use App\modules\Korzilla\Subdivision\Tasks\SubdivisionGetRootTask;
-use App\modules\Korzilla\Subdivision\Values\DTO\SubdivisionDataDTO;
 use App\modules\Korzilla\Subdivision\Values\Inputs\SubdivisionSetInput;
+use App\modules\Korzilla\Subdivision\Values\Outputs\SubdivisionSetOutput;
 
 $ROOTDIR = $_SERVER['DOCUMENT_ROOT'];
 require_once $ROOTDIR . "/vars.inc.php";
@@ -41,7 +49,6 @@ foreach ($data['result']['categories'] as $key => $category) {
 // exit();
 $subdivisionProvider =  new SubdivisionProvider($nc_core,$setting);
 
-//! ДОЛЖЕН ВОЗРАЩАТЬС SubdiviosonOutput а воозращет DataDTO ???ПОД ВОПРОСОМ
 $subdivisionOutput = $subdivisionProvider->upload($categories);
 
 var_dump($subdivisionOutput);
@@ -49,54 +56,41 @@ $catalogueId = $nc_core->catalogue->get_by_host_name(str_replace("www.", "", $_S
 
 
 $productProvider =  new ProductProvider($nc_core,$setting);
+$timestamp_export = time();
 
 /** @var ProductSetOutput[] $categories */
 $productOutput;
 
-
 foreach ($data['result']['products'] as $key => $product) {
     $dtoProduct = new ProductSetInput();
     $dtoProduct->code = $product['id'];
+    $dtoProduct->id1c = $product['categoryId'];
+
     $dtoProduct->Catalogue_ID = $catalogueId;
     $dtoProduct->Checked = (int)!$product['disabled'];
     $dtoProduct->name = $product['name'];
     $dtoProduct->price = (float)$product['price'];
-    $dtoProduct->Created = date('Y-m-d H:i:s');
+    // $dtoProduct->text = "TEST ПРОДУКТ!";
+    $dtoProduct->timestamp_export = $timestamp_export;
 
     
     //TODO Загрузка фотографий
 
     /**
-     * @var SubdivisionDataDTO $curentSubdivision
+     * @var SubdivisionSetOutput $curentSubdivision
      */
     $curentSubdivision =  $subdivisionOutput[$product['categoryId']];
 
-    //! ID МОГУТ БЫТЬ ПЫСТЫМИ ИСПРАВИТЬ
     $dtoProduct->Subdivision_ID = $curentSubdivision->Subdivision_ID;
-    $dtoProduct->Sub_Class_ID = $curentSubdivision->subclassId;
+    $dtoProduct->Sub_Class_ID = $curentSubdivision->subClassId;
 
-    var_dump($dtoProduct);
-
-    $productOutput[] = $productProvider->upload($dtoProduct,"test");
+    // var_dump($dtoProduct);
+    $dtoProducts[] = $dtoProduct;
 
 }
 
+$productOutput = $productProvider->upload($dtoProducts,"test");
 
 var_dump($productOutput);
 
 
-// $subdivisionProvider = new SubdivisionProvider($nc_core,$setting);
-
-// var_dump($subdivisionProvider->getSubdivisionManagerUploader());
-
-
-
-// $subdivisionRepository = new SubdivisionRepository($nc_core->db);
-// $subClassRepository = new SubClassRepository($nc_core->db);
-
-
-// // $getAllTask = new SubdivisionGetAllTask($subdivisionRepository);
-
-// $getRootSubdivisionTask = new SubdivisionGetRootTask($subdivisionRepository,$subClassRepository);
-// // var_dump($getAllTask->run("1077"));
-// var_dump($getRootSubdivisionTask->run("1077"));

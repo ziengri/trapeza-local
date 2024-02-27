@@ -144,6 +144,7 @@ do {
                     include $nc_field_path;
                 }
             } catch (Exception $e) {
+                var_dump($e->getMessage());
                 if ($perm instanceof Permission && $perm->isSubClassAdmin($cc)) {
                     // do not post this
                     $posting = 0;
@@ -193,6 +194,7 @@ do {
                             $addForm = ob_get_clean();
                         }
                     } catch (Exception $e) {
+                        var_dump($e->getMessage());
                         if ($perm instanceof Permission && $perm->isSubClassAdmin($cc)) {
                             // error message
                             $addForm = sprintf(CONTROL_CLASS_CLASSFORM_CHECK_ERROR, CONTROL_CLASS_CLASS_FORMS_ADDFORM);
@@ -397,6 +399,7 @@ do {
                             include $nc_field_path;
                         }
                     } catch (Exception $e) {
+                        var_dump($e->getMessage());
                         if ($perm instanceof Permission && $perm->isSubClassAdmin($cc)) {
                             // error message
                             echo sprintf(CONTROL_CLASS_CLASSFORM_CHECK_ERROR, CONTROL_CLASS_CLASS_FORMS_ADDLASTACTION);

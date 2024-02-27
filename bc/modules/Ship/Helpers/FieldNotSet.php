@@ -4,6 +4,6 @@ namespace App\modules\Ship\Helpers;
 
 class FieldNotSet
 {
-    const CONSTANT = NAN;
+    const CONSTANT = INF;
 
 }

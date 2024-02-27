@@ -32,6 +32,12 @@ class ProductSetInput extends Input
     /** @var string */
     public $name;
 
+
+    /**
+     * * UNIX TIME
+     *  @var int */
+    public $timestamp_export;
+
     /** @var FieldNotSet::CONSTANT|string|null */
     public $text = FieldNotSet::CONSTANT;
 
@@ -102,9 +108,6 @@ class ProductSetInput extends Input
 
     /** @var FieldNotSet::CONSTANT|string|null */
     public $artnull = FieldNotSet::CONSTANT;
-
-    /** @var FieldNotSet::CONSTANT|string|null */
-    public $size = FieldNotSet::CONSTANT;
 
     /** @var FieldNotSet::CONSTANT|string|null */
     public $colors = FieldNotSet::CONSTANT;

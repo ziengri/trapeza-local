@@ -7,8 +7,8 @@ use App\modules\Korzilla\Subdivision\Data\Repositories\SubClassRepository;
 use App\modules\Korzilla\Subdivision\Data\Repositories\SubdivisionRepository;
 use App\modules\Korzilla\Subdivision\Models\SubClassModel;
 use App\modules\Korzilla\Subdivision\Models\SubdivisionModel;
-use App\modules\Korzilla\Subdivision\Values\DTO\SubdivisionDataDTO;
 use App\modules\Korzilla\Subdivision\Values\Inputs\SubdivisionSetInput;
+use App\modules\Korzilla\Subdivision\Values\Outputs\SubdivisionSetOutput;
 use App\modules\Ship\Parent\Tasks\Task;
 use Exception;
 
@@ -35,12 +35,12 @@ class SubdivisionUpdateTask extends Task implements SubdivisionUpdateTaskContrac
      * Обновление раздела
      *
      * @param SubdivisionSetInput $input
-     * @param SubdivisionDataDTO $parentSubdivision
+     * @param SubdivisionSetOutput $parentSubdivision
      * @param SubdivisionModel $updateModel
 
-     * @return SubdivisionDataDTO
+     * @return SubdivisionSetOutput
      */
-    public function run(SubdivisionSetInput $input,SubdivisionDataDTO $parentSubdivision,SubdivisionModel $updateModel):SubdivisionDataDTO{
+    public function run(SubdivisionSetInput $input,SubdivisionSetOutput $parentSubdivision,SubdivisionModel $updateModel) : SubdivisionSetOutput{
         // echo "<br>UPDATE<br>";
         
         $updateModel->Parent_Sub_ID= $parentSubdivision->Subdivision_ID;
@@ -67,6 +67,6 @@ class SubdivisionUpdateTask extends Task implements SubdivisionUpdateTaskContrac
             throw new Exception($this->subdivisionRepository->getLastError(), 1);                
         };
 
-        return SubdivisionDataDTO::fromModel($updateModel,$subClassModel->Sub_Class_ID);
+        return SubdivisionSetOutput::fromModel($updateModel,$subClassModel->Sub_Class_ID);
     }
 }
